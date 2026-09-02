@@ -8,12 +8,12 @@ export interface Bilingual {
 }
 
 const LangContext = createContext<{ lang: Lang; setLang: (l: Lang) => void }>({
-  lang: "ro",
+  lang: "en",
   setLang: () => {},
 });
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>("ro");
+  const [lang, setLang] = useState<Lang>("en");
   const value = useMemo(() => ({ lang, setLang }), [lang]);
   return <LangContext.Provider value={value}>{children}</LangContext.Provider>;
 }
@@ -25,7 +25,7 @@ export function useLang() {
 /** Picks the current-language string from a bilingual object (or returns as-is). */
 export function pick(b: Bilingual | string, lang: Lang): string {
   if (typeof b === "string") return b;
-  return b[lang] || b.ro || b.en;
+  return b[lang] || b.en || b.ro;
 }
 
 /** Tiny component that renders a bilingual value in the current language. */
@@ -42,7 +42,7 @@ export function LangToggle({ dark = false }: { dark?: boolean }) {
         dark ? "border-white/15 bg-white/5 text-white" : "border-ink-200 bg-white text-ink-600"
       }`}
     >
-      {(["ro", "en"] as Lang[]).map((l) => (
+      {(["en", "ro"] as Lang[]).map((l) => (
         <button
           key={l}
           onClick={() => setLang(l)}

@@ -81,7 +81,7 @@ ok("activity items have bilingual labels", initA.puzzle.activity.items.every((i)
 ok("layout slots match piece count", initA.puzzle.activity.items.length === 12);
 
 // 2. join second player + move sync
-const join2 = await api.post(`/api/rooms/${rankRoom.data.room.id}/join`, { name: "Maria" });
+const join2 = await api.post(`/api/rooms/${rankRoom.data.room.id}/join`, { name: "Maria", code: rankRoom.data.room.code });
 const b = await connect(rankRoom.data.room.id, join2.data.playerId);
 await b.waitInit();
 const piece0 = initA.pieces[0];
@@ -118,7 +118,7 @@ ok("questionnaire has 4 dimensions", initC.puzzle.activity.dimensions?.length ==
 ok("questionnaire has 16 types", Object.keys(initC.puzzle.activity.types || {}).length === 16);
 
 // 6. rating flow
-const joinQ2 = await api.post(`/api/rooms/${qRoom.data.room.id}/join`, { name: "Dana" });
+const joinQ2 = await api.post(`/api/rooms/${qRoom.data.room.id}/join`, { name: "Dana", code: qRoom.data.room.code });
 const d = await connect(qRoom.data.room.id, joinQ2.data.playerId);
 await d.waitInit();
 

@@ -7,7 +7,7 @@ export interface Camera {
   scale: number;
 }
 
-export const MIN_SCALE = 0.25;
+export const MIN_SCALE = 0.1; // 10% — large puzzles fit fully even on small phone screens
 export const MAX_SCALE = 3;
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 

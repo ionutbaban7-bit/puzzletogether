@@ -18,7 +18,9 @@ export interface PlayerView {
 
 export interface RoomView {
   id: string;
-  code: string;
+  /** Access code — only present once you've joined (never leaked via the link). */
+  code?: string;
+  hostId?: string | null;
   puzzleId: string;
   difficulty: string;
   total: number;
@@ -47,6 +49,7 @@ export interface PuzzleView {
   rows: number;
   pieceW: number;
   pieceH: number;
+  seed?: number;
   snapDistance: number;
   isCoaching?: boolean;
   mode?: "ranking" | "questionnaire";
@@ -114,6 +117,13 @@ export interface CoachingActivity {
 export interface CoachingCatalog {
   category: Category;
   activities: CoachingActivity[];
+}
+
+export interface ScoreView {
+  playerId: string;
+  name: string;
+  color: string;
+  placed: number;
 }
 
 export interface RatingView {

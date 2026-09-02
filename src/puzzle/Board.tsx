@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CursorView, Piece, PlayerView, PuzzleView } from "../types";
 import { MAX_SCALE, MIN_SCALE, useViewport } from "./useViewport";
+import { buildEdgeMap, buildPiecePath, pieceEdges, spritePad } from "./jigsaw";
 import { store } from "../store";
 
 interface BoardProps {
@@ -70,7 +71,22 @@ export default function Board({
 
   const imgRef = useRef<HTMLImageElement | null>(null);
   const spriteCache = useRef(new Map<string, HTMLCanvasElement>());
+  const pathCache = useRef(new Map<number, Path2D>());
   const imgGen = useRef(0);
+
+  // Jigsaw cut: deterministic edge map shared by all players via the server seed.
+  const edgeMap = useMemo(
+    () => buildEdgeMap(puzzle.cols, puzzle.rows, puzzle.seed || 0),
+    [puzzle.cols, puzzle.rows, puzzle.seed],
+  );
+  const edgeMapRef = useRef(edgeMap);
+  useEffect(() => {
+    edgeMapRef.current = edgeMap;
+    spriteCache.current.clear();
+    pathCache.current.clear();
+    schedule();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [edgeMap]);
 
   // ------------------------------------------------------------------ image
   useEffect(() => {
@@ -139,6 +155,7 @@ export default function Board({
   useEffect(() => {
     if (resetSignal > 0) {
       spriteCache.current.clear();
+      pathCache.current.clear();
       fittedFor.current = "";
       fit(puzzleRef.current);
       schedule();
@@ -208,6 +225,17 @@ export default function Board({
   }
 
   // ------------------------------------------------------------- sprites
+  function getPiecePath(piece: Piece): Path2D {
+    const cached = pathCache.current.get(piece.id);
+    if (cached) return cached;
+    const { pieceW, pieceH, cols } = puzzleRef.current;
+    const col = piece.id % cols;
+    const row = Math.floor(piece.id / cols);
+    const path = buildPiecePath(pieceW, pieceH, pieceEdges(edgeMapRef.current, col, row));
+    pathCache.current.set(piece.id, path);
+    return path;
+  }
+
   function getSprite(piece: Piece): HTMLCanvasElement | null {
     const img = imgRef.current;
     if (!img || !img.complete || !img.naturalWidth) return null;
@@ -216,24 +244,43 @@ export default function Board({
     if (cached) return cached;
     const { correctX, correctY } = piece;
     const { pieceW, pieceH } = puzzleRef.current;
-    // Include the 4px white frame + 8px shadow bleed in the source crop
-    const pad = 12;
-    const sx = Math.max(0, Math.floor(correctX - pad));
-    const sy = Math.max(0, Math.floor(correctY - pad));
-    const ex = Math.min(img.naturalWidth, Math.ceil(correctX + pieceW + pad));
-    const ey = Math.min(img.naturalHeight, Math.ceil(correctY + pieceH + pad));
-    const cw = Math.max(1, ex - sx);
-    const ch = Math.max(1, ey - sy);
+    const pad = spritePad(pieceW, pieceH);
+    const cw = Math.ceil(pieceW + pad * 2);
+    const ch = Math.ceil(pieceH + pad * 2);
     const spr = document.createElement("canvas");
     spr.width = cw;
     spr.height = ch;
     const ctx = spr.getContext("2d")!;
-    ctx.drawImage(img, sx, sy, cw, ch, 0, 0, cw, ch);
-    // White frame
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 8;
+    const path = getPiecePath(piece);
+    const lw = Math.max(1.4, Math.min(pieceW, pieceH) * 0.02);
+
+    ctx.save();
+    ctx.translate(pad, pad); // piece-local origin
+    ctx.save();
+    ctx.clip(path);
+    // Photo, positioned so this piece's region (plus tab bleed) lines up.
+    ctx.drawImage(img, -correctX, -correctY);
+    // Bevel: light catch on the top-left, soft shade on the bottom-right.
+    ctx.save();
+    ctx.translate(-lw * 0.6, -lw * 0.6);
+    ctx.strokeStyle = "rgba(255,255,255,0.35)";
+    ctx.lineWidth = lw * 2.1;
+    ctx.stroke(path);
+    ctx.restore();
+    ctx.save();
+    ctx.translate(lw * 0.6, lw * 0.6);
+    ctx.strokeStyle = "rgba(0,0,0,0.32)";
+    ctx.lineWidth = lw * 2.1;
+    ctx.stroke(path);
+    ctx.restore();
+    ctx.restore();
+    // Crisp die-cut outline.
+    ctx.strokeStyle = "rgba(10,13,26,0.55)";
+    ctx.lineWidth = lw;
     ctx.lineJoin = "round";
-    ctx.strokeRect(4, 4, cw - 8, ch - 8);
+    ctx.stroke(path);
+    ctx.restore();
+
     spriteCache.current.set(key, spr);
     return spr;
   }
@@ -309,26 +356,47 @@ export default function Board({
     });
 
     const grabPiece = grab.current ? pieces[grab.current.id] : null;
+    const pad = spritePad(puzzle.pieceW, puzzle.pieceH);
+    const sw = (puzzle.pieceW + pad * 2) * scale;
+    const sh = (puzzle.pieceH + pad * 2) * scale;
+
+    // Strokes a piece's jigsaw outline at an arbitrary world position.
+    const strokePieceAt = (
+      piece: Piece,
+      worldX: number,
+      worldY: number,
+      style: string,
+      widthPx: number,
+      alpha: number,
+    ) => {
+      const path = getPiecePath(piece);
+      ctx.save();
+      ctx.translate(worldX * scale + cx, worldY * scale + cy);
+      ctx.scale(scale, scale);
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = style;
+      ctx.lineWidth = widthPx / scale;
+      ctx.lineJoin = "round";
+      ctx.stroke(path);
+      ctx.restore();
+    };
 
     for (const piece of list) {
       const { x, y } = worldToScreen(piece);
       const spr = getSprite(piece);
       const isGrabbed = grabPiece === piece && piece.drag;
+      const dx = x - pad * scale;
+      const dy = y - pad * scale;
 
       if (piece.locked) {
-        if (spr) ctx.drawImage(spr, x, y, puzzle.pieceW * scale, puzzle.pieceH * scale);
-        // Completion ring pulse right after a piece gets locked
+        // Locked pieces sit flush in the picture — no shadow.
+        if (spr) ctx.drawImage(spr, dx, dy, sw, sh);
+        // Completion glow right after a piece snaps home.
         const lockedT = lockedTimes.current.get(piece.id);
         if (lockedT !== undefined) {
           const t = (now - lockedT) / 700;
           if (t < 1) {
-            ctx.save();
-            ctx.globalAlpha = 1 - t;
-            ctx.strokeStyle = PLACED_RING_COLOR;
-            ctx.lineWidth = 3;
-            const r = 8 * t;
-            ctx.strokeRect(x - r, y - r, puzzle.pieceW * scale + r * 2, puzzle.pieceH * scale + r * 2);
-            ctx.restore();
+            strokePieceAt(piece, piece.x, piece.y, PLACED_RING_COLOR, 3, 1 - t);
           } else {
             lockedTimes.current.delete(piece.id);
           }
@@ -337,48 +405,40 @@ export default function Board({
       }
       lockedTimes.current.delete(piece.id);
 
-      if (spr) ctx.drawImage(spr, x, y, puzzle.pieceW * scale, puzzle.pieceH * scale);
-
-      // Shadow (soft drop shadow behind free pieces)
-      if (!isGrabbed) {
+      // Free pieces cast a soft shadow that follows the jigsaw silhouette.
+      if (spr) {
         ctx.save();
-        ctx.shadowColor = "rgba(0,0,0,0.28)";
-        ctx.shadowBlur = 10;
-        ctx.shadowOffsetY = 4;
-        ctx.fillStyle = "rgba(255,255,255,0.0)";
-        ctx.fillRect(x, y, puzzle.pieceW * scale, puzzle.pieceH * scale);
+        if (isGrabbed) {
+          ctx.shadowColor = "rgba(0,0,0,0.42)";
+          ctx.shadowBlur = 22;
+          ctx.shadowOffsetY = 10;
+        } else {
+          ctx.shadowColor = "rgba(0,0,0,0.30)";
+          ctx.shadowBlur = 9;
+          ctx.shadowOffsetY = 4;
+        }
+        ctx.drawImage(spr, dx, dy, sw, sh);
         ctx.restore();
       }
 
       if (isGrabbed) {
-        ctx.save();
-        ctx.shadowColor = "rgba(0,0,0,0.35)";
-        ctx.shadowBlur = 22;
-        ctx.shadowOffsetY = 10;
-        ctx.strokeStyle = SNAP_RING_COLOR;
-        ctx.lineWidth = 2;
-        ctx.strokeRect(x, y, puzzle.pieceW * scale, puzzle.pieceH * scale);
-        ctx.restore();
+        strokePieceAt(piece, piece.x, piece.y, SNAP_RING_COLOR, 2, 0.95);
       } else if (piece.moved) {
-        // Tuck indicator: faint target ring when a piece is near its home
-        const dx = piece.correctX - piece.x;
-        const dy = piece.correctY - piece.y;
-        const dist = Math.hypot(dx, dy);
+        // Ghost outline of the piece's home slot when it gets close.
+        const ddx = piece.correctX - piece.x;
+        const ddy = piece.correctY - piece.y;
+        const dist = Math.hypot(ddx, ddy);
         const { snapDistance } = puzzle;
         if (dist < snapDistance * 6) {
           const near = dist < snapDistance * 2;
-          ctx.save();
-          ctx.globalAlpha = near ? 0.9 : 0.5;
-          ctx.strokeStyle = near ? TARGET_RING_COLOR : "rgba(99,102,241,0.3)";
-          ctx.lineWidth = 1.5;
-          const off = near ? 5 : 8;
-          ctx.strokeRect(
-            piece.correctX * scale + cx - off,
-            piece.correctY * scale + cy - off,
-            puzzle.pieceW * scale + off * 2,
-            puzzle.pieceH * scale + off * 2,
+          strokePieceAt(
+            piece,
+            piece.correctX,
+            piece.correctY,
+            near ? TARGET_RING_COLOR : "rgba(99,102,241,0.35)",
+            near ? 2.5 : 1.5,
+            near ? 0.95 : 0.5,
           );
-          ctx.restore();
         }
       }
     }
@@ -427,10 +487,11 @@ export default function Board({
     if (showReference) {
       const pw = puzzle.width;
       const ph = puzzle.height;
-      const bw = 168;
-      const bh = Math.min((bw * ph) / pw, 132);
-      const bx = w - bw - 20;
-      const by = 20;
+      const mobile = w < 640;
+      const bw = mobile ? Math.min(124, Math.round(w * 0.34)) : 168;
+      const bh = Math.min((bw * ph) / pw, mobile ? 100 : 132);
+      const bx = w - bw - (mobile ? 12 : 20);
+      const by = mobile ? 148 : 108;
       ctx.save();
       ctx.globalAlpha = 0.92;
       ctx.fillStyle = "#10141f";
@@ -713,7 +774,7 @@ export default function Board({
   // ----------------------------------------------------------- controls
   const zoomControls = (factor: number, label: string) => (
     <button
-      className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-ink-900/85 text-lg font-semibold text-white shadow-chip backdrop-blur transition hover:bg-ink-800 active:scale-95"
+      className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-ink-900/85 text-lg font-semibold text-white shadow-chip backdrop-blur transition hover:bg-ink-800 active:scale-95 sm:h-10 sm:w-10"
       onClick={() => zoomBy(factor)}
       title={label}
       aria-label={label}
@@ -739,10 +800,10 @@ export default function Board({
       />
 
       {/* Zoom controls */}
-      <div className="absolute bottom-5 left-5 flex flex-col items-center gap-2">
+      <div className="absolute bottom-4 left-3 flex flex-col items-center gap-2 sm:bottom-5 sm:left-5">
         {zoomControls(1.25, "Zoom in")}
         <button
-          className="flex h-8 w-10 items-center justify-center rounded-lg border border-white/10 bg-ink-900/85 text-[11px] font-semibold text-ink-200 shadow-chip backdrop-blur"
+          className="flex h-8 w-9 items-center justify-center rounded-lg border border-white/10 bg-ink-900/85 text-[11px] font-semibold text-ink-200 shadow-chip backdrop-blur sm:w-10"
           onClick={() => {
             fit(puzzle);
           }}
@@ -755,28 +816,28 @@ export default function Board({
 
       {/* Reset view */}
       <button
-        className="btn btn-dark btn-sm absolute bottom-5 left-1/2 -translate-x-1/2"
+        className="btn btn-dark btn-sm absolute bottom-4 left-1/2 -translate-x-1/2 !px-3 sm:bottom-5 sm:!px-4"
         onClick={() => fit(puzzle)}
         title="Reset view"
       >
-        ⌂ Reset view
+        ⌂<span className="hidden sm:inline">&nbsp;Reset view</span>
       </button>
 
       {/* Reference image toggle */}
       <button
-        className={`btn btn-dark btn-sm absolute right-5 top-5 ${
+        className={`btn btn-dark btn-sm absolute right-3 top-[104px] !px-2.5 sm:right-5 sm:top-16 sm:!px-4 ${
           showReference ? "border-brand-500/60 bg-brand-600/30" : ""
         }`}
         onClick={() => setShowReference((v) => !v)}
         title="Toggle reference image"
       >
-        🖼️ Reference
+        🖼️<span className="hidden sm:inline">&nbsp;Reference</span>
       </button>
 
       {/* Restart (room completed) */}
       {allowReset && (
         <button
-          className="btn btn-dark btn-sm absolute right-5 bottom-5 !border-emerald-400/40 !bg-emerald-500/20 hover:!bg-emerald-500/30"
+          className="btn btn-dark btn-sm absolute right-3 bottom-4 !border-emerald-400/40 !bg-emerald-500/20 hover:!bg-emerald-500/30 sm:right-5 sm:bottom-5"
           onClick={onResetRequest}
           title="Scatter the pieces and play again"
         >

@@ -33,7 +33,7 @@ export function extractRoomRef(input: string): string | null {
   return null;
 }
 
-export function inviteUrl(room: { id: string; code: string }): string {
+export function inviteUrl(room: { id: string }): string {
   return `${window.location.origin}/room/${room.id}`;
 }
 

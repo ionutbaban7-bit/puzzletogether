@@ -59,8 +59,17 @@ try {
   const pageB = await ctxB.newPage();
   watch(pageB, "B");
   await pageB.goto(pageA.url());
-  await pageB.waitForSelector("text=What's your name?");
+  // Access gate: joining via link now requires name + the room's access code
+  await pageB.waitForSelector("text=Enter the room");
+  ok("access gate shown on shared URL", true);
   await pageB.fill("input[placeholder='e.g. Maria']", "Maria");
+  // wrong code must be rejected
+  await pageB.fill("input[placeholder='K7F2MX']", "WRONG1");
+  await pageB.click("button:has-text('Join the Puzzle')");
+  await pageB.waitForSelector("text=Wrong access code");
+  ok("wrong access code rejected", true);
+  // correct code lets us in
+  await pageB.fill("input[placeholder='K7F2MX']", stateA1.room.code);
   await pageB.click("button:has-text('Join the Puzzle')");
   await pageB.waitForSelector("canvas");
   await pageB.waitForFunction(() => window.__ptStore?.getState().status === "joined");

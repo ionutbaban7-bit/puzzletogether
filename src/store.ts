@@ -8,6 +8,7 @@ import type {
   PuzzleView,
   RatingView,
   RoomView,
+  ScoreView,
 } from "./types";
 
 export interface StoreState {
@@ -22,8 +23,12 @@ export interface StoreState {
   players: PlayerView[];
   pieces: Record<number, Piece>;
   cursors: Record<string, CursorView>;
-  completion: { players: string[] } | null;
+  completion: { players: string[]; scores: ScoreView[] } | null;
   ratings: Record<string, RatingView>;
+  /** Placed-piece leaderboard for the current game (sorted desc). */
+  scores: ScoreView[];
+  /** Bumped whenever the board is rebuilt (reset or new puzzle) so views can re-fit. */
+  epoch: number;
 }
 
 const initialState: StoreState = {
@@ -37,6 +42,8 @@ const initialState: StoreState = {
   cursors: {},
   completion: null,
   ratings: {},
+  scores: [],
+  epoch: 0,
 };
 
 let state: StoreState = initialState;
@@ -77,9 +84,13 @@ function handleMessage(msg: { t: string; [k: string]: unknown }) {
         players,
         pieces: Object.fromEntries(pieces.map((p) => [p.id, p])),
         ratings: Object.fromEntries(ratingsRaw.map((r) => [r.playerId, r])),
+        scores: (msg.scores as ScoreView[]) || [],
         cursors,
         completion: room.completed
-          ? { players: (msg.completionPlayers as string[]) || players.map((p) => p.name) }
+          ? {
+              players: (msg.completionPlayers as string[]) || players.map((p) => p.name),
+              scores: (msg.scores as ScoreView[]) || [],
+            }
           : null,
       });
       break;
@@ -107,10 +118,16 @@ function handleMessage(msg: { t: string; [k: string]: unknown }) {
       break;
     }
     case "completion": {
+      const scores = (msg.scores as ScoreView[]) || [];
       set({
         room: msg.room as RoomView,
-        completion: { players: (msg.players as string[]) || [] },
+        completion: { players: (msg.players as string[]) || [], scores },
+        scores,
       });
+      break;
+    }
+    case "scores": {
+      set({ scores: (msg.list as ScoreView[]) || [] });
       break;
     }
     case "ratings": {
@@ -128,6 +145,24 @@ function handleMessage(msg: { t: string; [k: string]: unknown }) {
         pieces: Object.fromEntries(pieces.map((p) => [p.id, p])),
         completion: null,
         ratings: {},
+        scores: [],
+        epoch: state.epoch + 1,
+      });
+      break;
+    }
+    case "puzzle": {
+      // The host switched the room to a different puzzle/activity.
+      const room = msg.room as RoomView;
+      const puzzle = msg.puzzle as PuzzleView;
+      const pieces = (msg.pieces as Piece[]) || [];
+      set({
+        room,
+        puzzle,
+        pieces: Object.fromEntries(pieces.map((p) => [p.id, p])),
+        completion: null,
+        ratings: {},
+        scores: [],
+        epoch: state.epoch + 1,
       });
       break;
     }
@@ -164,7 +199,7 @@ export const store = {
   },
 
   joinRoom(roomId: string, playerId: string) {
-    set({ status: "connecting", connected: false, room: null, puzzle: null, players: [], pieces: {}, cursors: {}, completion: null });
+    set({ status: "connecting", connected: false, room: null, puzzle: null, players: [], pieces: {}, cursors: {}, completion: null, scores: [] });
     socket.connect(roomId, playerId);
   },
 
