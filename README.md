@@ -16,8 +16,8 @@ No accounts. No sign-up. Just pick a name and play.
 - **Curated puzzles** — 21 public-domain / CC-licensed images across 5 categories (Famous Paintings, Famous Landscapes, World Landmarks, Nature, Cities), with author credits shown in the app
 - **4 difficulties** — Easy (25), Medium (64), Hard (100), Expert (144) pieces
 - **🧭 coachinghub — Team Coaching category** — professional team-building activities, bilingual (Romanian & English):
-  - **3 ranking exercises** (Human Synergistics style): *The Himalayan Expedition*, *Lost in the Pacific*, *The Moon Mission* — the team drags 12 items into importance order on a shared board, then compares with the experts' ranking (deviation score, per-item rationale) and runs a guided debrief
-  - **1 personality questionnaire**: *The Team Compass* — 20 questions, 4 dimensions, 16 original profiles with strengths, weaknesses, growth tips and team advice (format inspired by free assessments like 16 Personalities; content 100% original). Everyone answers individually in the room and the team sees a live summary of profiles
+  - **3 ranking exercises** (Human Synergistics style): *The Himalayan Expedition*, *Lost in the Pacific*, *The Moon Mission* — the team drags 12 items into importance order on a shared board, t[...]
+  - **1 personality questionnaire**: *The Team Compass* — 20 questions, 4 dimensions, 16 original profiles with strengths, weaknesses, growth tips and team advice (format inspired by free assess[...]
 - **Infinite-canvas board** — drag & drop pieces, pan, zoom (mouse wheel / pinch / buttons), reset view, fullscreen reference image
 - **Snap & lock** — pieces snap into their slot when dropped close enough, then lock (nobody can move them), with a subtle success animation
 - **Progress & timer** — live progress bar, piece counter, elapsed time
@@ -99,11 +99,29 @@ puzzletogether/
 
 1. **Create/join** — REST calls return a `playerId` (random UUID) and room info.
 2. **Connect** — the client opens `ws://host/ws`, sends `{t:"hello", roomId, playerId}`, and receives `{t:"init"}` with the full room, puzzle geometry, players, and all pieces.
-3. **Drag** — pointer moves are applied locally for 60 fps smoothness and sent to the server every ~50 ms (`{t:"piece", id, x, y, drag:true}`). The server broadcasts to everyone else and is the authority for snapping/locking.
+3. **Drag** — pointer moves are applied locally for 60 fps smoothness and sent to the server every ~50 ms (`{t:"piece", id, x, y, drag:true}`). The server broadcasts to everyone else and is the[...]
 4. **Drop** — the final position is sent immediately; the server snaps the piece if it's within the snap distance and locks it (locked pieces reject further moves).
 5. **Cursors** — throttled to ~30 fps and relayed in batches; rendered as colored arrows with name chips (`Maria 👆`).
 6. **Completion** — when the locked count reaches the total, the server broadcasts a `completion` event with the player list.
 
-## License
+## 📜 License & Copyright
 
-Code: MIT. Puzzle images: public domain or CC BY / CC BY-SA — see `shared/puzzles.json` for per-image attribution.
+**© 2026 Ionut Baban — All Rights Reserved**
+
+This project is free to use, study, modify, and redistribute for **personal and non-commercial purposes**. You are allowed to:
+
+✅ Use it personally or educationally
+✅ Fork, study, and learn from the code
+✅ Modify it for your own use
+✅ Run your own instance freely
+
+**However, you are NOT allowed to monetize this project without explicit written permission:**
+
+❌ Sell this code or derivative works
+❌ Use it commercially or for profit
+❌ Provide it as a paid service
+❌ Incorporate it into commercial products for monetary gain
+
+**For commercial licensing inquiries or permissions**, please contact: **ionutbaban7@gmail.com**
+
+For more details, see the [LICENSE](LICENSE) file.
