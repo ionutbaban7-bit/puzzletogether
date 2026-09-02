@@ -2,21 +2,18 @@ import { navigate } from "../lib/router";
 import { Logo, LogoMark } from "../components/ui";
 import { LangToggle, T, type Bilingual } from "../lib/i18n";
 
-const FEATURES: Array<{ icon: string; title: Bilingual; text: Bilingual }> = [
+const FEATURES: Array<{ title: Bilingual; text: Bilingual }> = [
   {
-    icon: "⚡",
-    title: { ro: "Timp real împreună", en: "Real-time together" },
-    text: { ro: "Fiecare mișcare se sincronizează instant — urmărește prietenii plasând piese în direct.", en: "Every move syncs instantly — watch friends place pieces live." },
+    title: { ro: "Sincronizare în timp real", en: "Real-time sync" },
+    text: { ro: "Fiecare mișcare se propagă instant. Urmărește colegii plasând piese simultan.", en: "Every move propagates instantly across all players. See teammates place pieces in real-time." },
   },
   {
-    icon: "🖼️",
-    title: { ro: "Capodopere curate", en: "Curated masterpieces" },
-    text: { ro: "Van Gogh, Hokusai, Monet și alții — imagini din domeniu public, corect atribuite.", en: "Van Gogh, Hokusai, Monet and more — public-domain images, properly credited." },
+    title: { ro: "Imagini în domeniu public", en: "Masterpiece gallery" },
+    text: { ro: "Peste 20 de capodopere din domenii publice — corect atribuite și verificate.", en: "20+ public-domain masterpieces from museums worldwide—properly credited and verified." },
   },
   {
-    icon: "🔓",
-    title: { ro: "Fără înregistrare", en: "No sign-up" },
-    text: { ro: "Alege un nume, creează o cameră, partajează linkul. Gata.", en: "Pick a name, create a room, share the link. That's it." },
+    title: { ro: "Fără bariere", en: "Zero friction" },
+    text: { ro: "Nu e nevoie de cont. Crezi, distribui, joci. Un click, gata.", en: "No login. No signup. Open, share, play. One click to start." },
   },
 ];
 
@@ -29,7 +26,7 @@ export default function LandingPage() {
         className="pointer-events-none absolute inset-0 opacity-[0.55]"
         style={{
           backgroundImage:
-            "radial-gradient(60rem 30rem at 50% -8%, rgba(99,102,241,0.22), transparent 60%), radial-gradient(40rem 24rem at 88% 108%, rgba(14,165,233,0.12), transparent 60%), radial-gradient(36rem 20rem at 16% -2%, rgba(167,139,250,0.14), transparent 40%)",
+            "radial-gradient(60rem 30rem at 50% -8%, rgba(99,102,241,0.22), transparent 60%), radial-gradient(40rem 24rem at 88% 108%, rgba(14,165,233,0.12), transparent 60%), radial-gradient(36rem 20rem at 15% 60%, rgba(99,102,241,0.1), transparent 70%)",
         }}
       />
       <div
@@ -68,19 +65,18 @@ export default function LandingPage() {
             className="font-display mt-7 max-w-3xl text-5xl font-extrabold leading-[1.06] tracking-tight sm:text-6xl animate-fade-up"
             style={{ animationDelay: "120ms" }}
           >
-            <T value={{ ro: "Rezolvă puzzle-uri frumoase", en: "Solve beautiful puzzles" }} />{" "}
-            <span className="bg-gradient-to-r from-brand-300 via-brand-400 to-sky-400 bg-clip-text text-transparent">
-              <T value={{ ro: "împreună", en: "together" }} />
-            </span>
-            , <T value={{ ro: "în timp real.", en: "in real time." }} />
+            <T value={{ 
+              ro: "Puzzle-uri colaborative pentru echipe și prieteni.",
+              en: "Collaborative puzzles for teams & friends."
+            }} />
           </h1>
           <p
             className="mt-5 max-w-xl text-lg leading-relaxed text-ink-300 animate-fade-up"
             style={{ animationDelay: "180ms" }}
           >
             <T value={{ 
-              ro: "Deschide o cameră, partajează linkul și asamblează o capodoperă cu până la 20 de prieteni.",
-              en: "Open a room, share the link, and assemble a masterpiece with up to 20 friends."
+              ro: "Deschide o cameră, invită instant, rezolvă în timp real. Fără cont, fără așteptări.",
+              en: "Open a room, invite instantly, solve in real-time. No accounts, no waiting."
             }} />
           </p>
 
@@ -89,7 +85,7 @@ export default function LandingPage() {
             style={{ animationDelay: "240ms" }}
           >
             <button onClick={() => navigate("/create")} className="btn-primary w-56 sm:w-auto">
-              <T value={{ ro: "Creează o Cameră", en: "Create a Room" }} />
+              <T value={{ ro: "Creează Cameră", en: "Create Room" }} />
               <span aria-hidden>→</span>
             </button>
             <button
@@ -101,19 +97,19 @@ export default function LandingPage() {
           </div>
 
           <div
-            className="mt-16 grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3 animate-fade-up"
+            className="mt-16 grid w-full max-w-4xl grid-cols-1 gap-6 sm:grid-cols-3 animate-fade-up"
             style={{ animationDelay: "300ms" }}
           >
             {FEATURES.map((f) => (
               <div
                 key={f.title.en}
-                className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-left backdrop-blur"
+                className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 text-left backdrop-blur transition hover:border-brand-500/30 hover:bg-white/[0.06]"
               >
-                <div className="text-2xl">{f.icon}</div>
-                <div className="mt-3 font-display text-[15px] font-semibold text-white">
+                <div className="h-1 w-12 rounded-full bg-gradient-to-r from-brand-500 to-sky-400"></div>
+                <div className="mt-4 font-display text-[15px] font-semibold text-white">
                   <T value={f.title} />
                 </div>
-                <div className="mt-1.5 text-[13px] leading-relaxed text-ink-300">
+                <div className="mt-2 text-sm leading-relaxed text-ink-300">
                   <T value={f.text} />
                 </div>
               </div>
@@ -123,11 +119,14 @@ export default function LandingPage() {
 
         <footer className="pb-6 text-center text-xs text-ink-500 animate-fade-in">
           <T value={{ 
-            ro: "PuzzleTogether · Rezolvă aceeași puzzle frumoasă cu toții ·",
-            en: "PuzzleTogether · Miro, but everyone solves the same beautiful puzzle ·"
+            ro: "PuzzleTogether · Puzzle-uri colaborative în timp real",
+            en: "PuzzleTogether · Collaborative puzzles in real-time"
           }} />
           <br />
-          Images via Wikimedia Commons (public domain &amp; CC BY-SA)
+          <T value={{
+            ro: "Imagini din Wikimedia Commons (domeniu public & CC BY-SA)",
+            en: "Images via Wikimedia Commons (public domain & CC BY-SA)"
+          }} />
         </footer>
       </div>
     </div>
