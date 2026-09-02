@@ -1,0 +1,86 @@
+{
+  "aurora.jpg": {
+    "w": 1920,
+    "h": 1251
+  },
+  "colosseum.jpg": {
+    "w": 1920,
+    "h": 1345
+  },
+  "eiffel-tower.jpg": {
+    "w": 1920,
+    "h": 3553
+  },
+  "flower.jpg": {
+    "w": 1920,
+    "h": 1920
+  },
+  "girl-pearl-earring.jpg": {
+    "w": 1920,
+    "h": 2248
+  },
+  "golden-gate.jpg": {
+    "w": 1920,
+    "h": 1200
+  },
+  "great-wave.jpg": {
+    "w": 1920,
+    "h": 1324
+  },
+  "machu-picchu.jpg": {
+    "w": 1920,
+    "h": 1874
+  },
+  "matterhorn.jpg": {
+    "w": 1610,
+    "h": 1073
+  },
+  "mona-lisa.jpg": {
+    "w": 1920,
+    "h": 2861
+  },
+  "moraine-lake.jpg": {
+    "w": 1920,
+    "h": 1440
+  },
+  "paris-louvre.jpg": {
+    "w": 1920,
+    "h": 807
+  },
+  "santorini.jpg": {
+    "w": 1920,
+    "h": 1444
+  },
+  "starry-night.jpg": {
+    "w": 1920,
+    "h": 1520
+  },
+  "statue-of-liberty.jpg": {
+    "w": 1464,
+    "h": 2022
+  },
+  "sunrise.jpg": {
+    "w": 1600,
+    "h": 1245
+  },
+  "taj-mahal.jpg": {
+    "w": 1920,
+    "h": 1262
+  },
+  "tokyo.jpg": {
+    "w": 1920,
+    "h": 1023
+  },
+  "vatican.jpg": {
+    "w": 1920,
+    "h": 1078
+  },
+  "venice.jpg": {
+    "w": 1920,
+    "h": 2880
+  },
+  "waterfall.jpg": {
+    "w": 1920,
+    "h": 1280
+  }
+}

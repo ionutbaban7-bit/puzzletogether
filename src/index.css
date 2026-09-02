@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-ink-950 text-ink-900 antialiased;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+.font-display {
+  font-family: "Sora", "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-brand-600 px-6 py-3.5 text-[15px] text-white shadow-lg shadow-brand-600/25 hover:bg-brand-500 active:scale-[0.98];
+  }
+  .btn-secondary {
+    @apply btn border border-ink-200 bg-white px-6 py-3.5 text-[15px] text-ink-700 shadow-sm hover:border-ink-300 hover:bg-ink-50 active:scale-[0.98];
+  }
+  .btn-dark {
+    @apply btn border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white/90 backdrop-blur hover:bg-white/10 active:scale-[0.98];
+  }
+  .btn-sm {
+    @apply px-3.5 py-2 text-sm;
+  }
+  .card {
+    @apply rounded-2xl bg-white shadow-card;
+  }
+  .input {
+    @apply w-full rounded-xl border border-ink-200 bg-white px-4 py-3 text-[15px] text-ink-900 outline-none transition placeholder:text-ink-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10;
+  }
+  .pill {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-ink-200 bg-white px-2.5 py-1 text-xs font-medium text-ink-600;
+  }
+  .overlay-card {
+    @apply rounded-2xl border border-white/10 bg-ink-900/85 text-white shadow-pop backdrop-blur-md;
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translate3d(0, -10vh, 0) rotate(0deg);
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--sway, 0px), 112vh, 0) rotate(var(--spin, 540deg));
+    opacity: 0;
+  }
+}
+.confetti-piece {
+  position: absolute;
+  top: 0;
+  border-radius: 2px;
+  animation: confetti-fall linear forwards;
+  will-change: transform;
+}
+
+@keyframes piece-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 14px rgba(52, 211, 153, 0);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-ink-300/60;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}

@@ -1,0 +1,206 @@
+{
+  "categories": [
+    { "id": "paintings", "name": "Famous Paintings", "icon": "🎨" },
+    { "id": "landscapes", "name": "Famous Landscapes", "icon": "🏔️" },
+    { "id": "landmarks", "name": "World Landmarks", "icon": "🗼" },
+    { "id": "nature", "name": "Nature", "icon": "🌿" },
+    { "id": "cities", "name": "Cities", "icon": "🏙️" }
+  ],
+  "difficulties": [
+    { "id": "easy", "name": "Easy", "pieces": 25 },
+    { "id": "medium", "name": "Medium", "pieces": 64 },
+    { "id": "hard", "name": "Hard", "pieces": 100 },
+    { "id": "expert", "name": "Expert", "pieces": 144 }
+  ],
+  "puzzles": [
+    {
+      "id": "mona-lisa",
+      "category": "paintings",
+      "name": "Mona Lisa",
+      "image": "/images/mona-lisa.jpg",
+      "credit": "Leonardo da Vinci",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "starry-night",
+      "category": "paintings",
+      "name": "Starry Night",
+      "image": "/images/starry-night.jpg",
+      "credit": "Vincent van Gogh",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "great-wave",
+      "category": "paintings",
+      "name": "The Great Wave off Kanagawa",
+      "image": "/images/great-wave.jpg",
+      "credit": "Katsushika Hokusai",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "girl-pearl-earring",
+      "category": "paintings",
+      "name": "Girl with a Pearl Earring",
+      "image": "/images/girl-pearl-earring.jpg",
+      "credit": "Johannes Vermeer",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "sunrise",
+      "category": "paintings",
+      "name": "Impression, Sunrise",
+      "image": "/images/sunrise.jpg",
+      "credit": "Claude Monet",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "matterhorn",
+      "category": "landscapes",
+      "name": "The Matterhorn",
+      "image": "/images/matterhorn.jpg",
+      "credit": "Photo: chil (Camptocamp.org) · derivative work Zacharie Grossen",
+      "license": "CC BY-SA 3.0",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "moraine-lake",
+      "category": "landscapes",
+      "name": "Moraine Lake",
+      "image": "/images/moraine-lake.jpg",
+      "credit": "Gorgo",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "santorini",
+      "category": "landscapes",
+      "name": "Oia, Santorini",
+      "image": "/images/santorini.jpg",
+      "credit": "Danbu14",
+      "license": "CC BY-SA 3.0",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "eiffel-tower",
+      "category": "landmarks",
+      "name": "Eiffel Tower",
+      "image": "/images/eiffel-tower.jpg",
+      "credit": "Benh LIEU SONG",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "machu-picchu",
+      "category": "landmarks",
+      "name": "Machu Picchu",
+      "image": "/images/machu-picchu.jpg",
+      "credit": "Martin St-Amant",
+      "license": "CC BY-SA 3.0",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "taj-mahal",
+      "category": "landmarks",
+      "name": "Taj Mahal",
+      "image": "/images/taj-mahal.jpg",
+      "credit": "Yann · edited by Jim Carter",
+      "license": "CC BY-SA 4.0",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "colosseum",
+      "category": "landmarks",
+      "name": "The Colosseum",
+      "image": "/images/colosseum.jpg",
+      "credit": "FeaturedPics",
+      "license": "CC BY-SA 4.0",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "statue-of-liberty",
+      "category": "landmarks",
+      "name": "Statue of Liberty",
+      "image": "/images/statue-of-liberty.jpg",
+      "credit": "Elcobbola",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "vatican",
+      "category": "landmarks",
+      "name": "St. Peter's Square",
+      "image": "/images/vatican.jpg",
+      "credit": "Diliff",
+      "license": "CC BY-SA 3.0",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "aurora",
+      "category": "nature",
+      "name": "Aurora Borealis",
+      "image": "/images/aurora.jpg",
+      "credit": "US Air Force photo by Senior Airman Joshua Strang",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "flower",
+      "category": "nature",
+      "name": "Tulip in Bloom",
+      "image": "/images/flower.jpg",
+      "credit": "Derek Ramsey (Ram-Man) · co-attribution: Chanticleer Garden",
+      "license": "CC BY-SA 3.0",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "waterfall",
+      "category": "nature",
+      "name": "Beauchamp Falls",
+      "image": "/images/waterfall.jpg",
+      "credit": "Dietmar Rabich",
+      "license": "CC BY-SA 4.0",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "golden-gate",
+      "category": "cities",
+      "name": "Golden Gate Bridge",
+      "image": "/images/golden-gate.jpg",
+      "credit": "Frank Schulenburg",
+      "license": "CC BY-SA 4.0",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "paris-louvre",
+      "category": "cities",
+      "name": "The Louvre, Paris",
+      "image": "/images/paris-louvre.jpg",
+      "credit": "Benh LIEU SONG",
+      "license": "CC BY-SA 3.0",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "venice",
+      "category": "cities",
+      "name": "Venice at Dawn",
+      "image": "/images/venice.jpg",
+      "credit": "Benh LIEU SONG",
+      "license": "CC BY-SA 4.0",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "tokyo",
+      "category": "cities",
+      "name": "Tokyo Skyscrapers",
+      "image": "/images/tokyo.jpg",
+      "credit": "Morio",
+      "license": "CC BY-SA 3.0",
+      "source": "Wikimedia Commons"
+    }
+  ]
+}
