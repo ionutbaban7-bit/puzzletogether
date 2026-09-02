@@ -4,16 +4,16 @@ import { LangToggle, T, type Bilingual } from "../lib/i18n";
 
 const FEATURES: Array<{ title: Bilingual; text: Bilingual }> = [
   {
+    title: { ro: "Zona Kids & Magie 🪄", en: "Kids & Magic Zone 🪄" },
+    text: { ro: "Puzzle-uri speciale pentru copii și familie (12–144 piese) cu inorogi, dragoni și aventuri spațiale.", en: "Special family & child-friendly puzzles (12–144 pieces) featuring unicorns, dragons & space adventures." },
+  },
+  {
     title: { ro: "Sincronizare în timp real", en: "Real-time sync" },
     text: { ro: "Fiecare mișcare se propagă instant. Urmărește colegii plasând piese simultan.", en: "Every move propagates instantly across all players. See teammates place pieces in real-time." },
   },
   {
-    title: { ro: "Imagini în domeniu public", en: "Masterpiece gallery" },
-    text: { ro: "Peste 20 de capodopere din domenii publice — corect atribuite și verificate.", en: "20+ public-domain masterpieces from museums worldwide—properly credited and verified." },
-  },
-  {
-    title: { ro: "Fără bariere", en: "Zero friction" },
-    text: { ro: "Nu e nevoie de cont. Crezi, distribui, joci. Un click, gata.", en: "No login. No signup. Open, share, play. One click to start." },
+    title: { ro: "Ateliere de Team Coaching 🧭", en: "Team Coaching Workshops 🧭" },
+    text: { ro: "Simulări de supraviețuire de grup și chestionare de rol pentru echipe agile.", en: "Group survival simulations & role discovery questionnaires for agile teams." },
   },
 ];
 

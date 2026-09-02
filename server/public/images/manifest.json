@@ -142,5 +142,25 @@
   "prague.jpg": {
     "w": 1024,
     "h": 601
+  },
+  "unicorn-magic.jpg": {
+    "w": 1536,
+    "h": 1024
+  },
+  "dragon-castle.jpg": {
+    "w": 1122,
+    "h": 1402
+  },
+  "space-adventure.jpg": {
+    "w": 1536,
+    "h": 1024
+  },
+  "ocean-kingdom.jpg": {
+    "w": 1536,
+    "h": 1024
+  },
+  "cute-kittens.jpg": {
+    "w": 1536,
+    "h": 1024
   }
 }
