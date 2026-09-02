@@ -195,6 +195,7 @@ function puzzleView(room) {
     rows: room.puzzle.rows,
     pieceW: room.puzzle.pieceW,
     pieceH: room.puzzle.pieceH,
+    seed: room.seed,
     snapDistance: snapDistance(room.puzzle.pieceW, room.puzzle.pieceH),
   };
 }
@@ -205,6 +206,16 @@ function activePlayerList(room) {
     name: p.name,
     color: p.color,
   }));
+}
+
+/** Per-player placed-piece scores for the current game, sorted descending. */
+function scoreList(room) {
+  return [...(room.scores || new Map()).entries()]
+    .map(([pid, placed]) => {
+      const p = room.players.get(pid) || room.knownPlayers.get(pid) || {};
+      return { playerId: pid, name: p.name || "Player", color: p.color || "#94a3b8", placed };
+    })
+    .sort((a, b) => b.placed - a.placed || a.name.localeCompare(b.name));
 }
 
 function send(ws, msg) {
@@ -335,8 +346,11 @@ function applyPuzzleToRoom(room, config) {
   room.board = setup.board;
   room.puzzle = setup.puzzleMeta;
   room.pieces = setup.pieces;
+  room.seed = crypto.randomInt(1, 2 ** 31); // shared jigsaw-cut seed for all clients
+  room.scores = new Map(); // playerId -> placed pieces this game
   if (room.pieces.length) scatterPieces(room);
   room.ratings.clear();
+  if (room.scores) room.scores.clear();
   room.completed = false;
   room.completedAt = null;
   room.completedInMs = null;
@@ -421,6 +435,7 @@ function checkCompletion(room) {
       t: "completion",
       room: roomView(room),
       players: room.completionPlayers,
+      scores: scoreList(room),
     });
   }
 }
@@ -570,6 +585,7 @@ app.post("/api/rooms/:id/reset", (req, res) => {
   if (!room) return res.status(404).json({ error: "Room not found." });
   if (room.pieces.length) scatterPieces(room);
   room.ratings.clear();
+  if (room.scores) room.scores.clear();
   room.completed = false;
   room.completedAt = null;
   room.completedInMs = null;
@@ -671,6 +687,7 @@ wss.on("connection", (ws) => {
             answers: r.answers,
             done: r.done,
           })),
+          scores: scoreList(room),
           cursors: [...room.conns.entries()]
             .filter(([id]) => id !== pid)
             .map(([id, c]) => ({ id, x: c.cursor.x, y: c.cursor.y })),
@@ -680,7 +697,7 @@ wss.on("connection", (ws) => {
       }
 
       case "piece": {
-        const { room } = attached;
+        const { room, playerId } = attached;
         touch(room);
         if (room.completed) break;
         const id = Number(msg.id);
@@ -703,6 +720,11 @@ wss.on("connection", (ws) => {
             piece.y = piece.correctY;
             piece.locked = true;
             piece.drag = false;
+            // Gamification: credit the placement to whoever dropped it home.
+            if (!room.coachingActivity && room.scores) {
+              room.scores.set(playerId, (room.scores.get(playerId) || 0) + 1);
+              broadcast(room, { t: "scores", list: scoreList(room) });
+            }
           }
         }
         broadcast(room, { t: "pieces", list: [serializePiece(piece)] });

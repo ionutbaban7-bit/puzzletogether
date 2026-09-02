@@ -82,5 +82,65 @@
   "waterfall.jpg": {
     "w": 1920,
     "h": 1280
+  },
+  "the-kiss.jpg": {
+    "w": 1400,
+    "h": 1403
+  },
+  "the-scream.jpg": {
+    "w": 1400,
+    "h": 1739
+  },
+  "water-lilies.jpg": {
+    "w": 1500,
+    "h": 1168
+  },
+  "cafe-terrace.jpg": {
+    "w": 1558,
+    "h": 1920
+  },
+  "the-milkmaid.jpg": {
+    "w": 1100,
+    "h": 1217
+  },
+  "grand-canyon.jpg": {
+    "w": 1920,
+    "h": 1080
+  },
+  "mount-fuji.jpg": {
+    "w": 1920,
+    "h": 1274
+  },
+  "plitvice-lakes.jpg": {
+    "w": 1200,
+    "h": 1200
+  },
+  "big-ben.jpg": {
+    "w": 1280,
+    "h": 720
+  },
+  "pyramids-giza.jpg": {
+    "w": 1200,
+    "h": 856
+  },
+  "neuschwanstein.jpg": {
+    "w": 1000,
+    "h": 750
+  },
+  "cherry-blossom.jpg": {
+    "w": 1920,
+    "h": 1080
+  },
+  "lavender-field.jpg": {
+    "w": 1920,
+    "h": 1283
+  },
+  "new-york.jpg": {
+    "w": 1920,
+    "h": 1080
+  },
+  "prague.jpg": {
+    "w": 1024,
+    "h": 601
   }
 }

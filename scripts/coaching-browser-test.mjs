@@ -111,20 +111,20 @@ try {
       if (!p.locked) window.__ptStore.sendPiece(p.id, p.correctX, p.correctY, false);
     }
   });
-  await pageA.waitForSelector("text=Rezultatele echipei", { timeout: 8000 });
-  ok("results modal appears when ranking completes (RO)", true);
+  await pageA.waitForSelector("text=Team results", { timeout: 8000 });
+  ok("results modal appears when ranking completes (EN default)", true);
   ok("expert ranking shown", await pageA.locator("text=Expert").first().isVisible());
-  ok("debrief questions shown", await pageA.locator("text=Întrebări de debrief").first().isVisible());
+  ok("debrief questions shown", await pageA.locator("text=Debrief questions").first().isVisible());
   await pageA.screenshot({ path: `${ARTIFACTS}14-ranking-results.png` });
 
   // ------------------------------------------------------- language toggle
-  await pageA.click("button:has-text('Închide')"); // close RO results modal
-  await pageA.click("button:text-is('en')");
+  await pageA.click("button:has-text('Close')"); // close EN results modal
+  await pageA.click("button:text-is('ro')");
   await pageA.waitForTimeout(200);
-  await pageA.click("button:has-text('See expert ranking')");
-  await pageA.waitForSelector("text=Team results");
-  ok("language switch to EN changes results modal", true);
-  ok("debrief EN shown", await pageA.locator("text=Debrief questions").first().isVisible());
+  await pageA.click("button:has-text('Vezi clasamentul expertului')");
+  await pageA.waitForSelector("text=Rezultatele echipei");
+  ok("language switch to RO changes results modal", true);
+  ok("debrief RO shown", await pageA.locator("text=Întrebări de debrief").first().isVisible());
   await pageA.screenshot({ path: `${ARTIFACTS}15-ranking-results-en.png` });
 
   // ------------------------------------------------------- questionnaire room
@@ -142,19 +142,15 @@ try {
     return r.json();
   });
   await pageB.goto(`${BASE}/room/${qRoom.room.id}`);
-  await pageB.waitForSelector("text=Intră în cameră");
+  await pageB.waitForSelector("text=Enter the room");
   await pageB.fill("input[placeholder='e.g. Maria']", "Maria");
   await pageB.fill("input[placeholder='K7F2MX']", qRoom.room.code);
-  await pageB.click("button:has-text('Intră în joc')");
+  await pageB.click("button:has-text('Join the Puzzle')");
   await pageB.waitForFunction(() => window.__ptStore?.getState().status === "joined");
-  await pageB.waitForSelector("text=Începe chestionarul");
-  ok("questionnaire intro shows (RO default)", await pageB.locator("text=Busola Echipei").first().isVisible());
+  await pageB.waitForSelector("text=Start the questionnaire");
+  ok("questionnaire intro shows (EN default)", await pageB.locator("text=Team Compass").first().isVisible());
   await pageB.screenshot({ path: `${ARTIFACTS}16-questionnaire-intro.png` });
 
-  // switch to English
-  await pageB.click("button:text-is('en')");
-  await pageB.waitForSelector("text=Start the questionnaire");
-  ok("language toggle switches intro to EN", true);
   await pageB.click("button:has-text('Start the questionnaire')");
   await pageB.waitForSelector("text=Question 1 / 20");
   ok("first question renders", true);
@@ -185,12 +181,12 @@ try {
   const pageC = await ctxC.newPage();
   watch(pageC, "C");
   await pageC.goto(`${BASE}/room/${qRoom.room.id}`);
-  await pageC.waitForSelector("text=Intră în cameră");
+  await pageC.waitForSelector("text=Enter the room");
   await pageC.fill("input[placeholder='e.g. Maria']", "Alex");
   await pageC.fill("input[placeholder='K7F2MX']", qRoom.room.code);
-  await pageC.click("button:has-text('Intră în joc')");
+  await pageC.click("button:has-text('Join the Puzzle')");
   await pageC.waitForFunction(() => window.__ptStore?.getState().status === "joined");
-  await pageC.waitForSelector("text=Începe chestionarul");
+  await pageC.waitForSelector("text=Start the questionnaire");
   ok("second player joins questionnaire room", true);
 
   await pageB.click("button:has-text('Start the questionnaire')");

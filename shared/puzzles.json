@@ -1,16 +1,52 @@
 {
   "categories": [
-    { "id": "paintings", "name": "Famous Paintings", "icon": "🎨" },
-    { "id": "landscapes", "name": "Famous Landscapes", "icon": "🏔️" },
-    { "id": "landmarks", "name": "World Landmarks", "icon": "🗼" },
-    { "id": "nature", "name": "Nature", "icon": "🌿" },
-    { "id": "cities", "name": "Cities", "icon": "🏙️" }
+    {
+      "id": "paintings",
+      "name": "Famous Paintings",
+      "icon": "🎨"
+    },
+    {
+      "id": "landscapes",
+      "name": "Famous Landscapes",
+      "icon": "🏔️"
+    },
+    {
+      "id": "landmarks",
+      "name": "World Landmarks",
+      "icon": "🗼"
+    },
+    {
+      "id": "nature",
+      "name": "Nature",
+      "icon": "🌿"
+    },
+    {
+      "id": "cities",
+      "name": "Cities",
+      "icon": "🏙️"
+    }
   ],
   "difficulties": [
-    { "id": "easy", "name": "Easy", "pieces": 25 },
-    { "id": "medium", "name": "Medium", "pieces": 64 },
-    { "id": "hard", "name": "Hard", "pieces": 100 },
-    { "id": "expert", "name": "Expert", "pieces": 144 }
+    {
+      "id": "easy",
+      "name": "Easy",
+      "pieces": 25
+    },
+    {
+      "id": "medium",
+      "name": "Medium",
+      "pieces": 64
+    },
+    {
+      "id": "hard",
+      "name": "Hard",
+      "pieces": 100
+    },
+    {
+      "id": "expert",
+      "name": "Expert",
+      "pieces": 144
+    }
   ],
   "puzzles": [
     {
@@ -59,6 +95,51 @@
       "source": "Wikimedia Commons"
     },
     {
+      "id": "the-kiss",
+      "category": "paintings",
+      "name": "The Kiss",
+      "image": "/images/the-kiss.jpg",
+      "credit": "Gustav Klimt",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "the-scream",
+      "category": "paintings",
+      "name": "The Scream",
+      "image": "/images/the-scream.jpg",
+      "credit": "Edvard Munch",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "water-lilies",
+      "category": "paintings",
+      "name": "Water Lilies",
+      "image": "/images/water-lilies.jpg",
+      "credit": "Claude Monet",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "cafe-terrace",
+      "category": "paintings",
+      "name": "Café Terrace at Night",
+      "image": "/images/cafe-terrace.jpg",
+      "credit": "Vincent van Gogh",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "the-milkmaid",
+      "category": "paintings",
+      "name": "The Milkmaid",
+      "image": "/images/the-milkmaid.jpg",
+      "credit": "Johannes Vermeer",
+      "license": "Public domain",
+      "source": "Rijksmuseum"
+    },
+    {
       "id": "matterhorn",
       "category": "landscapes",
       "name": "The Matterhorn",
@@ -84,6 +165,33 @@
       "credit": "Danbu14",
       "license": "CC BY-SA 3.0",
       "source": "Wikimedia Commons"
+    },
+    {
+      "id": "grand-canyon",
+      "category": "landscapes",
+      "name": "Grand Canyon",
+      "image": "/images/grand-canyon.jpg",
+      "credit": "",
+      "license": "",
+      "source": "Web"
+    },
+    {
+      "id": "mount-fuji",
+      "category": "landscapes",
+      "name": "Mount Fuji",
+      "image": "/images/mount-fuji.jpg",
+      "credit": "",
+      "license": "",
+      "source": "Web"
+    },
+    {
+      "id": "plitvice-lakes",
+      "category": "landscapes",
+      "name": "Plitvice Lakes",
+      "image": "/images/plitvice-lakes.jpg",
+      "credit": "",
+      "license": "",
+      "source": "Web"
     },
     {
       "id": "eiffel-tower",
@@ -140,6 +248,33 @@
       "source": "Wikimedia Commons"
     },
     {
+      "id": "big-ben",
+      "category": "landmarks",
+      "name": "Big Ben, London",
+      "image": "/images/big-ben.jpg",
+      "credit": "",
+      "license": "",
+      "source": "Web"
+    },
+    {
+      "id": "pyramids-giza",
+      "category": "landmarks",
+      "name": "Pyramids of Giza",
+      "image": "/images/pyramids-giza.jpg",
+      "credit": "",
+      "license": "",
+      "source": "Web"
+    },
+    {
+      "id": "neuschwanstein",
+      "category": "landmarks",
+      "name": "Neuschwanstein Castle",
+      "image": "/images/neuschwanstein.jpg",
+      "credit": "",
+      "license": "",
+      "source": "Web"
+    },
+    {
       "id": "aurora",
       "category": "nature",
       "name": "Aurora Borealis",
@@ -165,6 +300,24 @@
       "credit": "Dietmar Rabich",
       "license": "CC BY-SA 4.0",
       "source": "Wikimedia Commons"
+    },
+    {
+      "id": "cherry-blossom",
+      "category": "nature",
+      "name": "Cherry Blossom",
+      "image": "/images/cherry-blossom.jpg",
+      "credit": "",
+      "license": "",
+      "source": "Web"
+    },
+    {
+      "id": "lavender-field",
+      "category": "nature",
+      "name": "Lavender Fields, Provence",
+      "image": "/images/lavender-field.jpg",
+      "credit": "",
+      "license": "",
+      "source": "Web"
     },
     {
       "id": "golden-gate",
@@ -201,6 +354,24 @@
       "credit": "Morio",
       "license": "CC BY-SA 3.0",
       "source": "Wikimedia Commons"
+    },
+    {
+      "id": "new-york",
+      "category": "cities",
+      "name": "New York Skyline",
+      "image": "/images/new-york.jpg",
+      "credit": "",
+      "license": "",
+      "source": "Web"
+    },
+    {
+      "id": "prague",
+      "category": "cities",
+      "name": "Prague Old Town",
+      "image": "/images/prague.jpg",
+      "credit": "",
+      "license": "",
+      "source": "Web"
     }
   ]
 }

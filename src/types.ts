@@ -49,6 +49,7 @@ export interface PuzzleView {
   rows: number;
   pieceW: number;
   pieceH: number;
+  seed?: number;
   snapDistance: number;
   isCoaching?: boolean;
   mode?: "ranking" | "questionnaire";
@@ -116,6 +117,13 @@ export interface CoachingActivity {
 export interface CoachingCatalog {
   category: Category;
   activities: CoachingActivity[];
+}
+
+export interface ScoreView {
+  playerId: string;
+  name: string;
+  color: string;
+  placed: number;
 }
 
 export interface RatingView {

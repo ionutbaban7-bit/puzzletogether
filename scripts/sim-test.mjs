@@ -85,7 +85,7 @@ const health = await api.get("/api/health");
 ok("health endpoint", health.ok === true);
 const catalog = await api.get("/api/puzzles");
 ok("catalog: 5 categories", catalog.categories?.length === 5, `${catalog.categories?.length}`);
-ok("catalog: 21 puzzles", catalog.puzzles?.length === 21, `${catalog.puzzles?.length}`);
+ok("catalog: 36 puzzles", catalog.puzzles?.length === 36, `${catalog.puzzles?.length}`);
 ok("catalog: 4 difficulties", catalog.difficulties?.length === 4);
 
 // 1. create room
@@ -187,6 +187,11 @@ for (const p of resetMsg.pieces) {
 }
 const completion = await b.waitFor("completion", 5000);
 ok("completion broadcast fired", completion.room?.completed === true && completion.players?.length === 3, completion.players?.join(", "));
+ok(
+  "completion includes placed-piece scores",
+  Array.isArray(completion.scores) && completion.scores.length > 0 && completion.scores.reduce((n, s) => n + s.placed, 0) === 25,
+  JSON.stringify(completion.scores?.map((s) => `${s.name}:${s.placed}`)),
+);
 
 // 12. room full: try joining 18 more (3 active + 18 = 21 > 20) — expect a 409 on the 18th
 let fullErr = null;
