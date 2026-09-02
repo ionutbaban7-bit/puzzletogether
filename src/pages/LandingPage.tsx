@@ -1,5 +1,5 @@
 import { navigate } from "../lib/router";
-import { CoachingHubBadge, Logo, LogoMark } from "../components/ui";
+import { Logo, LogoMark } from "../components/ui";
 import { LangToggle } from "../lib/i18n";
 
 const FEATURES = [
@@ -29,7 +29,7 @@ export default function LandingPage() {
         className="pointer-events-none absolute inset-0 opacity-[0.55]"
         style={{
           backgroundImage:
-            "radial-gradient(60rem 30rem at 50% -8%, rgba(99,102,241,0.22), transparent 60%), radial-gradient(40rem 24rem at 88% 108%, rgba(14,165,233,0.12), transparent 60%), radial-gradient(36rem 22rem at 8% 100%, rgba(139,92,246,0.12), transparent 60%)",
+            "radial-gradient(60rem 30rem at 50% -8%, rgba(99,102,241,0.22), transparent 60%), radial-gradient(40rem 24rem at 88% 108%, rgba(14,165,233,0.12), transparent 60%), radial-gradient(36rem 20rem at 16% -2%, rgba(167,139,250,0.14), transparent 40%)",
         }}
       />
       <div
@@ -48,8 +48,6 @@ export default function LandingPage() {
         <header className="flex items-center justify-between py-6 animate-fade-up">
           <div className="flex items-center gap-4">
             <Logo dark />
-            <span className="hidden h-4 w-px bg-white/15 sm:block" />
-            <CoachingHubBadge />
           </div>
           <div className="flex items-center gap-3">
             <LangToggle dark />
@@ -81,8 +79,7 @@ export default function LandingPage() {
             style={{ animationDelay: "180ms" }}
           >
             Open a room, share the link, and assemble a masterpiece with up to 20
-            friends. Or pick a team coaching exercise — survival rankings, personality
-            profiles — and learn how your team really works together.
+            friends.
           </p>
 
           <div
@@ -121,7 +118,7 @@ export default function LandingPage() {
         </main>
 
         <footer className="pb-6 text-center text-xs text-ink-500 animate-fade-in">
-          PuzzleTogether · coachinghub · Miro, but everyone solves the same beautiful puzzle ·
+          PuzzleTogether · Miro, but everyone solves the same beautiful puzzle ·
           Images via Wikimedia Commons (public domain &amp; CC BY-SA)
         </footer>
       </div>
