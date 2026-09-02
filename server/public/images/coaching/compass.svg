@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#141a33"/>
+      <stop offset="100%" stop-color="#232c55"/>
+    </linearGradient>
+    <radialGradient id="glow3" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#6d7cff" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#6d7cff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg3)"/>
+  <circle cx="400" cy="300" r="290" fill="url(#glow3)"/>
+  <g stroke="#9aa8e8" stroke-width="3" fill="none" opacity="0.7">
+    <circle cx="400" cy="300" r="120"/>
+    <circle cx="400" cy="300" r="190"/>
+    <circle cx="400" cy="300" r="260"/>
+  </g>
+  <g stroke="#2c3766" stroke-width="1.5" opacity="0.6">
+    <circle cx="400" cy="300" r="150" fill="none"/>
+    <circle cx="400" cy="300" r="220" fill="none"/>
+  </g>
+  <g transform="rotate(0 400 300)">
+    <path d="M400 300 L400 150 L450 240 L340 240 Z" fill="#f59e0b"/>
+    <path d="M400 300 L400 450 L450 360 L340 360 Z" fill="#f59e0b" opacity="0.35"/>
+    <path d="M400 300 L250 300 L340 250 L340 350 Z" fill="#f59e0b" opacity="0.35"/>
+    <path d="M400 300 L550 300 L460 250 L460 350 Z" fill="#f59e0b" opacity="0.35"/>
+  </g>
+  <g transform="rotate(45 400 300)">
+    <path d="M400 300 L400 150 L450 240 L340 240 Z" fill="#8b5cf6"/>
+    <path d="M400 300 L400 450 L450 360 L340 360 Z" fill="#8b5cf6" opacity="0.35"/>
+    <path d="M400 300 L250 300 L340 250 L340 350 Z" fill="#8b5cf6" opacity="0.35"/>
+    <path d="M400 300 L550 300 L460 250 L460 350 Z" fill="#8b5cf6" opacity="0.35"/>
+  </g>
+  <circle cx="400" cy="300" r="26" fill="#fde68a"/>
+  <circle cx="400" cy="300" r="14" fill="#fff7e0"/>
+  <text x="400" y="470" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="30" font-weight="700" fill="#ffffff">Busola Echipei</text>
+  <text x="400" y="502" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#aab4d0">Descoperă-ți profilul de personalitate în echipă</text>
+</svg>

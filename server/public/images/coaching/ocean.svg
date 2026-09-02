@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7fd4e8"/>
+      <stop offset="100%" stop-color="#1b6f9c"/>
+    </linearGradient>
+    <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#bfe8f5"/>
+      <stop offset="100%" stop-color="#eaf7fc"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#sky2)"/>
+  <circle cx="180" cy="120" r="52" fill="#ffd97d"/>
+  <circle cx="180" cy="120" r="66" fill="#ffd97d" opacity="0.25"/>
+  <path d="M0 250 q200 -26 400 0 t400 0 v350 H0 Z" fill="url(#sea)"/>
+  <path d="M0 260 q200 -18 400 0 t400 0" stroke="#ffffff" stroke-width="5" fill="none" opacity="0.5"/>
+  <path d="M0 300 q200 -14 400 0 t400 0" stroke="#ffffff" stroke-width="4" fill="none" opacity="0.35"/>
+  <g transform="rotate(-4 400 300)">
+    <rect x="220" y="255" width="360" height="130" rx="24" fill="#f2a65a"/>
+    <rect x="234" y="272" width="332" height="96" rx="16" fill="#f9c784"/>
+    <rect x="330" y="200" width="140" height="70" rx="10" fill="#e8e4d8"/>
+    <path d="M330 210 L470 210 L470 240 L330 240 Z" fill="#d94f4f"/>
+    <path d="M355 190 h90" stroke="#8a6d4a" stroke-width="6" stroke-linecap="round"/>
+    <rect x="238" y="352" width="324" height="16" rx="8" fill="#e08e3c"/>
+  </g>
+  <text x="60" y="470" font-family="Inter, system-ui, sans-serif" font-size="30" font-weight="700" fill="#0e3a55">La 200 de mile de coastă</text>
+  <text x="60" y="502" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#155f88">Ierarhizați 12 obiecte pentru supraviețuirea pe ocean</text>
+</svg>

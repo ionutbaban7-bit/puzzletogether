@@ -29,9 +29,14 @@ export interface RoomView {
   completedInMs: number | null;
 }
 
+export interface Bilingual {
+  ro: string;
+  en: string;
+}
+
 export interface PuzzleView {
   image: string;
-  name: string;
+  name: string | Bilingual;
   category: string;
   credit: string;
   license: string;
@@ -43,6 +48,78 @@ export interface PuzzleView {
   pieceW: number;
   pieceH: number;
   snapDistance: number;
+  isCoaching?: boolean;
+  mode?: "ranking" | "questionnaire";
+  activityId?: string;
+  activity?: CoachingActivity;
+}
+
+export interface RankingItem {
+  id: number;
+  label: Bilingual;
+  expertRank: number;
+  rationale: Bilingual;
+}
+
+export interface DimensionPole {
+  letter: string;
+  name: Bilingual;
+  desc: Bilingual;
+}
+
+export interface Dimension {
+  key: string;
+  name: Bilingual;
+  poleA: DimensionPole;
+  poleB: DimensionPole;
+}
+
+export interface Question {
+  id: number;
+  dim: string;
+  pole: "A" | "B";
+  text: Bilingual;
+}
+
+export interface ProfileType {
+  name: Bilingual;
+  tagline: Bilingual;
+  blurb: Bilingual;
+  strengths: { ro: string[]; en: string[] };
+  watchouts: { ro: string[]; en: string[] };
+  growth: Bilingual;
+  team: Bilingual;
+}
+
+export interface CoachingActivity {
+  id: string;
+  mode: "ranking" | "questionnaire";
+  name: Bilingual;
+  description: Bilingual;
+  duration: string;
+  cover: string;
+  scenario?: {
+    title: Bilingual;
+    situation: Bilingual;
+  };
+  instructions?: Bilingual;
+  items?: RankingItem[];
+  debrief?: Bilingual[];
+  layout?: { cols: number; rows: number; padX: number; padY: number; slotW: number; slotH: number; gapX: number; gapY: number };
+  dimensions?: Dimension[];
+  questions?: Question[];
+  types?: Record<string, ProfileType>;
+}
+
+export interface CoachingCatalog {
+  category: Category;
+  activities: CoachingActivity[];
+}
+
+export interface RatingView {
+  playerId: string;
+  answers: Record<string, "A" | "B">;
+  done: boolean;
 }
 
 export interface CursorView {
@@ -77,6 +154,7 @@ export interface CatalogData {
   categories: Category[];
   difficulties: Difficulty[];
   puzzles: PuzzleInfo[];
+  coaching: CoachingCatalog;
   maxPlayers: number;
 }
 

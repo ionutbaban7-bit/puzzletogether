@@ -52,6 +52,20 @@ export function Logo({
   );
 }
 
+/** Small "coachinghub" wordmark shown in the top-left corner of the app. */
+export function CoachingHubBadge({ dark = true }: { dark?: boolean }) {
+  return (
+    <span
+      className={`select-none font-display text-[13px] font-bold tracking-tight ${
+        dark ? "text-ink-400" : "text-ink-400"
+      }`}
+      title="coachinghub"
+    >
+      coaching<span className="text-brand-500">hub</span>
+    </span>
+  );
+}
+
 export function Spinner({ className = "h-4 w-4" }: { className?: string }) {
   return (
     <svg className={`animate-spin ${className}`} viewBox="0 0 24 24" fill="none" aria-hidden>

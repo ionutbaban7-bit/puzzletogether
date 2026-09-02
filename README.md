@@ -15,6 +15,9 @@ No accounts. No sign-up. Just pick a name and play.
 - **Room system** — unique room URL + 6-character room code, up to 20 players, rooms auto-expire after 24 h of inactivity
 - **Curated puzzles** — 21 public-domain / CC-licensed images across 5 categories (Famous Paintings, Famous Landscapes, World Landmarks, Nature, Cities), with author credits shown in the app
 - **4 difficulties** — Easy (25), Medium (64), Hard (100), Expert (144) pieces
+- **🧭 coachinghub — Team Coaching category** — professional team-building activities, bilingual (Romanian & English):
+  - **3 ranking exercises** (Human Synergistics style): *The Himalayan Expedition*, *Lost in the Pacific*, *The Moon Mission* — the team drags 12 items into importance order on a shared board, then compares with the experts' ranking (deviation score, per-item rationale) and runs a guided debrief
+  - **1 personality questionnaire**: *The Team Compass* — 20 questions, 4 dimensions, 16 original profiles with strengths, weaknesses, growth tips and team advice (format inspired by free assessments like 16 Personalities; content 100% original). Everyone answers individually in the room and the team sees a live summary of profiles
 - **Infinite-canvas board** — drag & drop pieces, pan, zoom (mouse wheel / pinch / buttons), reset view, fullscreen reference image
 - **Snap & lock** — pieces snap into their slot when dropped close enough, then lock (nobody can move them), with a subtle success animation
 - **Progress & timer** — live progress bar, piece counter, elapsed time
@@ -80,13 +83,15 @@ to `shared/puzzles.json`.
 puzzletogether/
 ├── src/                 # React frontend
 │   ├── pages/           # Landing, CreateRoom, JoinRoom, RoomRoute, GamePage
-│   ├── puzzle/          # Canvas Board + viewport (pan/zoom/pinch) logic
-│   ├── lib/             # API client, WebSocket client, router, session, helpers
+│   ├── puzzle/          # Canvas Board, RankingActivity, QuestionnaireActivity
+│   ├── lib/             # API client, WebSocket client, router, session, i18n
 │   └── store.ts         # useSyncExternalStore-based state (server messages → UI)
-├── shared/puzzles.json  # Curated puzzle library (single source of truth)
-├── server/public/       # Static assets: images + favicon
+├── shared/
+│   ├── puzzles.json     # Curated puzzle library (single source of truth)
+│   └── coaching.json    # Team Coaching content: 3 ranking exercises + 1 questionnaire
+├── server/public/       # Static assets: images, covers + favicon
 │   └── images/manifest.json   # Image dimensions (server grid math)
-├── scripts/             # sim-test.mjs, browser-test.mjs
+├── scripts/             # sim-test.mjs, browser-test.mjs, coaching-test.mjs
 └── src/server.js        # Express + ws backend (rooms, realtime, serving)
 ```
 

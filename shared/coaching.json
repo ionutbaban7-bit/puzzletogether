@@ -1,0 +1,346 @@
+{
+  "category": {
+    "id": "coaching",
+    "name": "Team Coaching",
+    "icon": "🧭"
+  },
+  "activities": [
+    {
+      "id": "himalaya-expedition",
+      "mode": "ranking",
+      "name": { "ro": "Expediția Himalayană", "en": "The Himalayan Expedition" },
+      "description": {
+        "ro": "O furtună vă prinde la 4.500 m. Echipa ierarhizează 12 obiecte după importanță pentru supraviețuire, apoi compară cu rankingul experților.",
+        "en": "A storm catches you at 4,500 m. The team ranks 12 items by survival importance, then compares with the experts' ranking."
+      },
+      "duration": "10–15 min",
+      "cover": "/images/coaching/himalaya.svg",
+      "scenario": {
+        "title": { "ro": "Furtună la 4.500 de metri", "en": "Storm at 4,500 meters" },
+        "situation": {
+          "ro": "Sunteți într-o expediție de alpinism în Himalaya. La coborâre, o furtună violentă vă surprinde la 4.500 m altitudine, iar tabăra de bază e la aproximativ 6 ore de mers. Vizibilitatea scade rapid, temperatura e sub -10 °C și vântul bate cu putere. Aveți la voi 12 obiecte. Sarcina echipei: aranjați obiectele în ordinea importanței pentru supraviețuirea grupului — de la 1 (cel mai important) la 12 (cel mai puțin important). Discutați deschis și argumentați fiecare alegere; nu există răspunsuri individuale, ci un singur ranking de echipă.",
+          "en": "You are on a mountaineering expedition in the Himalayas. On the descent, a violent storm catches you at 4,500 m; base camp is about 6 hours away. Visibility is dropping fast, the temperature is below -10 °C and the wind is strong. You are carrying 12 items. The team's task: arrange the items in order of importance for the group's survival — from 1 (most important) to 12 (least important). Discuss openly and argue every choice; there are no individual answers, only one team ranking."
+        }
+      },
+      "instructions": {
+        "ro": "Trageți fiecare obiect pe poziția corespunzătoare rangului (1–12). Când un obiect e aproape de locul lui, se fixează automat.",
+        "en": "Drag each item onto the slot matching its rank (1–12). Items snap into place when dropped near their slot."
+      },
+      "items": [
+        { "id": 0, "label": { "ro": "Folie de supraviețuire", "en": "Survival foil blanket" }, "expertRank": 1, "rationale": { "ro": "Hipotermia este riscul numărul unu la altitudine. Folia reflectă căldura corpului și blochează vântul — poate salva vieți în prima oră.", "en": "Hypothermia is the number one risk at altitude. The foil reflects body heat and blocks wind — it can save lives within the first hour." } },
+        { "id": 1, "label": { "ro": "Brichetă + cremene", "en": "Lighter + fire steel" }, "expertRank": 2, "rationale": { "ro": "Focul înseamnă căldură, topirea zăpezii pentru apă și semnal vizibil noaptea. Fără foc, șansele scad dramatic.", "en": "Fire means warmth, melted snow for water and a visible signal at night. Without fire, the odds drop dramatically." } },
+        { "id": 2, "label": { "ro": "Busolă + hartă topografică", "en": "Compass + topographic map" }, "expertRank": 3, "rationale": { "ro": "Rătăcirea pe timp de furtună este fatală. Navigarea corectă spre tabăra de bază scurtează expunerea la frig.", "en": "Getting lost in a storm is fatal. Correct navigation toward base camp shortens your exposure to the cold." } },
+        { "id": 3, "label": { "ro": "Trusă de prim ajutor", "en": "First aid kit" }, "expertRank": 4, "rationale": { "ro": "Rănile și degerăturile netratate pot imobiliza un membru al echipei. O trusă mică previne complicații mari.", "en": "Untreated injuries and frostbite can immobilize a team member. A small kit prevents big complications." } },
+        { "id": 4, "label": { "ro": "Far LED + baterii", "en": "LED headlamp + batteries" }, "expertRank": 5, "rationale": { "ro": "Semnalizare activă zi și noapte către echipele de salvare, plus lumină pentru deplasare în siguranță.", "en": "Active signaling day and night to rescue teams, plus light for safe movement." } },
+        { "id": 5, "label": { "ro": "Oglindă de semnalizare", "en": "Signal mirror" }, "expertRank": 6, "rationale": { "ro": "În zilele senine, reflexia se vede de la kilometri întregi — un semnal pasiv extrem de eficient.", "en": "On clear days the reflection is visible for kilometers — an extremely efficient passive signal." } },
+        { "id": 6, "label": { "ro": "Frânghie de alpinism 15 m", "en": "15 m climbing rope" }, "expertRank": 7, "rationale": { "ro": "Siguranță pe teren accidentat, transportul unui rănit și construirea unui adăpost improvizat.", "en": "Safety on rough terrain, transporting an injured teammate and building an improvised shelter." } },
+        { "id": 7, "label": { "ro": "Recipient metalic 1 L", "en": "1 L metal container" }, "expertRank": 8, "rationale": { "ro": "Singura modalitate de a topi zăpadă și a fierbe apă la foc — hidratarea ține echipa în viață.", "en": "The only way to melt snow and boil water over fire — hydration keeps the team alive." } },
+        { "id": 8, "label": { "ro": "Cuțit multifuncțional", "en": "Multi-tool knife" }, "expertRank": 9, "rationale": { "ro": "Util pentru improvizații, tăiat, reparat echipament — dar nu rezolvă problemele critice de căldură și navigare.", "en": "Useful for improvisation, cutting and repairs — but it doesn't solve the critical heat and navigation problems." } },
+        { "id": 9, "label": { "ro": "Tablete de glucoză", "en": "Glucose tablets" }, "expertRank": 10, "rationale": { "ro": "Energie rapidă pentru ultima porțiune de drum, dar organismul rezistă zile întregi fără hrană.", "en": "Quick energy for the final stretch, but the body can last days without food." } },
+        { "id": 10, "label": { "ro": "Ciocolată + nuci 600 g", "en": "Chocolate + nuts 600 g" }, "expertRank": 11, "rationale": { "ro": "Calorii de rezervă și moral — însă hrana e ultima prioritate într-o urgență de 6 ore.", "en": "Reserve calories and morale — but food is the last priority in a 6-hour emergency." } },
+        { "id": 11, "label": { "ro": "Telefon mobil fără semnal", "en": "Mobile phone, no signal" }, "expertRank": 12, "rationale": { "ro": "Fără semnal la altitudine, iar frigul golește bateria rapid. Cea mai mică utilitate reală.", "en": "No signal at altitude, and the cold drains the battery fast. The least real utility." } }
+      ],
+      "debrief": [
+        { "ro": "Cum ați luat deciziile — consens, vot sau un lider? Ce a funcționat mai bine?", "en": "How did you make decisions — consensus, voting or a leader? What worked best?" },
+        { "ro": "Care au fost cele mai mari dezacorduri și cum le-ați rezolvat?", "en": "What were your biggest disagreements and how did you resolve them?" },
+        { "ro": "Cine a contribuit cel mai mult și cum? Dar cine a rămas în umbră?", "en": "Who contributed the most, and how? And who stayed in the background?" },
+        { "ro": "Ce spune rezultatul despre felul în care echipa voastră ia decizii sub presiune?", "en": "What does the result say about how your team makes decisions under pressure?" },
+        { "ro": "Cum aplicați această lecție într-un proiect real din următoarea lună?", "en": "How will you apply this lesson to a real project in the next month?" }
+      ],
+      "layout": { "cols": 2, "rows": 6, "padX": 70, "padY": 70, "slotW": 460, "slotH": 110, "gapX": 28, "gapY": 24 }
+    },
+    {
+      "id": "ocean-survival",
+      "mode": "ranking",
+      "name": { "ro": "Naufragiu în Pacific", "en": "Lost in the Pacific" },
+      "description": {
+        "ro": "Nava s-a scufundat, iar echipa e pe o plută de salvare. Ierarhizați 12 obiecte pentru supraviețuirea pe ocean, apoi comparați cu experții în supraviețuire maritimă.",
+        "en": "The ship has sunk and the team is on a life raft. Rank 12 items for ocean survival, then compare with maritime survival experts."
+      },
+      "duration": "10–15 min",
+      "cover": "/images/coaching/ocean.svg",
+      "scenario": {
+        "title": { "ro": "La 200 de mile de coastă", "en": "200 miles from shore" },
+        "situation": {
+          "ro": "Vă aflați pe o plută de salvare în Pacificul de Sud, la aproximativ 200 de mile marine de cea mai apropiată coastă. Nava s-a scufundat, iar pluta e întreagă și plutește stabil. Vremea e caldă, dar soarele e necruțător, iar apa potabilă e limitată. Ați recuperat 12 obiecte înainte de scufundare. Sarcina echipei: aranjați obiectele în ordinea importanței pentru supraviețuirea grupului până la salvare — de la 1 (cel mai important) la 12 (cel mai puțin important). Un singur ranking de echipă, cu argumente.",
+          "en": "You are on a life raft in the South Pacific, about 200 nautical miles from the nearest shore. The ship has sunk; the raft is intact and floats steadily. The weather is warm but the sun is relentless and drinking water is limited. You salvaged 12 items before the sinking. The team's task: arrange the items in order of importance for the group's survival until rescue — from 1 (most important) to 12 (least important). One team ranking, with arguments."
+        }
+      },
+      "instructions": {
+        "ro": "Trageți fiecare obiect pe poziția corespunzătoare rangului (1–12). Când un obiect e aproape de locul lui, se fixează automat.",
+        "en": "Drag each item onto the slot matching its rank (1–12). Items snap into place when dropped near their slot."
+      },
+      "items": [
+        { "id": 0, "label": { "ro": "Oglindă de semnalizare", "en": "Signal mirror" }, "expertRank": 1, "rationale": { "ro": "Cel mai eficient semnal pe ocean: reflexia se vede de la zeci de kilometri, atât de nave, cât și de avioane de căutare.", "en": "The most effective signal at sea: the reflection is visible for tens of kilometers, to ships and search aircraft alike." } },
+        { "id": 1, "label": { "ro": "Apă potabilă 20 L", "en": "20 L drinking water" }, "expertRank": 2, "rationale": { "ro": "Deshidratarea ucide mai repede decât foamea. Apa existentă trebuie raționalizată strict încă din prima zi.", "en": "Dehydration kills faster than hunger. Existing water must be strictly rationed from day one." } },
+        { "id": 2, "label": { "ro": "Rații alimentare de urgență", "en": "Emergency food rations" }, "expertRank": 3, "rationale": { "ro": "Energie pentru a rezista zile întregi în condiții de efort și expunere la soare.", "en": "Energy to last for days under strain and sun exposure." } },
+        { "id": 3, "label": { "ro": "Echipament de pescuit", "en": "Fishing kit" }, "expertRank": 4, "rationale": { "ro": "Singura sursă sustenabilă de hrană pe termen lung — peștele crud conține și apă, suplimentând rezervele.", "en": "The only sustainable long-term food source — raw fish also contains water, supplementing your reserves." } },
+        { "id": 4, "label": { "ro": "Bidon gol 10 L", "en": "Empty 10 L container" }, "expertRank": 5, "rationale": { "ro": "Colectarea apei de ploaie poate dubla rezervele de apă potabilă — un activ subestimat.", "en": "Collecting rainwater can double your drinking water reserves — an underrated asset." } },
+        { "id": 5, "label": { "ro": "Pernă de plutire de rezervă", "en": "Spare flotation cushion" }, "expertRank": 6, "rationale": { "ro": "Siguranță suplimentară dacă pluta se avariază; poate fi folosită și ca protecție solară improvizată.", "en": "Extra safety if the raft is damaged; can also double as improvised sun protection." } },
+        { "id": 6, "label": { "ro": "Frânghie 15 m", "en": "15 m rope" }, "expertRank": 7, "rationale": { "ro": "Legarea echipamentului de plută, asigurarea răniților, improvizații diverse.", "en": "Tying equipment to the raft, securing the injured, various improvisations." } },
+        { "id": 7, "label": { "ro": "Hartă oceanică", "en": "Ocean chart" }, "expertRank": 8, "rationale": { "ro": "Ajută la estimarea curenților și a rutelor maritime probabile, dar fără navigație activă valoarea e limitată.", "en": "Helps estimate currents and likely shipping lanes, but without active navigation its value is limited." } },
+        { "id": 8, "label": { "ro": "Ciocolată 1 kg", "en": "1 kg chocolate" }, "expertRank": 9, "rationale": { "ro": "Calorii rapide și un plus de moral, dar se topește la soare și nu susține supraviețuirea pe termen lung.", "en": "Quick calories and a morale boost, but it melts in the sun and doesn't support long-term survival." } },
+        { "id": 9, "label": { "ro": "Repelent de rechini", "en": "Shark repellent" }, "expertRank": 10, "rationale": { "ro": "Oferă un sentiment de siguranță, dar atacurile de rechin sunt statistic extrem de rare — impact real aproape nul.", "en": "Provides a feeling of safety, but shark attacks are statistically extremely rare — nearly zero real impact." } },
+        { "id": 10, "label": { "ro": "Alcool medicinal 80%", "en": "80% medicinal alcohol" }, "expertRank": 11, "rationale": { "ro": "Util doar pentru dezinfectarea rănilor; consumat, agravează deshidratarea. Valoare limitată în acest scenariu.", "en": "Useful only for disinfecting wounds; if drunk, it worsens dehydration. Limited value in this scenario." } },
+        { "id": 11, "label": { "ro": "Radio portabil fără baterii", "en": "Portable radio, no batteries" }, "expertRank": 12, "rationale": { "ro": "Fără sursă de energie, este greutate moartă. Un exemplu clasic de obiect care pare util și nu este.", "en": "Without a power source it's dead weight. A classic example of something that looks useful and isn't." } }
+      ],
+      "debrief": [
+        { "ro": "Cum ați gestionat diferențele de opinie despre ce înseamnă „important”?", "en": "How did you handle differing opinions about what “important” means?" },
+        { "ro": "Cine a adus argumente bazate pe fapte și cine pe intuiție? Cum le-ați cântărit?", "en": "Who argued from facts and who from intuition? How did you weigh them?" },
+        { "ro": "Ați schimbat vreo decizie ca să păstrați armonia echipei? A fost alegerea corectă?", "en": "Did you change any decision to keep team harmony? Was that the right call?" },
+        { "ro": "Ce roluri naturale au apărut în echipă (analist, mediator, lider, sceptic)?", "en": "What natural roles emerged in the team (analyst, mediator, leader, skeptic)?" },
+        { "ro": "Unde, în munca voastră reală, apare același tip de dezbatere despre priorități?", "en": "Where does the same kind of priority debate show up in your real work?" }
+      ],
+      "layout": { "cols": 2, "rows": 6, "padX": 70, "padY": 70, "slotW": 460, "slotH": 110, "gapX": 28, "gapY": 24 }
+    },
+    {
+      "id": "moon-mission",
+      "mode": "ranking",
+      "name": { "ro": "Misiunea pe Lună", "en": "The Moon Mission" },
+      "description": {
+        "ro": "Modulul s-a defectat la 200 km de baza lunară. Echipa trebuie să decidă ce obiecte contează cu adevărat în vidul spațial.",
+        "en": "The module broke down 200 km from the lunar base. The team must decide which items really matter in the vacuum of space."
+      },
+      "duration": "10–15 min",
+      "cover": "/images/coaching/moon.svg",
+      "scenario": {
+        "title": { "ro": "200 de kilometri până la bază", "en": "200 kilometers to base" },
+        "situation": {
+          "ro": "Sunteți membrii unui echipaj spațial programat să se întâlnească cu modulul-mamă pe suprafața luminată a Lunii. Din cauza unei defecțiuni tehnice, modulul vostru a aterizat la 200 km de punctul de întâlnire, iar o parte din echipament a fost distrusă. Trebuie să parcurgeți distanța pe jos, în condiții de gravitație redusă, vid și radiație solară intensă. Ați recuperat 12 obiecte. Sarcina echipei: aranjați obiectele în ordinea importanței pentru supraviețuirea și deplasarea grupului — de la 1 (cel mai important) la 12 (cel mai puțin important). Atenție: pe Lună, multe obiecte „evident utile” pe Pământ sunt complet inutile.",
+          "en": "You are a space crew scheduled to rendezvous with the mother ship on the lighted surface of the Moon. Due to a technical failure, your module landed 200 km from the meeting point and part of the equipment was destroyed. You must cover the distance on foot, in low gravity, vacuum and intense solar radiation. You salvaged 12 items. The team's task: arrange the items in order of importance for the group's survival and movement — from 1 (most important) to 12 (least important). Careful: on the Moon, many items that are “obviously useful” on Earth are completely useless."
+        }
+      },
+      "instructions": {
+        "ro": "Trageți fiecare obiect pe poziția corespunzătoare rangului (1–12). Când un obiect e aproape de locul lui, se fixează automat.",
+        "en": "Drag each item onto the slot matching its rank (1–12). Items snap into place when dropped near their slot."
+      },
+      "items": [
+        { "id": 0, "label": { "ro": "Rezervoare de oxigen (2)", "en": "Oxygen tanks (2)" }, "expertRank": 1, "rationale": { "ro": "Fără oxigen, nimic altceva nu mai contează. Este resursa absolut critică în vid.", "en": "Without oxygen, nothing else matters. It is the absolutely critical resource in a vacuum." } },
+        { "id": 1, "label": { "ro": "Apă 20 L", "en": "20 L water" }, "expertRank": 2, "rationale": { "ro": "Deshidratarea în timpul efortului fizic prelungit este al doilea factor critic după oxigen.", "en": "Dehydration during prolonged physical effort is the second critical factor after oxygen." } },
+        { "id": 2, "label": { "ro": "Hartă stelară", "en": "Star map" }, "expertRank": 3, "rationale": { "ro": "Pe Lună nu există puncte de reper familiare; harta stelară e singura metodă fiabilă de orientare către bază.", "en": "The Moon has no familiar landmarks; the star map is the only reliable way to navigate toward base." } },
+        { "id": 3, "label": { "ro": "Alimente concentrate", "en": "Concentrated food" }, "expertRank": 4, "rationale": { "ro": "Energie pentru un marș de zile întregi într-un costum spațial epuizant.", "en": "Energy for a multi-day march in an exhausting spacesuit." } },
+        { "id": 4, "label": { "ro": "Radio emițător solar", "en": "Solar-powered radio" }, "expertRank": 5, "rationale": { "ro": "Comunicarea cu modulul-mamă poate coordona o salvare și corecta traseul — vital dacă e funcțional.", "en": "Contact with the mother ship can coordinate a rescue and correct the route — vital if it works." } },
+        { "id": 5, "label": { "ro": "Frânghie 15 m", "en": "15 m rope" }, "expertRank": 6, "rationale": { "ro": "Asigurare pe teren accidentat și tractarea unui coleg rănit sau a echipamentului.", "en": "Safety on rough terrain and hauling an injured teammate or equipment." } },
+        { "id": 6, "label": { "ro": "Trusă medicală", "en": "Medical kit" }, "expertRank": 7, "rationale": { "ro": "O rană mică poate deveni critică într-un costum presurizat — trusa previne urgențele medicale.", "en": "A small wound can become critical inside a pressurized suit — the kit prevents medical emergencies." } },
+        { "id": 7, "label": { "ro": "Parașută de mătase", "en": "Silk parachute" }, "expertRank": 8, "rationale": { "ro": "Fără atmosferă nu poate frâna, dar mătasea oferă protecție excelentă împotriva radiației solare intense.", "en": "With no atmosphere it can't slow anything down, but the silk provides excellent protection against intense solar radiation." } },
+        { "id": 8, "label": { "ro": "Rezervor încălzit portabil", "en": "Portable heating unit" }, "expertRank": 9, "rationale": { "ro": "Util doar pe partea neluminată a Lunii; pe traseul luminat, căldura e mai degrabă o problemă decât o soluție.", "en": "Useful only on the dark side; on the lit route, heat is more of a problem than a solution." } },
+        { "id": 9, "label": { "ro": "Pistol de semnalizare", "en": "Signal flares" }, "expertRank": 10, "rationale": { "ro": "Fără oxigen atmosferic, rachetele de semnalizare nu ard. Inutile pe Lună, deși par esențiale.", "en": "Without atmospheric oxygen, flares don't burn. Useless on the Moon, although they seem essential." } },
+        { "id": 10, "label": { "ro": "Lapte praf", "en": "Powdered milk" }, "expertRank": 11, "rationale": { "ro": "Necesită apă prețioasă pentru preparare și oferă puțin în schimb. Un lux care costă scump.", "en": "It needs precious water to prepare and offers little in return. A luxury that costs dearly." } },
+        { "id": 11, "label": { "ro": "Chibrituri", "en": "Matches" }, "expertRank": 12, "rationale": { "ro": "Fără oxigen, chibriturile nu se aprind. Cel mai inutil obiect posibil pe Lună.", "en": "Without oxygen, matches won't light. The most useless item possible on the Moon." } }
+      ],
+      "debrief": [
+        { "ro": "Care obiecte „evident utile” s-au dovedit inutile în vid? Ce spune asta despre presupunerile noastre?", "en": "Which “obviously useful” items turned out useless in a vacuum? What does that say about our assumptions?" },
+        { "ro": "Cine a contestat consensul grupului? Ce s-a întâmplat cu argumentele lui?", "en": "Who challenged the group's consensus? What happened to their arguments?" },
+        { "ro": "Cum ați gestionat informația incompletă — ați cerut clarificări sau ați presupus?", "en": "How did you handle incomplete information — did you ask for clarification or assume?" },
+        { "ro": "Ce rol a jucat expertiza fiecărui membru în decizia finală?", "en": "What role did each member's expertise play in the final decision?" },
+        { "ro": "Cum testați presupunerile în proiectele reale înainte de a lua decizii majore?", "en": "How do you test assumptions in real projects before making major decisions?" }
+      ],
+      "layout": { "cols": 2, "rows": 6, "padX": 70, "padY": 70, "slotW": 460, "slotH": 110, "gapX": 28, "gapY": 24 }
+    },
+    {
+      "id": "team-compass",
+      "mode": "questionnaire",
+      "name": { "ro": "Busola Echipei", "en": "The Team Compass" },
+      "description": {
+        "ro": "Un chestionar de personalitate original, cu 20 de întrebări și 16 profiluri. Fiecare jucător răspunde individual și își descoperă profilul — puncte forte, puncte slabe și sfaturi — plus sumarul echipei.",
+        "en": "An original personality assessment with 20 questions and 16 profiles. Each player answers individually and discovers their profile — strengths, weaknesses and tips — plus the team summary."
+      },
+      "duration": "8–10 min",
+      "cover": "/images/coaching/compass.svg",
+      "dimensions": [
+        {
+          "key": "E",
+          "name": { "ro": "Energie", "en": "Energy" },
+          "poleA": { "letter": "I", "name": { "ro": "Interior", "en": "Inward" }, "desc": { "ro": "Reîncarci bateriile în liniște și reflecție; preferi conversații profunde 1-la-1.", "en": "You recharge in quiet reflection and prefer deep one-on-one conversations." } },
+          "poleB": { "letter": "X", "name": { "ro": "Exterior", "en": "Outward" }, "desc": { "ro": "Energia îți vine de la oameni și acțiune; gândești cu voce tare.", "en": "You draw energy from people and action; you think out loud." } }
+        },
+        {
+          "key": "F",
+          "name": { "ro": "Focus", "en": "Focus" },
+          "poleA": { "letter": "P", "name": { "ro": "Practic", "en": "Practical" }, "desc": { "ro": "Ai încredere în fapte, detalii și experiență concretă.", "en": "You trust facts, details and hands-on experience." } },
+          "poleB": { "letter": "V", "name": { "ro": "Vizionar", "en": "Visionary" }, "desc": { "ro": "Vezi tipare, conexiuni și posibilități dincolo de prezent.", "en": "You see patterns, connections and possibilities beyond the present." } }
+        },
+        {
+          "key": "D",
+          "name": { "ro": "Decizie", "en": "Decision" },
+          "poleA": { "letter": "L", "name": { "ro": "Logic", "en": "Logical" }, "desc": { "ro": "Decizi pe baza analizei obiective și a consecvenței logice.", "en": "You decide based on objective analysis and logical consistency." } },
+          "poleB": { "letter": "E", "name": { "ro": "Empatic", "en": "Empathetic" }, "desc": { "ro": "Decizi cântărind valorile oamenilor și armonia echipei.", "en": "You decide by weighing people's values and team harmony." } }
+        },
+        {
+          "key": "R",
+          "name": { "ro": "Ritm", "en": "Pace" },
+          "poleA": { "letter": "S", "name": { "ro": "Structurat", "en": "Structured" }, "desc": { "ro": "Planuri clare, liste și termene îți dau liniște.", "en": "Clear plans, lists and deadlines keep you grounded." } },
+          "poleB": { "letter": "F", "name": { "ro": "Flexibil", "en": "Flexible" }, "desc": { "ro": "Preferi spontaneitatea și adaptarea din mers.", "en": "You prefer spontaneity and adapting on the fly." } }
+        }
+      ],
+      "questions": [
+        { "id": 0, "dim": "E", "pole": "A", "text": { "ro": "După o zi intensă, mă reîncarc cel mai bine petrecând timp singur(ă).", "en": "After an intense day, I recharge best by spending time alone." } },
+        { "id": 1, "dim": "E", "pole": "B", "text": { "ro": "Mă simt plin(ă) de energie când lucrez cu oameni în jur.", "en": "I feel energized when working around other people." } },
+        { "id": 2, "dim": "E", "pole": "A", "text": { "ro": "Îmi place să reflectez înainte de a răspunde, chiar și în discuții rapide.", "en": "I like to reflect before responding, even in fast-moving discussions." } },
+        { "id": 3, "dim": "E", "pole": "B", "text": { "ro": "Gândesc cel mai clar atunci când discut cu voce tare.", "en": "I think most clearly when talking things through out loud." } },
+        { "id": 4, "dim": "E", "pole": "A", "text": { "ro": "Prefer întâlnirile scurte și conversațiile 1-la-1 în locul grupurilor mari.", "en": "I prefer short meetings and one-on-one conversations over large groups." } },
+        { "id": 5, "dim": "F", "pole": "A", "text": { "ro": "Am mai multă încredere în soluțiile care au funcționat deja în practică.", "en": "I trust solutions that have already proven themselves in practice." } },
+        { "id": 6, "dim": "F", "pole": "B", "text": { "ro": "Îmi place să explorez idei noi, chiar dacă par nerealiste la prima vedere.", "en": "I enjoy exploring new ideas, even when they seem unrealistic at first." } },
+        { "id": 7, "dim": "F", "pole": "A", "text": { "ro": "Sunt atent(ă) la detalii și rareori scap lucruri concrete din vedere.", "en": "I pay attention to details and rarely miss concrete things." } },
+        { "id": 8, "dim": "F", "pole": "B", "text": { "ro": "Văd ușor tipare și conexiuni între lucruri aparent fără legătură.", "en": "I easily see patterns and connections between seemingly unrelated things." } },
+        { "id": 9, "dim": "F", "pole": "A", "text": { "ro": "Prefer instrucțiuni clare și pași concreți.", "en": "I prefer clear instructions and concrete steps." } },
+        { "id": 10, "dim": "D", "pole": "A", "text": { "ro": "În decizii importante, mă bazez pe logică și date, nu pe sentimente.", "en": "In important decisions, I rely on logic and data rather than feelings." } },
+        { "id": 11, "dim": "D", "pole": "B", "text": { "ro": "Simt repede când cineva din echipă e deranjat, chiar dacă nu spune.", "en": "I quickly sense when someone on the team is bothered, even if they don't say it." } },
+        { "id": 12, "dim": "D", "pole": "A", "text": { "ro": "Spun lucrurilor pe nume, chiar când adevărul e incomod.", "en": "I call things as they are, even when the truth is uncomfortable." } },
+        { "id": 13, "dim": "D", "pole": "B", "text": { "ro": "Armonia echipei contează pentru mine mai mult decât a avea dreptate.", "en": "Team harmony matters more to me than being right." } },
+        { "id": 14, "dim": "D", "pole": "A", "text": { "ro": "Apreciez criticile constructive, indiferent de tonul lor.", "en": "I appreciate constructive criticism regardless of its tone." } },
+        { "id": 15, "dim": "R", "pole": "A", "text": { "ro": "Îmi place să am un plan clar înainte să încep ceva.", "en": "I like having a clear plan before starting something." } },
+        { "id": 16, "dim": "R", "pole": "B", "text": { "ro": "Mă adaptez ușor când planurile se schimbă în ultimul moment.", "en": "I adapt easily when plans change at the last minute." } },
+        { "id": 17, "dim": "R", "pole": "A", "text": { "ro": "Listele și termenele mă ajută să rămân productiv(ă).", "en": "Lists and deadlines help me stay productive." } },
+        { "id": 18, "dim": "R", "pole": "B", "text": { "ro": "Prefer să păstrez opțiunile deschise cât mai mult timp.", "en": "I prefer to keep my options open for as long as possible." } },
+        { "id": 19, "dim": "R", "pole": "A", "text": { "ro": "Mă deranjează când lucrurile rămân neterminate.", "en": "It bothers me when things are left unfinished." } }
+      ],
+      "types": {
+        "IPLS": {
+          "name": { "ro": "Arhitectul", "en": "The Architect" },
+          "tagline": { "ro": "Construiește ordine din haos, calm și metodic.", "en": "Builds order out of chaos, calmly and methodically." },
+          "blurb": { "ro": "Un planificator tăcut și de încredere: analizezi faptele, cântărești logic opțiunile și livrezi structură. Echipele se sprijină pe tine când lucrurile devin complicate.", "en": "A quiet, dependable planner: you analyze the facts, weigh options logically and deliver structure. Teams lean on you when things get complicated." },
+          "strengths": { "ro": ["Metodic și riguros în execuție", "Creează procese clare și fiabile", "Rămâne calm sub presiune"], "en": ["Methodical and rigorous in execution", "Builds clear, reliable processes", "Stays calm under pressure"] },
+          "watchouts": { "ro": ["Poate părea rigid când planul se schimbă", "Amână deciziile până la date perfecte", "Spune rar ce simte"], "en": ["Can seem rigid when plans change", "Defers decisions until the data is perfect", "Rarely shares what they feel"] },
+          "growth": { "ro": "Exersează să decizi cu 80% din informații și să comunici mai des ce simți.", "en": "Practice deciding with 80% of the information and sharing your feelings more often." },
+          "team": { "ro": "Partenerul ideal îți completează rigoarea cu spontaneitate și energie socială.", "en": "Your ideal partner complements your rigor with spontaneity and social energy." }
+        },
+        "IPLF": {
+          "name": { "ro": "Mecanicul", "en": "The Troubleshooter" },
+          "tagline": { "ro": "Rezolvă problema din fața lui, rapid și practic.", "en": "Fixes the problem in front of them, quickly and practically." },
+          "blurb": { "ro": "Un executor tăcut și adaptabil: intri în detalii, repari ce e stricat și livrezi soluții concrete fără zgomot. Ești fundația pe care se construiește.", "en": "A quiet, adaptable doer: you dive into details, fix what's broken and deliver concrete solutions without fanfare. You are the foundation others build on." },
+          "strengths": { "ro": ["Abordare practică și rapidă", "Se adaptează ușor la situații noi", "Răbdător cu problemele tehnice"], "en": ["Practical, fast approach", "Adapts easily to new situations", "Patient with technical problems"] },
+          "watchouts": { "ro": ["Poate neglija imaginea de ansamblu", "Evită conflictele amânând", "Se subestimează în fața grupurilor"], "en": ["Can neglect the big picture", "Avoids conflict by delaying", "Undersells themselves in groups"] },
+          "growth": { "ro": "Ridică periodic privirea de la detaliu și întreabă-te „de ce”, nu doar „cum”.", "en": "Regularly look up from the detail and ask “why”, not just “how”." },
+          "team": { "ro": "Ai nevoie de un vizionar care să-ți arate direcția în timp ce tu construiești drumul.", "en": "You need a visionary to point the direction while you build the road." }
+        },
+        "IPES": {
+          "name": { "ro": "Îngrijitorul", "en": "The Caretaker" },
+          "tagline": { "ro": "Pune oamenii pe primul loc, discret și constant.", "en": "Puts people first, quietly and consistently." },
+          "blurb": { "ro": "Un sprijin tăcut: observi nevoile practice ale echipei, ai grijă ca nimeni să nu rămână în urmă și creezi un mediu sigur în care lucrurile pur și simplu merg.", "en": "A quiet support: you notice the team's practical needs, make sure nobody is left behind, and create a safe environment where things just work." },
+          "strengths": { "ro": ["Atenție reală la nevoile oamenilor", "Fiabil și consecvent", "Creează siguranță psihologică"], "en": ["Genuine attention to people's needs", "Reliable and consistent", "Creates psychological safety"] },
+          "watchouts": { "ro": ["Preia prea mult din munca altora", "Evită să ceară ajutor", "Își neglijează propriile nevoi"], "en": ["Takes on too much of others' work", "Avoids asking for help", "Neglects their own needs"] },
+          "growth": { "ro": "Învață să spui nu cu empatie: ai grijă de tine ca să poți avea grijă de echipă.", "en": "Learn to say no with empathy: care for yourself so you can care for the team." },
+          "team": { "ro": "Strălucești lângă un partener direct care spune lucrurilor pe nume în locul tău.", "en": "You shine next to a direct partner who says the hard things for you." }
+        },
+        "IPEF": {
+          "name": { "ro": "Artizanul", "en": "The Artisan" },
+          "tagline": { "ro": "Mâini pricepute, suflet cald, ritm propriu.", "en": "Skilled hands, warm heart, own rhythm." },
+          "blurb": { "ro": "Un creator discret: lucrezi cu mâinile și cu inima, îmbini utilitatea cu grija pentru oameni și lași în urmă lucruri frumoase, făcute bine.", "en": "A quiet maker: you work with hands and heart, blending usefulness with care for people, leaving behind beautiful things done well." },
+          "strengths": { "ro": ["Îmbină practicul cu esteticul", "Empatic fără să piardă din vedere sarcina", "Flexibil în abordare"], "en": ["Blends the practical with the aesthetic", "Empathetic without losing sight of the task", "Flexible in approach"] },
+          "watchouts": { "ro": ["Fuge de planificarea pe termen lung", "Greu de citit în discuții de grup", "Se plictisește de rutinele stricte"], "en": ["Avoids long-term planning", "Hard to read in group discussions", "Gets bored with strict routines"] },
+          "growth": { "ro": "Oferă-ți un cadru minim (un termen, o listă) care să-ți protejeze libertatea.", "en": "Give yourself a minimal frame (a deadline, a list) to protect your freedom." },
+          "team": { "ro": "Ai nevoie de structură externă blândă — un partener organizat care nu te sufocă.", "en": "You need gentle external structure — an organized partner who doesn't suffocate you." }
+        },
+        "IVLS": {
+          "name": { "ro": "Strategul", "en": "The Strategist" },
+          "tagline": { "ro": "Vede piesa de pe tablă pe care alții n-o văd.", "en": "Sees the move on the board that others miss." },
+          "blurb": { "ro": "Un gânditor de adâncime: conectezi idei, anticipezi consecințe și construiești planuri pe termen lung. Tăcerea ta e de obicei semnul că soluția e pe drum.", "en": "A deep thinker: you connect ideas, anticipate consequences and build long-term plans. Your silence usually means the solution is on its way." },
+          "strengths": { "ro": ["Gândire strategică și sistemică", "Anticipează riscuri și consecințe", "Judecată logică solidă"], "en": ["Strategic, systemic thinking", "Anticipates risks and consequences", "Sound logical judgment"] },
+          "watchouts": { "ro": ["Poate părea distant sau rece", "Supra-analizează și întârzie", "Explică rar raționamentul"], "en": ["Can seem distant or cold", "Over-analyzes and delays", "Rarely explains the reasoning"] },
+          "growth": { "ro": "Împărtășește procesul, nu doar concluzia — oamenii au nevoie să vadă cum gândești.", "en": "Share the process, not just the conclusion — people need to see how you think." },
+          "team": { "ro": "Lângă un animator care traduce viziunea ta pentru restul echipei, devii de neoprit.", "en": "Next to an energizer who translates your vision for the rest of the team, you become unstoppable." }
+        },
+        "IVLF": {
+          "name": { "ro": "Analistul", "en": "The Analyst" },
+          "tagline": { "ro": "Curiozitate fără sfârșit, concluzii fără compromis.", "en": "Endless curiosity, uncompromising conclusions." },
+          "blurb": { "ro": "Un explorator de idei: descompui probleme complexe, găsești tipare și propui soluții ingenioase. Libertatea ta de gândire e cel mai mare atu.", "en": "An explorer of ideas: you break down complex problems, find patterns and propose ingenious solutions. Your freedom of thought is your greatest asset." },
+          "strengths": { "ro": ["Găsește soluții neconvenționale", "Învață rapid și profund", "Autonom și independent"], "en": ["Finds unconventional solutions", "Learns fast and deeply", "Autonomous and independent"] },
+          "watchouts": { "ro": ["Se plictisește după faza de idee", "Lipsă de follow-through", "Critic fără menajamente"], "en": ["Gets bored after the idea phase", "Lack of follow-through", "Blunt criticism"] },
+          "growth": { "ro": "Leagă fiecare idee de un pas concret de execuție în următoarele 24 de ore.", "en": "Tie every idea to one concrete execution step within the next 24 hours." },
+          "team": { "ro": "Un partener structurat îți transformă ideile în realitate — găsește-ți un „constructor”.", "en": "A structured partner turns your ideas into reality — find yourself a builder." }
+        },
+        "IVES": {
+          "name": { "ro": "Mentorul", "en": "The Mentor" },
+          "tagline": { "ro": "Crește oameni, nu doar rezultate.", "en": "Grows people, not just results." },
+          "blurb": { "ro": "Un ghid cu viziune: vezi potențialul din oameni, construiești punți între idei și valori și ajuți echipele să învețe din fiecare experiență.", "en": "A visionary guide: you see the potential in people, build bridges between ideas and values, and help teams learn from every experience." },
+          "strengths": { "ro": ["Dezvoltă oameni cu răbdare", "Combină viziunea cu empatia", "Inspiră încredere și reflecție"], "en": ["Develops people patiently", "Blends vision with empathy", "Inspires trust and reflection"] },
+          "watchouts": { "ro": ["Tinde să evite deciziile dure", "Poate deveni supraprotector", "Se consumă pentru alții"], "en": ["Tends to avoid hard decisions", "Can become overprotective", "Burns out for others"] },
+          "growth": { "ro": "Acceptă că nu toată lumea vrea să fie ajutată — oferă, nu impune.", "en": "Accept that not everyone wants to be helped — offer, don't impose." },
+          "team": { "ro": "Cu un partener logic care ia deciziile dure, ai spațiul să faci ce faci cel mai bine.", "en": "With a logical partner making the hard calls, you get the space to do what you do best." }
+        },
+        "IVEF": {
+          "name": { "ro": "Poetul", "en": "The Dreamer" },
+          "tagline": { "ro": "Trăiește cu un picior în lumea ideilor.", "en": "Lives with one foot in the world of ideas." },
+          "blurb": { "ro": "Un suflet creativ: simți nuanțele pe care alții le ratează, transformi emoția în idee și vezi frumusețea în locuri neașteptate.", "en": "A creative soul: you sense the nuances others miss, turn emotion into ideas and find beauty in unexpected places." },
+          "strengths": { "ro": ["Creativitate și imaginație bogată", "Sensibilitate la emoțiile echipei", "Deschidere către nou"], "en": ["Rich creativity and imagination", "Sensitivity to team emotions", "Openness to the new"] },
+          "watchouts": { "ro": ["Greu de ancorat în termene", "Evită detaliile administrative", "Fluctuează după starea emoțională"], "en": ["Hard to anchor to deadlines", "Avoids administrative detail", "Fluctuates with emotional state"] },
+          "growth": { "ro": "Transformă inspirația în obicei: creează și când nu ai chef, câte puțin, zilnic.", "en": "Turn inspiration into habit: create even when you don't feel like it, a little every day." },
+          "team": { "ro": "Un partener practic îți ancorează visurile — prețuiește-l, e jumătatea ta lipsă.", "en": "A practical partner anchors your dreams — treasure them, they're your missing half." }
+        },
+        "XPLS": {
+          "name": { "ro": "Comandantul", "en": "The Commander" },
+          "tagline": { "ro": "Conduce din față, cu planul în mână.", "en": "Leads from the front, plan in hand." },
+          "blurb": { "ro": "Un lider natural: energie, claritate și execuție. Organizezi oamenii, iei decizii rapide și duci lucrurile la capăt — iar echipa te urmează pentru că simte direcția.", "en": "A natural leader: energy, clarity and execution. You organize people, make fast decisions and get things done — and the team follows because they feel the direction." },
+          "strengths": { "ro": ["Decizii rapide și clare", "Organizează oameni și resurse", "Își asumă responsabilitatea"], "en": ["Fast, clear decisions", "Organizes people and resources", "Takes responsibility"] },
+          "watchouts": { "ro": ["Poate domina discuțiile", "Pare insensibil la emoții", "Grăbit să acționeze înainte de a asculta"], "en": ["Can dominate discussions", "May seem insensitive to emotions", "Quick to act before listening"] },
+          "growth": { "ro": "Pune o întrebare înainte de fiecare decizie: „ce cred ceilalți despre asta?”", "en": "Ask one question before every decision: “what do others think about this?”" },
+          "team": { "ro": "Ești cel mai bun când îți permiți un secund empatic care să țină echipa aproape.", "en": "You're at your best when you allow an empathetic second-in-command to keep the team close." }
+        },
+        "XPLF": {
+          "name": { "ro": "Pionierul", "en": "The Pioneer" },
+          "tagline": { "ro": "Acțiune înainte de permisiune.", "en": "Action before permission." },
+          "blurb": { "ro": "Un om de acțiune: vezi o problemă, te arunci în ea și găsești soluția pe drum. Energia ta mișcă echipele din vorbe în fapte.", "en": "A person of action: you see a problem, dive in and find the solution on the way. Your energy moves teams from talk to deeds." },
+          "strengths": { "ro": ["Reacție rapidă în criză", "Pragmatism orientat pe rezultat", "Energizează prin exemplu"], "en": ["Fast reaction in a crisis", "Results-oriented pragmatism", "Energizes by example"] },
+          "watchouts": { "ro": ["Sare peste etape și detalii", "Se plictisește după lansare", "Poate forța ritmul pentru alții"], "en": ["Skips steps and details", "Gets bored after launch", "Can force the pace on others"] },
+          "growth": { "ro": "Construiește-ți un sistem minim de verificare înainte de fiecare lansare.", "en": "Build yourself a minimal checkpoint before every launch." },
+          "team": { "ro": "Un partener metodic îți prinde mingile din aer — fă-l aliat, nu obstacol.", "en": "A methodical partner catches your juggled balls — make them an ally, not an obstacle." }
+        },
+        "XPES": {
+          "name": { "ro": "Gazda", "en": "The Host" },
+          "tagline": { "ro": "Face ca fiecare să se simtă binevenit.", "en": "Makes everyone feel welcome." },
+          "blurb": { "ro": "Un liant social: creezi atmosfera în care oamenii vor să contribuie, ții echipa unită și faci ca lucrurile să se întâmple într-un cadru plăcut și ordonat.", "en": "A social glue: you create the atmosphere where people want to contribute, keep the team together and make things happen in a warm, orderly setting." },
+          "strengths": { "ro": ["Creează apartenență și moral", "Combină empatia cu organizarea", "Comunicator cald și clar"], "en": ["Builds belonging and morale", "Blends empathy with organization", "Warm, clear communicator"] },
+          "watchouts": { "ro": ["Evită conflictele necesare", "Își asumă prea multe sarcini sociale", "Are nevoie de validare externă"], "en": ["Avoids necessary conflict", "Takes on too many social tasks", "Needs external validation"] },
+          "growth": { "ro": "Un conflict sincer ridicat la timp protejează armonia mai mult decât tăcerea.", "en": "An honest conflict raised on time protects harmony better than silence." },
+          "team": { "ro": "Lângă un partener logic, poți construi cultură fără teama că deranjezi.", "en": "Next to a logical partner, you can build culture without fearing you're disturbing anyone." }
+        },
+        "XPEF": {
+          "name": { "ro": "Animatorul", "en": "The Energizer" },
+          "tagline": { "ro": "Transformă orice cameră într-o echipă.", "en": "Turns any room into a team." },
+          "blurb": { "ro": "O scânteie vie: aduci energie, umor și conexiune, și faci munca să pară joacă. Echipele lucrează mai bine când ești în cameră.", "en": "A live spark: you bring energy, humor and connection, and make work feel like play. Teams work better when you're in the room." },
+          "strengths": { "ro": ["Entuziasm contagios", "Leagă oameni rapid", "Flexibil și adaptabil"], "en": ["Contagious enthusiasm", "Connects people fast", "Flexible and adaptable"] },
+          "watchouts": { "ro": ["Începe multe, termină puține", "Greu de ținut pe un singur fir", "Evită planificarea"], "en": ["Starts many things, finishes few", "Hard to keep on one track", "Avoids planning"] },
+          "growth": { "ro": "Alege o singură inițiativă pe lună și du-o până la capăt, orice ar fi.", "en": "Pick one initiative per month and see it through to the end, no matter what." },
+          "team": { "ro": "Un partener structurat îți transformă entuziasmul în rezultate — dă-i spațiu.", "en": "A structured partner turns your enthusiasm into results — give them room." }
+        },
+        "XVLS": {
+          "name": { "ro": "Directorul", "en": "The Director" },
+          "tagline": { "ro": "Viziune mare, execuție pe măsură.", "en": "Big vision, matching execution." },
+          "blurb": { "ro": "Un lider vizionar: vezi destinația, construiești planul și conduci oamenii către ea cu claritate. Ești busola echipei în vremuri incerte.", "en": "A visionary leader: you see the destination, build the plan and lead people toward it with clarity. You are the team's compass in uncertain times." },
+          "strengths": { "ro": ["Gândește în ani, acționează în săptămâni", "Conduce cu direcție clară", "Convinge prin logică și viziune"], "en": ["Thinks in years, acts in weeks", "Leads with clear direction", "Persuades through logic and vision"] },
+          "watchouts": { "ro": ["Poate părea distant de oameni", "Perfecționist cu standardele", "Deleagă greu"], "en": ["Can seem removed from people", "Perfectionistic standards", "Delegates with difficulty"] },
+          "growth": { "ro": "Coboară periodic din turnul de control: o conversație sinceră pe săptămână cu echipa.", "en": "Step down from the control tower regularly: one honest conversation a week with the team." },
+          "team": { "ro": "Un partener empatic îți aduce pulsul echipei pe care planurile nu-l arată.", "en": "An empathetic partner brings you the team's pulse that plans don't show." }
+        },
+        "XVLF": {
+          "name": { "ro": "Inventatorul", "en": "The Inventor" },
+          "tagline": { "ro": "Viitorul îl plictisește dacă nu-l construiește.", "en": "The future bores them unless they're building it." },
+          "blurb": { "ro": "Un generator de idei: conectezi concepte din lumi diferite, prototipezi rapid și deschizi drumuri pe care alții le credeau imposibile.", "en": "An idea generator: you connect concepts from different worlds, prototype quickly and open paths others thought impossible." },
+          "strengths": { "ro": ["Imaginație aplicată, nu doar vorbe", "Prototipează rapid", "Entuziasm pentru nou"], "en": ["Applied imagination, not just talk", "Prototypes quickly", "Enthusiasm for the new"] },
+          "watchouts": { "ro": ["Se plictisește de rutina de după lansare", "Prea multe idei simultan", "Nerăbdător cu procesele"], "en": ["Bored by post-launch routine", "Too many ideas at once", "Impatient with processes"] },
+          "growth": { "ro": "Termină înainte de a începe următorul proiect: regula unei singure idei active.", "en": "Finish before starting the next one: a one-active-idea rule." },
+          "team": { "ro": "Un executor metodic îți duce prototipurile în producție — aliniază-te cu el devreme.", "en": "A methodical executor takes your prototypes to production — align with them early." }
+        },
+        "XVES": {
+          "name": { "ro": "Inspiratorul", "en": "The Inspirer" },
+          "tagline": { "ro": "Oamenii devin mai buni în preajma lui.", "en": "People become better around them." },
+          "blurb": { "ro": "Un lider care ridică: îmbini viziunea cu empatia, inspiri prin poveste și construiești echipe care cred în ce fac.", "en": "A leader who lifts: you blend vision with empathy, inspire through story and build teams that believe in what they do." },
+          "strengths": { "ro": ["Inspiră și motivează natural", "Citește oamenii cu acuratețe", "Construiește culturi pozitive"], "en": ["Naturally inspires and motivates", "Reads people accurately", "Builds positive cultures"] },
+          "watchouts": { "ro": ["Evită deciziile care dezamăgesc", "Supra-promite pentru armonie", "Se epuizează emoțional"], "en": ["Avoids disappointing decisions", "Over-promises for harmony", "Emotionally drains themselves"] },
+          "growth": { "ro": "Un „nu” clar, spus cu empatie, protejează mai mult decât un „da” politicos.", "en": "A clear, empathetic “no” protects more than a polite “yes”." },
+          "team": { "ro": "Un partener logic te ajută să transformi inspirația în decizii sustenabile.", "en": "A logical partner helps you turn inspiration into sustainable decisions." }
+        },
+        "XVEF": {
+          "name": { "ro": "Spiritul Liber", "en": "The Free Spirit" },
+          "tagline": { "ro": "Regulile sunt pentru cei care nu au aripi.", "en": "Rules are for those without wings." },
+          "blurb": { "ro": "Un catalizator de schimbare: aduci entuziasm, idei și conexiuni acolo unde mergi, și le amintești oamenilor că munca poate fi și bucurie.", "en": "A catalyst for change: you bring enthusiasm, ideas and connection wherever you go, reminding people that work can also be joy." },
+          "strengths": { "ro": ["Creativitate explozivă", "Adaptare instantanee", "Pozitivitate contagioasă"], "en": ["Explosive creativity", "Instant adaptation", "Contagious positivity"] },
+          "watchouts": { "ro": ["Angajamente uitate rapid", "Structura îl sufocă", "Termenele sunt orientative"], "en": ["Commitments quickly forgotten", "Structure suffocates them", "Deadlines are optional"] },
+          "growth": { "ro": "Alege-ți singur o ancoră voluntară: un ritual săptămânal care să-ți țină direcția.", "en": "Choose your own voluntary anchor: a weekly ritual that keeps your direction." },
+          "team": { "ro": "Un partener structurat, care-ți respectă libertatea, îți dublează impactul.", "en": "A structured partner who respects your freedom doubles your impact." }
+        }
+      }
+    }
+  ]
+}

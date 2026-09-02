@@ -6,6 +6,7 @@ import type {
   Piece,
   PlayerView,
   PuzzleView,
+  RatingView,
   RoomView,
 } from "./types";
 
@@ -22,6 +23,7 @@ export interface StoreState {
   pieces: Record<number, Piece>;
   cursors: Record<string, CursorView>;
   completion: { players: string[] } | null;
+  ratings: Record<string, RatingView>;
 }
 
 const initialState: StoreState = {
@@ -34,6 +36,7 @@ const initialState: StoreState = {
   pieces: {},
   cursors: {},
   completion: null,
+  ratings: {},
 };
 
 let state: StoreState = initialState;
@@ -60,6 +63,7 @@ function handleMessage(msg: { t: string; [k: string]: unknown }) {
       const puzzle = msg.puzzle as PuzzleView;
       const players = (msg.players as PlayerView[]) || [];
       const pieces = (msg.pieces as Piece[]) || [];
+      const ratingsRaw = (msg.ratings as RatingView[]) || [];
       const cursorsRaw = (msg.cursors as { id: string; x: number; y: number }[]) || [];
       const now = Date.now();
       const cursors: Record<string, CursorView> = {};
@@ -72,6 +76,7 @@ function handleMessage(msg: { t: string; [k: string]: unknown }) {
         puzzle,
         players,
         pieces: Object.fromEntries(pieces.map((p) => [p.id, p])),
+        ratings: Object.fromEntries(ratingsRaw.map((r) => [r.playerId, r])),
         cursors,
         completion: room.completed
           ? { players: (msg.completionPlayers as string[]) || players.map((p) => p.name) }
@@ -108,6 +113,13 @@ function handleMessage(msg: { t: string; [k: string]: unknown }) {
       });
       break;
     }
+    case "ratings": {
+      const list = (msg.list as RatingView[]) || [];
+      const ratings = { ...state.ratings };
+      for (const r of list) ratings[r.playerId] = r;
+      set({ ratings });
+      break;
+    }
     case "reset": {
       const room = msg.room as RoomView;
       const pieces = (msg.pieces as Piece[]) || [];
@@ -115,6 +127,7 @@ function handleMessage(msg: { t: string; [k: string]: unknown }) {
         room,
         pieces: Object.fromEntries(pieces.map((p) => [p.id, p])),
         completion: null,
+        ratings: {},
       });
       break;
     }
@@ -161,6 +174,10 @@ export const store = {
 
   sendCursor(x: number, y: number) {
     socket.send({ t: "cursor", x: Math.round(x), y: Math.round(y) });
+  },
+
+  sendRating(answers: Record<string, "A" | "B">, done: boolean) {
+    socket.send({ t: "rating", answers, done });
   },
 
   /** Optimistic local update for the piece I just dropped (server confirms shortly). */

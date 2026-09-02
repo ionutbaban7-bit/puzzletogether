@@ -14,6 +14,7 @@ import { fileURLToPath } from "node:url";
 import { WebSocketServer } from "ws";
 
 import puzzlesData from "../shared/puzzles.json" with { type: "json" };
+import coachingData from "../shared/coaching.json" with { type: "json" };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
@@ -38,6 +39,8 @@ const PUZZLES = puzzlesData.puzzles;
 const CATEGORIES = puzzlesData.categories;
 const DIFFICULTIES = puzzlesData.difficulties;
 const puzzleById = new Map(PUZZLES.map((p) => [p.id, p]));
+const COACHING = coachingData;
+const activityById = new Map(COACHING.activities.map((a) => [a.id, a]));
 
 let imageDims = {};
 try {
@@ -150,6 +153,27 @@ function roomView(room) {
 }
 
 function puzzleView(room) {
+  if (room.coachingActivity) {
+    return {
+      isCoaching: true,
+      mode: room.coachingActivity.mode,
+      activityId: room.coachingActivity.id,
+      image: room.puzzle.image,
+      name: room.puzzle.name,
+      category: "coaching",
+      credit: "",
+      license: "",
+      source: "",
+      width: room.puzzle.width,
+      height: room.puzzle.height,
+      cols: room.puzzle.cols,
+      rows: room.puzzle.rows,
+      pieceW: room.puzzle.pieceW,
+      pieceH: room.puzzle.pieceH,
+      snapDistance: snapDistance(room.puzzle.pieceW, room.puzzle.pieceH),
+      activity: room.coachingActivity,
+    };
+  }
   return {
     image: room.puzzle.image,
     name: room.puzzle.name,
@@ -188,7 +212,7 @@ function broadcast(room, msg, exceptPlayerId) {
 }
 
 function scatterPieces(room) {
-  const { width, height } = room.puzzle;
+  const { width, height } = room.board || room.puzzle;
   const bandY0 = height + 140;
   const bandY1 = height + 820;
   const x0 = -320;
@@ -203,33 +227,51 @@ function scatterPieces(room) {
 }
 
 function createRoom(config) {
-  const puzzle = puzzleById.get(config.puzzleId);
-  if (!puzzle) throw new Error("unknown puzzle");
-  const difficulty = DIFFICULTIES.find((d) => d.id === config.difficulty);
-  if (!difficulty) throw new Error("unknown difficulty");
+  let puzzle = puzzleById.get(config.puzzleId);
+  const coachingActivity = !puzzle ? activityById.get(config.puzzleId) : null;
+  if (!puzzle && !coachingActivity) throw new Error("unknown puzzle");
+  const difficulty = DIFFICULTIES.find((d) => d.id === config.difficulty) || DIFFICULTIES[0];
 
-  const dims = imageDims[puzzle.image.split("/").pop()] || { w: 1600, h: 1000 };
+  let total = difficulty.pieces;
+  let layout = null;
+  let board = null;
+  if (coachingActivity) {
+    if (coachingActivity.mode === "ranking") {
+      total = coachingActivity.items.length;
+      layout = coachingActivity.layout || { cols: 2, rows: 6, padX: 70, padY: 70, slotW: 460, slotH: 110, gapX: 28, gapY: 24 };
+      const boardW = Math.max(1400, layout.padX * 2 + layout.cols * layout.slotW + (layout.cols - 1) * layout.gapX);
+      const boardH = layout.padY * 2 + layout.rows * layout.slotH + (layout.rows - 1) * layout.gapY;
+      board = { width: boardW, height: boardH, pieceW: layout.slotW, pieceH: layout.slotH };
+    } else {
+      total = coachingActivity.questions.length;
+    }
+  }
+
+  const dims = puzzle ? imageDims[puzzle.image.split("/").pop()] || { w: 1600, h: 1000 } : { w: 0, h: 0 };
   const grid = computeGrid(dims.w, dims.h, difficulty.pieces);
 
   const room = {
     id: crypto.randomUUID(),
     code: generateCode(),
-    config: { puzzleId: puzzle.id, difficulty: difficulty.id, total: difficulty.pieces },
+    config: { puzzleId: coachingActivity ? coachingActivity.id : puzzle.id, difficulty: difficulty.id, total },
+    coachingActivity: coachingActivity || null,
+    board: board,
     puzzle: {
-      image: puzzle.image,
-      name: puzzle.name,
-      category: puzzle.category,
-      credit: puzzle.credit,
-      license: puzzle.license,
-      source: puzzle.source,
-      width: dims.w,
-      height: dims.h,
-      cols: grid.cols,
-      rows: grid.rows,
-      pieceW: grid.pieceW,
-      pieceH: grid.pieceH,
+      image: coachingActivity ? coachingActivity.cover : puzzle.image,
+      name: coachingActivity ? coachingActivity.name : puzzle.name,
+      category: coachingActivity ? "coaching" : puzzle.category,
+      credit: puzzle?.credit || "",
+      license: puzzle?.license || "",
+      source: puzzle?.source || "",
+      width: board ? board.width : dims.w,
+      height: board ? board.height : dims.h,
+      cols: layout ? layout.cols : grid.cols,
+      rows: layout ? layout.rows : grid.rows,
+      pieceW: board ? board.pieceW : grid.pieceW,
+      pieceH: board ? board.pieceH : grid.pieceH,
     },
     pieces: [],
+    ratings: new Map(), // questionnaire only: playerId -> {answers, done}
     players: new Map(), // active playerId -> {id,name,color,joinedAt,lastSeenAt}
     knownPlayers: new Map(), // playerId -> {name,color} for the room lifetime (reconnects)
     pending: new Map(), // playerId -> {name,color,expiresAt} (joined via HTTP, awaiting socket)
@@ -243,23 +285,44 @@ function createRoom(config) {
     completionPlayers: [],
   };
 
-  const pw = grid.pieceW;
-  const ph = grid.pieceH;
-  for (let i = 0; i < difficulty.pieces; i++) {
-    const col = i % grid.cols;
-    const row = Math.floor(i / grid.cols);
-    room.pieces.push({
-      id: i,
-      x: 0,
-      y: 0,
-      correctX: col * pw,
-      correctY: row * ph,
-      drag: false,
-      moved: false,
-      locked: false,
-    });
+  if (coachingActivity) {
+    if (coachingActivity.mode === "ranking") {
+      coachingActivity.items.forEach((_item, i) => {
+        const col = i % layout.cols;
+        const row = Math.floor(i / layout.cols);
+        room.pieces.push({
+          id: i,
+          x: 0,
+          y: 0,
+          correctX: layout.padX + col * (layout.slotW + layout.gapX),
+          correctY: layout.padY + row * (layout.slotH + layout.gapY),
+          drag: false,
+          moved: false,
+          locked: false,
+        });
+      });
+      scatterPieces(room);
+    }
+    // questionnaire rooms have no pieces; per-player answers live in room.ratings
+  } else {
+    const pw = grid.pieceW;
+    const ph = grid.pieceH;
+    for (let i = 0; i < difficulty.pieces; i++) {
+      const col = i % grid.cols;
+      const row = Math.floor(i / grid.cols);
+      room.pieces.push({
+        id: i,
+        x: 0,
+        y: 0,
+        correctX: col * pw,
+        correctY: row * ph,
+        drag: false,
+        moved: false,
+        locked: false,
+      });
+    }
+    scatterPieces(room);
   }
-  scatterPieces(room);
 
   rooms.set(room.id, room);
   codeIndex.set(room.code, room.id);
@@ -301,7 +364,7 @@ function dropPlayerConnection(room, playerId) {
 }
 
 function checkCompletion(room) {
-  if (room.completed) return;
+  if (room.completed || room.coachingActivity) return;
   const locked = room.pieces.filter((p) => p.locked).length;
   if (locked >= room.config.total) {
     room.completed = true;
@@ -332,8 +395,13 @@ app.get("/api/puzzles", (_req, res) => {
     categories: CATEGORIES,
     difficulties: DIFFICULTIES,
     puzzles: PUZZLES.map((p) => ({ ...p })),
+    coaching: COACHING,
     maxPlayers: MAX_PLAYERS,
   });
+});
+
+app.get("/api/coaching", (_req, res) => {
+  res.json(COACHING);
 });
 
 app.post("/api/rooms", (req, res) => {
@@ -407,14 +475,20 @@ app.get("/api/rooms/:id", (req, res) => {
 app.post("/api/rooms/:id/reset", (req, res) => {
   const room = findRoom(req.params.id);
   if (!room) return res.status(404).json({ error: "Room not found." });
-  scatterPieces(room);
+  if (room.pieces.length) scatterPieces(room);
+  room.ratings.clear();
   room.completed = false;
   room.completedAt = null;
   room.completedInMs = null;
   room.completionPlayers = [];
   room.createdAt = Date.now(); // restarts the timer
   touch(room);
-  broadcast(room, { t: "reset", room: roomView(room), pieces: room.pieces.map(serializePiece) });
+  broadcast(room, {
+    t: "reset",
+    room: roomView(room),
+    pieces: room.pieces.map(serializePiece),
+    ratings: [],
+  });
   res.json({ ok: true });
 });
 
@@ -499,6 +573,11 @@ wss.on("connection", (ws) => {
           puzzle: puzzleView(room),
           players: activePlayerList(room),
           pieces: room.pieces.map(serializePiece),
+          ratings: [...room.ratings.entries()].map(([id, r]) => ({
+            playerId: id,
+            answers: r.answers,
+            done: r.done,
+          })),
           cursors: [...room.conns.entries()]
             .filter(([id]) => id !== pid)
             .map(([id, c]) => ({ id, x: c.cursor.x, y: c.cursor.y })),
@@ -545,6 +624,24 @@ wss.on("connection", (ws) => {
         conn.cursor.x = Number(msg.x) || 0;
         conn.cursor.y = Number(msg.y) || 0;
         conn.cursor.dirty = true;
+        break;
+      }
+
+      case "rating": {
+        const { room, playerId } = attached;
+        if (!room.coachingActivity || room.coachingActivity.mode !== "questionnaire") break;
+        touch(room);
+        const answers = msg.answers && typeof msg.answers === "object" ? msg.answers : {};
+        const done = !!msg.done;
+        room.ratings.set(playerId, { answers, done });
+        broadcast(room, {
+          t: "ratings",
+          list: [...room.ratings.entries()].map(([pid, r]) => ({
+            playerId: pid,
+            answers: r.answers,
+            done: r.done,
+          })),
+        });
         break;
       }
 

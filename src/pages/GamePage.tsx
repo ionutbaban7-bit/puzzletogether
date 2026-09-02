@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import Board from "../puzzle/Board";
+import RankingActivity from "../puzzle/RankingActivity";
+import QuestionnaireActivity from "../puzzle/QuestionnaireActivity";
 import { api } from "../lib/api";
 import { copyToClipboard, formatClock, inviteUrl } from "../lib/format";
 import { navigate } from "../lib/router";
 import { store, useStore } from "../store";
-import { Confetti, LogoMark, Modal, Spinner, useCopied } from "../components/ui";
+import { CoachingHubBadge, Confetti, LogoMark, Modal, Spinner, useCopied } from "../components/ui";
+import { LangToggle, pick, useLang } from "../lib/i18n";
 import { lockedCountOf } from "../store";
 
 const DIFFICULTY_LABEL: Record<string, string> = {
@@ -20,9 +23,11 @@ const CATEGORY_ICON: Record<string, string> = {
   landmarks: "🗼",
   nature: "🌿",
   cities: "🏙️",
+  coaching: "🧭",
 };
 
 export default function GamePage() {
+  const { lang } = useLang();
   const status = useStore((s) => s.status);
   const room = useStore((s) => s.room);
   const puzzle = useStore((s) => s.puzzle);
@@ -39,7 +44,6 @@ export default function GamePage() {
   const [resetSignal, setResetSignal] = useState(0);
   const [copied, markCopied] = useCopied();
 
-  // 1s clock tick for the timer
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
@@ -50,10 +54,8 @@ export default function GamePage() {
   const progress = Math.round((locked / total) * 100);
   const elapsed = room ? (room.completed ? room.completedInMs || 0 : now - room.createdAt) : 0;
   const playerCount = players.length;
-
-  function handlePieceDrop(_id: number, _x: number, _y: number, _snapped: boolean) {
-    // Board already sends the final position; nothing extra to do.
-  }
+  const isCoaching = !!puzzle?.isCoaching;
+  const mode = puzzle?.mode;
 
   async function handleReset() {
     if (!room) return;
@@ -114,53 +116,67 @@ export default function GamePage() {
 
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-ink-950">
-      <Board
-        puzzle={puzzle}
-        pieces={pieces}
-        cursors={cursors}
-        players={players}
-        youId={youId}
-        onPieceDrop={handlePieceDrop}
-        onResetRequest={handleReset}
-        allowReset={!!room.completed}
-        resetSignal={resetSignal}
-      />
+      {isCoaching && mode === "ranking" ? (
+        <RankingActivity puzzle={puzzle} pieces={pieces} players={players} youId={youId} />
+      ) : isCoaching && mode === "questionnaire" ? (
+        <QuestionnaireActivity puzzle={puzzle} players={players} youId={youId} />
+      ) : (
+        <Board
+          puzzle={puzzle}
+          pieces={pieces}
+          cursors={cursors}
+          players={players}
+          youId={youId}
+          onPieceDrop={() => {}}
+          onResetRequest={handleReset}
+          allowReset={!!room.completed}
+          resetSignal={resetSignal}
+        />
+      )}
 
       {/* ------------------------------------------------------- top bar */}
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-4">
         {/* Game info panel */}
         <div className="overlay-card pointer-events-auto w-[300px] p-4">
-          <div className="flex items-center gap-2.5">
-            <LogoMark size={26} />
-            <div className="min-w-0">
-              <div className="font-display truncate text-[15px] font-bold text-white">
-                {puzzle.name}
-              </div>
-              <div className="truncate text-xs text-ink-300">
-                {DIFFICULTY_LABEL[room.difficulty] || room.difficulty} · {total} pieces
-                {puzzle.category ? ` · ${CATEGORY_ICON[puzzle.category] || ""} ${puzzle.category}` : ""}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <LogoMark size={26} />
+              <div className="min-w-0">
+                <div className="font-display truncate text-[15px] font-bold text-white">
+                  {pick(puzzle.name, lang)}
+                </div>
+                <div className="truncate text-xs text-ink-300">
+                  {isCoaching
+                    ? mode === "ranking"
+                      ? "Team ranking · " + total + " items"
+                      : "Questionnaire · " + total + " questions"
+                    : `${DIFFICULTY_LABEL[room.difficulty] || room.difficulty} · ${total} pieces${
+                        puzzle.category ? ` · ${CATEGORY_ICON[puzzle.category] || ""} ${puzzle.category}` : ""
+                      }`}
+                </div>
               </div>
             </div>
+            <CoachingHubBadge />
           </div>
 
-          {/* Progress */}
-          <div className="mt-3.5">
-            <div className="flex items-baseline justify-between text-xs">
-              <span className="font-semibold text-ink-200">Progress</span>
-              <span className="font-bold text-white">{progress}%</span>
+          {!isCoaching && (
+            <div className="mt-3.5">
+              <div className="flex items-baseline justify-between text-xs">
+                <span className="font-semibold text-ink-200">Progress</span>
+                <span className="font-bold text-white">{progress}%</span>
+              </div>
+              <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-white/10">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-brand-500 to-emerald-400 transition-all duration-500"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <div className="mt-1 text-[11px] text-ink-400">
+                {locked} / {total} pieces
+              </div>
             </div>
-            <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-white/10">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-brand-500 to-emerald-400 transition-all duration-500"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-            <div className="mt-1 text-[11px] text-ink-400">
-              {locked} / {total} pieces
-            </div>
-          </div>
+          )}
 
-          {/* Meta row */}
           <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-3 text-xs">
             <span className="flex items-center gap-1.5 font-medium text-ink-200">
               👤 {playerCount} / {room.maxPlayers} players
@@ -173,9 +189,12 @@ export default function GamePage() {
 
         {/* Actions */}
         <div className="pointer-events-auto flex items-center gap-2">
-          <button className="btn btn-dark btn-sm" onClick={() => setShareOpen(true)}>
-            🔗 Share
-          </button>
+          <LangToggle dark />
+          {!isCoaching && (
+            <button className="btn btn-dark btn-sm" onClick={() => setShareOpen(true)}>
+              🔗 Share
+            </button>
+          )}
           <button
             className="btn btn-dark btn-sm"
             onClick={() => {
@@ -189,48 +208,39 @@ export default function GamePage() {
       </div>
 
       {/* ------------------------------------------------- players sidebar */}
-      <div className="overlay-card pointer-events-auto absolute right-4 top-[152px] hidden w-56 p-4 sm:block">
-        <div className="text-[11px] font-bold uppercase tracking-wider text-ink-400">
-          In this room
-        </div>
-        <div className="mt-2.5 space-y-2">
-          {players.map((p) => (
-            <div key={p.id} className="flex items-center gap-2 text-[13px]">
-              <span
-                className="h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-white/20"
-                style={{ backgroundColor: p.color }}
-              />
-              <span className="truncate font-medium text-white">
-                {p.name}
-                {p.id === youId && <span className="text-ink-400"> (you)</span>}
-              </span>
-            </div>
-          ))}
-        </div>
-        {playerCount < 20 && (
-          <div className="mt-3 text-[11px] text-ink-400">
-            Share the room to add players
+      {!isCoaching && (
+        <div className="overlay-card pointer-events-auto absolute right-4 top-[152px] hidden w-56 p-4 sm:block">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-ink-400">
+            In this room
           </div>
-        )}
-      </div>
-
-      {/* Mobile player strip */}
-      <div className="pointer-events-auto absolute bottom-16 left-5 flex -space-x-1.5 sm:hidden">
-        {players.slice(0, 8).map((p) => (
-          <span
-            key={p.id}
-            className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-ink-950 text-[10px] font-bold text-white"
-            style={{ backgroundColor: p.color }}
-            title={p.name}
-          >
-            {p.name.slice(0, 1).toUpperCase()}
-          </span>
-        ))}
-      </div>
+          <div className="mt-2.5 space-y-2">
+            {players.map((p) => (
+              <div key={p.id} className="flex items-center gap-2 text-[13px]">
+                <span
+                  className="h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-white/20"
+                  style={{ backgroundColor: p.color }}
+                />
+                <span className="truncate font-medium text-white">
+                  {p.name}
+                  {p.id === youId && <span className="text-ink-400"> (you)</span>}
+                </span>
+              </div>
+            ))}
+          </div>
+          {playerCount < 20 && (
+            <div className="mt-3 text-[11px] text-ink-400">
+              Share the room to add players
+            </div>
+          )}
+        </div>
+      )}
 
       {/* My cursor chip */}
-      {me && (
-        <div className="pointer-events-none absolute right-4 bottom-4 hidden rounded-full px-2.5 py-1 text-[11px] font-semibold text-white shadow-chip md:block" style={{ backgroundColor: me.color }}>
+      {me && !isCoaching && (
+        <div
+          className="pointer-events-none absolute bottom-4 right-4 hidden rounded-full px-2.5 py-1 text-[11px] font-semibold text-white shadow-chip md:block"
+          style={{ backgroundColor: me.color }}
+        >
           You · {me.name}
         </div>
       )}
@@ -302,7 +312,7 @@ export default function GamePage() {
       )}
 
       {/* ---------------------------------------------- completion modal */}
-      {completion && room.completed && (
+      {!isCoaching && completion && room.completed && (
         <>
           <Confetti />
           <Modal dismissable={false}>
@@ -311,7 +321,9 @@ export default function GamePage() {
               <h2 className="font-display mt-4 text-3xl font-extrabold tracking-tight text-white">
                 Puzzle completed!
               </h2>
-              <div className="mt-2 text-lg font-semibold text-brand-300">{puzzle.name}</div>
+              <div className="mt-2 text-lg font-semibold text-brand-300">
+                {pick(puzzle.name, lang)}
+              </div>
               <div className="mt-1 text-sm text-ink-400">
                 {total} pieces · {DIFFICULTY_LABEL[room.difficulty] || room.difficulty}
               </div>
@@ -359,9 +371,7 @@ export default function GamePage() {
                   </button>
                   <button
                     className="btn btn-sm border border-white/10 bg-white/5 text-white hover:bg-white/10"
-                    onClick={() => {
-                      setShareOpen(true);
-                    }}
+                    onClick={() => setShareOpen(true)}
                   >
                     Share Room
                   </button>

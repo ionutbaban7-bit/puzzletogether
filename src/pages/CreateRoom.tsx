@@ -3,7 +3,8 @@ import { api } from "../lib/api";
 import { navigate } from "../lib/router";
 import { getSession, saveSession } from "../lib/session";
 import { Logo, Spinner } from "../components/ui";
-import type { CatalogData, Difficulty, PuzzleInfo } from "../types";
+import { pick, T } from "../lib/i18n";
+import type { CatalogData, CoachingActivity, Difficulty, PuzzleInfo } from "../types";
 
 const CATEGORY_EMOJI: Record<string, string> = {
   paintings: "🎨",
@@ -11,6 +12,7 @@ const CATEGORY_EMOJI: Record<string, string> = {
   landmarks: "🗼",
   nature: "🌿",
   cities: "🏙️",
+  coaching: "🧭",
 };
 
 export default function CreateRoom() {
@@ -27,7 +29,9 @@ export default function CreateRoom() {
     api.fetchCatalog().then(setCatalog).catch(() => setError("Could not load the puzzle library."));
   }, []);
 
+  const isCoaching = category === "coaching";
   const selectedPuzzle = catalog?.puzzles.find((p) => p.id === puzzleId) || null;
+  const selectedActivity = catalog?.coaching.activities.find((a) => a.id === puzzleId) || null;
   const selectedDifficulty =
     catalog?.difficulties.find((d) => d.id === difficulty) || null;
 
@@ -36,13 +40,15 @@ export default function CreateRoom() {
   );
 
   async function handleCreate() {
-    if (!selectedPuzzle || !selectedDifficulty || !name.trim()) return;
+    if (!name.trim()) return;
+    if (!isCoaching && (!selectedPuzzle || !selectedDifficulty)) return;
+    if (isCoaching && !selectedActivity) return;
     setBusy(true);
     setError("");
     try {
       const { room, playerId } = await api.createRoom(
-        selectedPuzzle.id,
-        selectedDifficulty.id,
+        selectedActivity ? selectedActivity.id : selectedPuzzle!.id,
+        selectedDifficulty?.id || "easy",
         name.trim(),
       );
       saveSession({ name: name.trim(), pid: playerId, roomId: room.id });
@@ -144,11 +150,30 @@ export default function CreateRoom() {
                     {c.name}
                   </button>
                 ))}
+                {catalog?.coaching && (
+                  <button
+                    onClick={() => {
+                      setCategory(catalog.coaching.category.id);
+                      setPuzzleId(null);
+                    }}
+                    className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                      category === catalog.coaching.category.id
+                        ? "border-emerald-600 bg-emerald-600 text-white shadow-md shadow-emerald-600/20"
+                        : "border-ink-200 bg-white text-ink-700 hover:border-ink-300 hover:bg-ink-50"
+                    }`}
+                  >
+                    <span className="mr-1.5">{catalog.coaching.category.icon}</span>
+                    {catalog.coaching.category.name}
+                    <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-700">
+                      New
+                    </span>
+                  </button>
+                )}
               </div>
             </section>
 
-            {/* Puzzles */}
-            {category && (
+            {/* Puzzles (image categories) */}
+            {category && !isCoaching && (
               <section>
                 <h2 className="font-display text-lg font-bold text-ink-900">
                   Choose an image
@@ -169,20 +194,44 @@ export default function CreateRoom() {
               </section>
             )}
 
-            {/* Difficulty */}
-            <section>
-              <h2 className="font-display text-lg font-bold text-ink-900">Difficulty</h2>
-              <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {catalog?.difficulties.map((d) => (
-                  <DifficultyCard
-                    key={d.id}
-                    difficulty={d}
-                    selected={difficulty === d.id}
-                    onSelect={() => setDifficulty(d.id)}
-                  />
-                ))}
-              </div>
-            </section>
+            {/* Coaching activities */}
+            {isCoaching && (
+              <section>
+                <h2 className="font-display text-lg font-bold text-ink-900">
+                  Team coaching exercises
+                  <span className="ml-2 text-sm font-medium text-ink-400">
+                    {catalog?.coaching.activities.length} activities
+                  </span>
+                </h2>
+                <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  {catalog?.coaching.activities.map((a) => (
+                    <ActivityCard
+                      key={a.id}
+                      activity={a}
+                      selected={puzzleId === a.id}
+                      onSelect={() => setPuzzleId(a.id)}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Difficulty (only for image puzzles) */}
+            {!isCoaching && (
+              <section>
+                <h2 className="font-display text-lg font-bold text-ink-900">Difficulty</h2>
+                <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  {catalog?.difficulties.map((d) => (
+                    <DifficultyCard
+                      key={d.id}
+                      difficulty={d}
+                      selected={difficulty === d.id}
+                      onSelect={() => setDifficulty(d.id)}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
 
             {error && (
               <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
@@ -192,7 +241,17 @@ export default function CreateRoom() {
 
             <div className="sticky bottom-4 flex flex-col items-center justify-between gap-3 rounded-2xl border border-ink-200 bg-white/95 p-4 shadow-pop backdrop-blur sm:flex-row">
               <div className="text-sm text-ink-600">
-                {selectedPuzzle && selectedDifficulty ? (
+                {isCoaching && selectedActivity ? (
+                  <>
+                    <span className="font-semibold text-ink-900">
+                      <T value={selectedActivity.name} />
+                    </span>
+                    {" · "}
+                    {selectedActivity.mode === "ranking" ? "Team ranking" : "Personality questionnaire"}
+                    {" · "}
+                    {selectedActivity.duration}
+                  </>
+                ) : !isCoaching && selectedPuzzle && selectedDifficulty ? (
                   <>
                     <span className="font-semibold text-ink-900">{selectedPuzzle.name}</span>
                     {" · "}
@@ -204,7 +263,7 @@ export default function CreateRoom() {
               </div>
               <button
                 className="btn-primary w-full sm:w-auto"
-                disabled={!selectedPuzzle || !selectedDifficulty || busy}
+                disabled={isCoaching ? !selectedActivity || busy : !selectedPuzzle || !selectedDifficulty || busy}
                 onClick={handleCreate}
               >
                 {busy ? <Spinner /> : "Create Room"}
@@ -260,6 +319,68 @@ function PuzzleCard({
           }`}
         >
           {selected && <span className="text-[10px] font-bold text-white">✓</span>}
+        </div>
+      </div>
+    </button>
+  );
+}
+
+function ActivityCard({
+  activity,
+  selected,
+  onSelect,
+}: {
+  activity: CoachingActivity;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      onClick={onSelect}
+      className={`group overflow-hidden rounded-2xl border bg-white text-left shadow-sm transition-all duration-150 ${
+        selected
+          ? "border-emerald-600 ring-4 ring-emerald-600/15"
+          : "border-ink-200 hover:-translate-y-0.5 hover:shadow-card"
+      }`}
+    >
+      <div className="flex">
+        <div className="h-32 w-40 shrink-0 overflow-hidden bg-ink-950">
+          <img
+            src={activity.cover}
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.05]"
+          />
+        </div>
+        <div className="flex min-w-0 flex-1 flex-col justify-between px-4 py-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-700">
+                {activity.mode === "ranking" ? "Team ranking" : "Questionnaire"}
+              </span>
+              <span className="text-[11px] font-medium text-ink-400">⏱ {activity.duration}</span>
+            </div>
+            <div className="mt-1.5 truncate font-display text-[15px] font-bold text-ink-900">
+              <T value={activity.name} />
+            </div>
+            <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-ink-500">
+              <T value={activity.description} />
+            </p>
+          </div>
+          <div className="mt-2 flex items-center justify-between">
+            <span className="text-[11px] text-ink-400">
+              {activity.mode === "ranking"
+                ? `${activity.items?.length ?? 0} items · expert ranking · debrief`
+                : `${activity.questions?.length ?? 0} questions · 16 profiles`}
+            </span>
+            <div
+              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition ${
+                selected ? "border-emerald-600 bg-emerald-600" : "border-ink-300"
+              }`}
+            >
+              {selected && <span className="text-[10px] font-bold text-white">✓</span>}
+            </div>
+          </div>
         </div>
       </div>
     </button>

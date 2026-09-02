@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#070a16"/>
+  <circle cx="620" cy="130" r="110" fill="#fdf6e3" opacity="0.07"/>
+  <circle cx="620" cy="130" r="72" fill="#fdf6e3" opacity="0.12"/>
+  <circle cx="130" cy="90" r="2.5" fill="#ffffff" opacity="0.9"/>
+  <circle cx="210" cy="150" r="2" fill="#ffffff" opacity="0.8"/>
+  <circle cx="320" cy="60" r="2" fill="#ffffff" opacity="0.9"/>
+  <circle cx="470" cy="100" r="1.8" fill="#ffffff" opacity="0.7"/>
+  <circle cx="560" cy="60" r="2.2" fill="#ffffff" opacity="0.85"/>
+  <circle cx="700" cy="210" r="2" fill="#ffffff" opacity="0.8"/>
+  <circle cx="740" cy="90" r="1.6" fill="#ffffff" opacity="0.7"/>
+  <circle cx="90" cy="260" r="1.8" fill="#ffffff" opacity="0.7"/>
+  <circle cx="640" cy="320" r="2" fill="#ffffff" opacity="0.75"/>
+  <circle cx="300" cy="200" r="1.6" fill="#ffffff" opacity="0.7"/>
+  <g>
+    <circle cx="400" cy="330" r="210" fill="#3b4258"/>
+    <circle cx="400" cy="330" r="170" fill="#4a526e"/>
+    <circle cx="330" cy="280" r="52" fill="#2f354a"/>
+    <circle cx="460" cy="250" r="34" fill="#333a50"/>
+    <circle cx="500" cy="360" r="42" fill="#2f354a"/>
+    <circle cx="290" cy="380" r="30" fill="#333a50"/>
+    <circle cx="380" cy="430" r="26" fill="#333a50"/>
+    <circle cx="430" cy="180" r="20" fill="#3d4560"/>
+    <circle cx="300" cy="210" r="14" fill="#3d4560"/>
+  </g>
+  <g transform="rotate(-8 400 380)">
+    <rect x="290" y="400" width="220" height="90" rx="14" fill="#c9ceda"/>
+    <rect x="310" y="418" width="180" height="54" rx="8" fill="#8a93ab"/>
+    <circle cx="382" cy="445" r="16" fill="#e2e7f0"/>
+    <rect x="240" y="452" width="30" height="80" rx="10" fill="#aab2c4"/>
+    <rect x="530" y="452" width="30" height="80" rx="10" fill="#aab2c4"/>
+    <rect x="232" y="372" width="26" height="96" rx="10" fill="#b8c0d2"/>
+    <rect x="542" y="372" width="26" height="96" rx="10" fill="#b8c0d2"/>
+    <rect x="268" y="536" width="52" height="18" rx="8" fill="#8a93ab"/>
+    <rect x="480" y="536" width="52" height="18" rx="8" fill="#8a93ab"/>
+    <rect x="270" y="352" width="80" height="34" rx="8" fill="#5b6478"/>
+    <rect x="450" y="352" width="80" height="34" rx="8" fill="#5b6478"/>
+    <rect x="330" y="480" width="140" height="44" rx="8" fill="#f2b23e"/>
+    <text x="400" y="509" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="700" fill="#5a4313">RESCUE-7</text>
+  </g>
+  <text x="60" y="72" font-family="Inter, system-ui, sans-serif" font-size="30" font-weight="700" fill="#ffffff">200 km până la bază</text>
+  <text x="60" y="104" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#aab4d0">Ce obiecte contează cu adevărat în vid?</text>
+</svg>

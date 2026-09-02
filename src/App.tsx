@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useRoute } from "./lib/router";
+import { LanguageProvider } from "./lib/i18n";
 import LandingPage from "./pages/LandingPage";
 import CreateRoom from "./pages/CreateRoom";
 import JoinRoom from "./pages/JoinRoom";
@@ -16,14 +17,20 @@ export default function App() {
     return () => clearTimeout(t);
   }, []);
 
+  let page;
   switch (route.name) {
     case "create":
-      return <CreateRoom />;
+      page = <CreateRoom />;
+      break;
     case "join":
-      return <JoinRoom />;
+      page = <JoinRoom />;
+      break;
     case "room":
-      return <RoomRoute roomId={route.roomId} />;
+      page = <RoomRoute roomId={route.roomId} />;
+      break;
     default:
-      return <LandingPage />;
+      page = <LandingPage />;
   }
+
+  return <LanguageProvider>{page}</LanguageProvider>;
 }

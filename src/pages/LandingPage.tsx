@@ -1,5 +1,6 @@
 import { navigate } from "../lib/router";
-import { Logo, LogoMark } from "../components/ui";
+import { CoachingHubBadge, Logo, LogoMark } from "../components/ui";
+import { LangToggle } from "../lib/i18n";
 
 const FEATURES = [
   {
@@ -45,13 +46,20 @@ export default function LandingPage() {
 
       <div className="relative mx-auto flex min-h-screen max-w-5xl flex-col px-6">
         <header className="flex items-center justify-between py-6 animate-fade-up">
-          <Logo dark />
-          <button
-            onClick={() => navigate("/join")}
-            className="btn btn-dark btn-sm"
-          >
-            Join a Room
-          </button>
+          <div className="flex items-center gap-4">
+            <Logo dark />
+            <span className="hidden h-4 w-px bg-white/15 sm:block" />
+            <CoachingHubBadge />
+          </div>
+          <div className="flex items-center gap-3">
+            <LangToggle dark />
+            <button
+              onClick={() => navigate("/join")}
+              className="btn btn-dark btn-sm"
+            >
+              Join a Room
+            </button>
+          </div>
         </header>
 
         <main className="flex flex-1 flex-col items-center justify-center pb-16 pt-10 text-center">
@@ -73,8 +81,8 @@ export default function LandingPage() {
             style={{ animationDelay: "180ms" }}
           >
             Open a room, share the link, and assemble a masterpiece with up to 20
-            friends. Watch each other's cursors, snap pieces into place, and finish
-            it as a team.
+            friends. Or pick a team coaching exercise — survival rankings, personality
+            profiles — and learn how your team really works together.
           </p>
 
           <div
@@ -113,8 +121,8 @@ export default function LandingPage() {
         </main>
 
         <footer className="pb-6 text-center text-xs text-ink-500 animate-fade-in">
-          PuzzleTogether · Miro, but everyone solves the same beautiful puzzle · Images via Wikimedia
-          Commons (public domain &amp; CC BY-SA)
+          PuzzleTogether · coachinghub · Miro, but everyone solves the same beautiful puzzle ·
+          Images via Wikimedia Commons (public domain &amp; CC BY-SA)
         </footer>
       </div>
     </div>
