@@ -142,8 +142,10 @@ try {
     return r.json();
   });
   await pageB.goto(`${BASE}/room/${qRoom.room.id}`);
+  await pageB.waitForSelector("text=Intră în cameră");
   await pageB.fill("input[placeholder='e.g. Maria']", "Maria");
-  await pageB.click("button:has-text('Join the Puzzle')");
+  await pageB.fill("input[placeholder='K7F2MX']", qRoom.room.code);
+  await pageB.click("button:has-text('Intră în joc')");
   await pageB.waitForFunction(() => window.__ptStore?.getState().status === "joined");
   await pageB.waitForSelector("text=Începe chestionarul");
   ok("questionnaire intro shows (RO default)", await pageB.locator("text=Busola Echipei").first().isVisible());
@@ -183,8 +185,10 @@ try {
   const pageC = await ctxC.newPage();
   watch(pageC, "C");
   await pageC.goto(`${BASE}/room/${qRoom.room.id}`);
+  await pageC.waitForSelector("text=Intră în cameră");
   await pageC.fill("input[placeholder='e.g. Maria']", "Alex");
-  await pageC.click("button:has-text('Join the Puzzle')");
+  await pageC.fill("input[placeholder='K7F2MX']", qRoom.room.code);
+  await pageC.click("button:has-text('Intră în joc')");
   await pageC.waitForFunction(() => window.__ptStore?.getState().status === "joined");
   await pageC.waitForSelector("text=Începe chestionarul");
   ok("second player joins questionnaire room", true);

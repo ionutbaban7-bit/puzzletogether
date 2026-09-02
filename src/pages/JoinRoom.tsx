@@ -8,8 +8,14 @@ import { Logo, Spinner } from "../components/ui";
 export default function JoinRoom() {
   const [ref, setRef] = useState(() => joinQueryCode() || "");
   const [name, setName] = useState(() => getSession().name || "");
+  const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+
+  // A pasted /room link only contains the room id — the access code is still
+  // required. Typing the code itself is enough (uuid refs contain dashes).
+  const parsedRef = extractRoomRef(ref);
+  const needsCode = !!parsedRef && parsedRef.includes("-");
 
   async function handleJoin() {
     const roomRef = extractRoomRef(ref);
@@ -21,6 +27,10 @@ export default function JoinRoom() {
       setError("Please enter your display name first.");
       return;
     }
+    if (needsCode && !code.trim()) {
+      setError("Room links also need the access code — ask the host for it.");
+      return;
+    }
     setBusy(true);
     setError("");
     try {
@@ -29,14 +39,19 @@ export default function JoinRoom() {
         roomRef,
         name.trim(),
         existing.pid || undefined,
+        code.trim() || undefined,
       );
       saveSession({ name: name.trim(), pid: playerId, roomId: room.id });
       navigate(`/room/${room.id}`);
     } catch (e) {
-      const code = (e as Error & { code?: string }).code;
+      const errCode = (e as Error & { code?: string }).code;
       const message = e instanceof Error ? e.message : "Could not join this room.";
-      if (code === "room_missing") {
+      if (errCode === "room_missing") {
         setError("We couldn't find a room with that code or link. Rooms expire after 24 hours of inactivity.");
+      } else if (errCode === "bad_code") {
+        setError("That access code is incorrect — double-check it with the host.");
+      } else if (errCode === "code_required") {
+        setError("This room requires an access code — ask the host for it.");
       } else {
         setError(message);
       }
@@ -72,6 +87,26 @@ export default function JoinRoom() {
             onChange={(e) => setRef(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleJoin()}
           />
+
+          {needsCode && (
+            <>
+              <label className="mt-4 block text-sm font-semibold text-ink-700" htmlFor="joincode">
+                Access code
+              </label>
+              <input
+                id="joincode"
+                className="input mt-2 font-mono uppercase tracking-[0.25em]"
+                placeholder="K7F2MX"
+                maxLength={12}
+                value={code}
+                onChange={(e) => setCode(e.target.value.toUpperCase())}
+                onKeyDown={(e) => e.key === "Enter" && handleJoin()}
+              />
+              <div className="mt-1.5 text-xs text-ink-400">
+                Room links require the access code shared by the host.
+              </div>
+            </>
+          )}
 
           <label className="mt-4 block text-sm font-semibold text-ink-700" htmlFor="joinname">
             Display name

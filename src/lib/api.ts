@@ -28,10 +28,18 @@ export const api = {
     });
   },
 
-  joinRoom(ref: string, name: string, pid?: string) {
+  joinRoom(ref: string, name: string, pid?: string, code?: string) {
     return post<{ room: RoomView; playerId: string; returning?: boolean }>(
       `/api/rooms/${encodeURIComponent(ref)}/join`,
-      { name, pid },
+      { name, pid, code },
+    );
+  },
+
+  /** Host swaps the room to a different puzzle/activity; everyone stays connected. */
+  changePuzzle(ref: string, puzzleId: string, difficulty: string, pid: string) {
+    return post<{ ok: boolean; room: RoomView }>(
+      `/api/rooms/${encodeURIComponent(ref)}/puzzle`,
+      { puzzleId, difficulty, pid },
     );
   },
 

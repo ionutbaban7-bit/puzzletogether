@@ -24,6 +24,8 @@ export interface StoreState {
   cursors: Record<string, CursorView>;
   completion: { players: string[] } | null;
   ratings: Record<string, RatingView>;
+  /** Bumped whenever the board is rebuilt (reset or new puzzle) so views can re-fit. */
+  epoch: number;
 }
 
 const initialState: StoreState = {
@@ -37,6 +39,7 @@ const initialState: StoreState = {
   cursors: {},
   completion: null,
   ratings: {},
+  epoch: 0,
 };
 
 let state: StoreState = initialState;
@@ -128,6 +131,22 @@ function handleMessage(msg: { t: string; [k: string]: unknown }) {
         pieces: Object.fromEntries(pieces.map((p) => [p.id, p])),
         completion: null,
         ratings: {},
+        epoch: state.epoch + 1,
+      });
+      break;
+    }
+    case "puzzle": {
+      // The host switched the room to a different puzzle/activity.
+      const room = msg.room as RoomView;
+      const puzzle = msg.puzzle as PuzzleView;
+      const pieces = (msg.pieces as Piece[]) || [];
+      set({
+        room,
+        puzzle,
+        pieces: Object.fromEntries(pieces.map((p) => [p.id, p])),
+        completion: null,
+        ratings: {},
+        epoch: state.epoch + 1,
       });
       break;
     }

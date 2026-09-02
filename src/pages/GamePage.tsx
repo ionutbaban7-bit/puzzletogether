@@ -7,6 +7,7 @@ import { copyToClipboard, formatClock, inviteUrl } from "../lib/format";
 import { navigate } from "../lib/router";
 import { store, useStore } from "../store";
 import { Confetti, LogoMark, Modal, Spinner, useCopied } from "../components/ui";
+import PuzzlePicker from "../components/PuzzlePicker";
 import { LangToggle, pick, useLang, T } from "../lib/i18n";
 import { lockedCountOf } from "../store";
 
@@ -38,8 +39,10 @@ export default function GamePage() {
   const completion = useStore((s) => s.completion);
   const denyMessage = useStore((s) => s.denyMessage);
   const closedMessage = useStore((s) => s.closedMessage);
+  const epoch = useStore((s) => s.epoch);
 
   const [shareOpen, setShareOpen] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [now, setNow] = useState(Date.now());
   const [resetSignal, setResetSignal] = useState(0);
   const [copied, markCopied] = useCopied();
@@ -49,6 +52,11 @@ export default function GamePage() {
     return () => clearInterval(t);
   }, []);
 
+  // When the board is rebuilt (new puzzle / reset from anyone), close the picker.
+  useEffect(() => {
+    setPickerOpen(false);
+  }, [epoch]);
+
   const locked = lockedCountOf(pieces);
   const total = room?.total || 1;
   const progress = Math.round((locked / total) * 100);
@@ -56,6 +64,11 @@ export default function GamePage() {
   const playerCount = players.length;
   const isCoaching = !!puzzle?.isCoaching;
   const mode = puzzle?.mode;
+
+  // The room creator facilitates; if they left, the first connected player takes over.
+  const hostConnected = !!room?.hostId && players.some((p) => p.id === room.hostId);
+  const isHost =
+    !!youId && !!room && (room.hostId === youId || (!hostConnected && players[0]?.id === youId));
 
   async function handleReset() {
     if (!room) return;
@@ -130,9 +143,20 @@ export default function GamePage() {
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-ink-950">
       {isCoaching && mode === "ranking" ? (
-        <RankingActivity puzzle={puzzle} pieces={pieces} players={players} youId={youId} />
+        <RankingActivity
+          key={`${room.puzzleId}:${epoch}`}
+          puzzle={puzzle}
+          pieces={pieces}
+          players={players}
+          youId={youId}
+        />
       ) : isCoaching && mode === "questionnaire" ? (
-        <QuestionnaireActivity puzzle={puzzle} players={players} youId={youId} />
+        <QuestionnaireActivity
+          key={`${room.puzzleId}:${epoch}`}
+          puzzle={puzzle}
+          players={players}
+          youId={youId}
+        />
       ) : (
         <Board
           puzzle={puzzle}
@@ -143,7 +167,7 @@ export default function GamePage() {
           onPieceDrop={() => {}}
           onResetRequest={handleReset}
           allowReset={!!room.completed}
-          resetSignal={resetSignal}
+          resetSignal={resetSignal + epoch}
         />
       )}
 
@@ -204,6 +228,11 @@ export default function GamePage() {
         {/* Actions */}
         <div className="pointer-events-auto flex items-center gap-2">
           <LangToggle dark />
+          {isHost && (
+            <button className="btn btn-dark btn-sm" onClick={() => setPickerOpen(true)}>
+              🧩 <T value={{ ro: "Alt puzzle", en: "New puzzle" }} />
+            </button>
+          )}
           {!isCoaching && (
             <button className="btn btn-dark btn-sm" onClick={() => setShareOpen(true)}>
               🔗 <T value={{ ro: "Partajează", en: "Share" }} />
@@ -281,17 +310,23 @@ export default function GamePage() {
             </div>
             <p className="mt-1 text-sm text-ink-300">
               <T value={{
-                ro: `Oricine cu linkul sau codul poate intra — maxim ${room.maxPlayers} jucători.`,
-                en: `Anyone with the link or code can join — up to ${room.maxPlayers} players.`
+                ro: `Trimite linkul împreună cu codul de acces — codul este cerut obligatoriu la intrare. Maxim ${room.maxPlayers} jucători.`,
+                en: `Share the link together with the access code — the code is required to enter. Up to ${room.maxPlayers} players.`
               }} />
             </p>
 
             <div className="mt-5 rounded-xl border border-white/10 bg-white/5 p-4">
               <div className="text-[11px] font-bold uppercase tracking-wider text-ink-400">
-                <T value={{ ro: "Codul camerei", en: "Room code" }} />
+                <T value={{ ro: "Cod de acces", en: "Access code" }} />
               </div>
               <div className="font-display mt-1 text-3xl font-extrabold tracking-[0.35em] text-white">
                 {room.code}
+              </div>
+              <div className="mt-1 text-[11px] text-ink-400">
+                <T value={{
+                  ro: "Participanții introduc acest cod după ce deschid linkul.",
+                  en: "Participants type this code after opening the link.",
+                }} />
               </div>
             </div>
 
@@ -379,9 +414,29 @@ export default function GamePage() {
               )}
 
               <div className="mt-7 grid gap-2">
-                <button className="btn-primary w-full" onClick={handleReset}>
-                  ↺ <T value={{ ro: "Joacă alt puzzle în această cameră", en: "Play Another Puzzle in this Room" }} />
-                </button>
+                {isHost ? (
+                  <>
+                    <button className="btn-primary w-full" onClick={() => setPickerOpen(true)}>
+                      🧩 <T value={{ ro: "Joacă alt puzzle în această cameră", en: "Play another puzzle in this room" }} />
+                    </button>
+                    <button
+                      className="btn w-full border border-white/10 bg-white/5 text-white hover:bg-white/10"
+                      onClick={handleReset}
+                    >
+                      ↺ <T value={{ ro: "Rejoacă același puzzle", en: "Replay the same puzzle" }} />
+                    </button>
+                  </>
+                ) : (
+                  <div className="rounded-xl border border-brand-400/30 bg-brand-500/10 px-4 py-3 text-sm text-brand-100">
+                    <span className="mr-1.5">⏳</span>
+                    <T
+                      value={{
+                        ro: "Gazda alege următorul puzzle — rămâi conectat, jocul pornește automat pentru toți.",
+                        en: "The host is picking the next puzzle — stay connected, the game starts automatically for everyone.",
+                      }}
+                    />
+                  </div>
+                )}
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     className="btn btn-sm border border-white/10 bg-white/5 text-white hover:bg-white/10"
@@ -403,6 +458,11 @@ export default function GamePage() {
             </div>
           </Modal>
         </>
+      )}
+
+      {/* --------------------------------------------- puzzle picker (host) */}
+      {pickerOpen && room && (
+        <PuzzlePicker room={room} youId={youId} onClose={() => setPickerOpen(false)} />
       )}
     </div>
   );

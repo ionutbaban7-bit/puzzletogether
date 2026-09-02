@@ -99,9 +99,13 @@ const roomId = create.data.room?.id;
 const code = create.data.room?.code;
 ok("room has shareable code", typeof code === "string" && code.length === 6, code);
 
-// 2. join as second player via HTTP
-const join = await api.post(`/api/rooms/${roomId}/join`, { name: "Maria" });
-ok("join room via id", join.status === 200);
+// 2. join as second player via HTTP — the access code is now mandatory for links
+const joinNoCode = await api.post(`/api/rooms/${roomId}/join`, { name: "Maria" });
+ok("join via id WITHOUT code is rejected", joinNoCode.status === 403 && joinNoCode.data?.code === "code_required", `${joinNoCode.status}`);
+const joinBadCode = await api.post(`/api/rooms/${roomId}/join`, { name: "Maria", code: "WRONG1" });
+ok("join via id with WRONG code is rejected", joinBadCode.status === 403 && joinBadCode.data?.code === "bad_code", `${joinBadCode.status}`);
+const join = await api.post(`/api/rooms/${roomId}/join`, { name: "Maria", code });
+ok("join room via id + code", join.status === 200);
 
 // 3. join by code as third player
 const joinCode = await api.post(`/api/rooms/${code}/join`, { name: "Alex" });
@@ -188,7 +192,7 @@ ok("completion broadcast fired", completion.room?.completed === true && completi
 let fullErr = null;
 let joined = 0;
 for (let i = 0; i < 18; i++) {
-  const r = await api.post(`/api/rooms/${roomId}/join`, { name: `Bot${i}` });
+  const r = await api.post(`/api/rooms/${roomId}/join`, { name: `Bot${i}`, code });
   if (r.status === 200) joined++;
   else {
     fullErr = r;

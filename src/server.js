@@ -141,6 +141,7 @@ function roomView(room) {
   return {
     id: room.id,
     code: room.code,
+    hostId: room.hostId,
     puzzleId: room.config.puzzleId,
     difficulty: room.config.difficulty,
     total: room.config.total,
@@ -150,6 +151,13 @@ function roomView(room) {
     completedAt: room.completedAt,
     completedInMs: room.completedInMs,
   };
+}
+
+/** Room view safe to show to people who have NOT proven they know the access code. */
+function publicRoomView(room) {
+  const view = roomView(room);
+  delete view.code; // the access code is the room's secret — never leak it via the link
+  return view;
 }
 
 function puzzleView(room) {
@@ -226,8 +234,13 @@ function scatterPieces(room) {
   }
 }
 
-function createRoom(config) {
-  let puzzle = puzzleById.get(config.puzzleId);
+/**
+ * Computes everything that depends on the chosen puzzle/activity + difficulty:
+ * config, coaching payload, board geometry, puzzle metadata and the piece set.
+ * Used both when a room is created and when the host switches to a new puzzle.
+ */
+function buildPuzzleSetup(config) {
+  const puzzle = puzzleById.get(config.puzzleId);
   const coachingActivity = !puzzle ? activityById.get(config.puzzleId) : null;
   if (!puzzle && !coachingActivity) throw new Error("unknown puzzle");
   const difficulty = DIFFICULTIES.find((d) => d.id === config.difficulty) || DIFFICULTIES[0];
@@ -250,13 +263,49 @@ function createRoom(config) {
   const dims = puzzle ? imageDims[puzzle.image.split("/").pop()] || { w: 1600, h: 1000 } : { w: 0, h: 0 };
   const grid = computeGrid(dims.w, dims.h, difficulty.pieces);
 
-  const room = {
-    id: crypto.randomUUID(),
-    code: generateCode(),
+  const pieces = [];
+  if (coachingActivity) {
+    if (coachingActivity.mode === "ranking") {
+      coachingActivity.items.forEach((_item, i) => {
+        const col = i % layout.cols;
+        const row = Math.floor(i / layout.cols);
+        pieces.push({
+          id: i,
+          x: 0,
+          y: 0,
+          correctX: layout.padX + col * (layout.slotW + layout.gapX),
+          correctY: layout.padY + row * (layout.slotH + layout.gapY),
+          drag: false,
+          moved: false,
+          locked: false,
+        });
+      });
+    }
+    // questionnaire rooms have no pieces; per-player answers live in room.ratings
+  } else {
+    const pw = grid.pieceW;
+    const ph = grid.pieceH;
+    for (let i = 0; i < difficulty.pieces; i++) {
+      const col = i % grid.cols;
+      const row = Math.floor(i / grid.cols);
+      pieces.push({
+        id: i,
+        x: 0,
+        y: 0,
+        correctX: col * pw,
+        correctY: row * ph,
+        drag: false,
+        moved: false,
+        locked: false,
+      });
+    }
+  }
+
+  return {
     config: { puzzleId: coachingActivity ? coachingActivity.id : puzzle.id, difficulty: difficulty.id, total },
     coachingActivity: coachingActivity || null,
-    board: board,
-    puzzle: {
+    board,
+    puzzleMeta: {
       image: coachingActivity ? coachingActivity.cover : puzzle.image,
       name: coachingActivity ? coachingActivity.name : puzzle.name,
       category: coachingActivity ? "coaching" : puzzle.category,
@@ -270,6 +319,40 @@ function createRoom(config) {
       pieceW: board ? board.pieceW : grid.pieceW,
       pieceH: board ? board.pieceH : grid.pieceH,
     },
+    pieces,
+  };
+}
+
+/**
+ * Installs a (new) puzzle into an existing room: swaps geometry + pieces,
+ * clears completion state / ratings and restarts the room timer. Players and
+ * connections are untouched, so everyone stays in the room.
+ */
+function applyPuzzleToRoom(room, config) {
+  const setup = buildPuzzleSetup(config);
+  room.config = setup.config;
+  room.coachingActivity = setup.coachingActivity;
+  room.board = setup.board;
+  room.puzzle = setup.puzzleMeta;
+  room.pieces = setup.pieces;
+  if (room.pieces.length) scatterPieces(room);
+  room.ratings.clear();
+  room.completed = false;
+  room.completedAt = null;
+  room.completedInMs = null;
+  room.completionPlayers = [];
+  room.createdAt = Date.now(); // restarts the timer for the new puzzle
+}
+
+function createRoom(config) {
+  const room = {
+    id: crypto.randomUUID(),
+    code: generateCode(),
+    hostId: null, // set right after creation to the creator's playerId
+    config: null,
+    coachingActivity: null,
+    board: null,
+    puzzle: null,
     pieces: [],
     ratings: new Map(), // questionnaire only: playerId -> {answers, done}
     players: new Map(), // active playerId -> {id,name,color,joinedAt,lastSeenAt}
@@ -285,44 +368,7 @@ function createRoom(config) {
     completionPlayers: [],
   };
 
-  if (coachingActivity) {
-    if (coachingActivity.mode === "ranking") {
-      coachingActivity.items.forEach((_item, i) => {
-        const col = i % layout.cols;
-        const row = Math.floor(i / layout.cols);
-        room.pieces.push({
-          id: i,
-          x: 0,
-          y: 0,
-          correctX: layout.padX + col * (layout.slotW + layout.gapX),
-          correctY: layout.padY + row * (layout.slotH + layout.gapY),
-          drag: false,
-          moved: false,
-          locked: false,
-        });
-      });
-      scatterPieces(room);
-    }
-    // questionnaire rooms have no pieces; per-player answers live in room.ratings
-  } else {
-    const pw = grid.pieceW;
-    const ph = grid.pieceH;
-    for (let i = 0; i < difficulty.pieces; i++) {
-      const col = i % grid.cols;
-      const row = Math.floor(i / grid.cols);
-      room.pieces.push({
-        id: i,
-        x: 0,
-        y: 0,
-        correctX: col * pw,
-        correctY: row * ph,
-        drag: false,
-        moved: false,
-        locked: false,
-      });
-    }
-    scatterPieces(room);
-  }
+  applyPuzzleToRoom(room, config);
 
   rooms.set(room.id, room);
   codeIndex.set(room.code, room.id);
@@ -412,6 +458,7 @@ app.post("/api/rooms", (req, res) => {
   try {
     const room = createRoom({ puzzleId, difficulty });
     const playerId = newPlayerId();
+    room.hostId = playerId; // the creator facilitates the room
     room.knownPlayers.set(playerId, { name: name.trim().slice(0, 24), color: null });
     room.pending.set(playerId, {
       name: name.trim().slice(0, 24),
@@ -429,18 +476,31 @@ app.post("/api/rooms/:id/join", (req, res) => {
   if (!room) {
     return res.status(404).json({ error: "Room not found.", code: "room_missing" });
   }
-  const { name, pid } = req.body || {};
+  const { name, pid, code } = req.body || {};
   if (typeof name !== "string" || !name.trim()) {
     return res.status(400).json({ error: "A display name is required." });
   }
   const cleanName = name.trim().slice(0, 24);
 
-  // Returning player (same tab/browser session): reuse their seat.
+  // Returning player (same tab/browser session): reuse their seat, no code needed.
   if (pid && room.knownPlayers.has(pid)) {
     if (room.players.has(pid) && room.conns.has(pid)) {
       return res.json({ room: roomView(room), playerId: pid, returning: true });
     }
     return res.json({ room: roomView(room), playerId: pid, returning: true });
+  }
+
+  // New players must prove they know the access code. Joining by typing the
+  // code itself counts as proof; opening the bare /room/<uuid> link does not.
+  const refIsCode = String(req.params.id || "").trim().toUpperCase() === room.code;
+  const providedCode = typeof code === "string" ? code.trim().toUpperCase() : "";
+  if (!refIsCode && providedCode !== room.code) {
+    return res.status(403).json({
+      error: providedCode
+        ? "That access code is incorrect."
+        : "This room requires an access code.",
+      code: providedCode ? "bad_code" : "code_required",
+    });
   }
 
   if (room.players.size + room.pending.size >= MAX_PLAYERS) {
@@ -465,11 +525,44 @@ app.get("/api/rooms/:id", (req, res) => {
   const room = findRoom(req.params.id);
   if (!room) return res.status(404).json({ error: "Room not found." });
   res.json({
-    room: roomView(room),
+    room: publicRoomView(room),
     puzzle: puzzleView(room),
     players: activePlayerList(room),
     playerCount: room.players.size + room.pending.size,
   });
+});
+
+/**
+ * Host picks a different puzzle for the SAME room: players stay connected,
+ * pieces/board are rebuilt and everyone is switched over via broadcast.
+ */
+app.post("/api/rooms/:id/puzzle", (req, res) => {
+  const room = findRoom(req.params.id);
+  if (!room) return res.status(404).json({ error: "Room not found.", code: "room_missing" });
+  const { puzzleId, difficulty, pid } = req.body || {};
+  if (!pid || !room.knownPlayers.has(pid)) {
+    return res.status(403).json({ error: "Only players in this room can change the puzzle.", code: "not_member" });
+  }
+  // The host controls the flow; if the host is gone, any active player may take over.
+  const hostPresent = room.players.has(room.hostId) || room.conns.has(room.hostId);
+  if (pid !== room.hostId && hostPresent) {
+    return res.status(403).json({ error: "Only the host can pick the next puzzle.", code: "not_host" });
+  }
+  try {
+    applyPuzzleToRoom(room, { puzzleId, difficulty });
+  } catch {
+    return res.status(400).json({ error: "Unknown puzzle or activity." });
+  }
+  if (pid !== room.hostId) room.hostId = pid; // takeover when the host left
+  touch(room);
+  broadcast(room, {
+    t: "puzzle",
+    room: roomView(room),
+    puzzle: puzzleView(room),
+    pieces: room.pieces.map(serializePiece),
+    ratings: [],
+  });
+  res.json({ ok: true, room: roomView(room) });
 });
 
 app.post("/api/rooms/:id/reset", (req, res) => {

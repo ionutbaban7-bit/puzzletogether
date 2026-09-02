@@ -18,7 +18,9 @@ export interface PlayerView {
 
 export interface RoomView {
   id: string;
-  code: string;
+  /** Access code — only present once you've joined (never leaked via the link). */
+  code?: string;
+  hostId?: string | null;
   puzzleId: string;
   difficulty: string;
   total: number;
