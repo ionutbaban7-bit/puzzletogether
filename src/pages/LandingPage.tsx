@@ -1,22 +1,22 @@
 import { navigate } from "../lib/router";
 import { Logo, LogoMark } from "../components/ui";
-import { LangToggle } from "../lib/i18n";
+import { LangToggle, T, type Bilingual } from "../lib/i18n";
 
-const FEATURES = [
+const FEATURES: Array<{ icon: string; title: Bilingual; text: Bilingual }> = [
   {
     icon: "⚡",
-    title: "Real-time together",
-    text: "Every move syncs instantly — watch friends place pieces live.",
+    title: { ro: "Timp real împreună", en: "Real-time together" },
+    text: { ro: "Fiecare mișcare se sincronizează instant — urmărește prietenii plasând piese în direct.", en: "Every move syncs instantly — watch friends place pieces live." },
   },
   {
     icon: "🖼️",
-    title: "Curated masterpieces",
-    text: "Van Gogh, Hokusai, Monet and more — public-domain images, properly credited.",
+    title: { ro: "Capodopere curate", en: "Curated masterpieces" },
+    text: { ro: "Van Gogh, Hokusai, Monet și alții — imagini din domeniu public, corect atribuite.", en: "Van Gogh, Hokusai, Monet and more — public-domain images, properly credited." },
   },
   {
     icon: "🔓",
-    title: "No sign-up",
-    text: "Pick a name, create a room, share the link. That's it.",
+    title: { ro: "Fără înregistrare", en: "No sign-up" },
+    text: { ro: "Alege un nume, creează o cameră, partajează linkul. Gata.", en: "Pick a name, create a room, share the link. That's it." },
   },
 ];
 
@@ -55,7 +55,7 @@ export default function LandingPage() {
               onClick={() => navigate("/join")}
               className="btn btn-dark btn-sm"
             >
-              Join a Room
+              <T value={{ ro: "Intră în Cameră", en: "Join a Room" }} />
             </button>
           </div>
         </header>
@@ -68,18 +68,20 @@ export default function LandingPage() {
             className="font-display mt-7 max-w-3xl text-5xl font-extrabold leading-[1.06] tracking-tight sm:text-6xl animate-fade-up"
             style={{ animationDelay: "120ms" }}
           >
-            Solve beautiful puzzles{" "}
+            <T value={{ ro: "Rezolvă puzzle-uri frumoase", en: "Solve beautiful puzzles" }} />{" "}
             <span className="bg-gradient-to-r from-brand-300 via-brand-400 to-sky-400 bg-clip-text text-transparent">
-              together
+              <T value={{ ro: "împreună", en: "together" }} />
             </span>
-            , in real time.
+            , <T value={{ ro: "în timp real.", en: "in real time." }} />
           </h1>
           <p
             className="mt-5 max-w-xl text-lg leading-relaxed text-ink-300 animate-fade-up"
             style={{ animationDelay: "180ms" }}
           >
-            Open a room, share the link, and assemble a masterpiece with up to 20
-            friends.
+            <T value={{ 
+              ro: "Deschide o cameră, partajează linkul și asamblează o capodoperă cu până la 20 de prieteni.",
+              en: "Open a room, share the link, and assemble a masterpiece with up to 20 friends."
+            }} />
           </p>
 
           <div
@@ -87,14 +89,14 @@ export default function LandingPage() {
             style={{ animationDelay: "240ms" }}
           >
             <button onClick={() => navigate("/create")} className="btn-primary w-56 sm:w-auto">
-              Create a Room
+              <T value={{ ro: "Creează o Cameră", en: "Create a Room" }} />
               <span aria-hidden>→</span>
             </button>
             <button
               onClick={() => navigate("/join")}
               className="btn w-56 border border-white/15 bg-white/5 px-6 py-3.5 text-[15px] text-white backdrop-blur hover:bg-white/10 active:scale-[0.98] sm:w-auto"
             >
-              Join a Room
+              <T value={{ ro: "Intră în Cameră", en: "Join a Room" }} />
             </button>
           </div>
 
@@ -104,21 +106,27 @@ export default function LandingPage() {
           >
             {FEATURES.map((f) => (
               <div
-                key={f.title}
+                key={f.title.en}
                 className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-left backdrop-blur"
               >
                 <div className="text-2xl">{f.icon}</div>
                 <div className="mt-3 font-display text-[15px] font-semibold text-white">
-                  {f.title}
+                  <T value={f.title} />
                 </div>
-                <div className="mt-1.5 text-[13px] leading-relaxed text-ink-300">{f.text}</div>
+                <div className="mt-1.5 text-[13px] leading-relaxed text-ink-300">
+                  <T value={f.text} />
+                </div>
               </div>
             ))}
           </div>
         </main>
 
         <footer className="pb-6 text-center text-xs text-ink-500 animate-fade-in">
-          PuzzleTogether · Miro, but everyone solves the same beautiful puzzle ·
+          <T value={{ 
+            ro: "PuzzleTogether · Rezolvă aceeași puzzle frumoasă cu toții ·",
+            en: "PuzzleTogether · Miro, but everyone solves the same beautiful puzzle ·"
+          }} />
+          <br />
           Images via Wikimedia Commons (public domain &amp; CC BY-SA)
         </footer>
       </div>
