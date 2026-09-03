@@ -34,6 +34,21 @@
       "id": "cities",
       "name": "Cities",
       "icon": "🏙️"
+    },
+    {
+      "id": "isometric-worlds",
+      "name": "Isometric Worlds",
+      "icon": "isometric-worlds"
+    },
+    {
+      "id": "abstract-geometry",
+      "name": "Abstract Geometry",
+      "icon": "abstract-geometry"
+    },
+    {
+      "id": "blueprint-architecture",
+      "name": "Blueprint Architecture",
+      "icon": "blueprint-architecture"
     }
   ],
   "difficulties": [
@@ -1010,6 +1025,1381 @@
         0.5,
         0.55
       ]
+    },
+    {
+      "id": "aurora-abstraction",
+      "category": "paintings",
+      "name": "Aurora Abstraction",
+      "nameRo": "Abstracție aurorală",
+      "image": "/images/full/aurora-abstraction.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "aurora-abstraction.png (original source; archived as aurora-abstraction.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Pictură abstractă cu panglici de lumină în albastru, roz și violet.",
+        "en": "Abstract painting with ribbons of blue, pink, and purple light."
+      },
+      "checksum": "sha256:cfb9ec4c6f529cf9bf4ca62aa81ee546f52916b386cb4c019237be1bd61e1034"
+    },
+    {
+      "id": "carpathian-folk-painting",
+      "category": "paintings",
+      "name": "Carpathian Hills",
+      "nameRo": "Coline carpatine",
+      "image": "/images/full/carpathian-folk-painting.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "carpathian-folk-painting.png (original source; archived as carpathian-folk-painting.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Pictură cu coline, câmpuri și munți carpatini.",
+        "en": "Painting of Carpathian hills, fields, and mountains."
+      },
+      "checksum": "sha256:b025217aec634291f081dc299d34fd70e2aeb3f700745296ec3e54b96892d679"
+    },
+    {
+      "id": "botanical-mosaic-painting",
+      "category": "paintings",
+      "name": "Botanical Mosaic",
+      "nameRo": "Mozaic botanic",
+      "image": "/images/full/botanical-mosaic-painting.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "botanical-mosaic-painting.png (original source; archived as botanical-mosaic-painting.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Pictură densă cu frunze, flori și forme botanice.",
+        "en": "Dense painting of leaves, flowers, and botanical forms."
+      },
+      "checksum": "sha256:093225e20881cb0d06ff4d0ed8fd68078a8935dddc64e16d79fdb4652d26b17c"
+    },
+    {
+      "id": "coastal-color-study",
+      "category": "paintings",
+      "name": "Coastal Colour Study",
+      "nameRo": "Studiu de coastă",
+      "image": "/images/full/coastal-color-study.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "coastal-color-study.png (original source; archived as coastal-color-study.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Pictură impresionistă cu mare, stânci și apus.",
+        "en": "Impressionist painting of sea, rocks, and sunset."
+      },
+      "checksum": "sha256:efa804bd24c0274757249ac67581f8adb74461d3ebda003ff5533e1d84b770d3"
+    },
+    {
+      "id": "night-garden-painting",
+      "category": "paintings",
+      "name": "Night Garden",
+      "nameRo": "Grădină de noapte",
+      "image": "/images/full/night-garden-painting.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "night-garden-painting.png (original source; archived as night-garden-painting.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Pictură nocturnă cu flori luminoase și frunziș indigo.",
+        "en": "Night painting with luminous flowers and indigo foliage."
+      },
+      "checksum": "sha256:62c2669ef470a7571b1ee21f39618f6e3a28bf92ea15d7750be4ac5b9c92af07"
+    },
+    {
+      "id": "fagaras-sunrise",
+      "category": "landscapes",
+      "name": "Făgăraș Sunrise",
+      "nameRo": "Răsărit în Făgăraș",
+      "image": "/images/full/fagaras-sunrise.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "fagaras-sunrise.png (original source; archived as fagaras-sunrise.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Răsărit peste Munții Făgăraș, România.",
+        "en": "Sunrise over the Făgăraș Mountains, Romania."
+      },
+      "checksum": "sha256:ecbaefbf12317bb6dd7b68953c8089c9d5ac9a549f30a05fce737081447d7222"
+    },
+    {
+      "id": "danube-delta-mist",
+      "category": "landscapes",
+      "name": "Danube Delta Mist",
+      "nameRo": "Ceață în Delta Dunării",
+      "image": "/images/full/danube-delta-mist.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "danube-delta-mist.png (original source; archived as danube-delta-mist.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Canale și stuf în Delta Dunării, România, la răsărit.",
+        "en": "Channels and reeds in Romania's Danube Delta at dawn."
+      },
+      "checksum": "sha256:9653384eec76ac5ddbe79998c93daca2d5f1aa50f3322ab465bc0ea0d7fbeb40"
+    },
+    {
+      "id": "apuseni-karst",
+      "category": "landscapes",
+      "name": "Apuseni Karst",
+      "nameRo": "Carst în Apuseni",
+      "image": "/images/full/apuseni-karst.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "apuseni-karst.png (original source; archived as apuseni-karst.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Stânci calcaroase și pădure în Munții Apuseni, România.",
+        "en": "Limestone cliffs and forest in Romania's Apuseni Mountains."
+      },
+      "checksum": "sha256:8fbe68b6b00023b316179f5d5e148fba28fc8ab72094ae079ecc53a70e1b61aa"
+    },
+    {
+      "id": "transfagarasan-autumn",
+      "category": "landscapes",
+      "name": "Transfăgărășan in Autumn",
+      "nameRo": "Transfăgărășan de toamnă",
+      "image": "/images/full/transfagarasan-autumn.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "transfagarasan-autumn.png (original source; archived as transfagarasan-autumn.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Drum montan prin pădure de toamnă, România.",
+        "en": "Mountain road through autumn forest, Romania."
+      },
+      "checksum": "sha256:8797fe2836d1597fbeb0cd53796a61bca978cb7fcb5acf3f1574df0d67906954"
+    },
+    {
+      "id": "rila-lake",
+      "category": "landscapes",
+      "name": "Rila Mountain Lake",
+      "nameRo": "Lac în Rila",
+      "image": "/images/full/rila-lake.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "rila-lake.png (original source; archived as rila-lake.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Lac alpin și vârfuri de granit în Munții Rila.",
+        "en": "Alpine lake and granite peaks in the Rila Mountains."
+      },
+      "checksum": "sha256:c8551edca74c4301ffb900d5112d3ab8cb05cbb1ab318a1e1e41434bc9aaf2a8"
+    },
+    {
+      "id": "bran-castle-dawn",
+      "category": "landmarks",
+      "name": "Bran Castle at Dawn",
+      "nameRo": "Castelul Bran la răsărit",
+      "image": "/images/full/bran-castle-dawn.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "bran-castle-dawn.png (original source; archived as bran-castle-dawn.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Castelul Bran pe o culme împădurită, România.",
+        "en": "Bran Castle on a wooded ridge, Romania."
+      },
+      "checksum": "sha256:b8ffb6140c3fd8109601a7b9590750e1fd3d13c45ac9b30f2b0786504471f3c0"
+    },
+    {
+      "id": "palace-parliament-dusk",
+      "category": "landmarks",
+      "name": "Palace of Parliament",
+      "nameRo": "Palatul Parlamentului",
+      "image": "/images/full/palace-parliament-dusk.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "palace-parliament-dusk.png (original source; archived as palace-parliament-dusk.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Fațada Palatului Parlamentului din București, la ceas albastru.",
+        "en": "Palace of Parliament facade in Bucharest at blue hour."
+      },
+      "checksum": "sha256:323449bb1cc0f5b2ec754507ac10fa78ee606a3b396f6968b9c6a24ef33dd1de"
+    },
+    {
+      "id": "corvin-castle",
+      "category": "landmarks",
+      "name": "Corvin Castle",
+      "nameRo": "Castelul Corvinilor",
+      "image": "/images/full/corvin-castle.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "corvin-castle.png (original source; archived as corvin-castle.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Castelul Corvinilor și podul său de lemn, Hunedoara.",
+        "en": "Corvin Castle and its timber bridge, Hunedoara."
+      },
+      "checksum": "sha256:60763f1c5d03737ae95c153ccca082e470ed84d487e2cf7ec926e1ca575da3a2"
+    },
+    {
+      "id": "sighisoara-clock-tower",
+      "category": "landmarks",
+      "name": "Sighișoara Clock Tower",
+      "nameRo": "Turnul cu ceas din Sighișoara",
+      "image": "/images/full/sighisoara-clock-tower.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "sighisoara-clock-tower.png (original source; archived as sighisoara-clock-tower.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Turnul cu ceas și acoperișuri istorice din Sighișoara.",
+        "en": "Clock Tower and historic roofs in Sighișoara."
+      },
+      "checksum": "sha256:2999bfac04fc6d06cfab867ef00c9574c592afb9c4cced595fc5c39aa6e1ce4e"
+    },
+    {
+      "id": "maramures-wooden-church",
+      "category": "landmarks",
+      "name": "Maramureș Wooden Church",
+      "nameRo": "Biserică din lemn în Maramureș",
+      "image": "/images/full/maramures-wooden-church.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "maramures-wooden-church.png (original source; archived as maramures-wooden-church.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Biserică tradițională din lemn în Maramureș, România.",
+        "en": "Traditional wooden church in Maramureș, Romania."
+      },
+      "checksum": "sha256:ec70457bf60a0cdc84e68156c422a0a387f0fd1569101efba2e3eaf99a40268a"
+    },
+    {
+      "id": "carpathian-beech-forest",
+      "category": "nature",
+      "name": "Carpathian Beech Forest",
+      "nameRo": "Pădure de fag carpatină",
+      "image": "/images/full/carpathian-beech-forest.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "carpathian-beech-forest.png (original source; archived as carpathian-beech-forest.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Pădure de fag cu lumină filtrată în Carpați.",
+        "en": "Beech forest with filtered light in the Carpathians."
+      },
+      "checksum": "sha256:6a8186cbd6ced1209fb896523ffed7e7f3d74ea0af2dddf97641a3ff9ec92e81"
+    },
+    {
+      "id": "danube-pelicans",
+      "category": "nature",
+      "name": "Pelicans in the Delta",
+      "nameRo": "Pelicani în Deltă",
+      "image": "/images/full/danube-pelicans.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "danube-pelicans.png (original source; archived as danube-pelicans.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Pelicani deasupra apelor din Delta Dunării.",
+        "en": "Pelicans above the waters of the Danube Delta."
+      },
+      "checksum": "sha256:38d5fa912ba06431998fbba78f8266e7a0e84cb4456e66cbafb8d5bbd794d7b4"
+    },
+    {
+      "id": "red-deer-meadow",
+      "category": "nature",
+      "name": "Red Deer Meadow",
+      "nameRo": "Cerb în poiană",
+      "image": "/images/full/red-deer-meadow.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "red-deer-meadow.png (original source; archived as red-deer-meadow.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Cerb într-o poiană de munte la amurg.",
+        "en": "Red deer in a mountain meadow at dusk."
+      },
+      "checksum": "sha256:a3815e663e7abcffeb7bf96f780083912771ef22aefe4512f958826d28bb74d1"
+    },
+    {
+      "id": "poppy-meadow",
+      "category": "nature",
+      "name": "Poppy Meadow",
+      "nameRo": "Poiană cu maci",
+      "image": "/images/full/poppy-meadow.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "poppy-meadow.png (original source; archived as poppy-meadow.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Poiană cu maci roșii, iarbă și nori de vară.",
+        "en": "Meadow of red poppies, grass, and summer clouds."
+      },
+      "checksum": "sha256:3ddfc2e5f04cf6cb63dffb5d99043ad9f9c77c9b25486f0e9d0e18683520b4e4"
+    },
+    {
+      "id": "ice-cave",
+      "category": "nature",
+      "name": "Ice Cave",
+      "nameRo": "Peșteră de gheață",
+      "image": "/images/full/ice-cave.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "ice-cave.jpg (original source; archived as ice-cave.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Formațiuni de gheață albastre într-o peșteră.",
+        "en": "Blue ice formations inside a cave."
+      },
+      "checksum": "sha256:5d2ebeac4538b42db508f36fd53ec8fc077547683fb623bacb42965b3b5c25a6"
+    },
+    {
+      "id": "bucharest-calea-victoriei",
+      "category": "cities",
+      "name": "Calea Victoriei, Bucharest",
+      "nameRo": "Calea Victoriei, București",
+      "image": "/images/full/bucharest-calea-victoriei.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "bucharest-calea-victoriei.jpg (original source; archived as bucharest-calea-victoriei.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Clădiri istorice pe Calea Victoriei, București, fără oameni în prim-plan.",
+        "en": "Historic buildings on Calea Victoriei, Bucharest, with no foreground people."
+      },
+      "checksum": "sha256:5ca38cced5b57be834019e1c1c45d39a179fc521c228bdf1426196a017ead7a0"
+    },
+    {
+      "id": "sibiu-square",
+      "category": "cities",
+      "name": "Grand Square, Sibiu",
+      "nameRo": "Piața Mare, Sibiu",
+      "image": "/images/full/sibiu-square.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "sibiu-square.jpg (original source; archived as sibiu-square.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Piața Mare din Sibiu, cu clădiri colorate.",
+        "en": "Sibiu's Grand Square with colorful historic buildings."
+      },
+      "checksum": "sha256:4b5ccd4b3ca3ae2e1f963ad28f6985688e29358c8c5ed34c0954c5f298e7ca08"
+    },
+    {
+      "id": "cluj-unirii-square",
+      "category": "cities",
+      "name": "Unirii Square, Cluj",
+      "nameRo": "Piața Unirii, Cluj",
+      "image": "/images/full/cluj-unirii-square.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "cluj-unirii-square.jpg (original source; archived as cluj-unirii-square.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Piața Unirii din Cluj, cu arhitectură istorică.",
+        "en": "Unirii Square in Cluj with historic architecture."
+      },
+      "checksum": "sha256:dc7f2e71b29d52333acbbbaa5df0c1ebb8f58b17fc9c8631dcd07d158081de7c"
+    },
+    {
+      "id": "timisoara-union-square",
+      "category": "cities",
+      "name": "Union Square, Timișoara",
+      "nameRo": "Piața Unirii, Timișoara",
+      "image": "/images/full/timisoara-union-square.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "timisoara-union-square.jpg (original source; archived as timisoara-union-square.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Piața Unirii din Timișoara, cu fațade baroce.",
+        "en": "Timișoara's Union Square with baroque facades."
+      },
+      "checksum": "sha256:27faff7178648316588c190a87bfa798afb316962d7a5ec1dfaca54b14a74d30"
+    },
+    {
+      "id": "brasov-council-square",
+      "category": "cities",
+      "name": "Council Square, Brașov",
+      "nameRo": "Piața Sfatului, Brașov",
+      "image": "/images/full/brasov-council-square.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "brasov-council-square.jpg (original source; archived as brasov-council-square.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Piața Sfatului din Brașov, cu munți în fundal.",
+        "en": "Brașov's Council Square with mountains behind it."
+      },
+      "checksum": "sha256:ad657d8b02f1b263b4b7885e5c48a5ffcd33642b9a86618c733dbc714450fae1"
+    },
+    {
+      "id": "iso-floating-garden",
+      "category": "isometric-worlds",
+      "name": "Floating Garden",
+      "nameRo": "Grădină plutitoare",
+      "image": "/images/full/iso-floating-garden.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "iso-floating-garden.jpg (original source; archived as iso-floating-garden.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Insule de grădină plutind deasupra norilor.",
+        "en": "Garden islands floating above clouds."
+      },
+      "checksum": "sha256:50037fda2246f322e5cbb094e7f98bc8f7e2b72310e57197d745e7816552c62a"
+    },
+    {
+      "id": "iso-harbor-village",
+      "category": "isometric-worlds",
+      "name": "Isometric Harbour Village",
+      "nameRo": "Sat-port izometric",
+      "image": "/images/full/iso-harbor-village.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "iso-harbor-village.jpg (original source; archived as iso-harbor-village.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Sat-port miniatural cu cheiuri și bărci goale.",
+        "en": "Miniature harbour village with quays and empty boats."
+      },
+      "checksum": "sha256:6f7b777373180cdb9d69956f513c5cfd045eeefd06798d973725bd41a5108071"
+    },
+    {
+      "id": "iso-solar-observatory",
+      "category": "isometric-worlds",
+      "name": "Solar Observatory",
+      "nameRo": "Observator solar",
+      "image": "/images/full/iso-solar-observatory.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "iso-solar-observatory.jpg (original source; archived as iso-solar-observatory.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Observator miniatural pe o insulă stâncoasă.",
+        "en": "Miniature observatory on a rocky island."
+      },
+      "checksum": "sha256:6c9fa7949731a78cc2a7d4908bc428a92d1346c62d66d6f612e39de59fc1e7f3"
+    },
+    {
+      "id": "iso-mountain-railway",
+      "category": "isometric-worlds",
+      "name": "Mountain Railway",
+      "nameRo": "Cale ferată montană",
+      "image": "/images/full/iso-mountain-railway.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "iso-mountain-railway.jpg (original source; archived as iso-mountain-railway.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Cale ferată miniaturală prin munți și viaducte.",
+        "en": "Miniature railway through mountains and viaducts."
+      },
+      "checksum": "sha256:d20a55764f7251482166e1dbf22f889995608335a222b6440ddfda5ce234b9d0"
+    },
+    {
+      "id": "iso-desert-oasis",
+      "category": "isometric-worlds",
+      "name": "Desert Oasis",
+      "nameRo": "Oază în deșert",
+      "image": "/images/full/iso-desert-oasis.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "iso-desert-oasis.jpg (original source; archived as iso-desert-oasis.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Oază miniaturală cu palmieri și canale.",
+        "en": "Miniature oasis with palms and canals."
+      },
+      "checksum": "sha256:a6419845bc956054d866e8130b82530bc95777c94672818a52043eb3ac560010"
+    },
+    {
+      "id": "iso-coastal-lighthouse",
+      "category": "isometric-worlds",
+      "name": "Isometric Lighthouse",
+      "nameRo": "Far izometric",
+      "image": "/images/full/iso-coastal-lighthouse.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "iso-coastal-lighthouse.jpg (original source; archived as iso-coastal-lighthouse.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Far pe o stâncă, cu valuri și grădini terasate.",
+        "en": "Lighthouse on a cliff with waves and terrace gardens."
+      },
+      "checksum": "sha256:f2d9916845c34cb1d396edb4b740500e1d8c2d08f487fd892fa56d6836bcc3fa"
+    },
+    {
+      "id": "iso-forest-workshop",
+      "category": "isometric-worlds",
+      "name": "Forest Workshop",
+      "nameRo": "Atelier în pădure",
+      "image": "/images/full/iso-forest-workshop.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "iso-forest-workshop.jpg (original source; archived as iso-forest-workshop.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Atelier miniatural din lemn într-o pădure.",
+        "en": "Miniature timber workshop in a forest."
+      },
+      "checksum": "sha256:411ef2202193a01553bfdc8e8de544f493759e5bd8ab92db3d878b14dde72012"
+    },
+    {
+      "id": "iso-arctic-research",
+      "category": "isometric-worlds",
+      "name": "Arctic Research Station",
+      "nameRo": "Stație arctică",
+      "image": "/images/full/iso-arctic-research.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "iso-arctic-research.jpg (original source; archived as iso-arctic-research.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Stație de cercetare miniaturală între ghețari.",
+        "en": "Miniature research station between icebergs."
+      },
+      "checksum": "sha256:09587fef6b43087a5a98bd58222ec242f529db182d51aeb60d6d7fe5d3db7df3"
+    },
+    {
+      "id": "iso-river-market",
+      "category": "isometric-worlds",
+      "name": "River Market",
+      "nameRo": "Piață pe râu",
+      "image": "/images/full/iso-river-market.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "iso-river-market.jpg (original source; archived as iso-river-market.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Piață miniaturală cu tarabe goale pe malul râului.",
+        "en": "Miniature market with empty stalls by a river."
+      },
+      "checksum": "sha256:f668c3cb3b14ec8b710b742d73fd59c416dfbf30ebfc11b68621e90ead72694e"
+    },
+    {
+      "id": "iso-sky-islands",
+      "category": "isometric-worlds",
+      "name": "Sky Islands",
+      "nameRo": "Insule cerești",
+      "image": "/images/full/iso-sky-islands.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "iso-sky-islands.jpg (original source; archived as iso-sky-islands.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Insule miniaturale unite prin poduri deasupra norilor.",
+        "en": "Miniature islands linked by bridges above clouds."
+      },
+      "checksum": "sha256:738efb648c2606c884813d65a7bb3262f8c1a4167f7d3c7dcb1f4db482fcfa1f"
+    },
+    {
+      "id": "abstract-azure-arches",
+      "category": "abstract-geometry",
+      "name": "Azure Arches",
+      "nameRo": "Arce azurii",
+      "image": "/images/full/abstract-azure-arches.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "abstract-azure-arches.jpg (original source; archived as abstract-azure-arches.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Arce geometrice azurii pe fundal întunecat.",
+        "en": "Azure geometric arches on a dark ground."
+      },
+      "checksum": "sha256:164a11a582ed4df8511325b7c49c112e702b850275498a79593a371d40cf2282"
+    },
+    {
+      "id": "abstract-pink-orbit",
+      "category": "abstract-geometry",
+      "name": "Pink Orbit",
+      "nameRo": "Orbită roz",
+      "image": "/images/full/abstract-pink-orbit.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "abstract-pink-orbit.jpg (original source; archived as abstract-pink-orbit.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Inele roz și mov în mișcare circulară.",
+        "en": "Pink and purple rings in circular motion."
+      },
+      "checksum": "sha256:2a45c4c76eed0390a3fe2195c21e4594be4028b38880d2be906ff05e8ce80095"
+    },
+    {
+      "id": "abstract-violet-lattice",
+      "category": "abstract-geometry",
+      "name": "Violet Lattice",
+      "nameRo": "Rețea violetă",
+      "image": "/images/full/abstract-violet-lattice.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "abstract-violet-lattice.jpg (original source; archived as abstract-violet-lattice.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Rețea geometrică violetă cu lumini albastre.",
+        "en": "Violet geometric lattice with blue lights."
+      },
+      "checksum": "sha256:153d1119d61dcfc09dedea3c91801c22581456163fd96f9570bec10448d33958"
+    },
+    {
+      "id": "abstract-crystalline",
+      "category": "abstract-geometry",
+      "name": "Crystalline",
+      "nameRo": "Cristalin",
+      "image": "/images/full/abstract-crystalline.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "abstract-crystalline.jpg (original source; archived as abstract-crystalline.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Fațete colorate ca niște cristale.",
+        "en": "Colorful facets like crystals."
+      },
+      "checksum": "sha256:55fa7e744081ed336ae5b8c9db8032b33f5eef9b2868b62c5ab8d03a07792dbf"
+    },
+    {
+      "id": "abstract-tessellation",
+      "category": "abstract-geometry",
+      "name": "Tessellation",
+      "nameRo": "Teselare",
+      "image": "/images/full/abstract-tessellation.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "abstract-tessellation.jpg (original source; archived as abstract-tessellation.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Mozaic dens de forme geometrice.",
+        "en": "Dense mosaic of geometric shapes."
+      },
+      "checksum": "sha256:81e82c687a11d8cea63c63dd06a8008b7469c94f3a7018a241a53965a0bfe427"
+    },
+    {
+      "id": "abstract-fluid-topography",
+      "category": "abstract-geometry",
+      "name": "Fluid Topography",
+      "nameRo": "Topografie fluidă",
+      "image": "/images/full/abstract-fluid-topography.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "abstract-fluid-topography.jpg (original source; archived as abstract-fluid-topography.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Linii topografice fluide și culori stratificate.",
+        "en": "Fluid contour lines and layered colors."
+      },
+      "checksum": "sha256:cfb0a305f8e51419e3bd1f15756337f070431d8f26760343e1481964971ecced"
+    },
+    {
+      "id": "abstract-paper-folds",
+      "category": "abstract-geometry",
+      "name": "Paper Folds",
+      "nameRo": "Pliuri de hârtie",
+      "image": "/images/full/abstract-paper-folds.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "abstract-paper-folds.jpg (original source; archived as abstract-paper-folds.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Pliuri geometrice luminoase, ca origami.",
+        "en": "Luminous geometric folds like origami."
+      },
+      "checksum": "sha256:41dc13eaa9b099cf95a73eff01cccf83d655e0f081055682f832ac802709b76f"
+    },
+    {
+      "id": "abstract-solar-rings",
+      "category": "abstract-geometry",
+      "name": "Solar Rings",
+      "nameRo": "Inele solare",
+      "image": "/images/full/abstract-solar-rings.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "abstract-solar-rings.jpg (original source; archived as abstract-solar-rings.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Inele concentrice luminoase cu texturi fine.",
+        "en": "Luminous concentric rings with fine texture."
+      },
+      "checksum": "sha256:ee1fa65a888c859a8a58e469ccb4bc95e99f8d6215404cb494eab4c996d3a0c1"
+    },
+    {
+      "id": "abstract-kinetic-grid",
+      "category": "abstract-geometry",
+      "name": "Kinetic Grid",
+      "nameRo": "Grilă cinetică",
+      "image": "/images/full/abstract-kinetic-grid.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "abstract-kinetic-grid.jpg (original source; archived as abstract-kinetic-grid.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Grilă din linii și puncte în mișcare.",
+        "en": "Grid of moving lines and dots."
+      },
+      "checksum": "sha256:7bb21dda988e96bcbe08bf097e77b319c5f222dce1870a7a51e7d566ad1a221e"
+    },
+    {
+      "id": "abstract-night-mosaic",
+      "category": "abstract-geometry",
+      "name": "Night Mosaic",
+      "nameRo": "Mozaic nocturn",
+      "image": "/images/full/abstract-night-mosaic.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "abstract-night-mosaic.jpg (original source; archived as abstract-night-mosaic.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Mozaic abstract în albastru, violet și roz.",
+        "en": "Abstract mosaic in blue, purple, and pink."
+      },
+      "checksum": "sha256:0234df928b10445fb7966cdca2a881003a12ba81497e06e1b8e04b74dd95901d"
+    },
+    {
+      "id": "blueprint-bran-castle",
+      "category": "blueprint-architecture",
+      "name": "Bran Castle Blueprint",
+      "nameRo": "Plan Castelul Bran",
+      "image": "/images/full/blueprint-bran-castle.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-bran-castle.jpg (original source; archived as blueprint-bran-castle.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural stilizat al Castelului Bran.",
+        "en": "Stylized architectural plan of Bran Castle."
+      },
+      "checksum": "sha256:0315fb7529b13d45454fd44d0dcae5c60de2a6cb20bf59cb2b572d446399cb6d"
+    },
+    {
+      "id": "blueprint-modern-pavilion",
+      "category": "blueprint-architecture",
+      "name": "Modern Pavilion Blueprint",
+      "nameRo": "Plan pavilion modern",
+      "image": "/images/full/blueprint-modern-pavilion.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-modern-pavilion.jpg (original source; archived as blueprint-modern-pavilion.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan detaliat al unui pavilion contemporan.",
+        "en": "Detailed plan of a contemporary pavilion."
+      },
+      "checksum": "sha256:cc2a283710d850f03982936d5a5bc96a7a260590c297f415a34e35f2efee4056"
+    },
+    {
+      "id": "blueprint-observatory",
+      "category": "blueprint-architecture",
+      "name": "Observatory Blueprint",
+      "nameRo": "Plan observator",
+      "image": "/images/full/blueprint-observatory.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-observatory.jpg (original source; archived as blueprint-observatory.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural al unui observator cu dom.",
+        "en": "Architectural plan of a domed observatory."
+      },
+      "checksum": "sha256:7272e28df7d43340c509b6603af50271d571d5ffcf617843b6d23d4581c81e26"
+    },
+    {
+      "id": "blueprint-bridge",
+      "category": "blueprint-architecture",
+      "name": "Suspension Bridge Blueprint",
+      "nameRo": "Plan pod suspendat",
+      "image": "/images/full/blueprint-bridge.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-bridge.jpg (original source; archived as blueprint-bridge.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural al unui pod suspendat.",
+        "en": "Architectural plan of a suspension bridge."
+      },
+      "checksum": "sha256:4ce3148ad8c84cdef09e99d7f8c993124d5ddac28b43eb6af6c2429e06d9d0aa"
+    },
+    {
+      "id": "blueprint-greenhouse",
+      "category": "blueprint-architecture",
+      "name": "Greenhouse Blueprint",
+      "nameRo": "Plan seră",
+      "image": "/images/full/blueprint-greenhouse.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-greenhouse.jpg (original source; archived as blueprint-greenhouse.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural al unei sere modulare.",
+        "en": "Architectural plan of a modular greenhouse."
+      },
+      "checksum": "sha256:488f5459055b44798132572edce682ad49de2706115b15f6933f32d0f0380a46"
+    },
+    {
+      "id": "blueprint-train-station",
+      "category": "blueprint-architecture",
+      "name": "Train Station Blueprint",
+      "nameRo": "Plan gară",
+      "image": "/images/full/blueprint-train-station.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-train-station.jpg (original source; archived as blueprint-train-station.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural al unei gări contemporane.",
+        "en": "Architectural plan of a contemporary train station."
+      },
+      "checksum": "sha256:655043578a39bc8803c0d3503b3112551312caca651b6e26226c97ead1b743d3"
+    },
+    {
+      "id": "blueprint-library",
+      "category": "blueprint-architecture",
+      "name": "Library Blueprint",
+      "nameRo": "Plan bibliotecă",
+      "image": "/images/full/blueprint-library.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-library.jpg (original source; archived as blueprint-library.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural al unei biblioteci luminoase.",
+        "en": "Architectural plan of a bright library."
+      },
+      "checksum": "sha256:0000b7cd5fa390cc4d2713c1e3ed1a7a5e593f91300915a3acf43577bda9cf44"
+    },
+    {
+      "id": "blueprint-amphitheater",
+      "category": "blueprint-architecture",
+      "name": "Amphitheater Blueprint",
+      "nameRo": "Plan amfiteatru",
+      "image": "/images/full/blueprint-amphitheater.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-amphitheater.jpg (original source; archived as blueprint-amphitheater.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural al unui amfiteatru în aer liber.",
+        "en": "Architectural plan of an outdoor amphitheater."
+      },
+      "checksum": "sha256:00ab254f69c9b97f2ce938a1de76a4734a89d946698f96964167ed99bc306bcb"
+    },
+    {
+      "id": "blueprint-lighthouse",
+      "category": "blueprint-architecture",
+      "name": "Lighthouse Blueprint",
+      "nameRo": "Plan far",
+      "image": "/images/full/blueprint-lighthouse.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-lighthouse.jpg (original source; archived as blueprint-lighthouse.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural al unui far de coastă.",
+        "en": "Architectural plan of a coastal lighthouse."
+      },
+      "checksum": "sha256:8508e1cf7fede4c5f5d7af3f3611ee3d7747714db9843f96258b2a6c32ffaa9b"
+    },
+    {
+      "id": "blueprint-courtyard-house",
+      "category": "blueprint-architecture",
+      "name": "Courtyard House Blueprint",
+      "nameRo": "Plan casă cu curte",
+      "image": "/images/full/blueprint-courtyard-house.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-courtyard-house.jpg (original source; archived as blueprint-courtyard-house.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural al unei case cu curte interioară.",
+        "en": "Architectural plan of a courtyard house."
+      },
+      "checksum": "sha256:70078b67be3739c063e2342930234bf37f129c0e000727010783bd16855f0ea2"
     }
   ]
 }

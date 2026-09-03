@@ -103,46 +103,6 @@
     "w": 1920,
     "h": 1023
   },
-  "big-ben.webp": {
-    "w": 1280,
-    "h": 720
-  },
-  "cherry-blossom.webp": {
-    "w": 1920,
-    "h": 1080
-  },
-  "grand-canyon.webp": {
-    "w": 1920,
-    "h": 1080
-  },
-  "lavender-field.webp": {
-    "w": 1920,
-    "h": 1283
-  },
-  "mount-fuji.webp": {
-    "w": 1920,
-    "h": 1274
-  },
-  "neuschwanstein.webp": {
-    "w": 1000,
-    "h": 750
-  },
-  "new-york.webp": {
-    "w": 1920,
-    "h": 1080
-  },
-  "plitvice-lakes.webp": {
-    "w": 1200,
-    "h": 1200
-  },
-  "prague.webp": {
-    "w": 1024,
-    "h": 601
-  },
-  "pyramids-giza.webp": {
-    "w": 1200,
-    "h": 856
-  },
   "words-agile.svg": {
     "w": 1200,
     "h": 800
@@ -194,5 +154,225 @@
   "compass.svg": {
     "w": 800,
     "h": 600
+  },
+  "aurora-abstraction.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "carpathian-folk-painting.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "botanical-mosaic-painting.webp": {
+    "w": 1376,
+    "h": 768
+  },
+  "coastal-color-study.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "night-garden-painting.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "fagaras-sunrise.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "danube-delta-mist.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "apuseni-karst.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "transfagarasan-autumn.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "rila-lake.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "bran-castle-dawn.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "palace-parliament-dusk.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "corvin-castle.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "sighisoara-clock-tower.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "maramures-wooden-church.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "carpathian-beech-forest.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "danube-pelicans.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "red-deer-meadow.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "poppy-meadow.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "ice-cave.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "bucharest-calea-victoriei.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "sibiu-square.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "cluj-unirii-square.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "timisoara-union-square.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "brasov-council-square.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "iso-floating-garden.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "iso-harbor-village.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "iso-solar-observatory.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "iso-mountain-railway.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "iso-desert-oasis.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "iso-coastal-lighthouse.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "iso-forest-workshop.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "iso-arctic-research.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "iso-river-market.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "iso-sky-islands.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "abstract-azure-arches.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "abstract-pink-orbit.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "abstract-violet-lattice.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "abstract-crystalline.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "abstract-tessellation.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "abstract-fluid-topography.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "abstract-paper-folds.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "abstract-solar-rings.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "abstract-kinetic-grid.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "abstract-night-mosaic.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-bran-castle.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-modern-pavilion.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-observatory.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-bridge.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-greenhouse.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-train-station.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-library.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-amphitheater.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-lighthouse.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-courtyard-house.webp": {
+    "w": 1800,
+    "h": 1200
   }
 }

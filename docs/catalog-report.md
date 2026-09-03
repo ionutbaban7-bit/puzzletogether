@@ -6,13 +6,13 @@
 
 ## Result
 
-The Stage 5 additions manifest is staged but has not yet been imported into the live catalog.
+The Stage 5 import is recorded on **2026-09-03**: 55 reviewed CC0 originals are linked to their puzzle records.
 
-- Catalog entries: **49**
-- Entries linked to a served puzzle: **35**
-- Archived prompt-directed originals: **0**
-- Orphan catalog records: **10**
-- Latest audit: **2 fatal**, **56 warning** (generated 2026-09-03T13:14:52.227Z)
+- Catalog entries: **94**
+- Entries linked to a served puzzle: **90**
+- Archived prompt-directed originals: **55**
+- Orphan catalog records: **0**
+- Latest audit: **0 fatal**, **43 warning** (generated 2026-09-03T15:17:42.232Z)
 
 The audit enforces source and license URLs, bilingual metadata, focal points,
 source checksums, source/full/thumbnail files, dimensions, exact and perceptual
@@ -23,13 +23,16 @@ compliance records, and the complete Stage 5 category set after import.
 
 | Category | Entries | Stage 5 CC0 originals |
 | --- | --- | --- |
-| cities | 6 | — |
+| abstract-geometry | 10 | 10 |
+| blueprint-architecture | 10 | 10 |
+| cities | 9 | 5 |
 | coaching | 4 | — |
-| landmarks | 9 | — |
-| landscapes | 7 | — |
+| isometric-worlds | 10 | 10 |
+| landmarks | 11 | 5 |
+| landscapes | 8 | 5 |
 | letter-canvas | 4 | — |
-| nature | 4 | — |
-| paintings | 10 | — |
+| nature | 8 | 5 |
+| paintings | 15 | 5 |
 | sentence-canvas | 5 | — |
 
 ## License classes
@@ -37,10 +40,9 @@ compliance records, and the complete Stage 5 category set after import.
 | Class | Entries |
 | --- | --- |
 | cc-by-sa | 13 |
+| cc0 | 55 |
 | in-house | 13 |
 | pd | 13 |
-| restricted | 2 |
-| unverified | 8 |
 
 ## Source-license table
 
@@ -52,44 +54,89 @@ source brief, raw-input checksum and archival derivative.
 
 | Asset | Title | Category | License | Status | Puzzle/activity | Source | Record |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| `/images/abstract-azure-arches.jpg` | Azure Arches | abstract-geometry | CC0 1.0 Universal | verified | abstract-azure-arches | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/abstract-crystalline.jpg` | Crystalline | abstract-geometry | CC0 1.0 Universal | verified | abstract-crystalline | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/abstract-fluid-topography.jpg` | Fluid Topography | abstract-geometry | CC0 1.0 Universal | verified | abstract-fluid-topography | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/abstract-kinetic-grid.jpg` | Kinetic Grid | abstract-geometry | CC0 1.0 Universal | verified | abstract-kinetic-grid | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/abstract-night-mosaic.jpg` | Night Mosaic | abstract-geometry | CC0 1.0 Universal | verified | abstract-night-mosaic | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/abstract-paper-folds.jpg` | Paper Folds | abstract-geometry | CC0 1.0 Universal | verified | abstract-paper-folds | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/abstract-pink-orbit.jpg` | Pink Orbit | abstract-geometry | CC0 1.0 Universal | verified | abstract-pink-orbit | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/abstract-solar-rings.jpg` | Solar Rings | abstract-geometry | CC0 1.0 Universal | verified | abstract-solar-rings | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/abstract-tessellation.jpg` | Tessellation | abstract-geometry | CC0 1.0 Universal | verified | abstract-tessellation | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/abstract-violet-lattice.jpg` | Violet Lattice | abstract-geometry | CC0 1.0 Universal | verified | abstract-violet-lattice | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/blueprint-amphitheater.jpg` | Amphitheater Blueprint | blueprint-architecture | CC0 1.0 Universal | verified | blueprint-amphitheater | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/blueprint-bran-castle.jpg` | Bran Castle Blueprint | blueprint-architecture | CC0 1.0 Universal | verified | blueprint-bran-castle | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/blueprint-bridge.jpg` | Suspension Bridge Blueprint | blueprint-architecture | CC0 1.0 Universal | verified | blueprint-bridge | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/blueprint-courtyard-house.jpg` | Courtyard House Blueprint | blueprint-architecture | CC0 1.0 Universal | verified | blueprint-courtyard-house | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/blueprint-greenhouse.jpg` | Greenhouse Blueprint | blueprint-architecture | CC0 1.0 Universal | verified | blueprint-greenhouse | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/blueprint-library.jpg` | Library Blueprint | blueprint-architecture | CC0 1.0 Universal | verified | blueprint-library | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/blueprint-lighthouse.jpg` | Lighthouse Blueprint | blueprint-architecture | CC0 1.0 Universal | verified | blueprint-lighthouse | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/blueprint-modern-pavilion.jpg` | Modern Pavilion Blueprint | blueprint-architecture | CC0 1.0 Universal | verified | blueprint-modern-pavilion | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/blueprint-observatory.jpg` | Observatory Blueprint | blueprint-architecture | CC0 1.0 Universal | verified | blueprint-observatory | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/blueprint-train-station.jpg` | Train Station Blueprint | blueprint-architecture | CC0 1.0 Universal | verified | blueprint-train-station | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/brasov-council-square.jpg` | Council Square, Brașov | cities | CC0 1.0 Universal | verified | brasov-council-square | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/bucharest-calea-victoriei.jpg` | Calea Victoriei, Bucharest | cities | CC0 1.0 Universal | verified | bucharest-calea-victoriei | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/cluj-unirii-square.jpg` | Unirii Square, Cluj | cities | CC0 1.0 Universal | verified | cluj-unirii-square | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/golden-gate.jpg` | Golden Gate Bridge | cities | CC BY-SA 4.0 | verified | golden-gate | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Golden_Gate_Bridge_as_seen_from_Marshall%E2%80%99s_Beach,_March_2018.jpg) |
-| `/images/new-york.jpg` | Manhattan Skyline | cities | Fără licență pentru acest proiect — marcaj vizibil de pe agregatorul de stock | flagged | — | WideWallpapers.net (agregator de poze stock) — copiere cu marcaj vizibil | [source](https://widewallpapers.net) |
 | `/images/paris-louvre.jpg` | The Louvre, Paris | cities | CC BY-SA 3.0 | verified | paris-louvre | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Louvre_Museum_Wikimedia_Commons.jpg) |
-| `/images/prague.jpg` | Prague Old Town Square | cities | Neverificată | unverified | — | Nedeterminat (posibil poze stock; fără EXIF în fișier) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/sibiu-square.jpg` | Grand Square, Sibiu | cities | CC0 1.0 Universal | verified | sibiu-square | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/timisoara-union-square.jpg` | Union Square, Timișoara | cities | CC0 1.0 Universal | verified | timisoara-union-square | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/tokyo.jpg` | Tokyo Skyscrapers | cities | CC BY-SA 3.0 | verified | tokyo | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Skyscrapers_of_Shinjuku_2009_January.jpg) |
 | `/images/venice.jpg` | Venice at Dawn | cities | CC BY-SA 2.0 | verified | venice | Wikimedia Commons (Flickr transfer) | [source](https://commons.wikimedia.org/wiki/File:Piazza_San_Marco_at_Dawn,_Venice_(21358879396).jpg) |
 | `/images/coaching/compass.svg` | The Team Compass | coaching | All rights reserved — in-house work | verified | team-compass | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
 | `/images/coaching/himalaya.svg` | The Himalayan Expedition | coaching | All rights reserved — in-house work | verified | himalaya-expedition | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
 | `/images/coaching/moon.svg` | The Moon Mission | coaching | All rights reserved — in-house work | verified | moon-mission | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
 | `/images/coaching/ocean.svg` | Lost in the Pacific | coaching | All rights reserved — in-house work | verified | ocean-survival | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
-| `/images/big-ben.jpg` | Big Ben, London | landmarks | Neverificată | unverified | — | Nedeterminat — suspect generat AI (fără EXIF, fără sursă identificabilă) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/iso-arctic-research.jpg` | Arctic Research Station | isometric-worlds | CC0 1.0 Universal | verified | iso-arctic-research | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/iso-coastal-lighthouse.jpg` | Isometric Lighthouse | isometric-worlds | CC0 1.0 Universal | verified | iso-coastal-lighthouse | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/iso-desert-oasis.jpg` | Desert Oasis | isometric-worlds | CC0 1.0 Universal | verified | iso-desert-oasis | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/iso-floating-garden.jpg` | Floating Garden | isometric-worlds | CC0 1.0 Universal | verified | iso-floating-garden | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/iso-forest-workshop.jpg` | Forest Workshop | isometric-worlds | CC0 1.0 Universal | verified | iso-forest-workshop | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/iso-harbor-village.jpg` | Isometric Harbour Village | isometric-worlds | CC0 1.0 Universal | verified | iso-harbor-village | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/iso-mountain-railway.jpg` | Mountain Railway | isometric-worlds | CC0 1.0 Universal | verified | iso-mountain-railway | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/iso-river-market.jpg` | River Market | isometric-worlds | CC0 1.0 Universal | verified | iso-river-market | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/iso-sky-islands.jpg` | Sky Islands | isometric-worlds | CC0 1.0 Universal | verified | iso-sky-islands | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/iso-solar-observatory.jpg` | Solar Observatory | isometric-worlds | CC0 1.0 Universal | verified | iso-solar-observatory | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/bran-castle-dawn.jpg` | Bran Castle at Dawn | landmarks | CC0 1.0 Universal | verified | bran-castle-dawn | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/colosseum.jpg` | The Colosseum | landmarks | CC BY-SA 4.0 | verified | colosseum | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Colosseo_2020.jpg) |
+| `/images/corvin-castle.jpg` | Corvin Castle | landmarks | CC0 1.0 Universal | verified | corvin-castle | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/eiffel-tower.jpg` | Eiffel Tower | landmarks | Public domain | verified | eiffel-tower | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Tour_Eiffel_Wikimedia_Commons.jpg) |
 | `/images/machu-picchu.jpg` | Machu Picchu | landmarks | CC BY-SA 3.0 | verified | machu-picchu | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:99_-_Machu_Picchu_-_Juin_2009.edit3.jpg) |
-| `/images/neuschwanstein.jpg` | Neuschwanstein Castle | landmarks | Neverificată | unverified | — | Nedeterminat (posibil poze stock; fără EXIF în fișier) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
-| `/images/pyramids-giza.jpg` | The Pyramids of Giza | landmarks | Neverificată | unverified | — | Nedeterminat (posibil poze stock; fără EXIF în fișier) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/maramures-wooden-church.jpg` | Maramureș Wooden Church | landmarks | CC0 1.0 Universal | verified | maramures-wooden-church | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/palace-parliament-dusk.jpg` | Palace of Parliament | landmarks | CC0 1.0 Universal | verified | palace-parliament-dusk | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/sighisoara-clock-tower.jpg` | Sighișoara Clock Tower | landmarks | CC0 1.0 Universal | verified | sighisoara-clock-tower | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/statue-of-liberty.jpg` | Statue of Liberty | landmarks | CC BY-SA 3.0 | verified | statue-of-liberty | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Statue_of_Liberty_7.jpg) |
 | `/images/taj-mahal.jpg` | Taj Mahal | landmarks | CC BY-SA 4.0 | verified | taj-mahal | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Taj_Mahal,_Agra,_India_edit2.jpg) |
 | `/images/vatican.jpg` | St. Peter's Square | landmarks | CC BY-SA 3.0 | verified | vatican | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:St_Peter%27s_Square,_Vatican_City_-_April_2007.jpg) |
-| `/images/grand-canyon.jpg` | Grand Canyon | landscapes | Neverificată | unverified | — | Nedeterminat (posibil poze stock; fără EXIF în fișier) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
-| `/images/lavender-field.jpg` | Lavender Field | landscapes | Neverificată | unverified | — | Nedeterminat (posibil poze stock; fără EXIF în fișier) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/apuseni-karst.jpg` | Apuseni Karst | landscapes | CC0 1.0 Universal | verified | apuseni-karst | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/danube-delta-mist.jpg` | Danube Delta Mist | landscapes | CC0 1.0 Universal | verified | danube-delta-mist | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/fagaras-sunrise.jpg` | Făgăraș Sunrise | landscapes | CC0 1.0 Universal | verified | fagaras-sunrise | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/matterhorn.jpg` | The Matterhorn | landscapes | CC BY-SA 3.0 | verified | matterhorn | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Matterhorn_from_Domh%C3%BCtte_-_2.jpg) |
 | `/images/moraine-lake.jpg` | Moraine Lake | landscapes | Public domain | verified | moraine-lake | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Moraine_Lake_17092005.jpg) |
-| `/images/mount-fuji.jpg` | Mount Fuji | landscapes | Neverificată | unverified | — | Nedeterminat (posibil poze stock; fără EXIF în fișier) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
-| `/images/plitvice-lakes.jpg` | Plitvice Lakes | landscapes | Fără licență — fișier este o previzualizare stock cu marcaj vizibil | flagged | — | Dreamstime (previzualizare stock cu marcaj) — utilizare fără licență | [source](https://www.dreamstime.com) |
+| `/images/rila-lake.jpg` | Rila Mountain Lake | landscapes | CC0 1.0 Universal | verified | rila-lake | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/santorini.jpg` | Oia, Santorini | landscapes | CC BY-SA 3.0 | verified | santorini | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Santorini_Oia.jpg) |
+| `/images/transfagarasan-autumn.jpg` | Transfăgărășan in Autumn | landscapes | CC0 1.0 Universal | verified | transfagarasan-autumn | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/words-agile.svg` | Letter Canvas — Agile Values | letter-canvas | All rights reserved — in-house work | verified | agile-words | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
 | `/images/words-innovation.svg` | Letter Canvas — Innovation | letter-canvas | All rights reserved — in-house work | verified | innovation-grid | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
 | `/images/words-motto.svg` | Letter Canvas — Team Values | letter-canvas | All rights reserved — in-house work | verified | team-motto | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
 | `/images/words-scrabble.svg` | Letter Canvas — Multicolor | letter-canvas | All rights reserved — in-house work | verified | letter-anagrams | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
 | `/images/aurora.jpg` | Aurora Borealis | nature | Public domain (U.S. federal government work) | verified | aurora | Wikimedia Commons (USAF photo, 18 January 2005) | [source](https://commons.wikimedia.org/wiki/File:Aurora_Borealis_Alaska.jpg) |
-| `/images/cherry-blossom.jpg` | Cherry Blossoms | nature | Neverificată | unverified | — | Nedeterminat (posibil poze stock; fără EXIF în fișier) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/carpathian-beech-forest.jpg` | Carpathian Beech Forest | nature | CC0 1.0 Universal | verified | carpathian-beech-forest | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/danube-pelicans.jpg` | Pelicans in the Delta | nature | CC0 1.0 Universal | verified | danube-pelicans | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/flower.jpg` | Tulip in Bloom | nature | CC BY-SA 3.0 | verified | flower | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Tulip_Tulipa_clusiana_%27Lady_Jane%27_Rock_Ledge_Flower_Edit_2000px.jpg) |
+| `/images/ice-cave.jpg` | Ice Cave | nature | CC0 1.0 Universal | verified | ice-cave | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/poppy-meadow.jpg` | Poppy Meadow | nature | CC0 1.0 Universal | verified | poppy-meadow | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/red-deer-meadow.jpg` | Red Deer Meadow | nature | CC0 1.0 Universal | verified | red-deer-meadow | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/waterfall.jpg` | Beauchamp Falls | nature | CC BY-SA 4.0 | verified | waterfall | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Beech_Forest_(AU),_Great_Otway_National_Park,_Beauchamp_Falls_--_2019_--_1271.jpg) |
+| `/images/aurora-abstraction.jpg` | Aurora Abstraction | paintings | CC0 1.0 Universal | verified | aurora-abstraction | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/botanical-mosaic-painting.jpg` | Botanical Mosaic | paintings | CC0 1.0 Universal | verified | botanical-mosaic-painting | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/cafe-terrace.jpg` | Café Terrace at Night | paintings | Public domain | verified | cafe-terrace | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Vincent_Willem_van_Gogh_-_Cafe_Terrace_at_Night_(Yorck).jpg) |
+| `/images/carpathian-folk-painting.jpg` | Carpathian Hills | paintings | CC0 1.0 Universal | verified | carpathian-folk-painting | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
+| `/images/coastal-color-study.jpg` | Coastal Colour Study | paintings | CC0 1.0 Universal | verified | coastal-color-study | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/girl-pearl-earring.jpg` | Girl with a Pearl Earring | paintings | Public domain | verified | girl-pearl-earring | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Girl_with_a_Pearl_Earring.jpg) |
 | `/images/great-wave.jpg` | The Great Wave off Kanagawa | paintings | Public domain | verified | great-wave | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Tsunami_by_hokusai_19th_century.jpg) |
 | `/images/mona-lisa.jpg` | Mona Lisa | paintings | Public domain | verified | mona-lisa | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg) |
+| `/images/night-garden-painting.jpg` | Night Garden | paintings | CC0 1.0 Universal | verified | night-garden-painting | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/starry-night.jpg` | The Starry Night | paintings | Public domain | verified | starry-night | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg) |
 | `/images/sunrise.jpg` | Impression, Sunrise | paintings | Public domain | verified | sunrise | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Monet_-_Impression,_Sunrise.jpg) |
 | `/images/the-kiss.jpg` | The Kiss | paintings | Public domain | verified | the-kiss | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg) |

@@ -17,8 +17,7 @@ const out = path.join(root, "data/catalog/incoming");
 const W = 1800, H = 1200;
 fs.mkdirSync(out, { recursive: true });
 
-const landmarks = ["bran-castle-dawn", "palace-parliament-dusk", "corvin-castle", "sighisoara-clock-tower", "maramures-wooden-church"];
-const nature = ["carpathian-beech-forest", "danube-pelicans", "red-deer-meadow", "poppy-meadow", "ice-cave"];
+const proceduralNature = ["ice-cave"];
 const cities = ["bucharest-calea-victoriei", "sibiu-square", "cluj-unirii-square", "timisoara-union-square", "brasov-council-square"];
 const isometric = ["iso-floating-garden", "iso-harbor-village", "iso-solar-observatory", "iso-mountain-railway", "iso-desert-oasis", "iso-coastal-lighthouse", "iso-forest-workshop", "iso-arctic-research", "iso-river-market", "iso-sky-islands"];
 const abstract = ["abstract-azure-arches", "abstract-pink-orbit", "abstract-violet-lattice", "abstract-crystalline", "abstract-tessellation", "abstract-fluid-topography", "abstract-paper-folds", "abstract-solar-rings", "abstract-kinetic-grid", "abstract-night-mosaic"];
@@ -227,10 +226,9 @@ function blueprintArt(id,index) {
   for(let i=0;i<45;i++){const x=r()*W,y=r()*H,a=r()*6.28,len=30+r()*150;art.line(x,y,x+Math.cos(a)*len,y+Math.sin(a)*len,gold,2,.43);}
   art.write(id);
 }
-for (const [index,id] of landmarks.entries()) scenicArt(id,index,"landmarks");
-for (const [index,id] of nature.entries()) scenicArt(id,index,"nature");
+for (const [index,id] of proceduralNature.entries()) scenicArt(id,index + 4,"nature");
 for (const [index,id] of cities.entries()) scenicArt(id,index + 2,"cities");
 for (const [index,id] of isometric.entries()) isometricArt(id,index);
 for (const [index,id] of abstract.entries()) abstractArt(id,index);
 for (const [index,id] of blueprints.entries()) blueprintArt(id,index);
-console.log(`Generated ${landmarks.length + nature.length + cities.length + isometric.length + abstract.length + blueprints.length} original procedural Stage 5 sources.`);
+console.log(`Generated ${proceduralNature.length + cities.length + isometric.length + abstract.length + blueprints.length} original procedural Stage 5 sources.`);

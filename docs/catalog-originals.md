@@ -14,10 +14,10 @@ a `flagged` or `unverified` record is not eligible for the final catalog.
 
 ## Stage 5 originals
 
-The 55 Stage 5 images are original visuals created on 2026-09-03. The first ten
-paintings and landscapes use prompt-directed Arena image generation; the other
-45 landmark, nature, city, isometric, abstract and blueprint images are
-produced by original deterministic artwork in
+The 55 Stage 5 images are original visuals created on 2026-09-03. Nineteen
+paintings, landscapes, landmarks and nature scenes use prompt-directed Arena
+image generation. The remaining 36 city, ice-cave, isometric, abstract and
+blueprint images are produced by original deterministic artwork in
 `scripts/generate-stage5-procedural-originals.mjs`. No third-party source image
 was supplied as an input. PuzzleTogether dedicates any copyright and related
 rights it may hold in these generated originals to
