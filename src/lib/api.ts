@@ -41,6 +41,7 @@ export const api = {
     });
   },
   resetRoom(ref: string, pid: string) { return post<{ ok: boolean }>(`/api/rooms/${encodeURIComponent(ref)}/reset`, { pid }); },
+  resetPuzzle(ref: string, pid: string) { return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/puzzle-reset`, { pid }); },
   exportUrl(ref: string, pid: string, format: "json" | "html" = "json") {
     return `/api/rooms/${encodeURIComponent(ref)}/export?pid=${encodeURIComponent(pid)}&format=${format}`;
   },

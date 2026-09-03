@@ -5,6 +5,7 @@ export default {
     extend: {
       fontFamily: {
         sans: [
+          '"Poppins"',
           '"Inter"',
           "ui-sans-serif",
           "system-ui",
@@ -16,7 +17,7 @@ export default {
           "sans-serif",
         ],
         display: [
-          '"Sora"',
+          '"Poppins"',
           '"Inter"',
           "ui-sans-serif",
           "system-ui",
@@ -38,17 +39,25 @@ export default {
           100: "#e4e8f3",
           50: "#f3f5fb",
         },
+        // Coaching Partners: azure is the dependable primary, hot pink is
+        // reserved for calls to action, and purple marks secondary choices.
         brand: {
-          50: "#eef2ff",
-          100: "#e0e7ff",
-          200: "#c7d2fe",
-          300: "#a5b4fc",
-          400: "#818cf8",
-          500: "#6366f1",
-          600: "#4f46e5",
-          700: "#4338ca",
-          800: "#3730a3",
-          900: "#312e81",
+          50: "#edf8fd",
+          100: "#d9f0fa",
+          200: "#b7e2f4",
+          300: "#7bc9e8",
+          400: "#37a4d1",
+          500: "#1689c9",
+          600: "#0e77b7",
+          700: "#085d92",
+          800: "#064a75",
+          900: "#083b5c",
+        },
+        cp: {
+          azure: { 50: "#edf8fd", 100: "#d9f0fa", 300: "#7bc9e8", 600: "#0e77b7", 700: "#085d92" },
+          pink: { 50: "#fff0f7", 100: "#ffd9ec", 300: "#f98bc4", 500: "#f23b9d", 600: "#d72c88", 700: "#c61e78" },
+          purple: { 50: "#f5f0fa", 100: "#e9ddf5", 300: "#bd99df", 500: "#8a58c0", 700: "#69419a" },
+          slate: "#94a3b8",
         },
       },
       boxShadow: {

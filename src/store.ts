@@ -174,6 +174,19 @@ function handleMessage(msg: { t: string; [key: string]: unknown }) {
       });
       break;
     }
+    case "puzzleReset": {
+      // Unlike the workshop reset, this keeps the current in-play room and
+      // timer. A new epoch makes Board clear cached sprites and re-fit.
+      set({
+        room: msg.room as RoomView,
+        puzzle: (msg.puzzle as PuzzleView) || state.puzzle,
+        pieces: indexPieces((msg.pieces as Piece[]) || []),
+        completion: null,
+        scores: (msg.scores as ScoreView[]) || [],
+        epoch: state.epoch + 1,
+      });
+      break;
+    }
     case "error": set({ protocolError: String(msg.message || "Realtime action failed.") }); break;
     case "deny": set({ status: "denied", denyCode: msg.code as string, denyMessage: msg.message as string, connected: false }); break;
     case "closed": set({ status: "closed", closedMessage: String(msg.message || "This room has closed."), connected: false }); break;
@@ -190,6 +203,11 @@ export const store = {
   sendPiece(id: number, x: number, y: number, drag: boolean) {
     if (!state.connected) return;
     socket.send({ t: "piece", id, x: Math.round(x), y: Math.round(y), drag });
+  },
+  /** Ask the server to rearrange only untouched jigsaw pieces. */
+  sendLayout(mode: "scatter" | "tray") {
+    if (!state.connected) return;
+    socket.send({ t: "layout", mode });
   },
   sendCanvas(op: string, data: Record<string, unknown> = {}) {
     if (!state.connected) return;

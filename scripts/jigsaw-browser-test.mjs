@@ -13,6 +13,14 @@ import { chromium, firefox, webkit } from "playwright";
 import { mkdirSync, writeFileSync } from "node:fs";
 
 const BASE = process.env.BASE || "http://127.0.0.1:3000";
+// Optional executable support makes the focused viewport gate usable in
+// constrained CI images. Normal runs still use Playwright's installed browser.
+const CHROMIUM_EXECUTABLE = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
+const CHROMIUM_ARGS = (process.env.PLAYWRIGHT_CHROMIUM_ARGS || "").split(",").map((value) => value.trim()).filter(Boolean);
+const launchChromium = () => chromium.launch({
+  ...(CHROMIUM_EXECUTABLE ? { executablePath: CHROMIUM_EXECUTABLE } : {}),
+  ...(CHROMIUM_ARGS.length ? { args: CHROMIUM_ARGS } : {}),
+});
 const ARTIFACTS = new URL("../test-artifacts/", import.meta.url).pathname;
 mkdirSync(ARTIFACTS, { recursive: true });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -29,48 +37,62 @@ const ok = (name, value, extra = "") => {
   console.log(`${value ? "✅" : "❌"} ${name}${extra ? ` — ${extra}` : ""}`);
 };
 
-/**
- * Mirror of src/puzzle/tray.ts — converts a tray slot to page coordinates
- * using the exposed camera hook. Deterministic on every client.
- */
-function traySlotPoint(page, id) {
+/** Convert the server-authoritative x/y of a piece to page coordinates. */
+function piecePoint(page, id) {
   return page.evaluate(
     (pieceId) => {
-      const { puzzle, pieces } = window.__ptStore.getState();
-      const total = Object.keys(pieces).length;
-      const cellW = puzzle.pieceW + 24;
-      const cellH = puzzle.pieceH + 24;
-      let origin, cols;
-      if (puzzle.width >= puzzle.height) {
-        origin = { x: puzzle.width + 80, y: 0 };
-        const rows = Math.max(1, Math.floor(puzzle.height / cellH));
-        cols = Math.max(1, Math.ceil(total / rows));
-      } else {
-        origin = { x: 0, y: puzzle.height + 80 };
-        cols = Math.max(1, Math.floor(puzzle.width / cellW));
-      }
-      const wx = origin.x + (pieceId % cols) * cellW;
-      const wy = origin.y + Math.floor(pieceId / cols) * cellH;
+      const { pieces } = window.__ptStore.getState();
+      const piece = pieces[pieceId];
       const cam = window.__ptCamera.current;
       const rect = document.querySelector("canvas").getBoundingClientRect();
-      return { x: rect.left + wx * cam.scale + cam.x, y: rect.top + wy * cam.scale + cam.y };
+      return { x: rect.left + piece.x * cam.scale + cam.x, y: rect.top + piece.y * cam.scale + cam.y };
     },
     id,
   );
 }
 
-async function createRoomViaUi(page, { difficulty = "Medium", mystery = false, upload = false, lang = "ro" } = {}) {
+const FAMILY_FLOW = {
+  jigsaw: {
+    category: /Paintings/i,
+    puzzle: /Starry Night/i,
+    difficulty: "Medium",
+    expectedStage: "play",
+  },
+  "letter-canvas": {
+    category: /Letter Canvas/i,
+    puzzle: /Agile Values Letter Canvas/i,
+    difficulty: "Quick",
+    expectedStage: "play",
+  },
+  "sentence-canvas": {
+    category: /Sentence Canvas/i,
+    puzzle: /Funny Story Canvas/i,
+    difficulty: "Quick",
+    expectedStage: "play",
+  },
+  coaching: {
+    category: /Team coaching/i,
+    puzzle: /The Himalayan Expedition/i,
+    expectedStage: "brief",
+  },
+};
+
+async function createRoomViaUi(page, { difficulty = "Medium", mystery = false, upload = false, family = "jigsaw" } = {}) {
+  const flow = FAMILY_FLOW[family];
   await page.goto(BASE);
-  await page.getByText("Play together. Leave with a decision.").waitFor();
-  await page.getByRole("button", { name: /Create a session/i }).click();
-  await page.getByRole("button", { name: /Picturi|Paintings/i }).click();
+    await page.getByRole("heading", { name: /Play\. Talk\. Decide\.|Jucați\. Vorbiți\. Decideți\./i }).waitFor();
+  await page.getByRole("button", { name: /Create session/i }).click();
+  await page.getByRole("button", { name: flow.category }).click();
   if (upload) {
+    if (family !== "jigsaw") throw new Error("Only jigsaw rooms support custom image uploads.");
     await page.locator('input[type="file"]').setInputFiles(UPLOAD_FILE);
     ok(`upload: privacy notice shown`, await page.getByText(/Confidențialitate|Privacy/i).isVisible());
   } else {
-    await page.getByRole("button", { name: /Starry Night/i }).click();
+    await page.getByRole("button", { name: flow.puzzle }).click();
   }
-  await page.getByRole("button", { name: new RegExp(`^${difficulty}`) }).click();
+  if (family !== "coaching") {
+    await page.getByRole("button", { name: new RegExp(`^${difficulty || flow.difficulty}`) }).click();
+  }
   if (mystery) await page.getByLabel(/Mod mister|Mystery mode/i).check();
   await page.getByRole("button", { name: /Continue|Continuă/i }).click();
   await page.locator("#session-name").fill("Browser test");
@@ -92,9 +114,72 @@ const ENGINES = [
   ["webkit", webkit],
 ];
 
+
+// Stage 0 regression gate: a facilitator must be able to reach Start without
+// scrolling the page, including the taller Canvas lobby cards. Each check
+// combines viewport visibility and the server-synchronised stage transition.
+const LOBBY_VIEWPORTS = [
+  [360, 800],
+  [390, 844],
+  [1280, 650],
+  [1440, 900],
+];
+
+async function startButtonIsInViewport(page) {
+  return page.getByRole("button", { name: /Start for everyone|Start pentru toți/i }).evaluate((button) => {
+    const r = button.getBoundingClientRect();
+    return r.width > 0 && r.height > 0 && r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight && r.right <= window.innerWidth;
+  });
+}
+
+async function runLobbyViewportGate() {
+  const browser = await launchChromium();
+  const errors = [];
+  try {
+    for (const [family, flow] of Object.entries(FAMILY_FLOW)) {
+      for (const [width, height] of LOBBY_VIEWPORTS) {
+        const context = await browser.newContext({ viewport: { width, height }, locale: "en-US", hasTouch: width < 640, isMobile: width < 640 });
+        const page = await context.newPage();
+        page.on("pageerror", (error) => errors.push(`${family} ${width}x${height}: ${error.message}`));
+        try {
+          await createRoomViaUi(page, { family, difficulty: flow.difficulty });
+          const visible = await startButtonIsInViewport(page);
+          if (visible) {
+            await page.getByRole("button", { name: /Start for everyone|Start pentru toți/i }).click();
+          }
+          const advanced = visible && await page.waitForFunction(
+            (stage) => window.__ptStore?.getState().room?.stage === stage,
+            flow.expectedStage,
+            { timeout: 4_000 },
+          ).then(() => true).catch(() => false);
+          // Exactly one check per activity/viewport pair: 4 × 4 = 16.
+          ok(`lobby ${family} ${width}x${height}: create → lobby → Start → ${flow.expectedStage}`, advanced);
+        } catch (error) {
+          ok(`lobby ${family} ${width}x${height}: create → lobby → Start → ${flow.expectedStage}`, false, error instanceof Error ? error.message : String(error));
+        } finally {
+          await context.close();
+        }
+      }
+    }
+  } finally {
+    await browser.close();
+  }
+  if (errors.length) console.error(`❌ lobby viewport gate: ${errors.length} uncaught page error(s): ${errors.slice(0, 3).join(" | ")}`);
+  return errors;
+}
+
+const lobbyPageErrors = await runLobbyViewportGate();
+if (process.env.LOBBY_ONLY === "1") {
+  const passed = checks.filter(Boolean).length;
+  const total = LOBBY_VIEWPORTS.length * Object.keys(FAMILY_FLOW).length;
+  console.log(`\n📊 ${passed}/${total} Stage 0 lobby viewport checks passed`);
+  process.exit(passed === total && lobbyPageErrors.length === 0 ? 0 : 1);
+}
+
+
 for (const [engineName, engine] of ENGINES) {
   console.log(`\n━━━ ${engineName} ━━━`);
-  const browser = await engine.launch();
+  const browser = engineName === "chromium" ? await launchChromium() : await engine.launch();
   const errors = [];
 
   try {
@@ -152,8 +237,11 @@ for (const [engineName, engine] of ENGINES) {
     await page.getByRole("button", { name: "ro", exact: true }).click();
     await sleep(300);
 
-    // Tap a tray piece (tray is right of the landscape puzzle, in view after fit)
-    let point = await traySlotPoint(page, 3);
+    // Opt into the ordered help tray, then tap a real server-positioned piece.
+    await page.getByRole("button", { name: /Ajutor \(casetă\)|Help \(tray\)/i }).click();
+    await page.waitForFunction(() => window.__ptStore.getState().room.jigsawLayout === "tray");
+    await page.getByRole("button", { name: /Aduce piesele neplasate|Bring unplaced/i }).click();
+    let point = await piecePoint(page, 3);
     await page.mouse.click(point.x, point.y);
     await sleep(1000);
     const moved3 = await page.evaluate(() => window.__ptStore.getState().pieces[3]?.moved === true);
@@ -190,11 +278,13 @@ for (const [engineName, engine] of ENGINES) {
       await createRoomViaUi(page, { difficulty: "Medium" });
       await startPlay(page);
 
-      // Fit the tray, then tap a piece inside it.
+      // Opt into the help tray, fit it, then tap a real server-positioned piece.
+      await page.getByRole("button", { name: /Ajutor \(casetă\)|Help \(tray\)/i }).click();
+      await page.waitForFunction(() => window.__ptStore.getState().room.jigsawLayout === "tray");
       await page.getByRole("button", { name: /Aduce piesele neplasate|Bring unplaced/i }).click();
       await sleep(500);
       const pieceId = deviceName === "iphone" ? 5 : 7;
-      const tap = await traySlotPoint(page, pieceId);
+      const tap = await piecePoint(page, pieceId);
       await page.touchscreen.tap(tap.x, tap.y);
       await sleep(1100);
       const moved = await page.evaluate((id) => window.__ptStore.getState().pieces[id]?.moved === true, pieceId);
@@ -225,4 +315,4 @@ for (const [engineName, engine] of ENGINES) {
 }
 
 console.log(`\n📊 ${checks.filter(Boolean).length}/${checks.length} cross-browser checks passed`);
-process.exit(checks.every(Boolean) ? 0 : 1);
+process.exit(checks.every(Boolean) && lobbyPageErrors.length === 0 ? 0 : 1);

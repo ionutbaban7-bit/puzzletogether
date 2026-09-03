@@ -7,8 +7,8 @@ export function LogoMark({ size = 34 }: { size?: number }) {
       <rect width="64" height="64" rx="15" fill={`url(#${gradientId})`} />
       <defs>
         <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#6366f1" />
-          <stop offset="100%" stopColor="#4338ca" />
+          <stop offset="0%" stopColor="#0E77B7" />
+          <stop offset="100%" stopColor="#8A58C0" />
         </linearGradient>
       </defs>
       <g
@@ -51,6 +51,20 @@ export function Logo({
       )}
     </span>
   );
+}
+
+export function CategoryGlyph({ id, fallback }: { id: string; fallback?: string }) {
+  const common = "inline-block h-4 w-4 shrink-0 align-[-0.15em]";
+  if (id === "isometric-worlds") {
+    return <svg className={common} viewBox="0 0 24 24" fill="none" aria-hidden><path d="m12 2 9 5-9 5-9-5 9-5Z" fill="currentColor" opacity=".28" /><path d="m3 7 9 5 9-5M3 7v10l9 5 9-5V7M12 12v10" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /></svg>;
+  }
+  if (id === "abstract-geometry") {
+    return <svg className={common} viewBox="0 0 24 24" fill="none" aria-hidden><circle cx="12" cy="12" r="8.4" stroke="currentColor" strokeWidth="1.6" opacity=".45" /><path d="m12 4.7 6.3 11H5.7L12 4.7Z" fill="currentColor" opacity=".32" /><path d="M5 18.5 19 5.5M6.5 7.5h11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>;
+  }
+  if (id === "blueprint-architecture") {
+    return <svg className={common} viewBox="0 0 24 24" fill="none" aria-hidden><path d="M4 3.5h16v17H4z" stroke="currentColor" strokeWidth="1.6" /><path d="M7 17V9l5-3 5 3v8M5.5 13h13M12 6v11" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M7 17h10" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" /></svg>;
+  }
+  return <span aria-hidden>{fallback || "🧩"}</span>;
 }
 
 export function Spinner({ className = "h-4 w-4" }: { className?: string }) {

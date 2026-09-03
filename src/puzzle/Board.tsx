@@ -4,7 +4,7 @@ import { pick, useLang } from "../lib/i18n";
 import type { CursorView, Piece, PlayerView, PuzzleView } from "../types";
 import { MAX_SCALE, MIN_SCALE, useViewport } from "./useViewport";
 import { buildEdgeMap, buildPiecePath, pieceEdges, spritePad } from "./jigsaw";
-import { isEdgePiece, trayLayout, traySlot } from "./tray";
+import { isEdgePiece } from "./tray";
 import { store } from "../store";
 
 interface BoardProps {
@@ -18,6 +18,8 @@ interface BoardProps {
   allowReset: boolean;
   resetSignal: number;
   inputEnabled: boolean;
+  /** Server-selected layout for untouched jigsaw pieces. */
+  layoutMode?: "scatter" | "tray";
 }
 
 interface Grab {
@@ -34,6 +36,10 @@ const SNAP_RING_COLOR = "#34d399";
 const TARGET_RING_COLOR = "rgba(99,102,241,0.9)";
 const PLACED_RING_COLOR = "rgba(52,211,153,0.9)";
 const WORD_TILE_RADIUS = 18;
+/** Cache enough room to rasterize the free-piece shadow once, not every frame. */
+const BAKED_SHADOW_MARGIN = 18;
+const BAKED_SHADOW_BLUR = 9;
+const BAKED_SHADOW_OFFSET_Y = 4;
 
 type FilterMode = "all" | "edge" | "interior" | "unplaced";
 
@@ -48,6 +54,8 @@ const STR = {
   filterInterior: { ro: "Interior", en: "Interior" },
   filterUnplaced: { ro: "Neplasate", en: "Unplaced" },
   tray: { ro: "Casetă cu piese", en: "Piece tray" },
+  mix: { ro: "Amestecă", en: "Mix" },
+  helpTray: { ro: "Ajutor (casetă)", en: "Help (tray)" },
   bringUnplaced: { ro: "Aduce piesele neplasate în cadru", en: "Bring unplaced pieces into view" },
   minimap: { ro: "Minihartă", en: "Minimap" },
   board: { ro: "Tablieră puzzle", en: "Puzzle board" },
@@ -70,6 +78,23 @@ function buildRoundedRectPath(width: number, height: number, radius: number) {
   return path;
 }
 
+type WorldBounds = { x0: number; y0: number; x1: number; y1: number };
+
+function boundsForPieces(puzzle: PuzzleView, values: Piece[], includeTarget: boolean): WorldBounds {
+  const bounds: WorldBounds = includeTarget
+    ? { x0: 0, y0: 0, x1: puzzle.width, y1: puzzle.height }
+    : { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity };
+  for (const piece of values) {
+    bounds.x0 = Math.min(bounds.x0, piece.x);
+    bounds.y0 = Math.min(bounds.y0, piece.y);
+    bounds.x1 = Math.max(bounds.x1, piece.x + puzzle.pieceW);
+    bounds.y1 = Math.max(bounds.y1, piece.y + puzzle.pieceH);
+  }
+  // A completed puzzle has no free pieces; fitting its target is useful and
+  // avoids passing an empty/infinite rectangle to the camera.
+  return Number.isFinite(bounds.x0) ? bounds : { x0: 0, y0: 0, x1: puzzle.width, y1: puzzle.height };
+}
+
 export default function Board({
   puzzle,
   pieces,
@@ -81,9 +106,10 @@ export default function Board({
   allowReset,
   resetSignal,
   inputEnabled,
+  layoutMode = "scatter",
 }: BoardProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const { camera, cameraRef, setCamera, zoomAt, zoomBy, fit } = useViewport();
+  const { camera, cameraRef, zoomAt, zoomBy, fit } = useViewport();
 
   // Live refs for the draw loop
   const piecesRef = useRef(pieces);
@@ -96,6 +122,14 @@ export default function Board({
   youRef.current = youId;
   const puzzleRef = useRef(puzzle);
   puzzleRef.current = puzzle;
+  const layoutModeRef = useRef(layoutMode);
+  layoutModeRef.current = layoutMode;
+
+  const fitBoard = useCallback(() => {
+    const currentPuzzle = puzzleRef.current;
+    const unplaced = Object.values(piecesRef.current).filter((piece) => !piece.locked);
+    fit(currentPuzzle, boundsForPieces(currentPuzzle, unplaced, true));
+  }, [fit]);
 
   // Gesture state (mutable, never triggers renders)
   const pointers = useRef(new Map<number, { x: number; y: number }>());
@@ -184,9 +218,9 @@ export default function Board({
     const key = `${puzzle.width}x${puzzle.height}`;
     if (fittedFor.current !== key) {
       fittedFor.current = key;
-      fit(puzzle);
+      fitBoard();
     }
-  }, [puzzle, fit]);
+  }, [puzzle, fitBoard]);
 
   // ------------------------------------------- dirty rendering (no 60fps loop)
   // The board repaints ONLY when something changed: a state update marks the
@@ -234,7 +268,12 @@ export default function Board({
   useEffect(() => {
     return () => {
       cancelAnimationFrame(glowAnim.current);
-      if (raf.current) cancelAnimationFrame(raf.current);
+      if (raf.current) {
+        cancelAnimationFrame(raf.current);
+        // StrictMode immediately remounts effects in development. Clear the
+        // stored id as well or the next dirty render is incorrectly skipped.
+        raf.current = 0;
+      }
     };
   }, []);
 
@@ -242,7 +281,7 @@ export default function Board({
   const { lang } = useLang();
   useEffect(() => {
     schedule();
-  }, [pieces, cursors, players, showReference, filter, lang, schedule]);
+  }, [pieces, cursors, players, showReference, filter, layoutMode, lang, schedule]);
   useEffect(() => {
     schedule();
   }, [camera, schedule]);
@@ -263,10 +302,10 @@ export default function Board({
       spriteCache.current.clear();
       pathCache.current.clear();
       fittedFor.current = "";
-      fit(puzzleRef.current);
+      fitBoard();
       schedule();
     }
-  }, [resetSignal, fit, schedule]);
+  }, [resetSignal, fitBoard, schedule]);
 
   // Debug/testing hook: expose the live camera.
   useEffect(() => {
@@ -350,7 +389,11 @@ export default function Board({
     if (cached) return cached;
     const { correctX, correctY } = piece;
     const { pieceW, pieceH } = puzzleRef.current;
-    const pad = spritePad(pieceW, pieceH);
+    const pathPad = spritePad(pieceW, pieceH);
+    // The cached sprite includes the regular free-piece shadow. This turns
+    // hundreds of expensive canvas shadow filters per animation frame into a
+    // one-time rasterization per piece.
+    const pad = pathPad + BAKED_SHADOW_MARGIN;
     const cw = Math.ceil(pieceW + pad * 2);
     const ch = Math.ceil(pieceH + pad * 2);
     const spr = document.createElement("canvas");
@@ -359,6 +402,17 @@ export default function Board({
     const ctx = spr.getContext("2d")!;
     const path = getPiecePath(piece);
     const lw = Math.max(1.4, Math.min(pieceW, pieceH) * 0.02);
+
+    // Do not clip this pass: a shadow needs to extend around the die-cut
+    // silhouette. Its extra 18px margin prevents clipping at sprite edges.
+    ctx.save();
+    ctx.translate(pad, pad);
+    ctx.fillStyle = "rgba(0,0,0,0.34)";
+    ctx.shadowColor = "rgba(0,0,0,0.30)";
+    ctx.shadowBlur = BAKED_SHADOW_BLUR;
+    ctx.shadowOffsetY = BAKED_SHADOW_OFFSET_Y;
+    ctx.fill(path);
+    ctx.restore();
 
     ctx.save();
     ctx.translate(pad, pad); // piece-local origin
@@ -488,11 +542,10 @@ export default function Board({
     const players = playersRef.current;
     const you = youRef.current;
     const now = Date.now();
-    const tLayout = trayLayout(puzzle, Object.keys(pieces).length);
-    // Unplaced pieces live in the deterministic tray; everything else uses
-    // the (server-confirmed) world position.
-    const dispPos = (p: Piece) =>
-      p.locked || p.moved ? { x: p.x, y: p.y } : traySlot(tLayout, p.id);
+    const currentLayoutMode = layoutModeRef.current;
+    // Every piece, including untouched ones, renders at its authoritative
+    // server position. There is no client-side tray-slot fallback.
+    const dispPos = (p: Piece) => ({ x: p.x, y: p.y });
     const filterMatch = (p: Piece) => {
       if (filter === "all") return true;
       if (filter === "unplaced") return !p.locked && !p.moved;
@@ -506,18 +559,28 @@ export default function Board({
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, w, h);
 
-    // Background dot grid (world-fixed for a subtle "infinite canvas" feel)
-    const dotSpace = 34;
-    const offX = ((cx / scale) % dotSpace + dotSpace) % dotSpace;
-    const offY = ((cy / scale) % dotSpace + dotSpace) % dotSpace;
-    const dotsX = Math.ceil(w / (dotSpace * scale)) + 1;
-    const dotsY = Math.ceil(h / (dotSpace * scale)) + 1;
-    ctx.fillStyle = "rgba(255,255,255,0.055)";
-    for (let i = 0; i <= dotsX; i++) {
-      for (let j = 0; j <= dotsY; j++) {
-        ctx.beginPath();
-        ctx.arc(i * dotSpace * scale - offX * scale, j * dotSpace * scale - offY * scale, 1.2, 0, Math.PI * 2);
-        ctx.fill();
+    // Background dot grid (world-fixed for a subtle "infinite canvas" feel).
+    // At low zoom, a fixed 34-world-unit grid used to create thousands of
+    // arcs. Increase the world spacing until it costs at most a sensible
+    // number of 2×2 pixel fills; at extremely low zoom skip it altogether.
+    let dotSpace = 34;
+    let effectiveDotSpace = dotSpace * scale;
+    let dotDoublings = 0;
+    while (effectiveDotSpace < 16 && dotDoublings < 4) {
+      dotSpace *= 2;
+      effectiveDotSpace *= 2;
+      dotDoublings += 1;
+    }
+    if (effectiveDotSpace >= 16) {
+      const offX = ((cx / scale) % dotSpace + dotSpace) % dotSpace;
+      const offY = ((cy / scale) % dotSpace + dotSpace) % dotSpace;
+      const dotsX = Math.ceil(w / effectiveDotSpace) + 1;
+      const dotsY = Math.ceil(h / effectiveDotSpace) + 1;
+      ctx.fillStyle = "rgba(255,255,255,0.055)";
+      for (let i = 0; i <= dotsX; i++) {
+        for (let j = 0; j <= dotsY; j++) {
+          ctx.fillRect(i * effectiveDotSpace - offX * scale, j * effectiveDotSpace - offY * scale, 2, 2);
+        }
       }
     }
 
@@ -559,7 +622,7 @@ export default function Board({
 
     const grabPiece = grab.current ? pieces[grab.current.id] : null;
     const playersById = new Map(players.map((player) => [player.id, player]));
-    const pad = spritePad(puzzle.pieceW, puzzle.pieceH);
+    const pad = spritePad(puzzle.pieceW, puzzle.pieceH) + BAKED_SHADOW_MARGIN;
     const sw = (puzzle.pieceW + pad * 2) * scale;
     const sh = (puzzle.pieceH + pad * 2) * scale;
 
@@ -584,13 +647,15 @@ export default function Board({
       ctx.restore();
     };
 
-    // Tray panel behind the unplaced pieces (deterministic, non-overlapping).
+    // Only the opt-in help layout gets a tray panel. Scattered is deliberately
+    // unframed: its overlap and broad band are the default, harder game.
     const unplacedList = list.filter((p) => !p.locked && !p.moved);
-    if (unplacedList.length > 0) {
-      const tx = tLayout.origin.x * scale + cx - 14;
-      const ty = tLayout.origin.y * scale + cy - 28;
-      const tw = tLayout.width * scale + 28;
-      const th = tLayout.height * scale + 40;
+    if (currentLayoutMode === "tray" && unplacedList.length > 0) {
+      const trayBounds = boundsForPieces(puzzle, unplacedList, false);
+      const tx = trayBounds.x0 * scale + cx - 14;
+      const ty = trayBounds.y0 * scale + cy - 28;
+      const tw = (trayBounds.x1 - trayBounds.x0) * scale + 28;
+      const th = (trayBounds.y1 - trayBounds.y0) * scale + 40;
       ctx.save();
       ctx.fillStyle = "rgba(255,255,255,0.035)";
       ctx.strokeStyle = "rgba(255,255,255,0.10)";
@@ -602,11 +667,7 @@ export default function Board({
       ctx.fillStyle = "rgba(255,255,255,0.45)";
       ctx.font = "700 10px Inter, system-ui, sans-serif";
       ctx.textBaseline = "alphabetic";
-      ctx.fillText(
-        `${pick(STR.tray, lang)} · ${unplacedList.length} ${pick(STR.pieces, lang)}`,
-        tx + 12,
-        ty + 16,
-      );
+      ctx.fillText(`${pick(STR.tray, lang)} · ${unplacedList.length}`, tx + 12, ty + 16);
       ctx.restore();
     }
 
@@ -641,20 +702,19 @@ export default function Board({
       }
       lockedTimes.current.delete(piece.id);
 
-      // Free pieces cast a soft shadow that follows the jigsaw silhouette.
+      // Every regular free-piece shadow is baked into its sprite. Only the
+      // one actively grabbed piece gets an optional live lift shadow.
       if (spr) {
-        ctx.save();
         if (isGrabbed) {
+          ctx.save();
           ctx.shadowColor = "rgba(0,0,0,0.42)";
           ctx.shadowBlur = 22;
           ctx.shadowOffsetY = 10;
+          ctx.drawImage(spr, dx, dy, sw, sh);
+          ctx.restore();
         } else {
-          ctx.shadowColor = "rgba(0,0,0,0.30)";
-          ctx.shadowBlur = 9;
-          ctx.shadowOffsetY = 4;
+          ctx.drawImage(spr, dx, dy, sw, sh);
         }
-        ctx.drawImage(spr, dx, dy, sw, sh);
-        ctx.restore();
       }
 
       const claimOwner = piece.heldBy ? playersById.get(piece.heldBy) : null;
@@ -772,19 +832,15 @@ export default function Board({
     }
 
     // Minimap (bottom-right, screen space): target area, every piece as a dot
-    // (green = placed, white = in tray, amber = free), plus the current view.
+    // (green = placed, white = help tray, amber = scattered/free), plus the current view.
     const mm = { w: 132, h: 96, x: w - 148, y: h - 116 };
     minimapRect.current = mm;
     let bx0 = 0;
     let by0 = 0;
     let bx1 = puzzle.width;
     let by1 = puzzle.height;
-    if (unplacedList.length > 0) {
-      bx1 = Math.max(bx1, tLayout.origin.x + tLayout.width);
-      by1 = Math.max(by1, tLayout.origin.y + tLayout.height);
-    }
     for (const p of list) {
-      if (!p.locked && p.moved) {
+      if (!p.locked) {
         bx0 = Math.min(bx0, p.x);
         by0 = Math.min(by0, p.y);
         bx1 = Math.max(bx1, p.x + puzzle.pieceW);
@@ -817,7 +873,7 @@ export default function Board({
       const pos = dispPos(p);
       ctx.fillStyle = p.locked
         ? "rgba(52,211,153,0.95)"
-        : !p.moved
+        : !p.moved && currentLayoutMode === "tray"
           ? "rgba(255,255,255,0.55)"
           : "rgba(251,191,36,0.95)";
       ctx.fillRect(mmx(pos.x) - 1, mmy(pos.y) - 1, 2, 2);
@@ -857,11 +913,9 @@ export default function Board({
     return { x: e.clientX - rect.left, y: e.clientY - rect.top };
   };
 
-  // Display (on-screen world) position of a piece: tray slot while unplaced.
+  // Server x/y is always the visible position, including untouched pieces.
   function displayPos(p: Piece) {
-    const puzzle = puzzleRef.current;
-    if (p.locked || p.moved) return { x: p.x, y: p.y };
-    return traySlot(trayLayout(puzzle, Object.keys(piecesRef.current).length), p.id);
+    return { x: p.x, y: p.y };
   }
 
   function onPointerDown(e: React.PointerEvent<HTMLCanvasElement>) {
@@ -902,8 +956,8 @@ export default function Board({
           lastSentY: hit.y,
           first: true,
         };
-        // Local visual lift immediately (server confirms). A tray piece
-        // leaves the tray the moment it is picked up.
+        // Local visual lift immediately; the server confirms the claim and
+        // changes moved=true only after the player actually touches it.
         const pieces = piecesRef.current;
         const p = pieces[hit.id];
         if (p) {
@@ -989,13 +1043,12 @@ export default function Board({
     const pieces = piecesRef.current;
     const puzzle = puzzleRef.current;
     const margin = touchMargin / Math.max(cameraRef.current.scale, 0.001);
-    const tLayout = trayLayout(puzzle, Object.keys(pieces).length);
     let best: Piece | null = null;
     let bestFree = false;
     for (const p of Object.values(pieces)) {
       if (p.locked && !allowLocked) continue;
       if (p.heldBy && p.heldBy !== youRef.current) continue;
-      const pos = p.locked || p.moved ? { x: p.x, y: p.y } : traySlot(tLayout, p.id);
+      const pos = { x: p.x, y: p.y };
       if (
         wx >= pos.x - margin &&
         wx <= pos.x + puzzle.pieceW + margin &&
@@ -1141,19 +1194,11 @@ export default function Board({
     zoomAt(pos.x, pos.y, factor);
   }
 
-  // Bring the tray (unplaced pieces) into view.
+  // Bring precisely the server-positioned unplaced cluster into view.
   const bringUnplacedIntoView = () => {
     const p = puzzleRef.current;
-    const total = Object.keys(piecesRef.current).length;
-    const t = trayLayout(p, total);
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const scale = Math.min(1.6, Math.max(MIN_SCALE, Math.min(vw / (t.width + 160), vh / (t.height + 200))));
-    setCamera({
-      x: vw / 2 - (t.origin.x + t.width / 2) * scale,
-      y: vh / 2 - (t.origin.y + t.height / 2) * scale,
-      scale,
-    });
+    const unplaced = Object.values(piecesRef.current).filter((piece) => !piece.locked);
+    fit(p, boundsForPieces(p, unplaced, false));
   };
 
   const totalPieces = Object.keys(pieces).length;
@@ -1225,9 +1270,7 @@ export default function Board({
         {zoomControls(1.25, STR.zoomIn)}
         <button
           className="flex h-8 w-9 items-center justify-center rounded-lg border border-white/10 bg-ink-900/85 text-[11px] font-semibold text-ink-200 shadow-chip backdrop-blur sm:w-10"
-          onClick={() => {
-            fit(puzzle);
-          }}
+          onClick={fitBoard}
           title={t(STR.resetView)}
         >
           {Math.round(scale * 100)}%
@@ -1235,22 +1278,39 @@ export default function Board({
         {zoomControls(0.8, STR.zoomOut)}
       </div>
 
-      {/* Reset view + bring the unplaced tray into view */}
-      <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2 sm:bottom-5">
+      {/* Camera + server-authoritative layouts */}
+      <div className="absolute bottom-4 left-1/2 flex max-w-[calc(100vw-6rem)] -translate-x-1/2 flex-wrap justify-center gap-2 sm:bottom-5">
         <button
           className="btn btn-dark btn-sm !px-3 sm:!px-4"
-          onClick={() => fit(puzzle)}
+          onClick={fitBoard}
           title={t(STR.resetView)}
+          aria-label={t(STR.resetView)}
         >
           ⌂<span className="hidden sm:inline">&nbsp;{t(STR.resetView)}</span>
         </button>
         <button
-          className="btn btn-dark btn-sm !border-sky-400/40 !bg-sky-500/20 !px-3 hover:!bg-sky-500/30 sm:!px-4"
+          className="btn btn-dark btn-sm !border-brand-300/45 !bg-brand-500/20 !px-3 hover:!bg-brand-500/30 sm:!px-4"
           onClick={bringUnplacedIntoView}
           title={t(STR.bringUnplaced)}
           aria-label={t(STR.bringUnplaced)}
         >
-          🧺<span className="hidden sm:inline">&nbsp;{t(STR.bringUnplaced)}</span>
+          ⤢<span className="hidden sm:inline">&nbsp;{t(STR.bringUnplaced)}</span>
+        </button>
+        <button
+          className="btn btn-dark btn-sm !border-cp-pink-300/45 !bg-cp-pink-500/20 !px-3 hover:!bg-cp-pink-500/30 sm:!px-4"
+          onClick={() => store.sendLayout("scatter")}
+          title={t(STR.mix)}
+          aria-label={t(STR.mix)}
+        >
+          🔀<span className="hidden sm:inline">&nbsp;{t(STR.mix)}</span>
+        </button>
+        <button
+          className={`btn btn-dark btn-sm !px-3 sm:!px-4 ${layoutMode === "tray" ? "!border-cp-purple-300/60 !bg-cp-purple-500/30" : "!border-cp-purple-300/40 !bg-cp-purple-500/15 hover:!bg-cp-purple-500/25"}`}
+          onClick={() => store.sendLayout("tray")}
+          title={t(STR.helpTray)}
+          aria-label={t(STR.helpTray)}
+        >
+          🧺<span className="hidden sm:inline">&nbsp;{t(STR.helpTray)}</span>
         </button>
       </div>
 
@@ -1280,7 +1340,7 @@ export default function Board({
       {/* Restart (room completed) */}
       {allowReset && (
         <button
-          className="btn btn-dark btn-sm absolute right-3 bottom-4 !border-emerald-400/40 !bg-emerald-500/20 hover:!bg-emerald-500/30 sm:right-5 sm:bottom-5"
+          className="btn btn-dark btn-sm absolute right-3 bottom-4 !border-brand-300/45 !bg-brand-500/20 hover:!bg-brand-500/30 sm:right-5 sm:bottom-5"
           onClick={onResetRequest}
           title={
             lang === "ro"

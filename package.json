@@ -12,14 +12,19 @@
     "start": "cross-env NODE_ENV=production node src/server.js",
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
-    "test:protocol": "node scripts/sim-test.mjs && node scripts/coaching-test.mjs && node scripts/canvas-protocol-test.mjs && node scripts/sentence-protocol-test.mjs",
+    "test:protocol": "node scripts/sim-test.mjs && node scripts/jigsaw-layout-test.mjs && node scripts/puzzle-reset-test.mjs && node scripts/coaching-test.mjs && node scripts/canvas-protocol-test.mjs && node scripts/sentence-protocol-test.mjs",
     "test:protocol:canvas": "node scripts/canvas-protocol-test.mjs && node scripts/sentence-protocol-test.mjs",
     "test:load": "node scripts/load-test.mjs",
     "test:e2e": "node scripts/browser-test.mjs && node scripts/coaching-browser-test.mjs && node scripts/canvas-browser-test.mjs",
     "test:e2e:canvas": "node scripts/canvas-browser-test.mjs",
     "catalog:audit": "node scripts/audit-catalog.mjs",
     "catalog:pipeline": "node scripts/catalog-pipeline.mjs",
-    "catalog:report": "node scripts/catalog-report.mjs"
+    "catalog:report": "node scripts/catalog-report.mjs",
+    "test:layout": "node scripts/jigsaw-layout-test.mjs",
+    "test:puzzle-reset": "node scripts/puzzle-reset-test.mjs",
+    "test:lobby-viewport": "LOBBY_ONLY=1 node scripts/jigsaw-browser-test.mjs",
+    "catalog:seed-stage5": "node scripts/stage5-catalog-seed.mjs",
+    "catalog:finalize-stage5": "node scripts/stage5-catalog-finalize.mjs"
   },
   "dependencies": {
     "express": "^5.2.1",

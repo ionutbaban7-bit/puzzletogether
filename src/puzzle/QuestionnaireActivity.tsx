@@ -89,7 +89,7 @@ export default function QuestionnaireActivity({ puzzle, players, youId }: Props)
   if (phase === "intro") {
     return (
       <Center>
-        <div className="overlay-card w-[560px] max-w-[92vw] p-8">
+        <div className="overlay-card max-h-[calc(100dvh-1.5rem)] w-[560px] max-w-[92vw] overflow-y-auto p-8">
           <div className="text-4xl">🧭</div>
           <h1 className="font-display mt-3 text-2xl font-bold text-white">
             <T value={activity.name} />
@@ -135,7 +135,7 @@ export default function QuestionnaireActivity({ puzzle, players, youId }: Props)
     // coaching participants toward a particular profile.
     return (
       <Center>
-        <div className="overlay-card w-[640px] max-w-[92vw] p-8">
+        <div className="overlay-card max-h-[calc(100dvh-1.5rem)] w-[640px] max-w-[92vw] overflow-y-auto p-8">
           {/* progress */}
           <div className="flex items-center justify-between text-[11px] font-semibold text-ink-400">
             <span>{lang === "ro" ? "Întrebarea" : "Question"} {qIndex + 1} / {questions.length}</span>
@@ -189,7 +189,7 @@ export default function QuestionnaireActivity({ puzzle, players, youId }: Props)
   // results
   return (
     <Center>
-      <div className="overlay-card max-h-[88vh] w-[640px] max-w-[92vw] overflow-y-auto p-8">
+      <div className="overlay-card max-h-[calc(100dvh-1.5rem)] w-[640px] max-w-[92vw] overflow-y-auto p-8">
         {profile ? (
           <>
             <div className="text-center">

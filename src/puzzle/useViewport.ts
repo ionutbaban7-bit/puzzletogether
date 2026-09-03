@@ -1,11 +1,17 @@
 import { useCallback, useRef, useState } from "react";
 import type { PuzzleView } from "../types";
-import { trayBounds } from "./tray";
 
 export interface Camera {
   x: number;
   y: number;
   scale: number;
+}
+
+export interface WorldBounds {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
 }
 
 export const MIN_SCALE = 0.1; // 10% — large puzzles fit fully even on small phone screens
@@ -44,25 +50,18 @@ export function useViewport() {
     [zoomAt],
   );
 
-  /**
-   * Fit the target area + the unplaced-piece tray into view, keeping the whole
-   * board (pieces included) readable. The tray sits to the right of the target
-   * for landscape puzzles and below it for portrait ones, so the content
-   * bounds are computed from the puzzle geometry rather than fixed padding —
-   * this is the portrait/landscape camera optimization.
-   */
+  /** Fit the target plus caller-supplied authoritative piece bounds. */
   const fit = useCallback(
-    (puzzle: PuzzleView | null) => {
+    (puzzle: PuzzleView | null, bounds?: WorldBounds) => {
       if (!puzzle) return;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       const mobile = vw < 640;
-      const total = (puzzle.cols || 1) * (puzzle.rows || 1);
-      const b = trayBounds(puzzle, total);
+      const b = bounds || { x0: 0, y0: 0, x1: puzzle.width, y1: puzzle.height };
       const padX = mobile ? 64 : 140;
       const padY = mobile ? 64 : 110;
-      const bw = b.x1 - b.x0 + padX * 2;
-      const bh = b.y1 - b.y0 + padY * 2;
+      const bw = Math.max(1, b.x1 - b.x0) + padX * 2;
+      const bh = Math.max(1, b.y1 - b.y0) + padY * 2;
       const readableMinimum = mobile ? 0.22 : 0.26;
       const scale = clamp(Math.max(readableMinimum, Math.min(vw / bw, vh / bh)), MIN_SCALE, 1.05);
       const cx = (b.x0 + b.x1) / 2;

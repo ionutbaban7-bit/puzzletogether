@@ -1,180 +1,121 @@
-# Image Catalog Report — Stage 3
+# Image Catalog Report
 
-**Date:** 2026-09-03 · **Pipeline:** `npm run catalog:pipeline` · **Audit:** `npm run catalog:audit`
+**Generated:** 2026-09-03
 
-## 1. Scope & method
+**Pipeline:** `npm run catalog:pipeline` · **Audit:** `npm run catalog:audit` · **Source policy:** [catalog originals](catalog-originals.md)
 
-This report covers **every asset served from `server/public/images`** — 36 photos,
-9 in-house canvas covers (SVG) and 4 in-house coaching covers (SVG): **49 assets**.
+## Result
 
-Method:
+The Stage 5 additions manifest is staged but has not yet been imported into the live catalog.
 
-1. **Visual inspection** of each of the 10 previously uncatalogued ("orphan") images.
-2. **Source verification** for the 26 previously catalogued photos via the
-   **Wikimedia Commons API** (search → exact file title → `imageinfo` URL/size/license
-   cross-check), performed 2026-09-03.
-3. **Checksums + dimensions** recorded by the pipeline (`sha256`, pixel size).
-4. **Perceptual duplicate scan** (dHash 64-bit) + exact checksum dedupe.
+- Catalog entries: **49**
+- Entries linked to a served puzzle: **35**
+- Archived prompt-directed originals: **0**
+- Orphan catalog records: **10**
+- Latest audit: **2 fatal**, **56 warning** (generated 2026-09-03T13:14:52.227Z)
 
-Sandbox network note: only the Wikimedia Commons API was reachable for verification.
-Reverse-image search was unavailable, and several of the orphan files carry **no EXIF
-metadata** (stripped at some earlier point), so their original sources could not be
-established. Where provenance is unknown, the report says so explicitly — no source
-is claimed that was not verified.
+The audit enforces source and license URLs, bilingual metadata, focal points,
+source checksums, source/full/thumbnail files, dimensions, exact and perceptual
+duplicates, valid categories, public-bundle coverage, puzzle linkage, flagged
+compliance records, and the complete Stage 5 category set after import.
 
-## 2. Catalog state
+## Catalog coverage
 
-| Status | Count | Meaning |
-|---|---|---|
-| verified | 39 | source page confirmed (Commons API / in-house) |
-| unverified | 8 | provenance could not be established |
-| flagged | 2 | concrete compliance violation (watermark / no license) |
+| Category | Entries | Stage 5 CC0 originals |
+| --- | --- | --- |
+| cities | 6 | — |
+| coaching | 4 | — |
+| landmarks | 9 | — |
+| landscapes | 7 | — |
+| letter-canvas | 4 | — |
+| nature | 4 | — |
+| paintings | 10 | — |
+| sentence-canvas | 5 | — |
 
-**Audit result: 2 fatal issue(s), 56 warning(s).**
-All ten structural audit rules S1–S10 (file existence, sourceUrl, licenseUrl,
-size floor, checksum duplicates, perceptual duplicates, category, thumbnails,
-checksum match, uncatalogued public assets) **pass**. The audit currently exits non-zero only because
-of 2 **flagged copyright violations** (see §4) — it will go fully green once Stage 4
-replaces those images.
+## License classes
 
-## 3. Full catalog
+| Class | Entries |
+| --- | --- |
+| cc-by-sa | 13 |
+| in-house | 13 |
+| pd | 13 |
+| restricted | 2 |
+| unverified | 8 |
 
-| A | : | C | : | D | : | L | : | S | : | P |
-| s | - | a | - | i | - | i | - | t | - | u |
-| **mona-lisa.jpg** | paintings | 1920×2861 | Public domain | verified | Mona Lisa |
-| **starry-night.jpg** | paintings | 1920×1520 | Public domain | verified | Starry Night |
-| **great-wave.jpg** | paintings | 1920×1324 | Public domain | verified | The Great Wave off Kanagawa |
-| **girl-pearl-earring.jpg** | paintings | 1920×2248 | Public domain | verified | Girl with a Pearl Earring |
-| **sunrise.jpg** | paintings | 1600×1245 | Public domain | verified | Impression, Sunrise |
-| **the-kiss.jpg** | paintings | 1400×1403 | Public domain | verified | The Kiss |
-| **the-scream.jpg** | paintings | 1400×1739 | Public domain | verified | The Scream |
-| **water-lilies.jpg** | paintings | 1500×1168 | Public domain | verified | Water Lilies |
-| **cafe-terrace.jpg** | paintings | 1558×1920 | Public domain | verified | Café Terrace at Night |
-| **the-milkmaid.jpg** | paintings | 1100×1217 | Public domain | verified | The Milkmaid |
-| **matterhorn.jpg** | landscapes | 1610×1073 | CC BY-SA 3.0 | verified | The Matterhorn |
-| **moraine-lake.jpg** | landscapes | 1920×1440 | Public domain | verified | Moraine Lake |
-| **santorini.jpg** | landscapes | 1920×1444 | CC BY-SA 3.0 | verified | Oia, Santorini |
-| **eiffel-tower.jpg** | landmarks | 1920×3553 | Public domain | verified | Eiffel Tower |
-| **machu-picchu.jpg** | landmarks | 1920×1874 | CC BY-SA 3.0 | verified | Machu Picchu |
-| **taj-mahal.jpg** | landmarks | 1920×1262 | CC BY-SA 4.0 | verified | Taj Mahal |
-| **colosseum.jpg** | landmarks | 1920×1345 | CC BY-SA 4.0 | verified | The Colosseum |
-| **statue-of-liberty.jpg** | landmarks | 1464×2022 | CC BY-SA 3.0 | verified | Statue of Liberty |
-| **vatican.jpg** | landmarks | 1920×1078 | CC BY-SA 3.0 | verified | St. Peter's Square |
-| **aurora.jpg** | nature | 1920×1251 | Public domain (U.S. federal government wo… | verified | Aurora Borealis |
-| **flower.jpg** | nature | 1920×1920 | CC BY-SA 3.0 | verified | Tulip in Bloom |
-| **waterfall.jpg** | nature | 1920×1280 | CC BY-SA 4.0 | verified | Beauchamp Falls |
-| **golden-gate.jpg** | cities | 1920×1200 | CC BY-SA 4.0 | verified | Golden Gate Bridge |
-| **paris-louvre.jpg** | cities | 1920×807 | CC BY-SA 3.0 | verified | The Louvre, Paris |
-| **venice.jpg** | cities | 1920×2880 | CC BY-SA 2.0 | verified | Venice at Dawn |
-| **tokyo.jpg** | cities | 1920×1023 | CC BY-SA 3.0 | verified | Tokyo Skyscrapers |
-| **big-ben.jpg** | landmarks | 1280×720 | Neverificată | unverified | — (orphan) |
-| **cherry-blossom.jpg** | nature | 1920×1080 | Neverificată | unverified | — (orphan) |
-| **grand-canyon.jpg** | landscapes | 1920×1080 | Neverificată | unverified | — (orphan) |
-| **lavender-field.jpg** | landscapes | 1920×1283 | Neverificată | unverified | — (orphan) |
-| **mount-fuji.jpg** | landscapes | 1920×1274 | Neverificată | unverified | — (orphan) |
-| **neuschwanstein.jpg** | landmarks | 1000×750 | Neverificată | unverified | — (orphan) |
-| **new-york.jpg** | cities | 1920×1080 | Fără licență pentru acest proiect — marca… | flagged | — (orphan) |
-| **plitvice-lakes.jpg** | landscapes | 1200×1200 | Fără licență — fișier este o previzualiza… | flagged | — (orphan) |
-| **prague.jpg** | cities | 1024×601 | Neverificată | unverified | — (orphan) |
-| **pyramids-giza.jpg** | landmarks | 1200×856 | Neverificată | unverified | — (orphan) |
-| **words-agile.svg** | letter-canvas | 1200×800 | All rights reserved — in-house work | verified | Agile Values Letter Canvas |
-| **words-innovation.svg** | letter-canvas | 1200×800 | All rights reserved — in-house work | verified | Innovation Letter Canvas |
-| **words-scrabble.svg** | letter-canvas | 1200×800 | All rights reserved — in-house work | verified | Multicolor Letter Canvas |
-| **words-motto.svg** | letter-canvas | 1200×800 | All rights reserved — in-house work | verified | Team Values Letter Canvas |
-| **sentence-funny-story.svg** | sentence-canvas | 800×600 | All rights reserved — in-house work | verified | Funny Story Canvas |
-| **sentence-travel.svg** | sentence-canvas | 800×600 | All rights reserved — in-house work | verified | Travel Canvas |
-| **sentence-nature.svg** | sentence-canvas | 800×600 | All rights reserved — in-house work | verified | Nature Canvas |
-| **sentence-future.svg** | sentence-canvas | 800×600 | All rights reserved — in-house work | verified | Future Canvas |
-| **sentence-positive-message.svg** | sentence-canvas | 800×600 | All rights reserved — in-house work | verified | Positive Message Canvas |
-| **himalaya.svg** | coaching | 800×600 | All rights reserved — in-house work | verified | coaching: himalaya-expedition |
-| **ocean.svg** | coaching | 800×600 | All rights reserved — in-house work | verified | coaching: ocean-survival |
-| **moon.svg** | coaching | 800×600 | All rights reserved — in-house work | verified | coaching: moon-mission |
-| **compass.svg** | coaching | 800×600 | All rights reserved — in-house work | verified | coaching: team-compass |
+## Source-license table
 
-### License corrections found by the audit
+Each record below links its source documentation and retains bilingual name/alt,
+creator, attribution, license URL, source filename, focal point, dimensions and
+SHA-256 checksum in `data/catalog/sources.json`. For the 55 Stage 5 originals,
+the linked source document and generation record state the CC0 dedication,
+source brief, raw-input checksum and archival derivative.
 
-Two legacy catalog entries carried the **wrong license**:
+| Asset | Title | Category | License | Status | Puzzle/activity | Source | Record |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `/images/golden-gate.jpg` | Golden Gate Bridge | cities | CC BY-SA 4.0 | verified | golden-gate | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Golden_Gate_Bridge_as_seen_from_Marshall%E2%80%99s_Beach,_March_2018.jpg) |
+| `/images/new-york.jpg` | Manhattan Skyline | cities | Fără licență pentru acest proiect — marcaj vizibil de pe agregatorul de stock | flagged | — | WideWallpapers.net (agregator de poze stock) — copiere cu marcaj vizibil | [source](https://widewallpapers.net) |
+| `/images/paris-louvre.jpg` | The Louvre, Paris | cities | CC BY-SA 3.0 | verified | paris-louvre | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Louvre_Museum_Wikimedia_Commons.jpg) |
+| `/images/prague.jpg` | Prague Old Town Square | cities | Neverificată | unverified | — | Nedeterminat (posibil poze stock; fără EXIF în fișier) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/tokyo.jpg` | Tokyo Skyscrapers | cities | CC BY-SA 3.0 | verified | tokyo | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Skyscrapers_of_Shinjuku_2009_January.jpg) |
+| `/images/venice.jpg` | Venice at Dawn | cities | CC BY-SA 2.0 | verified | venice | Wikimedia Commons (Flickr transfer) | [source](https://commons.wikimedia.org/wiki/File:Piazza_San_Marco_at_Dawn,_Venice_(21358879396).jpg) |
+| `/images/coaching/compass.svg` | The Team Compass | coaching | All rights reserved — in-house work | verified | team-compass | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/coaching/himalaya.svg` | The Himalayan Expedition | coaching | All rights reserved — in-house work | verified | himalaya-expedition | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/coaching/moon.svg` | The Moon Mission | coaching | All rights reserved — in-house work | verified | moon-mission | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/coaching/ocean.svg` | Lost in the Pacific | coaching | All rights reserved — in-house work | verified | ocean-survival | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/big-ben.jpg` | Big Ben, London | landmarks | Neverificată | unverified | — | Nedeterminat — suspect generat AI (fără EXIF, fără sursă identificabilă) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/colosseum.jpg` | The Colosseum | landmarks | CC BY-SA 4.0 | verified | colosseum | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Colosseo_2020.jpg) |
+| `/images/eiffel-tower.jpg` | Eiffel Tower | landmarks | Public domain | verified | eiffel-tower | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Tour_Eiffel_Wikimedia_Commons.jpg) |
+| `/images/machu-picchu.jpg` | Machu Picchu | landmarks | CC BY-SA 3.0 | verified | machu-picchu | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:99_-_Machu_Picchu_-_Juin_2009.edit3.jpg) |
+| `/images/neuschwanstein.jpg` | Neuschwanstein Castle | landmarks | Neverificată | unverified | — | Nedeterminat (posibil poze stock; fără EXIF în fișier) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/pyramids-giza.jpg` | The Pyramids of Giza | landmarks | Neverificată | unverified | — | Nedeterminat (posibil poze stock; fără EXIF în fișier) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/statue-of-liberty.jpg` | Statue of Liberty | landmarks | CC BY-SA 3.0 | verified | statue-of-liberty | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Statue_of_Liberty_7.jpg) |
+| `/images/taj-mahal.jpg` | Taj Mahal | landmarks | CC BY-SA 4.0 | verified | taj-mahal | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Taj_Mahal,_Agra,_India_edit2.jpg) |
+| `/images/vatican.jpg` | St. Peter's Square | landmarks | CC BY-SA 3.0 | verified | vatican | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:St_Peter%27s_Square,_Vatican_City_-_April_2007.jpg) |
+| `/images/grand-canyon.jpg` | Grand Canyon | landscapes | Neverificată | unverified | — | Nedeterminat (posibil poze stock; fără EXIF în fișier) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/lavender-field.jpg` | Lavender Field | landscapes | Neverificată | unverified | — | Nedeterminat (posibil poze stock; fără EXIF în fișier) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/matterhorn.jpg` | The Matterhorn | landscapes | CC BY-SA 3.0 | verified | matterhorn | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Matterhorn_from_Domh%C3%BCtte_-_2.jpg) |
+| `/images/moraine-lake.jpg` | Moraine Lake | landscapes | Public domain | verified | moraine-lake | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Moraine_Lake_17092005.jpg) |
+| `/images/mount-fuji.jpg` | Mount Fuji | landscapes | Neverificată | unverified | — | Nedeterminat (posibil poze stock; fără EXIF în fișier) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/plitvice-lakes.jpg` | Plitvice Lakes | landscapes | Fără licență — fișier este o previzualizare stock cu marcaj vizibil | flagged | — | Dreamstime (previzualizare stock cu marcaj) — utilizare fără licență | [source](https://www.dreamstime.com) |
+| `/images/santorini.jpg` | Oia, Santorini | landscapes | CC BY-SA 3.0 | verified | santorini | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Santorini_Oia.jpg) |
+| `/images/words-agile.svg` | Letter Canvas — Agile Values | letter-canvas | All rights reserved — in-house work | verified | agile-words | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/words-innovation.svg` | Letter Canvas — Innovation | letter-canvas | All rights reserved — in-house work | verified | innovation-grid | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/words-motto.svg` | Letter Canvas — Team Values | letter-canvas | All rights reserved — in-house work | verified | team-motto | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/words-scrabble.svg` | Letter Canvas — Multicolor | letter-canvas | All rights reserved — in-house work | verified | letter-anagrams | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/aurora.jpg` | Aurora Borealis | nature | Public domain (U.S. federal government work) | verified | aurora | Wikimedia Commons (USAF photo, 18 January 2005) | [source](https://commons.wikimedia.org/wiki/File:Aurora_Borealis_Alaska.jpg) |
+| `/images/cherry-blossom.jpg` | Cherry Blossoms | nature | Neverificată | unverified | — | Nedeterminat (posibil poze stock; fără EXIF în fișier) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/flower.jpg` | Tulip in Bloom | nature | CC BY-SA 3.0 | verified | flower | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Tulip_Tulipa_clusiana_%27Lady_Jane%27_Rock_Ledge_Flower_Edit_2000px.jpg) |
+| `/images/waterfall.jpg` | Beauchamp Falls | nature | CC BY-SA 4.0 | verified | waterfall | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Beech_Forest_(AU),_Great_Otway_National_Park,_Beauchamp_Falls_--_2019_--_1271.jpg) |
+| `/images/cafe-terrace.jpg` | Café Terrace at Night | paintings | Public domain | verified | cafe-terrace | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Vincent_Willem_van_Gogh_-_Cafe_Terrace_at_Night_(Yorck).jpg) |
+| `/images/girl-pearl-earring.jpg` | Girl with a Pearl Earring | paintings | Public domain | verified | girl-pearl-earring | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Girl_with_a_Pearl_Earring.jpg) |
+| `/images/great-wave.jpg` | The Great Wave off Kanagawa | paintings | Public domain | verified | great-wave | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Tsunami_by_hokusai_19th_century.jpg) |
+| `/images/mona-lisa.jpg` | Mona Lisa | paintings | Public domain | verified | mona-lisa | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg) |
+| `/images/starry-night.jpg` | The Starry Night | paintings | Public domain | verified | starry-night | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg) |
+| `/images/sunrise.jpg` | Impression, Sunrise | paintings | Public domain | verified | sunrise | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Monet_-_Impression,_Sunrise.jpg) |
+| `/images/the-kiss.jpg` | The Kiss | paintings | Public domain | verified | the-kiss | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg) |
+| `/images/the-milkmaid.jpg` | The Milkmaid | paintings | Public domain | verified | the-milkmaid | Wikimedia Commons (Rijksmuseum) | [source](https://commons.wikimedia.org/wiki/File:Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg) |
+| `/images/the-scream.jpg` | The Scream | paintings | Public domain | verified | the-scream | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Edvard_Munch_-_The_Scream_-_Google_Art_Project.jpg) |
+| `/images/water-lilies.jpg` | Water Lilies | paintings | Public domain | verified | water-lilies | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Monet,_Claude_-_Water_Lilies_(Nymph%C3%A9as)_-_Google_Art_Project.jpg) |
+| `/images/sentence-funny-story.svg` | Sentence Canvas — Funny Story | sentence-canvas | All rights reserved — in-house work | verified | sentence-funny-story | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/sentence-future.svg` | Sentence Canvas — Future | sentence-canvas | All rights reserved — in-house work | verified | sentence-future | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/sentence-nature.svg` | Sentence Canvas — Nature | sentence-canvas | All rights reserved — in-house work | verified | sentence-nature | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/sentence-positive-message.svg` | Sentence Canvas — Positive Message | sentence-canvas | All rights reserved — in-house work | verified | sentence-positive-message | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
+| `/images/sentence-travel.svg` | Sentence Canvas — Travel | sentence-canvas | All rights reserved — in-house work | verified | sentence-travel | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
 
-| Asset | Legacy catalog | Verified license (Commons file page) |
-|---|---|---|
-| statue-of-liberty | Public domain | **CC BY-SA 3.0** (Elcobbola, *Statue of Liberty 7.jpg*) |
-| venice | CC BY-SA 4.0 | **CC BY-SA 2.0** (Benh LIEU SONG, *Piazza San Marco at Dawn, Venice (21358879396).jpg*) |
+## Reproducible processing
 
-Both are corrected in `data/catalog/sources.json` and in the puzzle metadata.
-Four entries (moraine-lake, eiffel-tower, paris-louvre, tokyo) keep their legacy
-license values, flagged with `license-inherited-from-legacy-catalog-not-reverified`.
-
-## 4. The 10 orphan images (previously uncatalogued)
-
-All 10 images are **not referenced by any puzzle** — they are dead weight in the
-public bundle, and **all 10 fail provenance review**:
-
-| F | : | C | : | D | : | F | : | V |
-| i | - | a | - | i | - | i | - | e |
-| big-ben.jpg | landmarks | 1280×720 | clock-face-and-vehicle-details-distorted; provenance-not-verified; source-url-is-repo-placeholder-not-a-claim-of-origin | ⚠️ **Replace** — suspected AI-generated |
-| cherry-blossom.jpg | nature | 1920×1080 | provenance-not-verified; no-exif-metadata; source-url-is-repo-placeholder-not-a-claim-of-origin | ⚠️ **Replace** — provenance unverified |
-| grand-canyon.jpg | landscapes | 1920×1080 | provenance-not-verified; no-exif-metadata; source-url-is-repo-placeholder-not-a-claim-of-origin | ⚠️ **Replace** — provenance unverified |
-| lavender-field.jpg | landscapes | 1920×1283 | provenance-not-verified; no-exif-metadata; source-url-is-repo-placeholder-not-a-claim-of-origin | ⚠️ **Replace** — provenance unverified |
-| mount-fuji.jpg | landscapes | 1920×1274 | provenance-not-verified; no-exif-metadata; source-url-is-repo-placeholder-not-a-claim-of-origin | ⚠️ **Replace** — provenance unverified |
-| neuschwanstein.jpg | landmarks | 1000×750 | provenance-not-verified; no-exif-metadata; low-resolution-1000x750; source-url-is-repo-placeholder-not-a-claim-of-origin | ⚠️ **Replace** — provenance unverified |
-| new-york.jpg | cities | 1920×1080 | WIDEWALLPAPERS.NET; no-usable-license; stage-4-rule-no-watermark-violated | ❌ **Replace** — no usable license |
-| plitvice-lakes.jpg | landscapes | 1200×1200 | Dreamstime; no-usable-license; copyright-infringement-risk; stage-4-rule-no-watermark-violated | ❌ **Replace** — no usable license |
-| prague.jpg | cities | 1024×601 | provenance-not-verified; no-exif-metadata; source-url-is-repo-placeholder-not-a-claim-of-origin | ⚠️ **Replace** — provenance unverified |
-| pyramids-giza.jpg | landmarks | 1200×856 | provenance-not-verified; no-exif-metadata; source-url-is-repo-placeholder-not-a-claim-of-origin | ⚠️ **Replace** — provenance unverified |
-
-### Detailed findings
-
-| Image | What was observed |
-|---|---|
-| **big-ben.jpg** (1280×720) | Big Ben + two red double-decker buses. The clock face is distorted, vehicle details are generic and pedestrians are smeared — strong indicators of **AI generation**. No source can be claimed; treated as unlicensed. |
-| **cherry-blossom.jpg** (1920×1080) | Genuine-looking close-up of double pink cherry blossoms. No EXIF; no matching source found. Likely stock. |
-| **grand-canyon.jpg** (1920×1080) | Genuine-looking dusk photo of the Grand Canyon. No EXIF; no matching source found. Likely stock. |
-| **lavender-field.jpg** (1920×1283) | Genuine-looking lavender field. No EXIF; no matching source found. Likely stock. |
-| **mount-fuji.jpg** (1920×1274) | Genuine-looking Mount Fuji over a lake. No EXIF; no matching source found. Likely stock. |
-| **neuschwanstein.jpg** (1000×750) | Genuine-looking classic castle view. No EXIF; no matching source found. Also **below ideal resolution** for 144 pieces. |
-| **new-york.jpg** (1920×1080) | Manhattan skyline with a **visible "WIDEWALLPAPERS.NET" watermark** (bottom-right). Copy from a stock aggregator; **no usable license**. Violates the no-watermark rule. |
-| **plitvice-lakes.jpg** (1200×1200) | Plitvice waterfalls with a **visible "Dreamstime" watermark** across the center. This is a **stock preview** — using it is **copyright infringement**. Violates the no-watermark rule. |
-| **prague.jpg** (1024×601) | Genuine-looking aerial of Prague Old Town Square. No EXIF; no matching source found. Likely stock. |
-| **pyramids-giza.jpg** (1200×856) | Genuine-looking Sphinx + pyramids photo. No EXIF; no matching source found. Likely stock. |
-
-**Conclusion:** none of the 10 orphans has a verifiable PD/CC0/CC BY license.
-Per the license policy (PD / CC0 / CC BY 4.0 preferred), **all 10 should be
-replaced** with verified images in Stage 4 (which adds 50 verified images anyway,
-including Romania-relevant subjects). Until then the audit keeps them loud and
-visible (W1/W3 warnings + 2 fatal F1 flags).
-
-## 5. Pipeline mechanics
-
-`scripts/catalog-pipeline.mjs` (idempotent, `--force` to reconvert):
-
-1. computes **SHA-256** + pixel dimensions for every source asset;
-2. moves originals to `data/catalog/originals/` (outside the public bundle);
-3. generates **WebP** full images (`server/public/images/full/<id>.webp`, longest
-   edge ≤ 2200px, q82) and **4:3 thumbnails** (`thumbs/<id>.webp`, 480×360, q78)
-   cropped around each entry's **focal point**;
-4. merges full metadata into `shared/puzzles.json` (name ro/en, alt ro/en,
-   creator, source name+URL, license + URL, attribution, changesMade, checksum,
-   dimensions, thumbnail, focal point) and regenerates the server image
-   **manifest**;
-5. SVG covers are checksummed but not converted.
-
-`scripts/audit-catalog.mjs` fails on: missing files, missing/invalid
-sourceUrl/licenseUrl, dimensions below 900×600 (photo assets), duplicate checksums,
-perceptual duplicates (dHash ≤ 2), invalid categories, missing thumbnails, checksum
-mismatch, uncatalogued public assets, and any entry flagged for a compliance
-violation. It warns on unverified provenance, orphan assets and near-duplicate
-pairs for manual review.
-
-## 6. Open items → Stage 4
-
-1. Replace the **2 flagged** images (plitvice-lakes, new-york) — hard copyright risk.
-2. Replace (or verify) the **8 unverified** orphans; the 10 orphans will be
-   superseded by the 50 newly verified Stage-4 images (10 per photo category,
-   ≥5 Romania-relevant).
-3. Re-verify the 4 license-inherited entries (moraine-lake, eiffel-tower,
-   paris-louvre, tokyo) at their Commons file pages.
-4. After replacement, `npm run catalog:audit` must exit 0 with zero F1/F2 flags.
+1. Review each generated/original input for detail and prohibited visible text,
+   watermarks, logos and identifiable people as a main subject.
+2. Run `npm run catalog:seed-stage5` only after all 55 source reviews pass.
+   It imports high-quality archival derivatives and delists the prior unverified
+   orphan/fatal assets.
+3. Run `npm run catalog:pipeline -- --force` to archive the source files,
+   write optimized full/thumbnail WebP assets, checksum them and update puzzle
+   metadata plus the public dimension manifest.
+4. Run `npm run catalog:audit`, then `npm run catalog:report`.
+5. After a green audit, run `npm run catalog:finalize-stage5` to remove only
+   the temporary raw generator imports; the audited archival source remains.
 
 ---
-*Generated by `scripts/catalog-report.mjs` from `data/catalog/sources.json` and
-`docs/catalog-audit.json`. Machine-readable audit: `docs/catalog-audit.json`.*
+Generated from `data/catalog/sources.json`, `shared/puzzles.json`, and
+`docs/catalog-audit.json` by `scripts/catalog-report.mjs`.

@@ -90,12 +90,15 @@ export interface RoomView {
   pausedDurationMs: number;
   stage: RoomStage;
   boardLocked: boolean;
+  /** Layout of untouched jigsaw pieces; their x/y positions remain authoritative. */
+  jigsawLayout?: "scatter" | "tray";
   revealed: boolean;
   timerEndsAt: number | null;
   timerDurationMs: number | null;
   completed: boolean;
   completedAt: number | null;
   completedInMs: number | null;
+  completionPlayers: string[];
   celebrationMode: "team" | "individual";
   insights: WorkshopInsights;
   debriefNotes: string[];

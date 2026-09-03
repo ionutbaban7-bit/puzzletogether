@@ -348,12 +348,15 @@ function roomView(room) {
     pausedDurationMs: room.pausedDurationMs,
     stage: room.stage,
     boardLocked: room.boardLocked,
+    /** Jigsaw-only helper layout. Positions remain authoritative either way. */
+    jigsawLayout: room.jigsawLayout || "scatter",
     revealed: room.revealed,
     timerEndsAt: room.timerEndsAt,
     timerDurationMs: room.timerDurationMs,
     completed: room.completed,
     completedAt: room.completedAt,
     completedInMs: room.completedInMs,
+    completionPlayers: room.completionPlayers || [],
     celebrationMode: room.celebrationMode,
     insights: room.insights,
     debriefNotes: room.debriefNotes,
@@ -503,24 +506,75 @@ function broadcastRoom(room) {
   broadcast(room, { t: "room", room: roomView(room) });
 }
 
-function scatterPieces(room) {
+function isJigsawRoom(room) {
+  return !!room && !room.coachingActivity && !room.canvas && room.pieces.length > 0;
+}
+
+function scatterPosition(room) {
   const { width, height } = room.board || room.puzzle;
-  const x0 = -320;
-  const x1 = width + 320;
-  const bandY0 = height + 140;
-  const bandY1 = height + 820;
+  return {
+    x: -320 + Math.random() * (width + 640),
+    y: height + 140 + Math.random() * 680,
+  };
+}
+
+/**
+ * Deterministic help-tray geometry. It intentionally sits below the target,
+ * so the target remains easy to inspect while the team names/compares pieces.
+ * This mirrors src/puzzle/tray.ts; clients render the server's plain x/y
+ * values and never synthesize a fallback position of their own.
+ */
+function jigsawTrayLayout(room, total) {
+  const { width, height, pieceW, pieceH } = room.board || room.puzzle;
+  const cellW = pieceW + 24;
+  const cellH = pieceH + 24;
+  const origin = { x: 0, y: height + 80 };
+  const cols = Math.max(1, Math.floor(width / cellW));
+  const rows = Math.max(1, Math.ceil(total / cols));
+  return { cellW, cellH, origin, cols, rows, width: cols * cellW, height: rows * cellH };
+}
+
+/** Full reset/new-puzzle scatter: all jigsaw pieces become unplaced. */
+function scatterPieces(room) {
   for (const p of room.pieces) {
-    p.x = x0 + Math.random() * (x1 - x0);
-    p.y = bandY0 + Math.random() * (bandY1 - bandY0);
+    const pos = scatterPosition(room);
+    p.x = pos.x;
+    p.y = pos.y;
     p.drag = false;
-    // Unplaced: the client renders these in the deterministic tray until
-    // someone actually moves them (server confirms moved=true on first move).
     p.moved = false;
     p.locked = false;
     p.heldBy = null;
     p.heldAt = null;
     p.placedOnSlot = null;
   }
+  if (isJigsawRoom(room)) room.jigsawLayout = "scatter";
+}
+
+/**
+ * Reposition only untouched jigsaw pieces. Moved / locked pieces preserve the
+ * team’s work. A piece claimed by another player is left exactly as-is.
+ */
+function applyJigsawLayout(room, playerId, mode) {
+  const candidates = room.pieces
+    .filter((piece) => !piece.locked && !piece.moved && (!piece.heldBy || piece.heldBy === playerId))
+    .sort((a, b) => a.id - b.id);
+  if (mode === "scatter") {
+    for (const piece of candidates) {
+      const pos = scatterPosition(room);
+      piece.x = pos.x;
+      piece.y = pos.y;
+      // Deliberately keep moved=false; these are still untouched pieces.
+    }
+  } else {
+    const tray = jigsawTrayLayout(room, candidates.length);
+    candidates.forEach((piece, index) => {
+      piece.x = tray.origin.x + (index % tray.cols) * tray.cellW;
+      piece.y = tray.origin.y + Math.floor(index / tray.cols) * tray.cellH;
+      // Deliberately keep moved=false; the tray is a help layout, not a move.
+    });
+  }
+  room.jigsawLayout = mode;
+  return candidates.map(serializePiece);
 }
 
 function normalizeContentLanguage(value, fallback = "en") {
@@ -794,6 +848,8 @@ function createRoom(config, creator = {}) {
     lastActivityAt: now,
     stage: "lobby",
     boardLocked: true,
+    // Default is hard: untouched pieces use their scattered server positions.
+    jigsawLayout: "scatter",
     revealed: false,
     celebrationMode: "team",
     facilitatorNotes: "",
@@ -841,7 +897,7 @@ function persistableRoom(room) {
     knownPlayers: [...room.knownPlayers], createdAt: room.createdAt, startedAt: room.startedAt,
     pausedAt: room.pausedAt, pausedDurationMs: room.pausedDurationMs, timerEndsAt: room.timerEndsAt,
     timerDurationMs: room.timerDurationMs, lastActivityAt: room.lastActivityAt, stage: room.stage,
-    boardLocked: room.boardLocked, revealed: room.revealed, celebrationMode: room.celebrationMode,
+    boardLocked: room.boardLocked, jigsawLayout: room.jigsawLayout || "scatter", revealed: room.revealed, celebrationMode: room.celebrationMode,
     facilitatorNotes: room.facilitatorNotes, insights: room.insights, debriefNotes: room.debriefNotes,
     actions: room.actions, chat: room.chat, completed: room.completed, completedAt: room.completedAt,
     completedInMs: room.completedInMs, completionPlayers: room.completionPlayers,
@@ -889,6 +945,7 @@ function restoreSnapshots() {
         pausedDurationMs: raw.pausedDurationMs || 0, timerEndsAt: raw.timerEndsAt,
         timerDurationMs: raw.timerDurationMs, lastActivityAt: raw.lastActivityAt,
         stage: raw.stage || "lobby", boardLocked: raw.boardLocked ?? true,
+        jigsawLayout: raw.jigsawLayout === "tray" ? "tray" : "scatter",
         revealed: !!raw.revealed, celebrationMode: raw.celebrationMode || "team",
         facilitatorNotes: raw.facilitatorNotes || "", insights: raw.insights || room.insights,
         debriefNotes: raw.debriefNotes || [], actions: raw.actions || [], chat: raw.chat || [],
@@ -1599,6 +1656,49 @@ app.post("/api/rooms/:id/reset", (req, res) => {
   res.json({ ok: true });
 });
 
+
+// Puzzle-only reset deliberately differs from /reset: it keeps the active
+// workshop, stage and honest clock intact while giving the jigsaw a fresh,
+// scattered board. Coaching and Canvas flows retain their existing reset.
+app.post("/api/rooms/:id/puzzle-reset", (req, res) => {
+  const room = findRoom(req.params.id);
+  if (!room) return res.status(404).json({ error: "Room not found.", code: "room_missing" });
+  if (!req.body?.pid || req.body.pid !== room.hostId) return res.status(403).json({ error: "Only the facilitator can reset this puzzle.", code: "not_host" });
+  if (!isJigsawRoom(room)) return res.status(400).json({ error: "This reset is only available for jigsaw rooms.", code: "not_jigsaw" });
+  if (room.stage !== "play") return res.status(409).json({ error: "The puzzle can be reset only during play.", code: "not_playing" });
+
+  const startedAt = room.startedAt;
+  const timerEndsAt = room.timerEndsAt;
+  const timerDurationMs = room.timerDurationMs;
+  const pausedAt = room.pausedAt;
+  const pausedDurationMs = room.pausedDurationMs;
+  scatterPieces(room);
+  // Scores belong to the current board attempt. Do not use resetWorkshopState:
+  // it would also reset the stage, clock, people and coaching workshop data.
+  room.scores.clear();
+  room.completed = false;
+  room.completedAt = null;
+  room.completedInMs = null;
+  room.completionPlayers = [];
+  // Explicitly preserve all timer fields in case this endpoint is maintained
+  // near future reset code that changes scatterPieces.
+  room.startedAt = startedAt;
+  room.timerEndsAt = timerEndsAt;
+  room.timerDurationMs = timerDurationMs;
+  room.pausedAt = pausedAt;
+  room.pausedDurationMs = pausedDurationMs;
+  touch(room);
+  broadcast(room, {
+    t: "puzzleReset",
+    room: roomView(room),
+    puzzle: puzzleView(room),
+    pieces: room.pieces.map(serializePiece),
+    scores: scoreList(room),
+  });
+  logEvent("puzzle_reset", room, { stage: room.stage });
+  res.json({ ok: true, room: roomView(room) });
+});
+
 app.get("/api/rooms/:id/export", (req, res) => {
   const room = findRoom(req.params.id);
   if (!room) return res.status(404).json({ error: "Room not found." });
@@ -1775,6 +1875,27 @@ wss.on("connection", (ws) => {
         touch(room);
         broadcast(room, { t: "pieces", list: [serializePiece(piece)] });
         if (piece.locked && !ranking) checkCompletion(room);
+        break;
+      }
+      case "layout": {
+        const { room, playerId } = attached;
+        const player = room.players.get(playerId);
+        const mode = msg.mode === "tray" ? "tray" : msg.mode === "scatter" ? "scatter" : null;
+        if (!mode) {
+          send(ws, { t: "error", code: "bad_layout", message: "Unknown jigsaw layout." });
+          break;
+        }
+        if (!isJigsawRoom(room) || room.completed || room.stage !== "play" || room.boardLocked || !player || player.role === "spectator") {
+          send(ws, { t: "error", code: "layout_unavailable", message: "Piece layouts are available to players during an open jigsaw game." });
+          break;
+        }
+        const updated = applyJigsawLayout(room, playerId, mode);
+        touch(room);
+        if (updated.length) broadcast(room, { t: "pieces", list: updated });
+        // The mode only controls the client-side help-panel framing; x/y
+        // positions above are sufficient to resync after reconnect.
+        broadcastRoom(room);
+        logEvent(`layout_${mode}`, room, { changed: updated.length, playerId });
         break;
       }
       case "cursor": {

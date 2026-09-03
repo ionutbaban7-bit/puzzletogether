@@ -167,7 +167,7 @@ function AccessGateModal({
   return (
     <div className="flex min-h-screen items-center justify-center bg-ink-950 p-6">
       <Modal dismissable={false}>
-        <div className="overlay-card w-[400px] max-w-full p-7">
+        <div className="overlay-card max-h-[calc(100dvh-1.5rem)] w-[400px] max-w-full overflow-y-auto p-7">
           <div className="mb-5 flex justify-center">
             <Logo dark size={32} />
           </div>

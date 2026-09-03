@@ -51,24 +51,26 @@ export default function JoinRoom() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-ink-50 px-4 py-8">
-      <div className="w-full max-w-md">
+    <div className="marketing-page flex items-center justify-center px-4 py-8">
+      <div aria-hidden className="marketing-orb -left-20 top-16 h-56 w-56 bg-cp-pink-300/35" />
+      <div aria-hidden className="marketing-orb -right-20 bottom-12 h-64 w-64 bg-cp-purple-300/35" />
+      <div className="relative w-full max-w-md">
         <div className="mb-6 flex items-center justify-between"><button onClick={() => navigate("/")}><Logo size={38} /></button><LangToggle /></div>
         <div className="card p-6 animate-fade-up sm:p-8">
           <h1 className="font-display text-2xl font-bold text-ink-900"><T value={{ ro: "Intră într-o sesiune", en: "Join a session" }} /></h1>
-          <p className="mt-2 text-sm leading-relaxed text-ink-500"><T value={{ ro: "Introdu linkul sau codul proiectat de facilitator. Nu ai nevoie de cont.", en: "Enter the link or code shown by the facilitator. No account required." }} /></p>
+          <p className="mt-2 text-sm leading-relaxed text-ink-600"><T value={{ ro: "Introdu linkul sau codul. Fără cont.", en: "Enter the link or code. No account." }} /></p>
           <label className="mt-6 block text-sm font-semibold text-ink-700" htmlFor="roomref"><T value={{ ro: "Link sau cod", en: "Room link or code" }} /></label>
           <input id="roomref" className="input mt-2 font-mono tracking-wide" placeholder="K7F2MX — or paste a link" value={ref} autoFocus onChange={(event) => setRef(event.target.value)} onKeyDown={(event) => event.key === "Enter" && join()} />
 
           {preview && <div className="mt-3 rounded-2xl border border-brand-100 bg-brand-50 p-4"><div className="font-display font-bold text-ink-900">{preview.sessionName}</div><div className="mt-1 text-xs text-ink-500">🧩 {preview.puzzle} · 👥 {preview.count} · {preview.stage === "lobby" ? (lang === "ro" ? "așteaptă startul" : "waiting to start") : (lang === "ro" ? "în desfășurare" : "in progress")}</div></div>}
 
-          {needsCode && <><label className="mt-4 block text-sm font-semibold text-ink-700" htmlFor="joincode"><T value={{ ro: "Cod de acces", en: "Access code" }} /></label><input id="joincode" className="input mt-2 font-mono uppercase tracking-[0.25em]" placeholder="K7F2MX" maxLength={6} value={code} onChange={(event) => setCode(event.target.value.toUpperCase())} onKeyDown={(event) => event.key === "Enter" && join()} /><div className="mt-1.5 text-xs text-ink-400"><T value={{ ro: "Codul nu este inclus în link, pentru siguranță.", en: "For safety, the access code is not embedded in the link." }} /></div></>}
+          {needsCode && <><label className="mt-4 block text-sm font-semibold text-ink-700" htmlFor="joincode"><T value={{ ro: "Cod de acces", en: "Access code" }} /></label><input id="joincode" className="input mt-2 font-mono uppercase tracking-[0.25em]" placeholder="K7F2MX" maxLength={6} value={code} onChange={(event) => setCode(event.target.value.toUpperCase())} onKeyDown={(event) => event.key === "Enter" && join()} /><div className="mt-1.5 text-xs text-ink-500"><T value={{ ro: "Codul nu este în link.", en: "The code is not in the link." }} /></div></>}
 
           <label className="mt-4 block text-sm font-semibold text-ink-700" htmlFor="joinname"><T value={{ ro: "Numele tău", en: "Display name" }} /></label>
           <input id="joinname" className="input mt-2" placeholder="e.g. Maria" maxLength={24} value={name} onChange={(event) => setName(event.target.value)} onKeyDown={(event) => event.key === "Enter" && join()} />
           {error && <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">{error}</div>}
           <button className="btn-primary mt-6 min-h-11 w-full" disabled={busy} onClick={join}>{busy ? <Spinner /> : <T value={{ ro: "Intră în lobby", en: "Join lobby" }} />}</button>
-          <div className="mt-4 text-center text-xs text-ink-400"><T value={{ ro: "Fără cont · maximum 20 conexiuni", en: "No sign-up · up to 20 connections" }} /></div>
+          <div className="mt-4 text-center text-xs text-ink-500"><T value={{ ro: "Fără cont · max. 20", en: "No account · max. 20" }} /></div>
         </div>
         <div className="mt-6 text-center"><button onClick={() => navigate("/create")} className="text-sm font-semibold text-brand-600"><T value={{ ro: "Sau creează o sesiune →", en: "Or create a session →" }} /></button></div>
       </div>

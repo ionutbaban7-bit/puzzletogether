@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * PuzzleTogether — image catalog pipeline (Stage 3).
+ * PuzzleTogether — image catalog pipeline.
  *
  * For every asset listed in data/catalog/sources.json:
  *   1. compute the SHA-256 checksum + pixel dimensions of the source file

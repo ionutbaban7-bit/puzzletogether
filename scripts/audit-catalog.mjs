@@ -16,6 +16,8 @@
  *   S9  checksum mismatch (recorded value vs. recomputed SHA-256 of the
  *       original / svg source file)
  *   S10 uncatalogued image asset inside server/public/images
+ *   S11 incomplete bilingual/provenance metadata
+ *   S12 incomplete Stage 5 category/import set (once imported)
  *   F1  entry flagged for a compliance violation (watermark / no license)
  *
  * Cross-checks:
@@ -57,6 +59,9 @@ const validCategories = new Set(puzzles.categories.map((c) => c.id).concat("coac
 const entries = catalog.entries;
 
 const isHttpUrl = (u) => typeof u === "string" && /^https?:\/\/[^\s]+$/i.test(u);
+const hasText = (value) => typeof value === "string" && value.trim().length > 0;
+const validLocalizedText = (value) => !!value && hasText(value.ro) && hasText(value.en);
+const validFocalPoint = (value) => Array.isArray(value) && value.length === 2 && value.every((n) => typeof n === "number" && n >= 0 && n <= 1);
 
 
 const referencedPublicPaths = new Set();
@@ -82,6 +87,25 @@ for (const e of entries) {
   // S2/S3 URLs
   if (!isHttpUrl(e.sourceUrl)) { err("S2", `missing/invalid sourceUrl: ${e.asset}`); problems.push("S2 sourceUrl"); }
   if (!isHttpUrl(e.licenseUrl)) { err("S3", `missing/invalid licenseUrl: ${e.asset}`); problems.push("S3 licenseUrl"); }
+
+  // S11 makes the schema's meaningful catalog fields enforceable even where
+  // this small Node audit does not depend on an external JSON-schema package.
+  const missingMetadata = [
+    ["name", validLocalizedText(e.name)], ["alt", validLocalizedText(e.alt)],
+    ["creator", hasText(e.creator)], ["sourceName", hasText(e.sourceName)],
+    ["license", hasText(e.license)], ["licenseClass", hasText(e.licenseClass)],
+    ["attribution", hasText(e.attribution)], ["changesMade", hasText(e.changesMade)],
+    ["downloadedAt", /^\d{4}-\d{2}-\d{2}$/.test(e.downloadedAt || "")],
+    ["originalFilename", hasText(e.originalFilename)], ["focalPoint", validFocalPoint(e.focalPoint)],
+  ].filter(([, present]) => !present).map(([field]) => field);
+  if (missingMetadata.length) {
+    err("S11", `incomplete catalog metadata (${missingMetadata.join(", ")}): ${e.asset}`);
+    problems.push("S11 metadata");
+  }
+  if (e.licenseClass === "cc0" && !e.generation) {
+    err("S11", `CC0 original is missing generation/source documentation: ${e.asset}`);
+    problems.push("S11 generation");
+  }
 
   // S7 category
   if (!validCategories.has(e.category)) { err("S7", `invalid category "${e.category}": ${e.asset}`); problems.push("S7 category"); }
@@ -227,6 +251,21 @@ for (const e of entries) {
     if (!coachingCovers.has(e.asset)) err("X2", `coaching cover ${e.asset} not referenced by any activity`);
   } else if (e.category !== "coaching") {
     warn("W3", `orphan asset (no puzzle references it): ${e.asset}`);
+  }
+}
+
+// Stage 5's strict 55-image expansion is checked only after its importer has
+// declared the set live. This keeps the pre-import audit useful while still
+// making a partial final import a structural failure.
+if (catalog.stage5ImportedAt) {
+  const expectedStage5 = {
+    paintings: 5, landscapes: 5, landmarks: 5, nature: 5, cities: 5,
+    "isometric-worlds": 10, "abstract-geometry": 10, "blueprint-architecture": 10,
+  };
+  for (const [category, expected] of Object.entries(expectedStage5)) {
+    if (!validCategories.has(category)) err("S12", `missing Stage 5 category: ${category}`);
+    const found = entries.filter((entry) => entry.category === category && entry.licenseClass === "cc0" && entry.status === "verified" && entry.generation).length;
+    if (found !== expected) err("S12", `expected ${expected} verified CC0 Stage 5 entries in ${category}; found ${found}`);
   }
 }
 

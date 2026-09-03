@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://puzzletogether.example/schema/catalog-sources-v1.json",
+  "title": "PuzzleTogether catalog source record",
+  "type": "object",
+  "required": ["version", "entries"],
+  "properties": {
+    "version": { "const": 1 },
+    "notes": { "type": "string" },
+    "entries": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/entry" }
+    }
+  },
+  "$defs": {
+    "localizedText": {
+      "type": "object",
+      "required": ["ro", "en"],
+      "properties": {
+        "ro": { "type": "string", "minLength": 1 },
+        "en": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "focalPoint": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "number", "minimum": 0, "maximum": 1 }
+    },
+    "entry": {
+      "type": "object",
+      "required": [
+        "asset", "category", "name", "alt", "creator", "sourceName", "sourceUrl",
+        "license", "licenseClass", "licenseUrl", "attribution", "changesMade",
+        "downloadedAt", "originalFilename", "focalPoint", "status", "issues"
+      ],
+      "properties": {
+        "asset": { "type": "string", "pattern": "^/images/[^/]+\\.(jpg|jpeg|png|webp|svg)$" },
+        "category": { "type": "string", "minLength": 1 },
+        "activityId": { "type": ["string", "null"] },
+        "puzzleId": { "type": ["string", "null"] },
+        "name": { "$ref": "#/$defs/localizedText" },
+        "alt": { "$ref": "#/$defs/localizedText" },
+        "creator": { "type": "string", "minLength": 1 },
+        "sourceName": { "type": "string", "minLength": 1 },
+        "sourceUrl": { "type": "string", "format": "uri" },
+        "license": { "type": "string", "minLength": 1 },
+        "licenseClass": { "enum": ["pd", "cc0", "cc-by", "cc-by-sa", "unverified", "restricted"] },
+        "licenseUrl": { "type": "string", "format": "uri" },
+        "attribution": { "type": "string", "minLength": 1 },
+        "changesMade": { "type": "string", "minLength": 1 },
+        "downloadedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "originalFilename": { "type": "string", "minLength": 1 },
+        "focalPoint": { "$ref": "#/$defs/focalPoint" },
+        "status": { "enum": ["verified", "unverified", "flagged"] },
+        "issues": { "type": "array", "items": { "type": "string" } },
+        "generation": {
+          "type": "object",
+          "properties": {
+            "tool": { "type": "string" },
+            "generatedAt": { "type": "string" },
+            "prompt": { "type": "string" },
+            "rawInputChecksum": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+            "archive": { "type": "string" },
+            "visualReview": { "type": "string" }
+          },
+          "required": ["tool", "generatedAt", "prompt", "archive", "visualReview"]
+        },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "checksum": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "fullImage": { "type": "string", "pattern": "^/images/full/.+\\.webp$|^/images/.+\\.svg$" },
+        "thumbnail": { "type": "string", "pattern": "^/images/thumbs/.+\\.webp$|^/images/.+\\.svg$" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

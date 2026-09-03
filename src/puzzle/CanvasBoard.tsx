@@ -16,9 +16,9 @@ interface CanvasBoardProps {
   resetSignal: number;
 }
 
-const DESK_BG = "#e9ecf3";
+const DESK_BG = "#0b0e1a";
 const SHEET_BG = "#ffffff";
-const SELECT_COLOR = "#4f46e5";
+const SELECT_COLOR = "#8a58c0";
 
 interface TileStyle {
   fill: string;
@@ -250,7 +250,12 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
     return () => {
       observer.disconnect();
       window.removeEventListener("resize", resize);
-      if (raf.current) cancelAnimationFrame(raf.current);
+      if (raf.current) {
+        cancelAnimationFrame(raf.current);
+        // StrictMode immediately remounts effects in development. Clear the
+        // stored id as well or the next dirty render is incorrectly skipped.
+        raf.current = 0;
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -625,7 +630,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
   // ------------------------------------------------------------- render
   const zoomBtn = (factor: number, label: string) => (
     <button
-      className="flex h-10 w-10 items-center justify-center rounded-xl border border-ink-200 bg-white/95 text-lg font-bold text-ink-700 shadow-card backdrop-blur transition hover:bg-white active:scale-95"
+      className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-ink-900/95 text-lg font-bold text-white shadow-chip backdrop-blur transition hover:bg-ink-800 active:scale-95"
       onClick={() => zoomBy(factor)}
       title={label}
       aria-label={label}
@@ -673,14 +678,14 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
 
       {/* Desktop side tray */}
       {!isMobile && (
-        <aside className="safe-top absolute bottom-20 left-3 top-24 flex w-[264px] flex-col overflow-hidden rounded-2xl border border-ink-200 bg-white/95 shadow-pop backdrop-blur">
-          <div className="border-b border-ink-100 px-4 py-3">
+        <aside className="safe-top absolute bottom-20 left-3 top-24 flex w-[264px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-ink-900/95 text-white shadow-pop backdrop-blur">
+          <div className="border-b border-white/10 px-4 py-3">
             <div className="text-[10px] font-bold uppercase tracking-[.2em] text-ink-400">
               {lang === "ro" ? "Tray de cărți" : "Tile tray"}
             </div>
-            <div className="mt-0.5 truncate text-sm font-bold text-ink-900">
+            <div className="mt-0.5 truncate text-sm font-bold text-white">
               {pick(puzzle.name, lang)}
-              <span className="ml-2 rounded-full bg-ink-100 px-2 py-0.5 text-[10px] font-bold text-ink-500">
+              <span className="ml-2 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold text-brand-200">
                 {canvas.contentLanguage.toUpperCase()}
               </span>
             </div>
@@ -692,15 +697,15 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
       {/* Mobile bottom sheet tray */}
       {isMobile && (
         <div
-          className={`safe-bottom absolute inset-x-0 bottom-0 z-20 flex flex-col rounded-t-3xl border-t border-ink-200 bg-white/97 shadow-pop backdrop-blur transition-[height] duration-200 ${sheetOpen ? "h-[46vh]" : "h-[92px]"}`}
+          className={`safe-bottom absolute inset-x-0 bottom-0 z-20 flex flex-col rounded-t-3xl border-t border-white/10 bg-ink-900/97 text-white shadow-pop backdrop-blur transition-[height] duration-200 ${sheetOpen ? "h-[46vh]" : "h-[92px]"}`}
         >
           <button
             className="flex w-full cursor-pointer flex-col items-center pb-1 pt-2"
             onClick={() => setSheetOpen((v) => !v)}
             aria-label={sheetOpen ? (lang === "ro" ? "Rulează tray-ul" : "Collapse tray") : (lang === "ro" ? "Deschide tray-ul" : "Open tray")}
           >
-            <span className="h-1.5 w-10 rounded-full bg-ink-300" />
-            <span className="mt-1.5 text-[11px] font-bold text-ink-500">
+            <span className="h-1.5 w-10 rounded-full bg-white/30" />
+            <span className="mt-1.5 text-[11px] font-bold text-ink-300">
               {lang === "ro" ? "Tray de cărți" : "Tile tray"} · {canvas.contentLanguage.toUpperCase()} {sheetOpen ? "▾" : "▴"}
             </span>
           </button>
@@ -714,7 +719,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
       <div className="safe-bottom absolute bottom-4 right-3 z-10 flex flex-col items-center gap-2 sm:bottom-6 sm:right-5">
         <div className="flex flex-col gap-1.5">
           <button
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-ink-200 bg-white/95 text-sm shadow-card backdrop-blur hover:bg-white disabled:opacity-40"
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-ink-900/95 text-sm text-white shadow-chip backdrop-blur hover:bg-ink-800 disabled:opacity-40"
             onClick={() => store.sendCanvas("undo")}
             title={lang === "ro" ? "Anulează ultima acțiune (Ctrl+Z)" : "Undo last action (Ctrl+Z)"}
             aria-label={lang === "ro" ? "Anulează" : "Undo"}
@@ -722,7 +727,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
             ↩
           </button>
           <button
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-ink-200 bg-white/95 text-sm shadow-card backdrop-blur hover:bg-white"
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-ink-900/95 text-sm text-white shadow-chip backdrop-blur hover:bg-ink-800"
             onClick={() => doExport("png")}
             title={lang === "ro" ? "Exportă compoziția ca PNG" : "Export composition as PNG"}
             aria-label={lang === "ro" ? "Export PNG" : "Export PNG"}
@@ -730,7 +735,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
             📷
           </button>
           <button
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-ink-200 bg-white/95 text-sm shadow-card backdrop-blur hover:bg-white"
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-ink-900/95 text-sm text-white shadow-chip backdrop-blur hover:bg-ink-800"
             onClick={() => doExport("txt")}
             title={lang === "ro" ? "Exportă textul (UTF-8)" : "Export text (UTF-8)"}
             aria-label={lang === "ro" ? "Export text" : "Export text"}
@@ -738,7 +743,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
             📄
           </button>
           <button
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-ink-200 bg-white/95 text-sm shadow-card backdrop-blur hover:bg-white"
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-ink-900/95 text-sm text-white shadow-chip backdrop-blur hover:bg-ink-800"
             onClick={() => doExport("json")}
             title={lang === "ro" ? "Exportă JSON" : "Export JSON"}
             aria-label={lang === "ro" ? "Export JSON" : "Export JSON"}
@@ -749,7 +754,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
         <div className="mt-1 flex flex-col gap-1.5">
           {zoomBtn(1.25, lang === "ro" ? "Mărește" : "Zoom in")}
           <button
-            className="flex h-8 w-10 items-center justify-center rounded-lg border border-ink-200 bg-white/95 text-[11px] font-bold text-ink-600 shadow-card backdrop-blur"
+            className="flex h-8 w-10 items-center justify-center rounded-lg border border-white/10 bg-ink-900/95 text-[11px] font-bold text-ink-200 shadow-chip backdrop-blur"
             onClick={fitSheet}
             title={lang === "ro" ? "Asează foaia în vedere" : "Fit the sheet"}
             aria-label={lang === "ro" ? "Asează foaia" : "Fit sheet"}
@@ -762,10 +767,10 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
 
       {/* Selected tile actions */}
       {selectedTile && (
-        <div className={`absolute left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-2xl border border-ink-200 bg-white/97 p-1.5 shadow-pop backdrop-blur ${isMobile ? (sheetOpen ? "bottom-[calc(46vh+14px)]" : "bottom-[104px]") : "top-16"}`}>
-          <span className="max-w-[110px] truncate px-1.5 text-sm font-bold text-ink-900">{selectedTile.text}</span>
+        <div className={`absolute left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-2xl border border-white/10 bg-ink-900/97 p-1.5 text-white shadow-pop backdrop-blur ${isMobile ? (sheetOpen ? "bottom-[calc(46vh+14px)]" : "bottom-[104px]") : "top-16"}`}>
+          <span className="max-w-[110px] truncate px-1.5 text-sm font-bold text-white">{selectedTile.text}</span>
           <button
-            className="rounded-xl bg-ink-100 px-2.5 py-1.5 text-xs font-bold text-ink-700 hover:bg-ink-200"
+            className="rounded-xl bg-white/10 px-2.5 py-1.5 text-xs font-bold text-white hover:bg-white/15"
             onClick={() => store.sendCanvas("flip", { id: selectedTile.id })}
             title={lang === "ro" ? "Răstoarnă (F)" : "Flip (F)"}
             aria-label={lang === "ro" ? "Răstoarnă cărția" : "Flip tile"}
@@ -773,7 +778,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
             ↻
           </button>
           <button
-            className="rounded-xl bg-ink-100 px-2.5 py-1.5 text-xs font-bold text-ink-700 hover:bg-ink-200"
+            className="rounded-xl bg-white/10 px-2.5 py-1.5 text-xs font-bold text-white hover:bg-white/15"
             onClick={() => store.sendCanvas("duplicate", { id: selectedTile.id })}
             title={lang === "ro" ? "Dublează (Ctrl+D)" : "Duplicate (Ctrl+D)"}
             aria-label={lang === "ro" ? "Dublează cărția" : "Duplicate tile"}
@@ -781,7 +786,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
             ⧉
           </button>
           <button
-            className="rounded-xl bg-rose-50 px-2.5 py-1.5 text-xs font-bold text-rose-600 hover:bg-rose-100"
+            className="rounded-xl bg-rose-500/20 px-2.5 py-1.5 text-xs font-bold text-rose-200 hover:bg-rose-500/30"
             onClick={() => {
               store.sendCanvas("delete", { id: selectedTile.id });
               setSelectedId(null);
@@ -792,7 +797,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
             🗑
           </button>
           <button
-            className="rounded-xl bg-ink-100 px-2 py-1.5 text-xs font-bold text-ink-500 hover:bg-ink-200"
+            className="rounded-xl bg-white/10 px-2 py-1.5 text-xs font-bold text-ink-300 hover:bg-white/15"
             onClick={() => setSelectedId(null)}
             aria-label={lang === "ro" ? "Deselectează" : "Deselect"}
           >
@@ -883,7 +888,7 @@ function SentenceTray({
           }}
         >
           <input
-            className="min-w-0 flex-1 rounded-xl border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 outline-none focus:border-brand-500"
+            className="min-w-0 flex-1 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-white outline-none placeholder:text-ink-500 focus:border-brand-400"
             value={customWord}
             maxLength={40}
             onChange={(e) => setCustomWord(e.target.value)}
@@ -894,16 +899,16 @@ function SentenceTray({
         </form>
         <div className="mt-1.5 min-h-[18px] text-[11px] leading-tight">
           {suggestions.length > 0 ? (
-            <span className="text-ink-500">
+            <span className="text-ink-300">
               {lang === "ro" ? "Poate vrei:" : "Did you mean:"}{" "}
               {suggestions.map((s) => (
-                <button key={s} className="mx-0.5 rounded-md border border-ink-200 bg-white px-1.5 py-0.5 font-semibold text-ink-700 hover:bg-ink-50" onClick={() => setCustomWord(s)}>
+                <button key={s} className="mx-0.5 rounded-md border border-white/15 bg-white/10 px-1.5 py-0.5 font-semibold text-white hover:bg-white/15" onClick={() => setCustomWord(s)}>
                   {s}
                 </button>
               ))}
             </span>
           ) : customWord.trim() && !inPack ? (
-            <span className="text-amber-600">
+            <span className="text-amber-300">
               {lang === "ro" ? "Nu e în pachet — rămâne cuvânt personal (soft spellcheck)." : "Not in the pack — stays a custom word (soft spellcheck)."}</span>
           ) : null}
         </div>
@@ -915,7 +920,7 @@ function SentenceTray({
           <button
             key={cat}
             onClick={() => onSelectCategory(cat)}
-            className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${selected === cat ? "border-brand-600 bg-brand-600 text-white" : "border-ink-200 bg-white text-ink-600 hover:bg-ink-50"}`}
+            className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${selected === cat ? "border-brand-600 bg-brand-600 text-white" : "border-white/15 bg-white/5 text-ink-200 hover:bg-white/10"}`}
           >
             {pick(CATEGORY_NAMES[cat] || { ro: cat, en: cat }, lang)}
           </button>
@@ -967,16 +972,16 @@ function TrayButton({ label, count, onClick, disabled, wide = false, punct = fal
       disabled={disabled || depleted}
       className={`relative flex h-10 select-none items-center justify-center rounded-lg border font-bold transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-35 ${wide ? "text-sm" : "text-base"} ${
         wildcard
-          ? "border-indigo-300 bg-indigo-600 text-white hover:bg-indigo-500"
+          ? "border-cp-purple-300/45 bg-cp-purple-500/45 text-white hover:bg-cp-purple-500/60"
           : punct
-            ? "border-slate-300 bg-slate-700 text-white hover:bg-slate-600"
-            : "border-ink-200 bg-amber-50/80 text-ink-900 hover:bg-amber-100"
+            ? "border-brand-300/35 bg-brand-500/20 text-white hover:bg-brand-500/30"
+            : "border-amber-300/35 bg-amber-500/15 text-amber-50 hover:bg-amber-500/25"
       }`}
       title={depleted ? (lang === "ro" ? "Stoc epuizat" : "Out of stock") : undefined}
       aria-label={`${label} (${count === Infinity ? lang === "ro" ? "nelimitat" : "unlimited" : count})`}
     >
       {label}
-      <span className={`absolute -right-1 -top-1 min-w-[16px] rounded-full px-1 text-center text-[9px] font-bold leading-[16px] ${count === Infinity ? "bg-emerald-500 text-white" : depleted ? "bg-ink-300 text-white" : "bg-ink-900 text-white"}`}>
+      <span className={`absolute -right-1 -top-1 min-w-[16px] rounded-full px-1 text-center text-[9px] font-bold leading-[16px] ${count === Infinity ? "bg-brand-600 text-white" : depleted ? "bg-ink-500 text-white" : "bg-ink-950 text-white"}`}>
         {count === Infinity ? "∞" : count}
       </span>
     </button>

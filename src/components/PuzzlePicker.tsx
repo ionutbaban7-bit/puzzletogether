@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../lib/api";
-import { Modal, Spinner } from "./ui";
+import { CategoryGlyph, Modal, Spinner } from "./ui";
 import { T, useLang } from "../lib/i18n";
 import type { CatalogData, RoomView } from "../types";
 
@@ -67,7 +67,7 @@ export default function PuzzlePicker({
 
   return (
     <Modal onClose={busy ? undefined : onClose}>
-      <div className="overlay-card flex max-h-[85vh] w-[680px] max-w-[94vw] flex-col p-6">
+      <div className="overlay-card flex max-h-[calc(100dvh-1.5rem)] overflow-y-auto w-[680px] max-w-[94vw] flex-col p-6">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h2 className="font-display text-xl font-bold text-white">
@@ -115,7 +115,7 @@ export default function PuzzlePicker({
                       : "border-white/15 bg-white/5 text-ink-200 hover:bg-white/10"
                   }`}
                 >
-                  <span className="mr-1.5">{CATEGORY_EMOJI[c.id] || c.icon}</span>
+                  <span className="mr-1.5"><CategoryGlyph id={c.id} fallback={CATEGORY_EMOJI[c.id] || c.icon} /></span>
                   {c.name}
                 </button>
               ))}
