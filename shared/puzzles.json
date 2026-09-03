@@ -2,7 +2,7 @@
   "categories": [
     {
       "id": "words",
-      "name": "Word World & Team Words",
+      "name": "Letter-Tile Jigsaws",
       "icon": "🔤"
     },
     {
@@ -57,7 +57,7 @@
     {
       "id": "agile-words",
       "category": "words",
-      "name": "Agile Values & Team Words",
+      "name": "Agile Values Letter Jigsaw",
       "image": "/images/words-agile.svg",
       "credit": "PuzzleTogether B2B Studio",
       "license": "Original SVG",
@@ -66,16 +66,16 @@
     {
       "id": "innovation-grid",
       "category": "words",
-      "name": "Innovation & Brainstorming Sandbox",
+      "name": "Innovation Letter Mosaic",
       "image": "/images/words-innovation.svg",
       "credit": "PuzzleTogether B2B Studio",
       "license": "Original SVG",
       "source": "PuzzleTogether"
     },
     {
-      "id": "scrabble-anagrams",
+      "id": "letter-anagrams",
       "category": "words",
-      "name": "Multicolor Anagrams & Scrabble Grid",
+      "name": "Multicolor Letter Anagrams",
       "image": "/images/words-scrabble.svg",
       "credit": "PuzzleTogether B2B Studio",
       "license": "Original SVG",
@@ -84,7 +84,7 @@
     {
       "id": "team-motto",
       "category": "words",
-      "name": "Team Motto & Values Board",
+      "name": "Team Values Letter Jigsaw",
       "image": "/images/words-motto.svg",
       "credit": "PuzzleTogether B2B Studio",
       "license": "Original SVG",
@@ -208,33 +208,6 @@
       "source": "Wikimedia Commons"
     },
     {
-      "id": "grand-canyon",
-      "category": "landscapes",
-      "name": "Grand Canyon",
-      "image": "/images/grand-canyon.jpg",
-      "credit": "",
-      "license": "",
-      "source": "Web"
-    },
-    {
-      "id": "mount-fuji",
-      "category": "landscapes",
-      "name": "Mount Fuji",
-      "image": "/images/mount-fuji.jpg",
-      "credit": "",
-      "license": "",
-      "source": "Web"
-    },
-    {
-      "id": "plitvice-lakes",
-      "category": "landscapes",
-      "name": "Plitvice Lakes",
-      "image": "/images/plitvice-lakes.jpg",
-      "credit": "",
-      "license": "",
-      "source": "Web"
-    },
-    {
       "id": "eiffel-tower",
       "category": "landmarks",
       "name": "Eiffel Tower",
@@ -289,33 +262,6 @@
       "source": "Wikimedia Commons"
     },
     {
-      "id": "big-ben",
-      "category": "landmarks",
-      "name": "Big Ben, London",
-      "image": "/images/big-ben.jpg",
-      "credit": "",
-      "license": "",
-      "source": "Web"
-    },
-    {
-      "id": "pyramids-giza",
-      "category": "landmarks",
-      "name": "Pyramids of Giza",
-      "image": "/images/pyramids-giza.jpg",
-      "credit": "",
-      "license": "",
-      "source": "Web"
-    },
-    {
-      "id": "neuschwanstein",
-      "category": "landmarks",
-      "name": "Neuschwanstein Castle",
-      "image": "/images/neuschwanstein.jpg",
-      "credit": "",
-      "license": "",
-      "source": "Web"
-    },
-    {
       "id": "aurora",
       "category": "nature",
       "name": "Aurora Borealis",
@@ -341,24 +287,6 @@
       "credit": "Dietmar Rabich",
       "license": "CC BY-SA 4.0",
       "source": "Wikimedia Commons"
-    },
-    {
-      "id": "cherry-blossom",
-      "category": "nature",
-      "name": "Cherry Blossom",
-      "image": "/images/cherry-blossom.jpg",
-      "credit": "",
-      "license": "",
-      "source": "Web"
-    },
-    {
-      "id": "lavender-field",
-      "category": "nature",
-      "name": "Lavender Fields, Provence",
-      "image": "/images/lavender-field.jpg",
-      "credit": "",
-      "license": "",
-      "source": "Web"
     },
     {
       "id": "golden-gate",
@@ -395,24 +323,6 @@
       "credit": "Morio",
       "license": "CC BY-SA 3.0",
       "source": "Wikimedia Commons"
-    },
-    {
-      "id": "new-york",
-      "category": "cities",
-      "name": "New York Skyline",
-      "image": "/images/new-york.jpg",
-      "credit": "",
-      "license": "",
-      "source": "Web"
-    },
-    {
-      "id": "prague",
-      "category": "cities",
-      "name": "Prague Old Town",
-      "image": "/images/prague.jpg",
-      "credit": "",
-      "license": "",
-      "source": "Web"
     }
   ]
 }

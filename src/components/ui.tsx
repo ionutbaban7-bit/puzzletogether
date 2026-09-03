@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 
 export function LogoMark({ size = 34 }: { size?: number }) {
+  const gradientId = useId().replace(/:/g, "");
   return (
     <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden>
-      <rect width="64" height="64" rx="15" fill="url(#lg)" />
+      <rect width="64" height="64" rx="15" fill={`url(#${gradientId})`} />
       <defs>
-        <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#6366f1" />
           <stop offset="100%" stopColor="#4338ca" />
         </linearGradient>
@@ -48,20 +49,6 @@ export function Logo({
           Puzzle<span className={dark ? "text-brand-300" : "text-brand-600"}>Together</span>
         </span>
       )}
-    </span>
-  );
-}
-
-/** Small "coachinghub" wordmark shown in the top-left corner of the app. */
-export function CoachingHubBadge({ dark = true }: { dark?: boolean }) {
-  return (
-    <span
-      className={`select-none font-display text-[13px] font-bold tracking-tight ${
-        dark ? "text-ink-400" : "text-ink-400"
-      }`}
-      title="coachinghub"
-    >
-      coaching<span className="text-brand-500">hub</span>
     </span>
   );
 }

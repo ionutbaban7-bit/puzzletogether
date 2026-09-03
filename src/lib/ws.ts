@@ -52,7 +52,7 @@ export class RoomSocket {
       this.attempts = 0;
       this.handlers.onStatus(true, 0);
       ws.send(
-        JSON.stringify({ t: "hello", roomId: this.roomId, playerId: this.playerId }),
+        JSON.stringify({ t: "hello", v: 2, roomId: this.roomId, playerId: this.playerId }),
       );
       this.pingTimer = setInterval(() => {
         if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ t: "ping" }));

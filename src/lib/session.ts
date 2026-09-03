@@ -13,9 +13,9 @@ export interface Session {
 export function getSession(): Partial<Session> {
   try {
     return {
-      name: sessionStorage.getItem(KEY.name) || "",
-      pid: sessionStorage.getItem(KEY.pid) || "",
-      roomId: sessionStorage.getItem(KEY.room) || "",
+      name: localStorage.getItem(KEY.name) || "",
+      pid: localStorage.getItem(KEY.pid) || "",
+      roomId: localStorage.getItem(KEY.room) || "",
     };
   } catch {
     return {};
@@ -24,9 +24,9 @@ export function getSession(): Partial<Session> {
 
 export function saveSession(s: Partial<Session>) {
   try {
-    if (s.name) sessionStorage.setItem(KEY.name, s.name);
-    if (s.pid) sessionStorage.setItem(KEY.pid, s.pid);
-    if (s.roomId) sessionStorage.setItem(KEY.room, s.roomId);
+    if (s.name) localStorage.setItem(KEY.name, s.name);
+    if (s.pid) localStorage.setItem(KEY.pid, s.pid);
+    if (s.roomId) localStorage.setItem(KEY.room, s.roomId);
   } catch {
     /* private mode */
   }

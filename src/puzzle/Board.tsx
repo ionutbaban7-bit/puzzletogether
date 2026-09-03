@@ -14,6 +14,7 @@ interface BoardProps {
   onResetRequest: () => void;
   allowReset: boolean;
   resetSignal: number;
+  inputEnabled: boolean;
 }
 
 interface Grab {
@@ -57,6 +58,7 @@ export default function Board({
   onResetRequest,
   allowReset,
   resetSignal,
+  inputEnabled,
 }: BoardProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const { camera, cameraRef, zoomAt, zoomBy, fit } = useViewport();
@@ -472,6 +474,7 @@ export default function Board({
     });
 
     const grabPiece = grab.current ? pieces[grab.current.id] : null;
+    const playersById = new Map(players.map((player) => [player.id, player]));
     const pad = spritePad(puzzle.pieceW, puzzle.pieceH);
     const sw = (puzzle.pieceW + pad * 2) * scale;
     const sh = (puzzle.pieceH + pad * 2) * scale;
@@ -537,6 +540,22 @@ export default function Board({
         ctx.restore();
       }
 
+      const claimOwner = piece.heldBy ? playersById.get(piece.heldBy) : null;
+      if (claimOwner) {
+        strokePieceAt(piece, piece.x, piece.y, claimOwner.color, 3, 0.98);
+        ctx.save();
+        ctx.font = "700 11px Inter, system-ui, sans-serif";
+        const label = `${claimOwner.name} holds this piece`;
+        const labelW = ctx.measureText(label).width + 14;
+        ctx.fillStyle = claimOwner.color;
+        ctx.beginPath();
+        ctx.roundRect(x, y - 25, labelW, 20, 10);
+        ctx.fill();
+        ctx.fillStyle = "#fff";
+        ctx.textBaseline = "middle";
+        ctx.fillText(label, x + 7, y - 15);
+        ctx.restore();
+      }
       if (isGrabbed) {
         strokePieceAt(piece, piece.x, piece.y, SNAP_RING_COLOR, 2, 0.95);
       } else if (piece.moved) {
@@ -560,7 +579,6 @@ export default function Board({
     }
 
     // Remote cursors + name chips
-    const playersById = new Map(players.map((p) => [p.id, p]));
     for (const [id, c] of Object.entries(cursors)) {
       if (id === you) continue;
       if (now - c.at > 4000) continue;
@@ -668,7 +686,7 @@ export default function Board({
     if (e.pointerType === "mouse") {
       // Clicked a piece? (top-most: prefer free pieces over locked)
       const world = screenToWorld(pos.x, pos.y);
-      const hit = pickPiece(world.x, world.y, !!e.shiftKey);
+      const hit = inputEnabled ? pickPiece(world.x, world.y, !!e.shiftKey) : null;
       if (hit) {
         gestureType.current = "drag";
         grab.current = {
@@ -701,7 +719,7 @@ export default function Board({
     } else if (e.pointerType === "touch") {
       if (pointers.current.size === 1) {
         const world = screenToWorld(pos.x, pos.y);
-        const hit = pickPiece(world.x, world.y, false, 20);
+        const hit = inputEnabled ? pickPiece(world.x, world.y, false, 20) : null;
         if (hit) {
           gestureType.current = "drag";
           grab.current = {
@@ -763,6 +781,7 @@ export default function Board({
     let bestFree = false;
     for (const p of Object.values(pieces)) {
       if (p.locked && !allowLocked) continue;
+      if (p.heldBy && p.heldBy !== youRef.current) continue;
       if (
         wx >= p.x - margin &&
         wx <= p.x + puzzle.pieceW + margin &&
@@ -911,7 +930,7 @@ export default function Board({
     <div className="relative h-full w-full">
       <canvas
         ref={canvasRef}
-        className="block h-full w-full touch-none cursor-grab active:cursor-grabbing"
+        className={`block h-full w-full touch-none ${inputEnabled ? "cursor-grab active:cursor-grabbing" : "cursor-move"}`}
         style={{ backgroundColor: "#0b0e1a", touchAction: "none" }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
@@ -922,7 +941,7 @@ export default function Board({
       />
 
       {/* Zoom controls */}
-      <div className="absolute bottom-4 left-3 flex flex-col items-center gap-2 sm:bottom-5 sm:left-5">
+      <div className="safe-bottom absolute bottom-4 left-3 flex flex-col items-center gap-2 sm:bottom-5 sm:left-5">
         {zoomControls(1.25, "Zoom in")}
         <button
           className="flex h-8 w-9 items-center justify-center rounded-lg border border-white/10 bg-ink-900/85 text-[11px] font-semibold text-ink-200 shadow-chip backdrop-blur sm:w-10"

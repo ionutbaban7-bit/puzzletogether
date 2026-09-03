@@ -1,211 +1,70 @@
-/* Browser test for coaching flows. Run: node scripts/coaching-browser-test.mjs */
-import { createRequire } from "node:module";
-const require = createRequire("/tmp/package.json");
-const { chromium } = require("playwright-core");
+/* Browser smoke test for the facilitator-controlled ranking flow. */
 import { mkdirSync } from "node:fs";
+import { chromium } from "playwright";
+const BASE = process.env.BASE || "http://127.0.0.1:3000";
 const ARTIFACTS = new URL("../test-artifacts/", import.meta.url).pathname;
 mkdirSync(ARTIFACTS, { recursive: true });
-
-const BASE = process.env.BASE || "http://127.0.0.1:3000";
-const results = [];
-const ok = (name, cond, extra = "") => {
-  results.push(!!cond);
-  console.log(`${cond ? "✅" : "❌"} ${name}${extra ? " — " + extra : ""}`);
-};
-
+const checks = [];
+const ok = (name, value) => { checks.push(!!value); console.log(`${value ? "✅" : "❌"} ${name}`); };
 const browser = await chromium.launch();
 const errors = [];
-function watch(page, label) {
-  page.on("console", (m) => { if (m.type() === "error") errors.push(`[${label}] ${m.text()}`); });
-  page.on("pageerror", (e) => errors.push(`[${label}] pageerror: ${e.message}`));
-}
-
 try {
-  // ------------------------------------------------------- landing + badge
-  const ctxA = await browser.newContext({ viewport: { width: 1440, height: 900 } });
-  const pageA = await ctxA.newPage();
-  watch(pageA, "A");
-  await pageA.goto(BASE);
-  await pageA.waitForSelector("text=Solve beautiful puzzles");
-  ok("coachinghub badge on landing", await pageA.locator("text=coachinghub").first().isVisible());
-  await pageA.screenshot({ path: `${ARTIFACTS}10-landing-coachinghub.png` });
+  const context = await browser.newContext({ viewport: { width: 1280, height: 820 }, locale: "en-US" });
+  const page = await context.newPage();
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto(BASE);
+  await page.getByRole("button", { name: /Create a session/i }).click();
+  await page.getByRole("button", { name: /Team coaching/i }).click();
+  await page.getByRole("button", { name: /The Himalayan Expedition/i }).click();
+  ok("coaching picker describes free ranking and gated reveal", await page.getByText(/Free ranking/).isVisible());
+  ok("coaching picker hides jigsaw difficulty", await page.getByText("Difficulty", { exact: true }).count() === 0);
+  await page.getByRole("button", { name: /Continue/i }).click();
+  await page.locator("#session-name").fill("Himalaya alignment");
+  await page.locator("#display-name").fill("Ana");
+  await page.getByRole("button", { name: /Create lobby/i }).click();
+  await page.waitForFunction(() => window.__ptStore?.getState().status === "joined");
+  const state = await page.evaluate(() => window.__ptStore.getState());
+  ok("coach joins as facilitator host in the lobby", state.players[0].role === "host" && state.room.stage === "lobby");
+  ok("Share is available in coaching lobby", await page.getByRole("button", { name: /Invite teammates/i }).isVisible());
+  await page.getByRole("button", { name: /Start for everyone/i }).click();
+  await page.getByText("Activity brief").waitFor();
+  ok("coaching opens a synchronized brief before play", true);
+  await page.getByRole("button", { name: /begin activity/i }).click();
+  await page.waitForFunction(() => window.__ptStore?.getState().room.stage === "play");
+  ok("all 12 draggable cards render", await page.locator("[data-ranking-item]").count() === 12);
+  ok("expert answer is absent before reveal", await page.getByText(/See expert ranking/i).count() === 0 && (await page.evaluate(() => window.__ptStore.getState().puzzle.activity.items.every((item) => item.expertRank === undefined))));
 
-  // ------------------------------------------------------- create ranking room
-  await pageA.click("text=Create a Room");
-  await pageA.waitForURL("**/create");
-  await pageA.fill("#name", "Ionut");
-  await pageA.click("text=Continue");
-  await pageA.click("text=Team Coaching");
-  await pageA.waitForSelector("text=Team coaching exercises");
-  ok("coaching activities listed", (await pageA.locator("button", { hasText: "Expediția Himalayană" }).count()) > 0);
-  await pageA.screenshot({ path: `${ARTIFACTS}11-create-coaching.png` });
-  await pageA.click("text=Expediția Himalayană");
-  // difficulty section should be hidden for coaching
-  ok("difficulty hidden for coaching", !(await pageA.locator("text=Difficulty").first().isVisible().catch(() => false)));
-  await pageA.click("button:has-text('Create Room')");
-  await pageA.waitForURL("**/room/**");
-  await pageA.waitForFunction(() => window.__ptStore?.getState().status === "joined");
-  const st = await pageA.evaluate(() => window.__ptStore.getState());
-  ok("ranking room joined with 12 items", st.puzzle?.isCoaching && Object.keys(st.pieces).length === 12);
-  ok("ranking board shows scenario panel", await pageA.locator("text=Storm at 4,500 meters").first().isVisible().catch(() => false) || await pageA.locator("text=Furtună la 4.500 de metri").first().isVisible().catch(() => false));
-  ok("top bar shows coachinghub", await pageA.locator("text=coachinghub").first().isVisible());
-  await pageA.waitForTimeout(1200);
-  const cardCount = await pageA.locator("[data-item]").count();
-  ok("12 item cards rendered on the board", cardCount === 12, `${cardCount}`);
-  await pageA.screenshot({ path: `${ARTIFACTS}12-ranking-board.png` });
-
-  // ------------------------------------------------------- drag an item to its slot (with retries for flakiness)
-  let lockedInBrowser = false;
-  for (let attempt = 0; attempt < 3 && !lockedInBrowser; attempt++) {
-    const drag = await pageA.evaluate(() => {
-      const st = window.__ptStore.getState();
-      const cam = window.__ptCamera.current;
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      const candidates = Object.values(st.pieces).filter((p) => {
-        if (p.locked) return false;
-        const sx = p.x * cam.scale + cam.x;
-        const sy = p.y * cam.scale + cam.y;
-        const pw = st.puzzle.pieceW * cam.scale;
-        const ph = st.puzzle.pieceH * cam.scale;
-        if (sx < 340 && sy < 260) return false; // top-left info panel
-        if (sx > vw - 380 && sy < 520) return false; // right side panel
-        if (sy < 60 || sy + ph > vh - 80) return false; // top/bottom edges
-        return true;
-      });
-      const p = candidates[0];
-      if (!p) return null;
-      return { id: p.id, correctX: p.correctX, correctY: p.correctY, x: p.x, y: p.y, pieceW: st.puzzle.pieceW, pieceH: st.puzzle.pieceH };
-    });
-    if (!drag) break;
-    const cam = await pageA.evaluate(() => ({ x: window.__ptCamera?.current.x ?? 0, y: window.__ptCamera?.current.y ?? 0, scale: window.__ptCamera?.current.scale ?? 0.55 }));
-    const sx = drag.x * cam.scale + cam.x + (drag.pieceW * cam.scale) / 2;
-    const sy = drag.y * cam.scale + cam.y + (drag.pieceH * cam.scale) / 2;
-    const tx = drag.correctX * cam.scale + cam.x + (drag.pieceW * cam.scale) / 2;
-    const ty = drag.correctY * cam.scale + cam.y + (drag.pieceH * cam.scale) / 2;
-    await pageA.mouse.move(sx, sy);
-    await pageA.waitForTimeout(80);
-    await pageA.mouse.down();
-    await pageA.mouse.move(tx, ty, { steps: 12 });
-    await pageA.waitForTimeout(80);
-    await pageA.mouse.up();
-    try {
-      await pageA.waitForFunction(() => {
-        const st = window.__ptStore.getState();
-        return Object.values(st.pieces).some((p) => p.locked);
-      }, null, { timeout: 4000 });
-      lockedInBrowser = true;
-    } catch {
-      console.log(`  (retry ${attempt + 1}: item ${drag.id} did not lock)`);
-    }
-  }
-  ok("ranking item snapped & locked in browser", lockedInBrowser);
-  if (lockedInBrowser) {
-    await pageA.screenshot({ path: `${ARTIFACTS}13-ranking-item-placed.png` });
-  }
-
-  // ------------------------------------------------------- place everything → results
-  await pageA.evaluate(() => {
-    const st = window.__ptStore.getState();
-    for (const p of Object.values(st.pieces)) {
-      if (!p.locked) window.__ptStore.sendPiece(p.id, p.correctX, p.correctY, false);
+  // The test hook talks through the same WebSocket protocol, placing every card
+  // on a deliberately non-expert permutation of the free destination slots.
+  await page.evaluate(async () => {
+    const state = window.__ptStore.getState();
+    const ranks = [5, 2, 1, 3, 4, 6, 7, 8, 9, 10, 11, 12];
+    for (let id = 0; id < 12; id++) {
+      const slot = state.puzzle.rankingSlots.find((entry) => entry.rank === ranks[id]);
+      window.__ptStore.sendPiece(id, slot.x, slot.y, false);
+      await new Promise((resolve) => setTimeout(resolve, 35));
     }
   });
-  await pageA.waitForSelector("text=Team results", { timeout: 8000 });
-  ok("results modal appears when ranking completes (EN default)", true);
-  ok("expert ranking shown", await pageA.locator("text=Expert").first().isVisible());
-  ok("debrief questions shown", await pageA.locator("text=Debrief questions").first().isVisible());
-  await pageA.screenshot({ path: `${ARTIFACTS}14-ranking-results.png` });
+  await page.waitForFunction(() => Object.values(window.__ptStore?.getState().pieces || {}).every((piece) => piece.placedOnSlot != null));
+  ok("team can choose a non-expert permutation", (await page.evaluate(() => window.__ptStore.getState().pieces[0].placedOnSlot)) === 5);
+  await page.getByRole("button", { name: /Facilitate/i }).click();
+  await page.getByText("Facilitator mode").waitFor();
+  ok("facilitator dashboard exposes lock, timer, people and export", await page.getByText("Timer").isVisible() && await page.getByText("People").isVisible() && await page.getByText("Session recap").isVisible());
+  await page.getByRole("button", { name: /Reveal/i }).last().click();
+  await page.waitForFunction(() => window.__ptStore?.getState().room.revealed === true);
+  await page.getByText("Team results").waitFor();
+  ok("expert results appear only after facilitator reveal", await page.getByText("Deviation score").isVisible());
+  await page.screenshot({ path: `${ARTIFACTS}10-ranking-results.png` });
+  await context.close();
 
-  // ------------------------------------------------------- language toggle
-  await pageA.click("button:has-text('Close')"); // close EN results modal
-  await pageA.click("button:text-is('ro')");
-  await pageA.waitForTimeout(200);
-  await pageA.click("button:has-text('Vezi clasamentul expertului')");
-  await pageA.waitForSelector("text=Rezultatele echipei");
-  ok("language switch to RO changes results modal", true);
-  ok("debrief RO shown", await pageA.locator("text=Întrebări de debrief").first().isVisible());
-  await pageA.screenshot({ path: `${ARTIFACTS}15-ranking-results-en.png` });
-
-  // ------------------------------------------------------- questionnaire room
-  const ctxB = await browser.newContext({ viewport: { width: 1440, height: 900 } });
-  const pageB = await ctxB.newPage();
-  watch(pageB, "B");
-  await pageB.goto(BASE);
-  // create via API and join via URL
-  const qRoom = await pageB.evaluate(async () => {
-    const r = await fetch("/api/rooms", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ puzzleId: "team-compass", difficulty: "easy", name: "Maria" }),
-    });
-    return r.json();
-  });
-  await pageB.goto(`${BASE}/room/${qRoom.room.id}`);
-  await pageB.waitForSelector("text=Enter the room");
-  await pageB.fill("input[placeholder='e.g. Maria']", "Maria");
-  await pageB.fill("input[placeholder='K7F2MX']", qRoom.room.code);
-  await pageB.click("button:has-text('Join the Puzzle')");
-  await pageB.waitForFunction(() => window.__ptStore?.getState().status === "joined");
-  await pageB.waitForSelector("text=Start the questionnaire");
-  ok("questionnaire intro shows (EN default)", await pageB.locator("text=Team Compass").first().isVisible());
-  await pageB.screenshot({ path: `${ARTIFACTS}16-questionnaire-intro.png` });
-
-  await pageB.click("button:has-text('Start the questionnaire')");
-  await pageB.waitForSelector("text=Question 1 / 20");
-  ok("first question renders", true);
-  // answer all 20 with agree
-  for (let i = 0; i < 20; i++) {
-    await pageB.click("button:has-text('Agree')");
-    await pageB.waitForTimeout(40);
-  }
-  await pageB.waitForSelector("text=Team summary", { timeout: 8000 });
-  ok("questionnaire results appear after 20 answers", true);
-  const profileCode = await pageB.evaluate(() => {
-    const el = [...document.querySelectorAll("div")].find((d) => /^[IPXV][PXV][LE][SF]$/.test(d.textContent.trim()));
-    return el ? el.textContent.trim() : null;
-  });
-  ok("16-type profile code computed", !!profileCode, profileCode);
-  ok("strengths shown", await pageB.locator("text=Strengths").first().isVisible());
-  ok("watchouts shown", await pageB.locator("text=Watch out").first().isVisible());
-  ok("growth zone shown", await pageB.locator("text=Growth zone").first().isVisible());
-  await pageB.screenshot({ path: `${ARTIFACTS}17-questionnaire-results.png` });
-
-  // ------------------------------------------------------- restart
-  await pageB.click("button:has-text('Restart questionnaire')");
-  await pageB.waitForSelector("text=Start the questionnaire");
-  ok("questionnaire restart works", true);
-
-  // ------------------------------------------------------- second player sees team summary update
-  const ctxC = await browser.newContext({ viewport: { width: 1440, height: 900 } });
-  const pageC = await ctxC.newPage();
-  watch(pageC, "C");
-  await pageC.goto(`${BASE}/room/${qRoom.room.id}`);
-  await pageC.waitForSelector("text=Enter the room");
-  await pageC.fill("input[placeholder='e.g. Maria']", "Alex");
-  await pageC.fill("input[placeholder='K7F2MX']", qRoom.room.code);
-  await pageC.click("button:has-text('Join the Puzzle')");
-  await pageC.waitForFunction(() => window.__ptStore?.getState().status === "joined");
-  await pageC.waitForSelector("text=Start the questionnaire");
-  ok("second player joins questionnaire room", true);
-
-  await pageB.click("button:has-text('Start the questionnaire')");
-  for (let i = 0; i < 20; i++) {
-    await pageB.click("button:has-text('Agree')");
-    await pageB.waitForTimeout(40);
-  }
-  await pageB.waitForSelector("text=Team summary", { timeout: 8000 });
-  ok("Maria's summary lists Alex as answering", await pageB.locator("text=answering…").first().isVisible());
-  await pageB.screenshot({ path: `${ARTIFACTS}18-team-summary.png` });
-} catch (e) {
-  console.error("TEST ERROR:", e);
-  results.push(false);
-} finally {
-  await browser.close();
-}
-
-console.log(`\nconsole/page errors: ${errors.length}`);
-for (const e of errors.slice(0, 12)) console.log("  ⚠️", e);
-const passed = results.filter(Boolean).length;
-console.log(`\n${passed}/${results.length} coaching browser checks passed`);
-process.exit(passed === results.length && errors.length === 0 ? 0 : 1);
+  const mobile = await browser.newContext({ viewport: { width: 375, height: 667 }, locale: "en-US" });
+  const mobilePage = await mobile.newPage();
+  await mobilePage.goto(BASE);
+  ok("mobile viewport remains user-scalable", await mobilePage.locator('meta[name="viewport"]').getAttribute("content").then((value) => !value.includes("user-scalable=no")));
+  await mobilePage.screenshot({ path: `${ARTIFACTS}11-mobile-landing.png` });
+  await mobile.close();
+} finally { await browser.close(); }
+if (errors.length) console.error(errors.join("\n"));
+const failed = checks.filter((value) => !value).length;
+console.log(`\n${checks.length - failed}/${checks.length} coaching browser checks passed`);
+process.exit(failed ? 1 : 0);

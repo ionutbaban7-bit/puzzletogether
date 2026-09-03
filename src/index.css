@@ -8,6 +8,19 @@ body,
   height: 100%;
 }
 
+.safe-top {
+  padding-top: max(0px, env(safe-area-inset-top));
+}
+.safe-bottom {
+  padding-bottom: max(0px, env(safe-area-inset-bottom));
+}
+.safe-left {
+  padding-left: max(0px, env(safe-area-inset-left));
+}
+.safe-right {
+  padding-right: max(0px, env(safe-area-inset-right));
+}
+
 body {
   @apply bg-ink-950 text-ink-900 antialiased;
   font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;

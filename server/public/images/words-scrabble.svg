@@ -13,8 +13,8 @@
   <rect width="1200" height="800" rx="40" fill="url(#bg)"/>
   <rect x="68" y="68" width="1064" height="664" rx="34" fill="#0F172A" fill-opacity="0.76" stroke="white" stroke-opacity="0.08"/>
   <text x="108" y="145" fill="#FCD34D" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="3">WORD WORLD</text>
-  <text x="108" y="232" fill="white" font-family="Sora, Inter, Arial, sans-serif" font-size="58" font-weight="800">Multicolor Anagrams &amp; Scrabble Grid</text>
-  <text x="108" y="292" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="24">Competitive collaboration tiles with vibrant colors, points and grid-ready words.</text>
+  <text x="108" y="232" fill="white" font-family="Sora, Inter, Arial, sans-serif" font-size="58" font-weight="800">Multicolor Letter Anagrams</text>
+  <text x="108" y="292" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="24">A collaborative letter-tile jigsaw with vibrant colors and point badges.</text>
   <g transform="translate(108 360)">
     <rect x="0" y="0" width="88" height="88" rx="18" fill="#22C55E"/>
     <rect x="102" y="0" width="88" height="88" rx="18" fill="#3B82F6"/>
@@ -24,13 +24,13 @@
     <rect x="510" y="0" width="88" height="88" rx="18" fill="#06B6D4"/>
     <rect x="612" y="0" width="88" height="88" rx="18" fill="#EAB308"/>
     <g fill="white" font-family="Sora, Inter, Arial, sans-serif" font-size="46" font-weight="800" text-anchor="middle">
-      <text x="44" y="57">S</text>
-      <text x="146" y="57">C</text>
-      <text x="248" y="57">R</text>
+      <text x="44" y="57">I</text>
+      <text x="146" y="57">D</text>
+      <text x="248" y="57">E</text>
       <text x="350" y="57">A</text>
-      <text x="452" y="57">B</text>
-      <text x="554" y="57">B</text>
-      <text x="656" y="57">L</text>
+      <text x="452" y="57">T</text>
+      <text x="554" y="57">E</text>
+      <text x="656" y="57">S</text>
     </g>
     <g fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800">
       <text x="64" y="74">1</text>
@@ -51,7 +51,7 @@
   </g>
   <g transform="translate(108 590)">
     <rect x="0" y="0" width="984" height="72" rx="18" fill="#0B1120" fill-opacity="0.84" stroke="url(#gold)" stroke-opacity="0.55"/>
-    <text x="32" y="46" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Use the board for anagrams, team words, category sprints and scoring challenges.</text>
+    <text x="32" y="46" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Assemble the letter tiles together; free word-building is on the roadmap.</text>
   </g>
   <text x="108" y="710" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="600">Workshop Suite · Gamified letter deck · 1200×800</text>
 </svg>

@@ -15,7 +15,7 @@
   <circle cx="180" cy="640" r="210" fill="#60A5FA" fill-opacity="0.10"/>
   <rect x="72" y="72" width="1056" height="656" rx="34" fill="#0A1229" fill-opacity="0.72" stroke="white" stroke-opacity="0.08"/>
   <text x="112" y="146" fill="#99F6E4" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="3">WORD WORLD</text>
-  <text x="112" y="232" fill="white" font-family="Sora, Inter, Arial, sans-serif" font-size="58" font-weight="800">Team Motto &amp; Values Board</text>
+  <text x="112" y="232" fill="white" font-family="Sora, Inter, Arial, sans-serif" font-size="58" font-weight="800">Team Values Letter Jigsaw</text>
   <text x="112" y="292" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="24">Shape the words that describe your culture, principles and shared identity.</text>
   <g transform="translate(112 356)">
     <rect x="0" y="0" width="582" height="248" rx="30" fill="#111827" fill-opacity="0.84" stroke="white" stroke-opacity="0.08"/>
@@ -44,6 +44,6 @@
     <text x="135" y="187" fill="white" font-family="Sora, Inter, Arial, sans-serif" font-size="34" font-weight="800" text-anchor="middle">OUR MOTTO</text>
     <text x="135" y="226" fill="#E0F2FE" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700" text-anchor="middle">Build trust. Solve together.</text>
   </g>
-  <text x="112" y="690" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600">Facilitation prompts for values definition, mottos, norms and team identity.</text>
+  <text x="112" y="690" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600">A letter-tile jigsaw themed around shared values and team identity.</text>
   <text x="112" y="726" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="600">Workshop Suite · Team culture board · 1200×800</text>
 </svg>

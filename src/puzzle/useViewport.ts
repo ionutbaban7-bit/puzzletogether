@@ -49,12 +49,16 @@ export function useViewport() {
       if (!puzzle) return;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const padX = 260;
+      const mobile = vw < 640;
+      const padX = mobile ? 100 : 260;
       const padTop = 90;
-      const padBottom = 880;
+      const padBottom = mobile ? 560 : 880;
       const bw = puzzle.width + padX * 2;
       const bh = puzzle.height + padTop + padBottom;
-      const scale = clamp(Math.min(vw / bw, vh / bh), MIN_SCALE, 1.05);
+      // Do not make the whole scatter band fit at the cost of an unusably tiny
+      // board. Start readable and let users pan to the remaining pieces.
+      const readableMinimum = mobile ? 0.3 : 0.35;
+      const scale = clamp(Math.max(readableMinimum, Math.min(vw / bw, vh / bh)), MIN_SCALE, 1.05);
       const boundsX = -padX;
       const boundsY = -padTop;
       setCamera({
