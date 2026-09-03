@@ -14,19 +14,22 @@ a `flagged` or `unverified` record is not eligible for the final catalog.
 
 ## Stage 5 originals
 
-The 55 Stage 5 images are original prompt-directed visuals created on
-2026-09-03 with Arena image generation. No third-party source image was supplied
-as an input. PuzzleTogether dedicates any copyright and related rights it may
-hold in these generated originals to [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/).
+The 55 Stage 5 images are original visuals created on 2026-09-03. The landscape,
+landmark, nature and city artworks use prompt-directed Arena image generation;
+the 30 isometric, abstract and blueprint images are generated from original SVG
+artwork in `scripts/generate-stage5-procedural-originals.mjs`. No third-party
+source image was supplied as an input. PuzzleTogether dedicates any copyright
+and related rights it may hold in these generated originals to
+[CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/).
 
-For each image, `data/catalog/stage5-additions.json` retains the exact generation
-brief, bilingual title and alt text. The matching final catalog entry retains the
-brief, generation date, raw input checksum and visual-review result. The raw
-PNG produced by the generator is deliberately converted to a JPEG quality-95
-archival derivative before import, then removed: retaining 55 raw PNGs would
-needlessly add roughly 160 MB to the repository. The quality-95 archival
-source, checksum, optimized full WebP and thumbnail WebP preserve a reproducible
-and auditable chain while keeping the repository practical to clone.
+For each image, `data/catalog/stage5-additions.json` retains the source brief,
+bilingual title and alt text. The matching final catalog entry retains the brief,
+generation date, raw input checksum and visual-review result. Generator PNGs and
+procedural source derivatives are deliberately converted to quality-95 archival
+JPEGs before import, then removed: retaining all raw PNGs would needlessly make
+the repository expensive to clone. The source code (for procedural artwork),
+quality-95 archival source, checksum, optimized full WebP and thumbnail WebP
+preserve a reproducible and auditable chain while keeping the repository practical.
 
 Visual review is required before the import is marked `verified`: reject any
 output with visible text, logos, watermarks, identifiable people as the main

@@ -21,5 +21,6 @@ for (const addition of additions.entries) {
 }
 for (const addition of additions.entries) {
   fs.rmSync(path.join(root, "data/catalog/incoming", `${addition.id}.png`), { force: true });
+  fs.rmSync(path.join(root, "data/catalog/incoming", `${addition.id}.jpg`), { force: true });
 }
-console.log(`✓ Finalized ${additions.entries.length} Stage 5 sources; raw import PNGs removed after verified archival import.`);
+console.log(`✓ Finalized ${additions.entries.length} Stage 5 sources; temporary raw imports removed after verified archival import.`);

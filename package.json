@@ -24,7 +24,8 @@
     "test:puzzle-reset": "node scripts/puzzle-reset-test.mjs",
     "test:lobby-viewport": "LOBBY_ONLY=1 node scripts/jigsaw-browser-test.mjs",
     "catalog:seed-stage5": "node scripts/stage5-catalog-seed.mjs",
-    "catalog:finalize-stage5": "node scripts/stage5-catalog-finalize.mjs"
+    "catalog:finalize-stage5": "node scripts/stage5-catalog-finalize.mjs",
+    "catalog:generate-procedural-stage5": "node scripts/generate-stage5-procedural-originals.mjs"
   },
   "dependencies": {
     "express": "^5.2.1",

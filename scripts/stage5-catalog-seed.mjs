@@ -34,6 +34,13 @@ const expectedCounts = {
   "isometric-worlds": 10, "abstract-geometry": 10, "blueprint-architecture": 10,
 };
 const rawHash = (file) => `sha256:${crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex")}`;
+const sourceFileFor = (entry) => {
+  const png = path.join(incomingDir, `${entry.id}.png`);
+  const jpg = path.join(incomingDir, `${entry.id}.jpg`);
+  if (fs.existsSync(png)) return png;
+  if (fs.existsSync(jpg)) return jpg;
+  return null;
+};
 const json = (file) => JSON.parse(fs.readFileSync(file, "utf8"));
 const write = (file, value) => fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
 const fail = (message) => { console.error(`✗ ${message}`); process.exit(1); };
@@ -49,8 +56,8 @@ for (const [category, expected] of Object.entries(expectedCounts)) {
 if (additions.entries.length !== 55) fail(`expected 55 additions; found ${additions.entries.length}`);
 
 for (const entry of additions.entries) {
-  const raw = path.join(incomingDir, `${entry.id}.png`);
-  if (!fs.existsSync(raw)) fail(`missing generated source: ${path.relative(root, raw)}`);
+  const raw = sourceFileFor(entry);
+  if (!raw) fail(`missing generated source: data/catalog/incoming/${entry.id}.{png,jpg}`);
   if (!entry.generation?.visualReview?.startsWith("passed")) {
     fail(`${entry.id} has not passed visual review (set generation.visualReview after inspection)`);
   }
@@ -88,14 +95,18 @@ for (const [id, category] of Object.entries(categories)) {
 }
 
 for (const addition of additions.entries) {
-  const raw = path.join(incomingDir, `${addition.id}.png`);
+  const raw = sourceFileFor(addition);
+  if (!raw) fail(`missing generated source: ${addition.id}`);
   const asset = `/images/${addition.id}.jpg`;
   const importFile = path.join(publicImagesDir, `${addition.id}.jpg`);
   const rawInputChecksum = rawHash(raw);
+  const rawExtension = path.extname(raw).toLowerCase();
+  const rawFilename = path.basename(raw);
 
   // JPEG is only an archival format conversion of our own generated source;
-  // it is intentionally high quality, and the raw checksum remains recorded.
-  execFileSync("convert", [raw, "-auto-orient", "-strip", "-quality", "95", importFile], { stdio: "pipe" });
+  // it is intentionally high quality, and the source checksum remains recorded.
+  if (rawExtension === ".jpg" || rawExtension === ".jpeg") fs.copyFileSync(raw, importFile);
+  else execFileSync("convert", [raw, "-auto-orient", "-strip", "-quality", "95", importFile], { stdio: "pipe" });
   if (!fs.existsSync(importFile) || fs.statSync(importFile).size === 0) fail(`could not import ${addition.id}`);
 
   if (!knownCatalogAssets.has(asset)) {
@@ -113,9 +124,9 @@ for (const addition of additions.entries) {
       licenseClass: "cc0",
       licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
       attribution: "PuzzleTogether original — CC0 1.0",
-      changesMade: "Prompt-directed original; raw PNG converted to a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      changesMade: "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
       downloadedAt: "2026-09-03",
-      originalFilename: `${addition.id}.png (generated original; archived as ${addition.id}.jpg)`,
+      originalFilename: `${rawFilename} (original source; archived as ${addition.id}.jpg)`,
       focalPoint: addition.focalPoint,
       status: "verified",
       issues: [],
@@ -143,8 +154,8 @@ for (const addition of additions.entries) {
       sourceName: "PuzzleTogether original catalog",
       sourceUrl: "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
       licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
-      changesMade: "Prompt-directed original; archived and optimized by the catalog pipeline.",
-      originalFilename: `${addition.id}.png`,
+      changesMade: "Original artwork archived and optimized by the catalog pipeline.",
+      originalFilename: rawFilename,
       focalPoint: addition.focalPoint,
     });
     knownPuzzleIds.add(addition.id);
