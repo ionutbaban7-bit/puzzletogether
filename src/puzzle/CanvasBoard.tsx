@@ -1,0 +1,984 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { CanvasState, CanvasTile, CursorView, PlayerView, PuzzleView } from "../types";
+import { MAX_SCALE, MIN_SCALE, useViewport } from "./useViewport";
+import { store } from "../store";
+import { pick, useLang } from "../lib/i18n";
+import { downloadJsonFile, downloadTextFile, exportCanvasPng, reconstructCanvasText, roundRectPath } from "../lib/canvasText";
+
+interface CanvasBoardProps {
+  puzzle: PuzzleView;
+  canvas: CanvasState;
+  tiles: Record<number, CanvasTile>;
+  cursors: Record<string, CursorView>;
+  players: PlayerView[];
+  youId: string | null;
+  inputEnabled: boolean;
+  resetSignal: number;
+}
+
+const DESK_BG = "#e9ecf3";
+const SHEET_BG = "#ffffff";
+const SELECT_COLOR = "#4f46e5";
+
+interface TileStyle {
+  fill: string;
+  border: string;
+  text: string;
+}
+
+function tileStyle(tile: CanvasTile): TileStyle {
+  if (tile.kind === "wildcard") return { fill: "#4f46e5", border: "#3730a3", text: "#ffffff" };
+  if (tile.kind === "punctuation") return { fill: "#334155", border: "#1e293b", text: "#ffffff" };
+  if (tile.kind === "custom") return { fill: "#fff7ed", border: "#fdba74", text: "#7c2d12" };
+  return { fill: "#fffef8", border: "#d9d3c0", text: "#26221a" };
+}
+
+/**
+ * Draws one tile in sheet-local world coordinates. Shared by the live board
+ * and the PNG export so the download matches what the team sees.
+ */
+function paintTile(
+  ctx: CanvasRenderingContext2D,
+  tile: CanvasTile,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  opts: { selected?: boolean; shadow?: boolean } = {},
+) {
+  const radius = Math.min(16, w * 0.16, h * 0.2);
+  ctx.save();
+  if (opts.shadow) {
+    ctx.shadowColor = "rgba(15,23,42,0.28)";
+    ctx.shadowBlur = opts.selected ? 18 : 8;
+    ctx.shadowOffsetY = opts.selected ? 8 : 3;
+  }
+  const style = tileStyle(tile);
+  if (tile.flipped) {
+    // Reversible: the back of the card is plain (no letter, no decorations).
+    ctx.fillStyle = "#f3f4f6";
+    roundRectPath(ctx, x, y, w, h, radius);
+    ctx.fill();
+    ctx.shadowColor = "transparent";
+    ctx.strokeStyle = "#cbd5e1";
+    ctx.lineWidth = 2;
+    roundRectPath(ctx, x, y, w, h, radius);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(100,116,139,0.25)";
+    ctx.lineWidth = 1.4;
+    roundRectPath(ctx, x + 7, y + 7, w - 14, h - 14, radius * 0.6);
+    ctx.stroke();
+  } else {
+    ctx.fillStyle = style.fill;
+    roundRectPath(ctx, x, y, w, h, radius);
+    ctx.fill();
+    ctx.shadowColor = "transparent";
+    ctx.strokeStyle = style.border;
+    ctx.lineWidth = 2;
+    roundRectPath(ctx, x, y, w, h, radius);
+    ctx.stroke();
+    // Glyph
+    let size = tile.kind === "punctuation" ? h * 0.5 : tile.kind === "word" || tile.kind === "custom" ? h * 0.4 : h * 0.55;
+    if (tile.kind === "word" || tile.kind === "custom") {
+      ctx.font = `700 ${size}px Inter, system-ui, sans-serif`;
+      while (ctx.measureText(tile.text).width > w - 22 && size > 13) {
+        size -= 1;
+        ctx.font = `700 ${size}px Inter, system-ui, sans-serif`;
+      }
+    } else {
+      ctx.font = `800 ${size}px Inter, system-ui, sans-serif`;
+    }
+    ctx.fillStyle = style.text;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(tile.text, x + w / 2, y + h / 2 + size * 0.04);
+  }
+  if (opts.selected) {
+    ctx.strokeStyle = SELECT_COLOR;
+    ctx.lineWidth = 3;
+    roundRectPath(ctx, x - 3, y - 3, w + 6, h + 6, radius + 3);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/** Tiny Levenshtein for the soft spellcheck (suggestions only, never rejects). */
+function levenshtein(a: string, b: string): number {
+  if (a === b) return 0;
+  if (!a.length) return b.length;
+  if (!b.length) return a.length;
+  let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const curr = [i];
+    for (let j = 1; j <= b.length; j++) {
+      curr[j] = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    }
+    prev = curr;
+  }
+  return prev[b.length];
+}
+
+const CATEGORY_ORDER = ["articles", "pronouns", "nouns", "verbs", "adjectives", "adverbs", "prepositions", "conjunctions", "punctuation"] as const;
+const CATEGORY_NAMES: Record<string, { ro: string; en: string }> = {
+  all: { ro: "Toate", en: "All" },
+  articles: { ro: "Articole", en: "Articles" },
+  pronouns: { ro: "Pronume", en: "Pronouns" },
+  nouns: { ro: "Substantive", en: "Nouns" },
+  verbs: { ro: "Verbe", en: "Verbs" },
+  adjectives: { ro: "Adjective", en: "Adjectives" },
+  adverbs: { ro: "Adverbe", en: "Adverbs" },
+  prepositions: { ro: "Prepoziții", en: "Prepositions" },
+  conjunctions: { ro: "Conjuncții", en: "Conjunctions" },
+  punctuation: { ro: "Punctuație", en: "Punctuation" },
+};
+
+const LETTER_PUNCT = [".", ",", "!", "?", "-", "'", '"', ":", ";"];
+
+export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, youId, inputEnabled, resetSignal }: CanvasBoardProps) {
+  const { lang } = useLang();
+  const isLetter = puzzle.category === "letter-canvas";
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const { camera, cameraRef, setCamera, zoomAt, zoomBy } = useViewport();
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+  const tilesRef = useRef(tiles);
+  tilesRef.current = tiles;
+  const cursorsRef = useRef(cursors);
+  cursorsRef.current = cursors;
+  const playersRef = useRef(players);
+  playersRef.current = players;
+  const youRef = useRef(youId);
+  youRef.current = youId;
+  const inputRef = useRef(inputEnabled);
+  inputRef.current = inputEnabled;
+  const canvasRefState = useRef(canvas);
+  canvasRefState.current = canvas;
+  const puzzleRef = useRef(puzzle);
+  puzzleRef.current = puzzle;
+
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [trayCategory, setTrayCategory] = useState("all");
+  const [customWord, setCustomWord] = useState("");
+
+  // Gesture state
+  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  const pinch = useRef<{ dist: number; sx: number; sy: number; scale: number } | null>(null);
+  const pan = useRef<{ id: number; sx: number; sy: number; cx: number; cy: number } | null>(null);
+  const grab = useRef<{ id: number; dx: number; dy: number; throttle: number; moved: number } | null>(null);
+  const gestureType = useRef<"none" | "pan" | "drag" | "pinch">("none");
+  const raf = useRef(0);
+  const lastTap = useRef<{ id: number | null; at: number }>({ id: null, at: 0 });
+  const lastMoveSent = useRef(0);
+
+  const selectedTile = selectedId != null ? tiles[selectedId] : null;
+
+  const fitSheet = useCallback(() => {
+    const c = canvasRefState.current;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const mobile = vw < 768;
+    const padLeft = mobile ? 16 : 300; // desktop side tray
+    const padRight = mobile ? 16 : 70;
+    const padTop = mobile ? 84 : 96;
+    const padBottom = mobile ? (sheetOpen ? 320 : 130) : 130;
+    const scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, Math.min(vw / (c.sheetW + padLeft + padRight), vh / (c.sheetH + padTop + padBottom))));
+    const targetX = padLeft + (vw - padLeft - padRight - c.sheetW * scale) / 2;
+    const targetY = padTop + (vh - padTop - padBottom - c.sheetH * scale) / 2;
+    setCamera({ x: targetX, y: targetY, scale });
+  }, [setCamera, sheetOpen]);
+
+  // Initial fit + refit on reset / sheet resize
+  const fittedFor = useRef("");
+  useEffect(() => {
+    const key = `${canvas.sheetW}x${canvas.sheetH}:${puzzle.image}`;
+    if (fittedFor.current !== key) {
+      fittedFor.current = key;
+      fitSheet();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canvas.sheetW, canvas.sheetH, puzzle.image]);
+
+  useEffect(() => {
+    if (resetSignal > 0) {
+      fittedFor.current = "";
+      setSelectedId(null);
+      fitSheet();
+      schedule();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resetSignal]);
+
+  useEffect(() => {
+    fitSheet();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sheetOpen]);
+
+  const screenToWorld = useCallback((sx: number, sy: number) => {
+    const { x, y, scale } = cameraRef.current;
+    return { x: (sx - x) / scale, y: (sy - y) / scale };
+  }, [cameraRef]);
+
+  // ------------------------------------------------------------- schedule
+  const schedule = useCallback(() => {
+    if (raf.current) return;
+    raf.current = requestAnimationFrame(() => {
+      raf.current = 0;
+      draw();
+    });
+  }, []);
+  const drawRef = useRef<() => void>(() => {});
+  drawRef.current = () => draw();
+
+  // Redraw on any relevant state change (dirty rendering — no continuous loop).
+  useEffect(() => { schedule(); }, [tiles, cursors, selectedId, schedule]);
+
+  // ------------------------------------------------------------- canvas setup
+  useEffect(() => {
+    const canvasEl = canvasRef.current;
+    if (!canvasEl) return;
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvasEl.width = Math.round(canvasEl.clientWidth * dpr);
+      canvasEl.height = Math.round(canvasEl.clientHeight * dpr);
+      schedule();
+    };
+    resize();
+    const observer = new ResizeObserver(resize);
+    observer.observe(canvasEl);
+    window.addEventListener("resize", resize);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", resize);
+      if (raf.current) cancelAnimationFrame(raf.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Test/debug hook
+  useEffect(() => {
+    (window as unknown as { __ptCanvasCamera?: unknown }).__ptCanvasCamera = cameraRef;
+    return () => { delete (window as unknown as { __ptCanvasCamera?: unknown }).__ptCanvasCamera; };
+  }, [cameraRef]);
+
+  // ------------------------------------------------------------- keyboard
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return;
+      const mod = e.ctrlKey || e.metaKey;
+      if (mod && e.key.toLowerCase() === "z") {
+        e.preventDefault();
+        store.sendCanvas("undo");
+        schedule();
+      } else if (mod && e.key.toLowerCase() === "d") {
+        if (selectedTile) {
+          e.preventDefault();
+          store.sendCanvas("duplicate", { id: selectedTile.id });
+        }
+      } else if (e.key === "f" || e.key === "F") {
+        if (selectedTile) store.sendCanvas("flip", { id: selectedTile.id });
+      } else if (e.key === "Delete" || e.key === "Backspace") {
+        if (selectedTile) {
+          e.preventDefault();
+          store.sendCanvas("delete", { id: selectedTile.id });
+          setSelectedId(null);
+        }
+      } else if (e.key === "Escape") {
+        setSelectedId(null);
+      } else if (e.key === "+" || e.key === "=") {
+        zoomBy(1.25);
+      } else if (e.key === "-" || e.key === "_") {
+        zoomBy(0.8);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTile, zoomBy, schedule]);
+
+  // ------------------------------------------------------------- draw
+  function draw() {
+    const el = canvasRef.current;
+    const ctx = el?.getContext("2d");
+    if (!el || !ctx) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = el.clientWidth;
+    const h = el.clientHeight;
+    if (!w || !h) return;
+    const { x: cx, y: cy, scale } = cameraRef.current;
+    const c = canvasRefState.current;
+    const list = Object.values(tilesRef.current);
+    const playersById = new Map(playersRef.current.map((p) => [p.id, p]));
+    const now = Date.now();
+    const you = youRef.current;
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // Desk — plain, no decorative dots (requirement: fără puncte decorative)
+    ctx.fillStyle = DESK_BG;
+    ctx.fillRect(0, 0, w, h);
+
+    // The white sheet
+    const sx = cx;
+    const sy = cy;
+    const sw = c.sheetW * scale;
+    const sh = c.sheetH * scale;
+    ctx.save();
+    ctx.shadowColor = "rgba(15,23,42,0.22)";
+    ctx.shadowBlur = 26 * scale;
+    ctx.shadowOffsetY = 10 * scale;
+    ctx.fillStyle = SHEET_BG;
+    roundRectPath(ctx, sx, sy, sw, sh, 18 * scale);
+    ctx.fill();
+    ctx.restore();
+    ctx.strokeStyle = "rgba(15,23,42,0.09)";
+    ctx.lineWidth = 1.5;
+    roundRectPath(ctx, sx, sy, sw, sh, 18 * scale);
+    ctx.stroke();
+
+    // Tiles (selected / claimed drawn last)
+    const sorted = [...list].sort((a, b) => {
+      const sa = (a.id === selectedId ? 2 : 0) + (a.heldBy === you ? 1 : 0);
+      const sb = (b.id === selectedId ? 2 : 0) + (b.heldBy === you ? 1 : 0);
+      return sa - sb || a.id - b.id;
+    });
+    for (const tile of sorted) {
+      const x = cx + tile.x * scale;
+      const y = cy + tile.y * scale;
+      paintTile(ctx, tile, x, y, tile.w * scale, tile.h * scale, { selected: tile.id === selectedId, shadow: true });
+      const claimOwner = tile.heldBy ? playersById.get(tile.heldBy) : null;
+      if (claimOwner && tile.heldBy !== you) {
+        ctx.save();
+        ctx.strokeStyle = claimOwner.color;
+        ctx.lineWidth = 3;
+        roundRectPath(ctx, x - 4, y - 4, tile.w * scale + 8, tile.h * scale + 8, 18);
+        ctx.stroke();
+        ctx.font = "700 11px Inter, system-ui, sans-serif";
+        const label = `${claimOwner.name}`;
+        const tw = ctx.measureText(label).width + 12;
+        ctx.fillStyle = claimOwner.color;
+        ctx.beginPath();
+        ctx.roundRect(x + 2, y - 24, tw, 19, 9);
+        ctx.fill();
+        ctx.fillStyle = "#fff";
+        ctx.textBaseline = "middle";
+        ctx.fillText(label, x + 8, y - 14.5);
+        ctx.restore();
+      }
+    }
+
+    // Remote cursors
+    for (const [id, cur] of Object.entries(cursorsRef.current)) {
+      if (id === you || now - cur.at > 4000) continue;
+      const player = playersById.get(id);
+      if (!player) continue;
+      const px = cur.x * scale + cx;
+      const py = cur.y * scale + cy;
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(px, py);
+      ctx.lineTo(px + 13, py + 10);
+      ctx.lineTo(px + 6.5, py + 9.5);
+      ctx.lineTo(px + 8, py + 17);
+      ctx.lineTo(px + 3, py + 12);
+      ctx.lineTo(px - 1, py + 15);
+      ctx.closePath();
+      ctx.fillStyle = player.color;
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 1.4;
+      ctx.stroke();
+      ctx.fill();
+      ctx.font = "600 11px Inter, system-ui, sans-serif";
+      const label = `${player.name} 👆`;
+      const tw = ctx.measureText(label).width;
+      ctx.fillStyle = player.color;
+      ctx.beginPath();
+      ctx.roundRect(px + 14, py + 16, tw + 14, 20, 10);
+      ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.textBaseline = "middle";
+      ctx.fillText(label, px + 21, py + 26.5);
+      ctx.restore();
+    }
+  }
+
+  // ------------------------------------------------------------- hit testing
+  function pickTile(wx: number, wy: number, margin = 0): CanvasTile | null {
+    const list = Object.values(tilesRef.current);
+    let best: CanvasTile | null = null;
+    for (const t of list) {
+      if (t.heldBy && t.heldBy !== youRef.current) continue;
+      if (wx >= t.x - margin && wx <= t.x + t.w + margin && wy >= t.y - margin && wy <= t.y + t.h + margin) {
+        best = t; // last matching wins (sorted by id ~ insertion order)
+      }
+    }
+    return best;
+  }
+
+  const posFromEvent = (e: React.PointerEvent) => {
+    const rect = canvasRef.current!.getBoundingClientRect();
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  };
+
+  function onPointerDown(e: React.PointerEvent<HTMLCanvasElement>) {
+    const el = canvasRef.current;
+    if (!el) return;
+    el.setPointerCapture(e.pointerId);
+    const pos = posFromEvent(e);
+    pointers.current.set(e.pointerId, pos);
+    if (e.pointerType === "touch" && pointers.current.size === 2) {
+      if (grab.current) {
+        const t = tilesRef.current[grab.current.id];
+        if (t) store.sendCanvas("move", { id: t.id, x: t.x, y: t.y, drag: false });
+        grab.current = null;
+      }
+      const pts = [...pointers.current.values()];
+      pinch.current = { dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y), sx: (pts[0].x + pts[1].x) / 2, sy: (pts[0].y + pts[1].y) / 2, scale: cameraRef.current.scale };
+      gestureType.current = "pinch";
+      pan.current = null;
+      schedule();
+      return;
+    }
+    const world = screenToWorld(pos.x, pos.y);
+    const hit = inputRef.current ? pickTile(world.x, world.y, e.pointerType === "touch" ? 12 : 0) : null;
+    if (hit) {
+      gestureType.current = "drag";
+      grab.current = { id: hit.id, dx: world.x - hit.x, dy: world.y - hit.y, throttle: performance.now(), moved: 0 };
+      setSelectedId(hit.id);
+      store.sendCanvas("move", { id: hit.id, x: hit.x, y: hit.y, drag: true });
+    } else {
+      gestureType.current = "pan";
+      pan.current = { id: e.pointerId, sx: pos.x, sy: pos.y, cx: cameraRef.current.x, cy: cameraRef.current.y };
+      setSelectedId(null);
+    }
+    schedule();
+  }
+
+  function onPointerMove(e: React.PointerEvent<HTMLCanvasElement>) {
+    if (!pointers.current.has(e.pointerId)) return;
+    const pos = posFromEvent(e);
+    pointers.current.set(e.pointerId, pos);
+
+    if (gestureType.current === "drag" && grab.current) {
+      const world = screenToWorld(pos.x, pos.y);
+      const tile = tilesRef.current[grab.current.id];
+      if (tile) {
+        tile.x = world.x - grab.current.dx;
+        tile.y = world.y - grab.current.dy;
+        grab.current.moved += 1;
+        const now = performance.now();
+        if (now - grab.current.throttle >= 50) {
+          grab.current.throttle = now;
+          store.sendCanvas("move", { id: tile.id, x: tile.x, y: tile.y, drag: true });
+        }
+      }
+      schedule();
+      return;
+    }
+    if (gestureType.current === "pan" && pan.current && e.pointerId === pan.current.id) {
+      cameraRef.current.x = pan.current.cx + (pos.x - pan.current.sx);
+      cameraRef.current.y = pan.current.cy + (pos.y - pan.current.sy);
+      setCamera({ ...cameraRef.current });
+      schedule();
+      return;
+    }
+    if (gestureType.current === "pinch" && pinch.current && pointers.current.size >= 2) {
+      const pts = [...pointers.current.values()];
+      const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      if (pinch.current.dist > 0) {
+        const scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, pinch.current.scale * (dist / pinch.current.dist)));
+        const k = scale / cameraRef.current.scale;
+        cameraRef.current.scale = scale;
+        cameraRef.current.x = pinch.current.sx - (pinch.current.sx - cameraRef.current.x) * k;
+        cameraRef.current.y = pinch.current.sy - (pinch.current.sy - cameraRef.current.y) * k;
+        setCamera({ ...cameraRef.current });
+        schedule();
+      }
+      return;
+    }
+    const now = performance.now();
+    if (now - lastMoveSent.current > 40) {
+      lastMoveSent.current = now;
+      const world = screenToWorld(pos.x, pos.y);
+      store.sendCursor(world.x, world.y);
+    }
+  }
+
+  function onPointerUp(e: React.PointerEvent<HTMLCanvasElement>) {
+    pointers.current.delete(e.pointerId);
+    if (gestureType.current === "drag" && grab.current) {
+      const tile = tilesRef.current[grab.current.id];
+      const moved = grab.current.moved;
+      grab.current = null;
+      if (tile) {
+        store.sendCanvas("move", { id: tile.id, x: tile.x, y: tile.y, drag: false });
+        // Double-tap (two quick taps on the same tile) flips it.
+        const now = performance.now();
+        if (moved < 6 && lastTap.current.id === tile.id && now - lastTap.current.at < 340) {
+          store.sendCanvas("flip", { id: tile.id });
+          lastTap.current = { id: null, at: 0 };
+        } else {
+          lastTap.current = { id: tile.id, at: now };
+        }
+      }
+    }
+    if (gestureType.current === "pan") pan.current = null;
+    if (gestureType.current === "pinch") pinch.current = null;
+    if (pointers.current.size === 0) gestureType.current = "none";
+    schedule();
+  }
+
+  function onWheel(e: React.WheelEvent<HTMLCanvasElement>) {
+    e.preventDefault();
+    const pos = posFromEvent(e as unknown as React.PointerEvent);
+    zoomAt(pos.x, pos.y, Math.exp(-e.deltaY * 0.0016));
+  }
+
+  // ------------------------------------------------------------- tray actions
+  const viewCenter = () => {
+    const el = canvasRef.current;
+    const vw = el?.clientWidth || window.innerWidth;
+    const vh = el?.clientHeight || window.innerHeight;
+    return screenToWorld(vw / 2, vh / 2);
+  };
+
+  const spawnLetter = (text: string) => {
+    const center = viewCenter();
+    store.sendCanvas("spawn", { text, x: center.x, y: center.y });
+  };
+
+  const spawnWord = (word: string, custom = false) => {
+    const center = viewCenter();
+    store.sendCanvas("spawn", { text: word, x: center.x, y: center.y, custom });
+  };
+
+  const doExport = (kind: "png" | "txt" | "json") => {
+    const tileList = Object.values(tiles);
+    const text = reconstructCanvasText(tileList);
+    const base = `puzzletogether-${(puzzle.name as string || "canvas").replace(/\s+/g, "-").toLowerCase()}`;
+    if (kind === "txt") downloadTextFile(`${base}-text.txt`, text);
+    if (kind === "json") {
+      downloadJsonFile(`${base}.json`, {
+        app: "PuzzleTogether",
+        exportedAt: new Date().toISOString(),
+        mode: canvas.mode,
+        contentLanguage: canvas.contentLanguage,
+        text,
+        tiles: tileList.map((t) => ({ ...t })),
+      });
+    }
+    if (kind === "png") {
+      exportCanvasPng({
+        sheetW: canvas.sheetW,
+        sheetH: canvas.sheetH,
+        tiles: tileList,
+        isLetter,
+        filename: `${base}.png`,
+        drawTile: (ctx, tile, x, y, w, h) => paintTile(ctx, tile, x, y, w, h, { shadow: true }),
+      });
+    }
+  };
+
+  // ------------------------------------------------------------- tray data
+  const alphabet = canvas.contentLanguage === "ro" ? "ABCDEFGHIJKLMNOPQRSTUVWXYZĂÂÎȘȚ" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const inventory = canvas.inventory; // null = sandbox
+  const remainingOf = (text: string) => (inventory ? Math.max(0, inventory[text] ?? 0) : Infinity);
+
+  const packWords = useMemo(() => {
+    if (isLetter) return [];
+    const source = puzzle.sentencePack || [];
+    return source;
+  }, [isLetter, puzzle.sentencePack]);
+
+  const packWordsByCategory = useMemo(() => {
+    const map = new Map<string, { w: string; c: string; n: number }[]>();
+    for (const entry of packWords) {
+      const list = map.get(entry.c) || [];
+      list.push(entry);
+      map.set(entry.c, list);
+    }
+    return map;
+  }, [packWords]);
+
+  const suggestions = useMemo(() => {
+    if (isLetter || !customWord.trim()) return [];
+    const value = customWord.normalize("NFC").trim().toLowerCase();
+    if (value.length < 3) return [];
+    const seen = new Set<string>();
+    const out: string[] = [];
+    for (const entry of packWords) {
+      if (entry.c === "punctuation") continue;
+      const key = entry.w.toLowerCase();
+      if (seen.has(key)) continue;
+      const dist = Math.abs(key.length - value.length) > 2 ? 3 : levenshtein(key, value);
+      if (dist >= 1 && dist <= 2) {
+        seen.add(key);
+        out.push(entry.w);
+        if (out.length >= 3) break;
+      }
+    }
+    return out;
+  }, [isLetter, customWord, packWords]);
+
+  const inPack = !isLetter && customWord.trim() && (packWords.some((e) => e.w.toLowerCase() === customWord.normalize("NFC").trim().toLowerCase()) || remainingOf(customWord.normalize("NFC").trim()) > 0);
+
+  // ------------------------------------------------------------- render
+  const zoomBtn = (factor: number, label: string) => (
+    <button
+      className="flex h-10 w-10 items-center justify-center rounded-xl border border-ink-200 bg-white/95 text-lg font-bold text-ink-700 shadow-card backdrop-blur transition hover:bg-white active:scale-95"
+      onClick={() => zoomBy(factor)}
+      title={label}
+      aria-label={label}
+    >
+      {factor > 1 ? "+" : "−"}
+    </button>
+  );
+
+  const trayContent = isLetter ? (
+    <LetterTray
+      alphabet={alphabet}
+      remainingOf={remainingOf}
+      onSpawn={spawnLetter}
+      disabled={!inputEnabled}
+    />
+  ) : (
+    <SentenceTray
+      categories={packWordsByCategory}
+      selected={trayCategory}
+      onSelectCategory={setTrayCategory}
+      remainingOf={remainingOf}
+      onSpawn={spawnWord}
+      disabled={!inputEnabled}
+      customWord={customWord}
+      setCustomWord={setCustomWord}
+      suggestions={suggestions}
+      inPack={!!inPack}
+    />
+  );
+
+  return (
+    <div className="relative h-full w-full overflow-hidden" style={{ backgroundColor: DESK_BG }}>
+      <canvas
+        ref={canvasRef}
+        className="block h-full w-full touch-none"
+        style={{ touchAction: "none" }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        onWheel={onWheel}
+        onContextMenu={(e) => e.preventDefault()}
+        aria-label={lang === "ro" ? "Foaie de lucru — canvas de litere" : "Work sheet — letter canvas"}
+      />
+
+      {/* Desktop side tray */}
+      {!isMobile && (
+        <aside className="safe-top absolute bottom-20 left-3 top-24 flex w-[264px] flex-col overflow-hidden rounded-2xl border border-ink-200 bg-white/95 shadow-pop backdrop-blur">
+          <div className="border-b border-ink-100 px-4 py-3">
+            <div className="text-[10px] font-bold uppercase tracking-[.2em] text-ink-400">
+              {lang === "ro" ? "Tray de cărți" : "Tile tray"}
+            </div>
+            <div className="mt-0.5 truncate text-sm font-bold text-ink-900">
+              {pick(puzzle.name, lang)}
+              <span className="ml-2 rounded-full bg-ink-100 px-2 py-0.5 text-[10px] font-bold text-ink-500">
+                {canvas.contentLanguage.toUpperCase()}
+              </span>
+            </div>
+          </div>
+          <div className="min-h-0 flex-1 overflow-y-auto p-3">{trayContent}</div>
+        </aside>
+      )}
+
+      {/* Mobile bottom sheet tray */}
+      {isMobile && (
+        <div
+          className={`safe-bottom absolute inset-x-0 bottom-0 z-20 flex flex-col rounded-t-3xl border-t border-ink-200 bg-white/97 shadow-pop backdrop-blur transition-[height] duration-200 ${sheetOpen ? "h-[46vh]" : "h-[92px]"}`}
+        >
+          <button
+            className="flex w-full cursor-pointer flex-col items-center pb-1 pt-2"
+            onClick={() => setSheetOpen((v) => !v)}
+            aria-label={sheetOpen ? (lang === "ro" ? "Rulează tray-ul" : "Collapse tray") : (lang === "ro" ? "Deschide tray-ul" : "Open tray")}
+          >
+            <span className="h-1.5 w-10 rounded-full bg-ink-300" />
+            <span className="mt-1.5 text-[11px] font-bold text-ink-500">
+              {lang === "ro" ? "Tray de cărți" : "Tile tray"} · {canvas.contentLanguage.toUpperCase()} {sheetOpen ? "▾" : "▴"}
+            </span>
+          </button>
+          <div className={`min-h-0 flex-1 overflow-y-auto px-3 pb-2 ${sheetOpen ? "" : "flex items-center"}`}>
+            {trayContent}
+          </div>
+        </div>
+      )}
+
+      {/* Action toolbar (exports + undo) */}
+      <div className="safe-bottom absolute bottom-4 right-3 z-10 flex flex-col items-center gap-2 sm:bottom-6 sm:right-5">
+        <div className="flex flex-col gap-1.5">
+          <button
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-ink-200 bg-white/95 text-sm shadow-card backdrop-blur hover:bg-white disabled:opacity-40"
+            onClick={() => store.sendCanvas("undo")}
+            title={lang === "ro" ? "Anulează ultima acțiune (Ctrl+Z)" : "Undo last action (Ctrl+Z)"}
+            aria-label={lang === "ro" ? "Anulează" : "Undo"}
+          >
+            ↩
+          </button>
+          <button
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-ink-200 bg-white/95 text-sm shadow-card backdrop-blur hover:bg-white"
+            onClick={() => doExport("png")}
+            title={lang === "ro" ? "Exportă compoziția ca PNG" : "Export composition as PNG"}
+            aria-label={lang === "ro" ? "Export PNG" : "Export PNG"}
+          >
+            📷
+          </button>
+          <button
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-ink-200 bg-white/95 text-sm shadow-card backdrop-blur hover:bg-white"
+            onClick={() => doExport("txt")}
+            title={lang === "ro" ? "Exportă textul (UTF-8)" : "Export text (UTF-8)"}
+            aria-label={lang === "ro" ? "Export text" : "Export text"}
+          >
+            📄
+          </button>
+          <button
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-ink-200 bg-white/95 text-sm shadow-card backdrop-blur hover:bg-white"
+            onClick={() => doExport("json")}
+            title={lang === "ro" ? "Exportă JSON" : "Export JSON"}
+            aria-label={lang === "ro" ? "Export JSON" : "Export JSON"}
+          >
+            {"{ }"}
+          </button>
+        </div>
+        <div className="mt-1 flex flex-col gap-1.5">
+          {zoomBtn(1.25, lang === "ro" ? "Mărește" : "Zoom in")}
+          <button
+            className="flex h-8 w-10 items-center justify-center rounded-lg border border-ink-200 bg-white/95 text-[11px] font-bold text-ink-600 shadow-card backdrop-blur"
+            onClick={fitSheet}
+            title={lang === "ro" ? "Asează foaia în vedere" : "Fit the sheet"}
+            aria-label={lang === "ro" ? "Asează foaia" : "Fit sheet"}
+          >
+            {Math.round(camera.scale * 100)}%
+          </button>
+          {zoomBtn(0.8, lang === "ro" ? "Micșorează" : "Zoom out")}
+        </div>
+      </div>
+
+      {/* Selected tile actions */}
+      {selectedTile && (
+        <div className={`absolute left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-2xl border border-ink-200 bg-white/97 p-1.5 shadow-pop backdrop-blur ${isMobile ? (sheetOpen ? "bottom-[calc(46vh+14px)]" : "bottom-[104px]") : "top-16"}`}>
+          <span className="max-w-[110px] truncate px-1.5 text-sm font-bold text-ink-900">{selectedTile.text}</span>
+          <button
+            className="rounded-xl bg-ink-100 px-2.5 py-1.5 text-xs font-bold text-ink-700 hover:bg-ink-200"
+            onClick={() => store.sendCanvas("flip", { id: selectedTile.id })}
+            title={lang === "ro" ? "Răstoarnă (F)" : "Flip (F)"}
+            aria-label={lang === "ro" ? "Răstoarnă cărția" : "Flip tile"}
+          >
+            ↻
+          </button>
+          <button
+            className="rounded-xl bg-ink-100 px-2.5 py-1.5 text-xs font-bold text-ink-700 hover:bg-ink-200"
+            onClick={() => store.sendCanvas("duplicate", { id: selectedTile.id })}
+            title={lang === "ro" ? "Dublează (Ctrl+D)" : "Duplicate (Ctrl+D)"}
+            aria-label={lang === "ro" ? "Dublează cărția" : "Duplicate tile"}
+          >
+            ⧉
+          </button>
+          <button
+            className="rounded-xl bg-rose-50 px-2.5 py-1.5 text-xs font-bold text-rose-600 hover:bg-rose-100"
+            onClick={() => {
+              store.sendCanvas("delete", { id: selectedTile.id });
+              setSelectedId(null);
+            }}
+            title={lang === "ro" ? "Șterge (Delete)" : "Delete (Delete)"}
+            aria-label={lang === "ro" ? "Șterge cărția" : "Delete tile"}
+          >
+            🗑
+          </button>
+          <button
+            className="rounded-xl bg-ink-100 px-2 py-1.5 text-xs font-bold text-ink-500 hover:bg-ink-200"
+            onClick={() => setSelectedId(null)}
+            aria-label={lang === "ro" ? "Deselectează" : "Deselect"}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Letter tray
+// ---------------------------------------------------------------------------
+
+function LetterTray({ alphabet, remainingOf, onSpawn, disabled }: { alphabet: string; remainingOf: (t: string) => number; onSpawn: (t: string) => void; disabled: boolean }) {
+  const letters = [...alphabet];
+  return (
+    <div className="space-y-4">
+      <TraySection label={
+        <span><span className="mr-1">🔡</span><TrayLabel ro="Litere" en="Letters" /></span>
+      }>
+        <div className="grid grid-cols-6 gap-1.5">
+          {letters.map((letter) => (
+            <TrayButton key={letter} label={letter} count={remainingOf(letter)} onClick={() => onSpawn(letter)} disabled={disabled} wide={false} />
+          ))}
+        </div>
+      </TraySection>
+      <TraySection label={<span><span className="mr-1">✨</span><TrayLabel ro="Wildcard" en="Wildcard" /></span>}>
+        <div className="grid grid-cols-6 gap-1.5">
+          <TrayButton label="?" count={remainingOf("?")} onClick={() => onSpawn("?")} disabled={disabled} wildcard />
+        </div>
+      </TraySection>
+      <TraySection label={<span><span className="mr-1">❗</span><TrayLabel ro="Punctuație" en="Punctuation" /></span>}>
+        <div className="grid grid-cols-6 gap-1.5">
+          {LETTER_PUNCT.map((p) => (
+            <TrayButton key={p} label={p} count={remainingOf(p)} onClick={() => onSpawn(p)} disabled={disabled} punct />
+          ))}
+        </div>
+      </TraySection>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Sentence tray (word tiles grouped by grammatical category + custom word)
+// ---------------------------------------------------------------------------
+
+function SentenceTray({
+  categories,
+  selected,
+  onSelectCategory,
+  remainingOf,
+  onSpawn,
+  disabled,
+  customWord,
+  setCustomWord,
+  suggestions,
+  inPack,
+}: {
+  categories: Map<string, { w: string; c: string; n: number }[]>;
+  selected: string;
+  onSelectCategory: (c: string) => void;
+  remainingOf: (t: string) => number;
+  onSpawn: (w: string, custom?: boolean) => void;
+  disabled: boolean;
+  customWord: string;
+  setCustomWord: (v: string) => void;
+  suggestions: string[];
+  inPack: boolean;
+}) {
+  const { lang } = useLang();
+  const shown: [string, { w: string; c: string; n: number }[]][] = selected === "all"
+    ? [...categories.entries()].sort((a, b) => CATEGORY_ORDER.indexOf(a[0] as (typeof CATEGORY_ORDER)[number]) - CATEGORY_ORDER.indexOf(b[0] as (typeof CATEGORY_ORDER)[number]))
+    : [[selected, categories.get(selected) || []]];
+  return (
+    <div className="space-y-4">
+      {/* Custom word */}
+      <TraySection label={<span><span className="mr-1">✏️</span><TrayLabel ro="Cuvânt personal" en="Custom word" /></span>}>
+        <form
+          className="flex gap-1.5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const word = customWord.trim();
+            if (!word || disabled) return;
+            onSpawn(word.normalize("NFC"), !inPack);
+            setCustomWord("");
+          }}
+        >
+          <input
+            className="min-w-0 flex-1 rounded-xl border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 outline-none focus:border-brand-500"
+            value={customWord}
+            maxLength={40}
+            onChange={(e) => setCustomWord(e.target.value)}
+            placeholder={lang === "ro" ? "ex. București" : "e.g. PuzzleTogether"}
+            aria-label={lang === "ro" ? "Cuvânt personal" : "Custom word"}
+          />
+          <button type="submit" className="btn-primary btn-sm !px-3" disabled={disabled || !customWord.trim()}>+</button>
+        </form>
+        <div className="mt-1.5 min-h-[18px] text-[11px] leading-tight">
+          {suggestions.length > 0 ? (
+            <span className="text-ink-500">
+              {lang === "ro" ? "Poate vrei:" : "Did you mean:"}{" "}
+              {suggestions.map((s) => (
+                <button key={s} className="mx-0.5 rounded-md border border-ink-200 bg-white px-1.5 py-0.5 font-semibold text-ink-700 hover:bg-ink-50" onClick={() => setCustomWord(s)}>
+                  {s}
+                </button>
+              ))}
+            </span>
+          ) : customWord.trim() && !inPack ? (
+            <span className="text-amber-600">
+              {lang === "ro" ? "Nu e în pachet — rămâne cuvânt personal (soft spellcheck)." : "Not in the pack — stays a custom word (soft spellcheck)."}</span>
+          ) : null}
+        </div>
+      </TraySection>
+
+      {/* Category chips */}
+      <div className="flex flex-wrap gap-1">
+        {["all", ...CATEGORY_ORDER].map((cat) => (
+          <button
+            key={cat}
+            onClick={() => onSelectCategory(cat)}
+            className={`rounded-full border px-2.5 py-1 text-[11px] font-bold transition ${selected === cat ? "border-brand-600 bg-brand-600 text-white" : "border-ink-200 bg-white text-ink-600 hover:bg-ink-50"}`}
+          >
+            {pick(CATEGORY_NAMES[cat] || { ro: cat, en: cat }, lang)}
+          </button>
+        ))}
+      </div>
+
+      {shown.map(([cat, words]) => (
+        <TraySection key={cat} label={<TrayLabel ro={pick(CATEGORY_NAMES[cat] || { ro: cat, en: cat }, lang)} en={pick(CATEGORY_NAMES[cat] || { ro: cat, en: cat }, "en")} />}>
+          <div className={cat === "punctuation" ? "grid grid-cols-8 gap-1.5" : "grid grid-cols-2 gap-1.5"}>
+            {words.map((entry) => (
+              <TrayButton
+                key={`${cat}-${entry.w}`}
+                label={entry.w}
+                count={remainingOf(entry.w)}
+                onClick={() => onSpawn(entry.w, false)}
+                disabled={disabled}
+                wide={entry.c !== "punctuation"}
+                punct={entry.c === "punctuation"}
+              />
+            ))}
+          </div>
+        </TraySection>
+      ))}
+    </div>
+  );
+}
+
+function TraySection({ label, children }: { label: React.ReactNode; children: React.ReactNode }) {
+  const { lang } = useLang();
+  return (
+    <section>
+      <div className="mb-1.5 text-[10px] font-bold uppercase tracking-[.18em] text-ink-400">{label}</div>
+      {children}
+    </section>
+  );
+}
+
+function TrayLabel({ ro, en }: { ro: string; en: string }) {
+  const { lang } = useLang();
+  return <>{lang === "ro" ? ro : en}</>;
+}
+
+function TrayButton({ label, count, onClick, disabled, wide = false, punct = false, wildcard = false }: { label: string; count: number; onClick: () => void; disabled: boolean; wide?: boolean; punct?: boolean; wildcard?: boolean }) {
+  const { lang } = useLang();
+  const depleted = count === 0;
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled || depleted}
+      className={`relative flex h-10 select-none items-center justify-center rounded-lg border font-bold transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-35 ${wide ? "text-sm" : "text-base"} ${
+        wildcard
+          ? "border-indigo-300 bg-indigo-600 text-white hover:bg-indigo-500"
+          : punct
+            ? "border-slate-300 bg-slate-700 text-white hover:bg-slate-600"
+            : "border-ink-200 bg-amber-50/80 text-ink-900 hover:bg-amber-100"
+      }`}
+      title={depleted ? (lang === "ro" ? "Stoc epuizat" : "Out of stock") : undefined}
+      aria-label={`${label} (${count === Infinity ? lang === "ro" ? "nelimitat" : "unlimited" : count})`}
+    >
+      {label}
+      <span className={`absolute -right-1 -top-1 min-w-[16px] rounded-full px-1 text-center text-[9px] font-bold leading-[16px] ${count === Infinity ? "bg-emerald-500 text-white" : depleted ? "bg-ink-300 text-white" : "bg-ink-900 text-white"}`}>
+        {count === Infinity ? "∞" : count}
+      </span>
+    </button>
+  );
+}

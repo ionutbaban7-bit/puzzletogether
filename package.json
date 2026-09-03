@@ -12,9 +12,14 @@
     "start": "cross-env NODE_ENV=production node src/server.js",
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
-    "test:protocol": "node scripts/sim-test.mjs && node scripts/coaching-test.mjs",
+    "test:protocol": "node scripts/sim-test.mjs && node scripts/coaching-test.mjs && node scripts/canvas-protocol-test.mjs && node scripts/sentence-protocol-test.mjs",
+    "test:protocol:canvas": "node scripts/canvas-protocol-test.mjs && node scripts/sentence-protocol-test.mjs",
     "test:load": "node scripts/load-test.mjs",
-    "test:e2e": "node scripts/browser-test.mjs && node scripts/coaching-browser-test.mjs"
+    "test:e2e": "node scripts/browser-test.mjs && node scripts/coaching-browser-test.mjs && node scripts/canvas-browser-test.mjs",
+    "test:e2e:canvas": "node scripts/canvas-browser-test.mjs",
+    "catalog:audit": "node scripts/audit-catalog.mjs",
+    "catalog:pipeline": "node scripts/catalog-pipeline.mjs",
+    "catalog:report": "node scripts/catalog-report.mjs"
   },
   "dependencies": {
     "express": "^5.2.1",

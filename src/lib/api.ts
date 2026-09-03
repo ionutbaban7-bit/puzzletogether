@@ -13,14 +13,14 @@ async function post<T>(url: string, body: unknown): Promise<T> {
 
 export const api = {
   fetchCatalog(): Promise<CatalogData> { return fetch("/api/puzzles").then((response) => response.json()); },
-  createRoom(puzzleId: string, difficulty: string, name: string, options: { sessionName?: string; role?: "host" | "spectator" } = {}) {
+  createRoom(puzzleId: string, difficulty: string, name: string, options: { sessionName?: string; role?: "host" | "spectator"; contentLanguage?: "ro" | "en" } = {}) {
     return post<{ room: RoomView; playerId: string }>("/api/rooms", { puzzleId, difficulty, name, ...options });
   },
   joinRoom(ref: string, name: string, pid?: string, code?: string) {
     return post<{ room: RoomView; playerId: string; returning?: boolean }>(`/api/rooms/${encodeURIComponent(ref)}/join`, { name, pid, code });
   },
-  changePuzzle(ref: string, puzzleId: string, difficulty: string, pid: string) {
-    return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/puzzle`, { puzzleId, difficulty, pid });
+  changePuzzle(ref: string, puzzleId: string, difficulty: string, pid: string, contentLanguage?: "ro" | "en") {
+    return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/puzzle`, { puzzleId, difficulty, pid, contentLanguage });
   },
   takeover(ref: string, pid: string) { return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/takeover`, { pid }); },
   getRoom(ref: string) {

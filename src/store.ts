@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { RoomSocket } from "./lib/ws";
-import type { ActionItem, ChatEntry, CursorView, JoinStatus, Piece, PlayerView, PuzzleView, RatingView, RoomView, ScoreView, WorkshopInsights } from "./types";
+import type { ActionItem, CanvasState, CanvasTile, ChatEntry, CursorView, JoinStatus, Piece, PlayerView, PuzzleView, RatingView, RoomView, ScoreView, WorkshopInsights } from "./types";
 
 export interface StoreState {
   status: JoinStatus;
@@ -17,18 +17,21 @@ export interface StoreState {
   players: PlayerView[];
   pieces: Record<number, Piece>;
   cursors: Record<string, CursorView>;
-  completion: { players: string[]; scores: ScoreView[] } | null;
+  completion: { players: string[]; scores: ScoreView[]; canvasText?: string; canvasTiles?: CanvasTile[] } | null;
   ratings: Record<string, RatingView>;
   scores: ScoreView[];
   chat: ChatEntry[];
   facilitatorNotes: string;
   epoch: number;
+  canvas: CanvasState | null;
+  canvasTiles: Record<number, CanvasTile>;
 }
 
 const initialState: StoreState = {
   status: "idle", connected: false, reconnectAttempt: 0, reconnectExhausted: false,
   you: null, room: null, puzzle: null, players: [], pieces: {}, cursors: {},
   completion: null, ratings: {}, scores: [], chat: [], facilitatorNotes: "", epoch: 0,
+  canvas: null, canvasTiles: {},
 };
 
 let state: StoreState = initialState;
@@ -49,6 +52,25 @@ function indexPieces(pieces: Piece[]) {
   return Object.fromEntries(pieces.map((piece) => [piece.id, piece]));
 }
 
+function indexTiles(tiles: CanvasTile[]) {
+  return Object.fromEntries(tiles.map((tile) => [tile.id, tile]));
+}
+
+function canvasFromMessage(msg: Record<string, unknown>): CanvasState | null {
+  const canvas = msg.canvas as (CanvasState & { tiles: CanvasTile[] }) | undefined;
+  if (!canvas) return null;
+  return {
+    mode: canvas.mode,
+    contentLanguage: canvas.contentLanguage,
+    sheetW: canvas.sheetW,
+    sheetH: canvas.sheetH,
+    tileW: canvas.tileW,
+    tileH: canvas.tileH,
+    wordGap: canvas.wordGap,
+    inventory: canvas.inventory,
+  };
+}
+
 function handleMessage(msg: { t: string; [key: string]: unknown }) {
   switch (msg.t) {
     case "init": {
@@ -58,6 +80,7 @@ function handleMessage(msg: { t: string; [key: string]: unknown }) {
       const now = Date.now();
       const cursors: Record<string, CursorView> = {};
       for (const cursor of (msg.cursors as { id: string; x: number; y: number }[]) || []) cursors[cursor.id] = { x: cursor.x, y: cursor.y, at: now };
+      const canvas = canvasFromMessage(msg);
       set({
         status: "joined", connected: true, reconnectAttempt: 0, reconnectExhausted: false,
         you: msg.you as string, room, puzzle: msg.puzzle as PuzzleView, players,
@@ -65,10 +88,29 @@ function handleMessage(msg: { t: string; [key: string]: unknown }) {
         scores: (msg.scores as ScoreView[]) || [], chat: (msg.chat as ChatEntry[]) || [], cursors,
         facilitatorNotes: ((msg.facilitator as { notes?: string } | undefined)?.notes || ""), protocolError: undefined,
         completion: room.completed ? { players: players.map((player) => player.name), scores: (msg.scores as ScoreView[]) || [] } : null,
+        canvas, canvasTiles: indexTiles(((msg.canvas as { tiles?: CanvasTile[] } | undefined)?.tiles) || []),
       });
       break;
     }
     case "players": set({ players: (msg.list as PlayerView[]) || [] }); break;
+    case "canvas": {
+      const list = (msg.list as CanvasTile[]) || [];
+      const removed = (msg.removed as number[]) || [];
+      const tiles = { ...state.canvasTiles };
+      for (const tile of list) tiles[tile.id] = tile;
+      for (const id of removed) delete tiles[id];
+      const patch: Partial<StoreState> = { canvasTiles: tiles };
+      if (msg.inventory !== undefined) {
+        patch.canvas = state.canvas ? { ...state.canvas, inventory: msg.inventory as Record<string, number> } : state.canvas;
+      }
+      set(patch);
+      break;
+    }
+    case "canvasRejected": {
+      const tile = msg.tile as CanvasTile | undefined;
+      if (tile) set({ canvasTiles: { ...state.canvasTiles, [tile.id]: tile } });
+      break;
+    }
     case "pieces": {
       const list = (msg.list as Piece[]) || [];
       if (!list.length) break;
@@ -92,7 +134,16 @@ function handleMessage(msg: { t: string; [key: string]: unknown }) {
     }
     case "completion": {
       const scores = (msg.scores as ScoreView[]) || [];
-      set({ room: msg.room as RoomView, completion: { players: (msg.players as string[]) || [], scores }, scores });
+      set({
+        room: msg.room as RoomView,
+        completion: {
+          players: (msg.players as string[]) || [],
+          scores,
+          canvasText: (msg.canvasText as string) || undefined,
+          canvasTiles: (msg.canvasTiles as CanvasTile[]) || undefined,
+        },
+        scores,
+      });
       break;
     }
     case "scores": set({ scores: (msg.list as ScoreView[]) || [] }); break;
@@ -106,11 +157,21 @@ function handleMessage(msg: { t: string; [key: string]: unknown }) {
     case "facilitator": set({ facilitatorNotes: String(msg.notes || "") }); break;
     case "chat": set({ chat: [...state.chat.slice(-49), msg.entry as ChatEntry] }); break;
     case "reset": {
-      set({ room: msg.room as RoomView, puzzle: (msg.puzzle as PuzzleView) || state.puzzle, pieces: indexPieces((msg.pieces as Piece[]) || []), completion: null, ratings: {}, scores: [], epoch: state.epoch + 1 });
+      const canvas = canvasFromMessage(msg) || null;
+      set({
+        room: msg.room as RoomView, puzzle: (msg.puzzle as PuzzleView) || state.puzzle,
+        pieces: indexPieces((msg.pieces as Piece[]) || []), completion: null, ratings: {}, scores: [],
+        epoch: state.epoch + 1, canvas, canvasTiles: indexTiles(((msg.canvas as { tiles?: CanvasTile[] } | undefined)?.tiles) || []),
+      });
       break;
     }
     case "puzzle": {
-      set({ room: msg.room as RoomView, puzzle: msg.puzzle as PuzzleView, pieces: indexPieces((msg.pieces as Piece[]) || []), completion: null, ratings: {}, scores: [], epoch: state.epoch + 1 });
+      const canvas = canvasFromMessage(msg);
+      set({
+        room: msg.room as RoomView, puzzle: msg.puzzle as PuzzleView,
+        pieces: indexPieces((msg.pieces as Piece[]) || []), completion: null, ratings: {}, scores: [],
+        epoch: state.epoch + 1, canvas, canvasTiles: indexTiles(((msg.canvas as { tiles?: CanvasTile[] } | undefined)?.tiles) || []),
+      });
       break;
     }
     case "error": set({ protocolError: String(msg.message || "Realtime action failed.") }); break;
@@ -129,6 +190,10 @@ export const store = {
   sendPiece(id: number, x: number, y: number, drag: boolean) {
     if (!state.connected) return;
     socket.send({ t: "piece", id, x: Math.round(x), y: Math.round(y), drag });
+  },
+  sendCanvas(op: string, data: Record<string, unknown> = {}) {
+    if (!state.connected) return;
+    socket.send({ t: "canvas", op, ...data });
   },
   sendCursor(x: number, y: number) { if (state.connected) socket.send({ t: "cursor", x: Math.round(x), y: Math.round(y) }); },
   sendRating(answers: Record<string, "A" | "B">, done: boolean) { if (state.connected) socket.send({ t: "rating", answers, done }); },

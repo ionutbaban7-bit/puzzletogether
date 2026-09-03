@@ -1,9 +1,14 @@
 {
   "categories": [
     {
-      "id": "words",
-      "name": "Letter-Tile Jigsaws",
-      "icon": "🔤"
+      "id": "letter-canvas",
+      "name": "Letter Canvas",
+      "icon": "✍️"
+    },
+    {
+      "id": "sentence-canvas",
+      "name": "Sentence Canvas",
+      "icon": "💬"
     },
     {
       "id": "paintings",
@@ -53,276 +58,953 @@
       "pieces": 144
     }
   ],
+  "canvasModes": [
+    {
+      "id": "quick",
+      "name": "Quick",
+      "tiles": 96
+    },
+    {
+      "id": "standard",
+      "name": "Standard",
+      "tiles": 180
+    },
+    {
+      "id": "extended",
+      "name": "Extended",
+      "tiles": 260
+    },
+    {
+      "id": "sandbox",
+      "name": "Sandbox",
+      "tiles": 0
+    }
+  ],
   "puzzles": [
     {
       "id": "agile-words",
-      "category": "words",
-      "name": "Agile Values Letter Jigsaw",
+      "category": "letter-canvas",
+      "name": "Agile Values Letter Canvas",
       "image": "/images/words-agile.svg",
       "credit": "PuzzleTogether B2B Studio",
-      "license": "Original SVG",
-      "source": "PuzzleTogether"
+      "license": "All rights reserved — in-house work",
+      "source": "PuzzleTogether (in-house)",
+      "nameRo": "Foaie de litere — Valori Agile",
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de litere „Valori Agile”",
+        "en": "Original SVG cover for the Agile Values letter canvas"
+      },
+      "attribution": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "changesMade": "none",
+      "originalFilename": "words-agile.svg",
+      "checksum": "sha256:247bcecd17bae9303f84f7b630bc24463428acbf953973d2cde5e849bdec8f4e",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
     },
     {
       "id": "innovation-grid",
-      "category": "words",
-      "name": "Innovation Letter Mosaic",
+      "category": "letter-canvas",
+      "name": "Innovation Letter Canvas",
       "image": "/images/words-innovation.svg",
       "credit": "PuzzleTogether B2B Studio",
-      "license": "Original SVG",
-      "source": "PuzzleTogether"
+      "license": "All rights reserved — in-house work",
+      "source": "PuzzleTogether (in-house)",
+      "nameRo": "Foaie de litere — Inovație",
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de litere „Inovație”",
+        "en": "Original SVG cover for the Innovation letter canvas"
+      },
+      "attribution": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "changesMade": "none",
+      "originalFilename": "words-innovation.svg",
+      "checksum": "sha256:aa68d4f60e4e5dbff3113883d781b7fdf5c906591b188ce2bc5f2513f25ecba2",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
     },
     {
       "id": "letter-anagrams",
-      "category": "words",
-      "name": "Multicolor Letter Anagrams",
+      "category": "letter-canvas",
+      "name": "Multicolor Letter Canvas",
       "image": "/images/words-scrabble.svg",
       "credit": "PuzzleTogether B2B Studio",
-      "license": "Original SVG",
-      "source": "PuzzleTogether"
+      "license": "All rights reserved — in-house work",
+      "source": "PuzzleTogether (in-house)",
+      "nameRo": "Foaie de litere — Multicolor",
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de litere „Multicolor”",
+        "en": "Original SVG cover for the Multicolor letter canvas"
+      },
+      "attribution": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "changesMade": "none",
+      "originalFilename": "words-scrabble.svg",
+      "checksum": "sha256:b35c5360bf3bb0637f58c40fd6f8c64c32a9b9c6ba25bf6bee6350ee39f04966",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
     },
     {
       "id": "team-motto",
-      "category": "words",
-      "name": "Team Values Letter Jigsaw",
+      "category": "letter-canvas",
+      "name": "Team Values Letter Canvas",
       "image": "/images/words-motto.svg",
       "credit": "PuzzleTogether B2B Studio",
-      "license": "Original SVG",
-      "source": "PuzzleTogether"
+      "license": "All rights reserved — in-house work",
+      "source": "PuzzleTogether (in-house)",
+      "nameRo": "Foaie de litere — Deviza Echipii",
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de litere „Deviza Echipii”",
+        "en": "Original SVG cover for the Team Values letter canvas"
+      },
+      "attribution": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "changesMade": "none",
+      "originalFilename": "words-motto.svg",
+      "checksum": "sha256:211a466b04dc7cac0fbf239643ddf11f66cae0fb3ad5c8958148ea8af5863f89",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "id": "sentence-funny-story",
+      "category": "sentence-canvas",
+      "name": "Funny Story Canvas",
+      "image": "/images/sentence-funny-story.svg",
+      "credit": "PuzzleTogether B2B Studio",
+      "license": "All rights reserved — in-house work",
+      "source": "PuzzleTogether (in-house)",
+      "scenario": {
+        "title": {
+          "ro": "Povestea amuzantă",
+          "en": "The funny story"
+        },
+        "situation": {
+          "ro": "Construiți împreună o poveste amuzantă din cărțile cu cuvinte. Cea mai bună replică o citiți cu voce tare.",
+          "en": "Build a funny story together from the word tiles. Read the best line out loud."
+        }
+      },
+      "nameRo": "Foaie de propoziții — Povestea amuzantă",
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de propoziții „Povestea amuzantă”",
+        "en": "Original SVG cover for the Funny Story sentence canvas"
+      },
+      "attribution": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "changesMade": "none",
+      "originalFilename": "sentence-funny-story.svg",
+      "checksum": "sha256:5dc26ca6cd10bd81a1998b5e8bb1d84180466454ea408fcf2cecf1f56326e9ce",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "id": "sentence-travel",
+      "category": "sentence-canvas",
+      "name": "Travel Canvas",
+      "image": "/images/sentence-travel.svg",
+      "credit": "PuzzleTogether B2B Studio",
+      "license": "All rights reserved — in-house work",
+      "source": "PuzzleTogether (in-house)",
+      "scenario": {
+        "title": {
+          "ro": "Călătorie",
+          "en": "Travel"
+        },
+        "situation": {
+          "ro": "Scrieți propoziții despre o călătorie pe care echipa o visează.",
+          "en": "Write sentences about a trip the team dreams about."
+        }
+      },
+      "nameRo": "Foaie de propoziții — Călătorie",
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de propoziții „Călătorie”",
+        "en": "Original SVG cover for the Travel sentence canvas"
+      },
+      "attribution": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "changesMade": "none",
+      "originalFilename": "sentence-travel.svg",
+      "checksum": "sha256:bdf2a77b629a5c54b6555e0b008b6998fe72f4279ad5b2ac28be2e913e4aae9b",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "id": "sentence-nature",
+      "category": "sentence-canvas",
+      "name": "Nature Canvas",
+      "image": "/images/sentence-nature.svg",
+      "credit": "PuzzleTogether B2B Studio",
+      "license": "All rights reserved — in-house work",
+      "source": "PuzzleTogether (in-house)",
+      "scenario": {
+        "title": {
+          "ro": "Natură",
+          "en": "Nature"
+        },
+        "situation": {
+          "ro": "Descrieți un peisaj natural cu propoziții scurte și clare.",
+          "en": "Describe a natural landscape with short, clear sentences."
+        }
+      },
+      "nameRo": "Foaie de propoziții — Natura",
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de propoziții „Natura”",
+        "en": "Original SVG cover for the Nature sentence canvas"
+      },
+      "attribution": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "changesMade": "none",
+      "originalFilename": "sentence-nature.svg",
+      "checksum": "sha256:9e3b1532bcc4568222fb1cfa68203ec3376210662cc8ff0e49c594ed266c958c",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "id": "sentence-future",
+      "category": "sentence-canvas",
+      "name": "Future Canvas",
+      "image": "/images/sentence-future.svg",
+      "credit": "PuzzleTogether B2B Studio",
+      "license": "All rights reserved — in-house work",
+      "source": "PuzzleTogether (in-house)",
+      "scenario": {
+        "title": {
+          "ro": "Viitorul nostru",
+          "en": "Our future"
+        },
+        "situation": {
+          "ro": "Ce va fi diferit peste un an? Cărțișoarele construiesc viitorul echipei.",
+          "en": "What will be different in a year? The tiles build the team's future."
+        }
+      },
+      "nameRo": "Foaie de propoziții — Viitorul",
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de propoziții „Viitorul”",
+        "en": "Original SVG cover for the Future sentence canvas"
+      },
+      "attribution": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "changesMade": "none",
+      "originalFilename": "sentence-future.svg",
+      "checksum": "sha256:eda907af65acdad5cdc7b53872eecc5d929e9bdfa49d7943a5f883b7d2fbb165",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "id": "sentence-positive-message",
+      "category": "sentence-canvas",
+      "name": "Positive Message Canvas",
+      "image": "/images/sentence-positive-message.svg",
+      "credit": "PuzzleTogether B2B Studio",
+      "license": "All rights reserved — in-house work",
+      "source": "PuzzleTogether (in-house)",
+      "scenario": {
+        "title": {
+          "ro": "Mesaj pozitiv",
+          "en": "Positive message"
+        },
+        "situation": {
+          "ro": "Compuneți un mesaj pozitiv pe care echipa îl ține la vedere.",
+          "en": "Compose a positive message the team will keep visible."
+        }
+      },
+      "nameRo": "Foaie de propoziții — Mesaj pozitiv",
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de propoziții „Mesaj pozitiv”",
+        "en": "Original SVG cover for the Positive Message sentence canvas"
+      },
+      "attribution": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "changesMade": "none",
+      "originalFilename": "sentence-positive-message.svg",
+      "checksum": "sha256:5c567e98ab2bea0b79cc9253c3195108d4de83be050f36cf1074ff80ecb21c24",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
     },
     {
       "id": "mona-lisa",
       "category": "paintings",
       "name": "Mona Lisa",
-      "image": "/images/mona-lisa.jpg",
-      "credit": "Leonardo da Vinci",
+      "image": "/images/full/mona-lisa.webp",
+      "credit": "Leonardo da Vinci (1452–1519), public domain",
       "license": "Public domain",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Mona Lisa",
+      "alt": {
+        "ro": "Portretul Mona Lisa de Leonardo da Vinci, pictură din sec. al XVI-lea",
+        "en": "Mona Lisa portrait by Leonardo da Vinci, 16th-century painting"
+      },
+      "attribution": "Leonardo da Vinci (1452–1519), public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Mona Lisa, by Leonardo da Vinci, from C2RMF retouched.jpg",
+      "checksum": "sha256:276868845c54914913c965b208eec75db55c1675489e563852f155c5db58b536",
+      "focalPoint": [
+        0.5,
+        0.42
+      ]
     },
     {
       "id": "starry-night",
       "category": "paintings",
       "name": "Starry Night",
-      "image": "/images/starry-night.jpg",
-      "credit": "Vincent van Gogh",
+      "image": "/images/full/starry-night.webp",
+      "credit": "Vincent van Gogh (1853–1890), public domain",
       "license": "Public domain",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Noaptea înstelată",
+      "alt": {
+        "ro": "Noaptea înstelată, pictură de Vincent van Gogh (1889)",
+        "en": "The Starry Night, painting by Vincent van Gogh (1889)"
+      },
+      "attribution": "Vincent van Gogh (1853–1890), public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Van Gogh - Starry Night - Google Art Project.jpg",
+      "checksum": "sha256:dbca2f16b195f6e83feb98d44c0d98eb0b39f560314efbedfedab9e45caa8a2f",
+      "focalPoint": [
+        0.5,
+        0.45
+      ]
     },
     {
       "id": "great-wave",
       "category": "paintings",
       "name": "The Great Wave off Kanagawa",
-      "image": "/images/great-wave.jpg",
-      "credit": "Katsushika Hokusai",
+      "image": "/images/full/great-wave.webp",
+      "credit": "Katsushika Hokusai (1760–1849), public domain",
       "license": "Public domain",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Marea undă de la Kanagawa",
+      "alt": {
+        "ro": "Xilogravura japoneză „Marea undă de la Kanagawa” de Katsushika Hokusai",
+        "en": "Japanese woodblock print The Great Wave off Kanagawa by Katsushika Hokusai"
+      },
+      "attribution": "Katsushika Hokusai (1760–1849), public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tsunami_by_hokusai_19th_century.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Tsunami by hokusai 19th century.jpg",
+      "checksum": "sha256:1fe333e332097e42cb3b92223997d065432ed46f35ba4191b1adba069f9354cf",
+      "focalPoint": [
+        0.35,
+        0.55
+      ]
     },
     {
       "id": "girl-pearl-earring",
       "category": "paintings",
       "name": "Girl with a Pearl Earring",
-      "image": "/images/girl-pearl-earring.jpg",
-      "credit": "Johannes Vermeer",
+      "image": "/images/full/girl-pearl-earring.webp",
+      "credit": "Johannes Vermeer (1632–1675), public domain",
       "license": "Public domain",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Fata cu perla",
+      "alt": {
+        "ro": "„Fata cu perla”, pictură de Johannes Vermeer (cca. 1665)",
+        "en": "Girl with a Pearl Earring, painting by Johannes Vermeer (c. 1665)"
+      },
+      "attribution": "Johannes Vermeer (1632–1675), public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Girl_with_a_Pearl_Earring.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Girl with a Pearl Earring.jpg",
+      "checksum": "sha256:c77be6fcb16c70a8913d55199e7ac736f9da0d62105ca5605380370eadd5535d",
+      "focalPoint": [
+        0.5,
+        0.38
+      ]
     },
     {
       "id": "sunrise",
       "category": "paintings",
       "name": "Impression, Sunrise",
-      "image": "/images/sunrise.jpg",
-      "credit": "Claude Monet",
+      "image": "/images/full/sunrise.webp",
+      "credit": "Claude Monet (1840–1926), public domain",
       "license": "Public domain",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Impresie, răsărit",
+      "alt": {
+        "ro": "„Impresie, răsărit” de Claude Monet (1872), pictură impresionistă",
+        "en": "Impression, Sunrise by Claude Monet (1872), impressionist painting"
+      },
+      "attribution": "Claude Monet (1840–1926), public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Monet_-_Impression,_Sunrise.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Monet - Impression, Sunrise.jpg",
+      "checksum": "sha256:4ddfd849ed38c27eb8ccb47ecdfd3a329b5d41607ebc13fdb5fb721afb8df1a3",
+      "focalPoint": [
+        0.55,
+        0.55
+      ]
     },
     {
       "id": "the-kiss",
       "category": "paintings",
       "name": "The Kiss",
-      "image": "/images/the-kiss.jpg",
-      "credit": "Gustav Klimt",
+      "image": "/images/full/the-kiss.webp",
+      "credit": "Gustav Klimt (1862–1918), public domain",
       "license": "Public domain",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Sărutul",
+      "alt": {
+        "ro": "„Sărutul” de Gustav Klimt (1907–1908), pictură cu foiță de aur",
+        "en": "The Kiss by Gustav Klimt (1907–1908), oil and gold leaf painting"
+      },
+      "attribution": "Gustav Klimt (1862–1918), public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "The Kiss - Gustav Klimt - Google Cultural Institute.jpg",
+      "checksum": "sha256:fc990e1da72cebba75883e8f6516ce7c97337e28ef372d5eee97990ccce4787e",
+      "focalPoint": [
+        0.5,
+        0.4
+      ]
     },
     {
       "id": "the-scream",
       "category": "paintings",
       "name": "The Scream",
-      "image": "/images/the-scream.jpg",
-      "credit": "Edvard Munch",
+      "image": "/images/full/the-scream.webp",
+      "credit": "Edvard Munch (1863–1944), public domain",
       "license": "Public domain",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Strigătul",
+      "alt": {
+        "ro": "„Strigătul” de Edvard Munch (versiunea pastel, 1910)",
+        "en": "The Scream by Edvard Munch (pastel version, 1910)"
+      },
+      "attribution": "Edvard Munch (1863–1944), public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Edvard_Munch_-_The_Scream_-_Google_Art_Project.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Edvard Munch - The Scream - Google Art Project.jpg",
+      "checksum": "sha256:e9e881a6f9f1af4e506d722d1012fe8e78c1b25f9680a4010c4f1c78a48b9fe9",
+      "focalPoint": [
+        0.5,
+        0.45
+      ]
     },
     {
       "id": "water-lilies",
       "category": "paintings",
       "name": "Water Lilies",
-      "image": "/images/water-lilies.jpg",
-      "credit": "Claude Monet",
+      "image": "/images/full/water-lilies.webp",
+      "credit": "Claude Monet (1840–1926), public domain",
       "license": "Public domain",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Nufăruri",
+      "alt": {
+        "ro": "„Nufăruri” (Nymphéas) de Claude Monet, serie de picturi impresționiste",
+        "en": "Water Lilies (Nymphéas) by Claude Monet, impressionist painting series"
+      },
+      "attribution": "Claude Monet (1840–1926), public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Monet,_Claude_-_Water_Lilies_(Nymph%C3%A9as)_-_Google_Art_Project.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Monet, Claude - Water Lilies (Nymphéas) - Google Art Project.jpg",
+      "checksum": "sha256:9577a337bedd678cf031fe31001d1346a7a659fffe38675ceed4dbe3f9ddae76",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
     },
     {
       "id": "cafe-terrace",
       "category": "paintings",
       "name": "Café Terrace at Night",
-      "image": "/images/cafe-terrace.jpg",
-      "credit": "Vincent van Gogh",
+      "image": "/images/full/cafe-terrace.webp",
+      "credit": "Vincent van Gogh (1853–1890), public domain",
       "license": "Public domain",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Terrasa cafenelei noaptea",
+      "alt": {
+        "ro": "„Terrasa cafenelei pe Piața Forum noaptea, Arles” de Vincent van Gogh (1888)",
+        "en": "Café Terrace at Night (Place du Forum, Arles) by Vincent van Gogh (1888)"
+      },
+      "attribution": "Vincent van Gogh (1853–1890), public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vincent_Willem_van_Gogh_-_Cafe_Terrace_at_Night_(Yorck).jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Vincent Willem van Gogh - Cafe Terrace at Night (Yorck).jpg",
+      "checksum": "sha256:7d0dc475ce1d9b2d7d381f66a873742c1078deb96133db2ad93ebae7ffe22d7b",
+      "focalPoint": [
+        0.5,
+        0.55
+      ]
     },
     {
       "id": "the-milkmaid",
       "category": "paintings",
       "name": "The Milkmaid",
-      "image": "/images/the-milkmaid.jpg",
-      "credit": "Johannes Vermeer",
+      "image": "/images/full/the-milkmaid.webp",
+      "credit": "Johannes Vermeer (1632–1675), public domain",
       "license": "Public domain",
-      "source": "Rijksmuseum"
+      "source": "Wikimedia Commons (Rijksmuseum)",
+      "nameRo": "Fata cu cana de lapte",
+      "alt": {
+        "ro": "„Fata cu cana de lapte” (Het Melkmeisje) de Johannes Vermeer (cca. 1658–1661), Rijksmuseum",
+        "en": "The Milkmaid (Het Melkmeisje) by Johannes Vermeer (c. 1658–1661), Rijksmuseum"
+      },
+      "attribution": "Johannes Vermeer (1632–1675), public domain",
+      "sourceName": "Wikimedia Commons (Rijksmuseum)",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Johannes Vermeer - Het melkmeisje - Google Art Project.jpg",
+      "checksum": "sha256:216380d75254bc89f73cc1365fdf3fefc6ca7006504baf2902cd43a71ae63e06",
+      "focalPoint": [
+        0.5,
+        0.42
+      ]
     },
     {
       "id": "matterhorn",
       "category": "landscapes",
       "name": "The Matterhorn",
-      "image": "/images/matterhorn.jpg",
-      "credit": "Photo: chil (Camptocamp.org) · derivative work Zacharie Grossen",
+      "image": "/images/full/matterhorn.webp",
+      "credit": "Photo: chil (Camptocamp.org) · derivative work Zander, CC BY-SA 3.0",
       "license": "CC BY-SA 3.0",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Matterhorn",
+      "alt": {
+        "ro": "Vârfurile Matterhorn și Dent d'Hérens văzute de pe Domhütte, Valais",
+        "en": "Matterhorn and Dent d'Hérens seen from the Domhütte, Valais"
+      },
+      "attribution": "Photo: chil (Camptocamp.org) · derivative work Zander, CC BY-SA 3.0",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Matterhorn_from_Domh%C3%BCtte_-_2.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression; derivative of the original photo",
+      "originalFilename": "Matterhorn from Domhütte - 2.jpg",
+      "checksum": "sha256:fa1b598f3d4b302de07f48d94dc9966060aa3ebd5468d85270a6a06961affc9a",
+      "focalPoint": [
+        0.5,
+        0.45
+      ]
     },
     {
       "id": "moraine-lake",
       "category": "landscapes",
       "name": "Moraine Lake",
-      "image": "/images/moraine-lake.jpg",
-      "credit": "Gorgo",
+      "image": "/images/full/moraine-lake.webp",
+      "credit": "Gorgo (Wikimedia Commons)",
       "license": "Public domain",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Lacul Moraine",
+      "alt": {
+        "ro": "Lacul Moraine și Valea celor Zece Vârfuri, Parkul Național Banff, Canada",
+        "en": "Moraine Lake and the Valley of the Ten Peaks, Banff National Park, Canada"
+      },
+      "attribution": "Gorgo (Wikimedia Commons)",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Moraine_Lake_17092005.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Moraine Lake 17092005.jpg",
+      "checksum": "sha256:bf6597c73b10c16329ae01e470d855d489b405ecd88daf45a6bf30311edc1f1c",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
     },
     {
       "id": "santorini",
       "category": "landscapes",
       "name": "Oia, Santorini",
-      "image": "/images/santorini.jpg",
-      "credit": "Danbu14",
+      "image": "/images/full/santorini.webp",
+      "credit": "Danbu14, CC BY-SA 3.0",
       "license": "CC BY-SA 3.0",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Oia, Santorini",
+      "alt": {
+        "ro": "Vedere asupra satului Oia, insula Santorini, Grecia",
+        "en": "View over the village of Oia, Santorini island, Greece"
+      },
+      "attribution": "Danbu14, CC BY-SA 3.0",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Santorini_Oia.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Santorini Oia.jpg",
+      "checksum": "sha256:53bb7cf0802013d8c6799314a8f2a57146beb3aca913128f865e9f591840fec1",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
     },
     {
       "id": "eiffel-tower",
       "category": "landmarks",
       "name": "Eiffel Tower",
-      "image": "/images/eiffel-tower.jpg",
-      "credit": "Benh LIEU SONG",
+      "image": "/images/full/eiffel-tower.webp",
+      "credit": "Benh LIEU SONG (Wikimedia Commons)",
       "license": "Public domain",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Turnul Eiffel",
+      "alt": {
+        "ro": "Turnul Eiffel văzut de la nord-est, Paris, Franța",
+        "en": "The Eiffel Tower seen from the north-east, Paris, France"
+      },
+      "attribution": "Benh LIEU SONG (Wikimedia Commons)",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tour_Eiffel_Wikimedia_Commons.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Tour Eiffel Wikimedia Commons.jpg",
+      "checksum": "sha256:5511b3d01068956af15fae8d173fdd3ea1b054b651c4866e9e3c9a1c81e93c3b",
+      "focalPoint": [
+        0.5,
+        0.4
+      ]
     },
     {
       "id": "machu-picchu",
       "category": "landmarks",
       "name": "Machu Picchu",
-      "image": "/images/machu-picchu.jpg",
-      "credit": "Martin St-Amant",
+      "image": "/images/full/machu-picchu.webp",
+      "credit": "Martin St-Amant, CC BY-SA 3.0",
       "license": "CC BY-SA 3.0",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Machu Picchu",
+      "alt": {
+        "ro": "Situl arheologic incaș Machu Picchu, Peru",
+        "en": "Machu Picchu Inca archaeological site, Peru"
+      },
+      "attribution": "Martin St-Amant, CC BY-SA 3.0",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:99_-_Machu_Picchu_-_Juin_2009.edit3.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression; derivative of the original photo",
+      "originalFilename": "99 - Machu Picchu - Juin 2009.edit3.jpg",
+      "checksum": "sha256:1574dab26d407dddf1b7e52cde228041b14e8bd484ef573b8fcb865d42012a8d",
+      "focalPoint": [
+        0.5,
+        0.55
+      ]
     },
     {
       "id": "taj-mahal",
       "category": "landmarks",
       "name": "Taj Mahal",
-      "image": "/images/taj-mahal.jpg",
-      "credit": "Yann · edited by Jim Carter",
+      "image": "/images/full/taj-mahal.webp",
+      "credit": "Yann, CC BY-SA 4.0",
       "license": "CC BY-SA 4.0",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Taj Mahal",
+      "alt": {
+        "ro": "Mauzoleul Taj Mahal din Agra, India",
+        "en": "Taj Mahal mausoleum, Agra, India"
+      },
+      "attribution": "Yann, CC BY-SA 4.0",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Taj_Mahal,_Agra,_India_edit2.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression; edited version of the original photo",
+      "originalFilename": "Taj Mahal, Agra, India edit2.jpg",
+      "checksum": "sha256:0cad4c3a711575b76e72480f1d6de358ee3e2f940a2201baaa02725ab1574e13",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
     },
     {
       "id": "colosseum",
       "category": "landmarks",
       "name": "The Colosseum",
-      "image": "/images/colosseum.jpg",
-      "credit": "FeaturedPics",
+      "image": "/images/full/colosseum.webp",
+      "credit": "FeaturedPics, CC BY-SA 4.0",
       "license": "CC BY-SA 4.0",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Coloseul",
+      "alt": {
+        "ro": "Amfiteatrul Flavian (Coloseul), Roma, Italia",
+        "en": "The Flavian Amphitheatre (Colosseum), Rome, Italy"
+      },
+      "attribution": "FeaturedPics, CC BY-SA 4.0",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Colosseo_2020.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Colosseo 2020.jpg",
+      "checksum": "sha256:e2556474b9eaf380ecb969d5117423e9eed2db01a207f39092a6692b58ec2f77",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
     },
     {
       "id": "statue-of-liberty",
       "category": "landmarks",
       "name": "Statue of Liberty",
-      "image": "/images/statue-of-liberty.jpg",
-      "credit": "Elcobbola",
-      "license": "Public domain",
-      "source": "Wikimedia Commons"
+      "image": "/images/full/statue-of-liberty.webp",
+      "credit": "Elcobbola, CC BY-SA 3.0",
+      "license": "CC BY-SA 3.0",
+      "source": "Wikimedia Commons",
+      "nameRo": "Statuia Libertății",
+      "alt": {
+        "ro": "Statuia Libertății de pe insula Liberty, New York, SUA",
+        "en": "Statue of Liberty on Liberty Island, New York, USA"
+      },
+      "attribution": "Elcobbola, CC BY-SA 3.0",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Statue_of_Liberty_7.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Statue of Liberty 7.jpg",
+      "checksum": "sha256:e0d1094223b034694172b7b727d2ba8923f2cd7d1196e2438d4a63ed9c06360e",
+      "focalPoint": [
+        0.5,
+        0.35
+      ]
     },
     {
       "id": "vatican",
       "category": "landmarks",
       "name": "St. Peter's Square",
-      "image": "/images/vatican.jpg",
-      "credit": "Diliff",
+      "image": "/images/full/vatican.webp",
+      "credit": "Diliff, CC BY-SA 3.0",
       "license": "CC BY-SA 3.0",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Piazza San Pietro",
+      "alt": {
+        "ro": "Piazza San Pietro, Vatican, Roma, Italia",
+        "en": "St. Peter's Square, Vatican City, Rome, Italy"
+      },
+      "attribution": "Diliff, CC BY-SA 3.0",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:St_Peter%27s_Square,_Vatican_City_-_April_2007.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "St Peter's Square, Vatican City - April 2007.jpg",
+      "checksum": "sha256:54286c6400d8cd03548ca41a7d881d3918120bc80828002065f4ccefcf51833d",
+      "focalPoint": [
+        0.5,
+        0.45
+      ]
     },
     {
       "id": "aurora",
       "category": "nature",
       "name": "Aurora Borealis",
-      "image": "/images/aurora.jpg",
-      "credit": "US Air Force photo by Senior Airman Joshua Strang",
-      "license": "Public domain",
-      "source": "Wikimedia Commons"
+      "image": "/images/full/aurora.webp",
+      "credit": "U.S. Air Force photo by Senior Airman Joshua Strang, public domain",
+      "license": "Public domain (U.S. federal government work)",
+      "source": "Wikimedia Commons (USAF photo, 18 January 2005)",
+      "nameRo": "Aurorele polare",
+      "alt": {
+        "ro": "Aurorele boreale deasupra Bear Lake, Alaska, SUA",
+        "en": "Aurora borealis above Bear Lake, Alaska, USA"
+      },
+      "attribution": "U.S. Air Force photo by Senior Airman Joshua Strang, public domain",
+      "sourceName": "Wikimedia Commons (USAF photo, 18 January 2005)",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Aurora_Borealis_Alaska.jpg",
+      "licenseUrl": "https://en.wikipedia.org/wiki/United_states_federal_government_copyright",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Aurora Borealis Alaska.jpg",
+      "checksum": "sha256:919e09dd35d15842a97798237004e15c933816ea540e0aabe4b224b45ed310b9",
+      "focalPoint": [
+        0.5,
+        0.4
+      ]
     },
     {
       "id": "flower",
       "category": "nature",
       "name": "Tulip in Bloom",
-      "image": "/images/flower.jpg",
-      "credit": "Derek Ramsey (Ram-Man) · co-attribution: Chanticleer Garden",
+      "image": "/images/full/flower.webp",
+      "credit": "Photo by and (c)2007 Derek Ramsey (Ram-Man); co-attribution to Chanticleer Garden required, CC BY-SA 3.0",
       "license": "CC BY-SA 3.0",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Lalea înflorită",
+      "alt": {
+        "ro": "Lalea Tulipa clusiana „Lady Jane” înflorită, grădina Chanticleer",
+        "en": "Tulip Tulipa clusiana 'Lady Jane' in bloom, Chanticleer Garden"
+      },
+      "attribution": "Photo by and (c)2007 Derek Ramsey (Ram-Man); co-attribution to Chanticleer Garden required, CC BY-SA 3.0",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tulip_Tulipa_clusiana_%27Lady_Jane%27_Rock_Ledge_Flower_Edit_2000px.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Tulip Tulipa clusiana 'Lady Jane' Rock Ledge Flower Edit 2000px.jpg",
+      "checksum": "sha256:516313c1fd00c2e0270b17684addddc1e338f0e96eef987b1b193868093ec52e",
+      "focalPoint": [
+        0.5,
+        0.4
+      ]
     },
     {
       "id": "waterfall",
       "category": "nature",
       "name": "Beauchamp Falls",
-      "image": "/images/waterfall.jpg",
-      "credit": "Dietmar Rabich",
+      "image": "/images/full/waterfall.webp",
+      "credit": "Dietmar Rabich, CC BY-SA 4.0",
       "license": "CC BY-SA 4.0",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Cascada Beauchamp",
+      "alt": {
+        "ro": "Cascada Beauchamp, pădure de fag, Parkul Național Great Otway, Victoria, Australia",
+        "en": "Beauchamp Falls in a beech forest, Great Otway National Park, Victoria, Australia"
+      },
+      "attribution": "Dietmar Rabich, CC BY-SA 4.0",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Beech_Forest_(AU),_Great_Otway_National_Park,_Beauchamp_Falls_--_2019_--_1271.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Beech Forest (AU), Great Otway National Park, Beauchamp Falls -- 2019 -- 1271.jpg",
+      "checksum": "sha256:99681905dd160bc7bda29c1615c2703add79cb5177a4b2768889a23332571ce7",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
     },
     {
       "id": "golden-gate",
       "category": "cities",
       "name": "Golden Gate Bridge",
-      "image": "/images/golden-gate.jpg",
-      "credit": "Frank Schulenburg",
+      "image": "/images/full/golden-gate.webp",
+      "credit": "Frank Schulenburg, CC BY-SA 4.0",
       "license": "CC BY-SA 4.0",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Podul Golden Gate",
+      "alt": {
+        "ro": "Podul Golden Gate văzut de pe plaja Marshall, San Francisco, California",
+        "en": "Golden Gate Bridge seen from Marshall's Beach, San Francisco, California"
+      },
+      "attribution": "Frank Schulenburg, CC BY-SA 4.0",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Golden_Gate_Bridge_as_seen_from_Marshall%E2%80%99s_Beach,_March_2018.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Golden Gate Bridge as seen from Marshall's Beach, March 2018.jpg",
+      "checksum": "sha256:f4fdbbc52a751e2a459f1612f0d9fb39ae660ff40eadfe53b5ae3ce7922e24c1",
+      "focalPoint": [
+        0.5,
+        0.45
+      ]
     },
     {
       "id": "paris-louvre",
       "category": "cities",
       "name": "The Louvre, Paris",
-      "image": "/images/paris-louvre.jpg",
-      "credit": "Benh LIEU SONG",
+      "image": "/images/full/paris-louvre.webp",
+      "credit": "Benh LIEU SONG, CC BY-SA 3.0",
       "license": "CC BY-SA 3.0",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Muzeul Luvru, Paris",
+      "alt": {
+        "ro": "Curtea Muzeului Luvru cu piramida sa de sticlă, Paris, Franța",
+        "en": "Courtyard of the Louvre Museum with its glass pyramid, Paris, France"
+      },
+      "attribution": "Benh LIEU SONG, CC BY-SA 3.0",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Louvre_Museum_Wikimedia_Commons.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Louvre Museum Wikimedia Commons.jpg",
+      "checksum": "sha256:7f02eafdd46cb51d9d547aee180fab6bb502b11fd09a1ec1867e9b3785033db3",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
     },
     {
       "id": "venice",
       "category": "cities",
       "name": "Venice at Dawn",
-      "image": "/images/venice.jpg",
-      "credit": "Benh LIEU SONG",
-      "license": "CC BY-SA 4.0",
-      "source": "Wikimedia Commons"
+      "image": "/images/full/venice.webp",
+      "credit": "Benh LIEU SONG (Flickr 75729488@N03), CC BY-SA 2.0",
+      "license": "CC BY-SA 2.0",
+      "source": "Wikimedia Commons (Flickr transfer)",
+      "nameRo": "Veneția în zori",
+      "alt": {
+        "ro": "Piața San Marco în zori, Veneția, Italia",
+        "en": "Piazza San Marco at dawn, Venice, Italy"
+      },
+      "attribution": "Benh LIEU SONG (Flickr 75729488@N03), CC BY-SA 2.0",
+      "sourceName": "Wikimedia Commons (Flickr transfer)",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Piazza_San_Marco_at_Dawn,_Venice_(21358879396).jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Piazza San Marco at Dawn, Venice (21358879396).jpg",
+      "checksum": "sha256:03a9d441e08f3b479138c26d59a7c6b8a2cfea14a6813bfa4d1f235ae46aa8b2",
+      "focalPoint": [
+        0.5,
+        0.5
+      ]
     },
     {
       "id": "tokyo",
       "category": "cities",
       "name": "Tokyo Skyscrapers",
-      "image": "/images/tokyo.jpg",
-      "credit": "Morio",
+      "image": "/images/full/tokyo.webp",
+      "credit": "Morio, CC BY-SA 3.0",
       "license": "CC BY-SA 3.0",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "nameRo": "Turnurile din Tokyo",
+      "alt": {
+        "ro": "Turnurile din Shinjuku, Tokyo, Japonia (ianuarie 2009)",
+        "en": "Shinjuku skyscrapers, Tokyo, Japan (January 2009)"
+      },
+      "attribution": "Morio, CC BY-SA 3.0",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Skyscrapers_of_Shinjuku_2009_January.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "originalFilename": "Skyscrapers of Shinjuku 2009 January.jpg",
+      "checksum": "sha256:6da68518f374f6700461a925730ccfbbacf27e9da89b55970495d9272e2c8831",
+      "focalPoint": [
+        0.5,
+        0.55
+      ]
     }
   ]
 }

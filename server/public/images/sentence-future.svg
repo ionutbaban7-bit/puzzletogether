@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs><linearGradient id="fbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#312e81"/><stop offset="1" stop-color="#6d28d9"/></linearGradient></defs>
+  <rect width="800" height="600" fill="url(#fbg)"/>
+  <g fill="#fff">
+    <circle cx="90" cy="80" r="4"/><circle cx="200" cy="140" r="3"/><circle cx="330" cy="70" r="5"/>
+    <circle cx="520" cy="120" r="3"/><circle cx="700" cy="90" r="4"/><circle cx="740" cy="220" r="3"/>
+    <circle cx="60" cy="260" r="3"/><circle cx="420" cy="180" r="3"/>
+  </g>
+  <path d="M120 470 Q 300 260 480 300 T 700 180" stroke="#a5b4fc" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="2 26"/>
+  <path d="M700 180 l-46 4 l24 -40 z" fill="#a5b4fc"/>
+  <circle cx="120" cy="470" r="14" fill="#a5b4fc"/>
+  <g transform="translate(560 380)"><circle r="70" fill="#4f46e5" opacity=".5"/><path d="M-26 0 h52 M0 -26 v52" stroke="#c7d2fe" stroke-width="8" stroke-linecap="round"/></g>
+  <text x="400" y="550" font-family="Georgia, serif" font-size="44" font-weight="bold" fill="#e0e7ff" text-anchor="middle">Future</text>
+</svg>

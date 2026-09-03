@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Board from "../puzzle/Board";
+import CanvasBoard from "../puzzle/CanvasBoard";
 import RankingActivity from "../puzzle/RankingActivity";
 import QuestionnaireActivity from "../puzzle/QuestionnaireActivity";
 import { api } from "../lib/api";
@@ -14,7 +15,8 @@ import { LangToggle, pick, useLang, T } from "../lib/i18n";
 import { lockedCountOf } from "../store";
 
 const CATEGORY_ICON: Record<string, string> = {
-  words: "🔤",
+  "letter-canvas": "✍️",
+  "sentence-canvas": "💬",
   paintings: "🎨",
   landscapes: "🏔️",
   landmarks: "🗼",
@@ -66,7 +68,8 @@ const DIFFICULTY_STRINGS = {
 } as const;
 
 const CATEGORY_LABELS = {
-  words: { ro: "Word World", en: "Word World" },
+  "letter-canvas": { ro: "Foaie de litere", en: "Letter Canvas" },
+  "sentence-canvas": { ro: "Foaie de propoziții", en: "Sentence Canvas" },
   paintings: { ro: "Picturi celebre", en: "Famous Paintings" },
   landscapes: { ro: "Peisaje celebre", en: "Famous Landscapes" },
   landmarks: { ro: "Repere globale", en: "World Landmarks" },
@@ -74,6 +77,13 @@ const CATEGORY_LABELS = {
   cities: { ro: "Orașe", en: "Cities" },
   coaching: { ro: "Coaching", en: "Coaching" },
 } as const;
+
+const CANVAS_MODE_LABELS: Record<string, { ro: string; en: string }> = {
+  quick: { ro: "Quick · 96", en: "Quick · 96" },
+  standard: { ro: "Standard · 180", en: "Standard · 180" },
+  extended: { ro: "Extended · 260", en: "Extended · 260" },
+  sandbox: { ro: "Sandbox · ∞", en: "Sandbox · ∞" },
+};
 
 export default function GamePage() {
   const { lang } = useLang();
@@ -93,6 +103,8 @@ export default function GamePage() {
   const reconnectExhausted = useStore((s) => s.reconnectExhausted);
   const protocolError = useStore((s) => s.protocolError);
   const chat = useStore((s) => s.chat);
+  const canvas = useStore((s) => s.canvas);
+  const canvasTiles = useStore((s) => s.canvasTiles);
 
   const [shareOpen, setShareOpen] = useState(false);
   const [facilitatorOpen, setFacilitatorOpen] = useState(false);
@@ -124,8 +136,14 @@ export default function GamePage() {
   }, [completion]);
 
   const locked = lockedCountOf(pieces);
+  const isCanvas = !!puzzle?.isCanvas;
   const total = room?.total || 1;
-  const progress = Math.round((locked / total) * 100);
+  const tileCount = Object.keys(canvasTiles).length;
+  const progress = isCanvas
+    ? canvas && canvas.inventory
+      ? Math.min(100, Math.round((tileCount / total) * 100))
+      : 0
+    : Math.round((locked / total) * 100);
   const elapsed = room?.startedAt
     ? room.completed
       ? room.completedInMs || 0
@@ -272,6 +290,18 @@ export default function GamePage() {
           players={players}
           youId={youId}
         />
+      ) : isCanvas && canvas ? (
+        <CanvasBoard
+          key={`${room.puzzleId}:${epoch}`}
+          puzzle={puzzle}
+          canvas={canvas}
+          tiles={canvasTiles}
+          cursors={cursors}
+          players={players}
+          youId={youId}
+          inputEnabled={inputEnabled}
+          resetSignal={resetSignal + epoch}
+        />
       ) : (
         <Board
           puzzle={puzzle}
@@ -304,9 +334,13 @@ export default function GamePage() {
                       ? mode === "ranking"
                         ? "Team ranking · " + total + " items"
                         : "Questionnaire · " + total + " questions"
-                      : `${getDifficultyLabel(room.difficulty)} · ${total} pieces${
-                          puzzle.category ? ` · ${CATEGORY_ICON[puzzle.category] || ""} ${getCategoryLabel(puzzle.category)}` : ""
-                        }`}
+                      : isCanvas
+                        ? `${pick(CANVAS_MODE_LABELS[room.difficulty] || { ro: room.difficulty, en: room.difficulty }, lang)} · ${puzzle.contentLanguage?.toUpperCase() || ""}${
+                            puzzle.category ? ` · ${CATEGORY_ICON[puzzle.category] || ""} ${getCategoryLabel(puzzle.category)}` : ""
+                          }`
+                        : `${getDifficultyLabel(room.difficulty)} · ${total} pieces${
+                            puzzle.category ? ` · ${CATEGORY_ICON[puzzle.category] || ""} ${getCategoryLabel(puzzle.category)}` : ""
+                          }`}
                   </div>
                 </div>
               </div>
@@ -324,18 +358,24 @@ export default function GamePage() {
               <div className="mt-3.5">
                 <div className="flex items-baseline justify-between text-xs">
                   <span className="font-semibold text-ink-200">
-                    <T value={{ ro: "Progres", en: "Progress" }} />
+                    <T value={isCanvas ? { ro: "Cărți pe foaie", en: "Tiles on the sheet" } : { ro: "Progres", en: "Progress" }} />
                   </span>
-                  <span className="font-bold text-white">{progress}%</span>
+                  <span className="font-bold text-white">{isCanvas ? tileCount : `${progress}%`}</span>
                 </div>
-                <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-white/10">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-brand-500 to-emerald-400 transition-all duration-500"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
+                {!isCanvas && (
+                  <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-white/10">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-brand-500 to-emerald-400 transition-all duration-500"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                )}
                 <div className="mt-1 text-[11px] text-ink-400">
-                  {locked} / {total} pieces
+                  {isCanvas
+                    ? canvas?.inventory
+                      ? `${tileCount} / ${total} ${lang === "ro" ? "cărți din inventar" : "tiles from inventory"}`
+                      : `${tileCount} ${lang === "ro" ? "cărți · sandbox nelimitat" : "tiles · unlimited sandbox"}`
+                    : `${locked} / ${total} pieces`}
                 </div>
               </div>
             )}
@@ -463,6 +503,18 @@ export default function GamePage() {
             <div className="text-[11px] font-bold uppercase tracking-[.25em] text-brand-300"><T value={{ ro: "Lobby de workshop", en: "Workshop lobby" }} /></div>
             <h1 className="font-display mt-3 text-2xl font-extrabold text-white sm:text-3xl">{room.sessionName}</h1>
             <p className="mt-2 text-sm text-ink-300"><T value={{ ro: "Activitatea și cronometrul pornesc numai când facilitatorul apasă Start.", en: "The activity and session clock begin only when the facilitator presses Start." }} /></p>
+            {isCanvas && puzzle.scenario && (
+              <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left">
+                <div className="text-[10px] font-bold uppercase tracking-[.2em] text-brand-300"><T value={{ ro: "Scenariu", en: "Scenario" }} /> · {puzzle.contentLanguage?.toUpperCase()}</div>
+                <div className="font-display mt-1 font-bold text-white"><T value={puzzle.scenario.title} /></div>
+                <p className="mt-1 text-sm text-ink-300"><T value={puzzle.scenario.situation} /></p>
+              </div>
+            )}
+            {isCanvas && (
+              <p className="mt-3 text-xs text-ink-400">
+                <T value={{ ro: "Foaie albă, fără imagine de referință. Finalizarea o declanșează facilitatorul.", en: "Blank sheet, no reference image. The facilitator triggers completion." }} />
+              </p>
+            )}
             <div className="mx-auto mt-6 inline-block rounded-2xl border border-white/10 bg-white/5 px-6 py-4"><div className="text-[10px] font-bold uppercase tracking-wider text-ink-400"><T value={{ ro: "Cod de intrare", en: "Join code" }} /></div><div className="font-display mt-1 text-3xl font-extrabold tracking-[.35em] text-white">{room.code}</div></div>
             <div className="mt-6 flex flex-wrap justify-center gap-2">{players.map((player) => <span key={player.id} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white"><i className="h-2 w-2 rounded-full" style={{ backgroundColor: player.color }} />{player.name}{player.role === "spectator" ? " · 👁" : ""}</span>)}</div>
             <div className="mt-4 text-xs text-ink-400">{players.length} {lang === "ro" ? "conectați" : "connected"}</div>
@@ -580,16 +632,28 @@ export default function GamePage() {
               <div className="text-center">
                 <div className="text-5xl">🎉</div>
                 <h2 className="font-display mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-                  <T value={{ ro: "Puzzle finalizat!", en: "Puzzle completed!" }} />
+                  <T value={isCanvas ? { ro: "Compoziție finalizată!", en: "Composition complete!" } : { ro: "Puzzle finalizat!", en: "Puzzle completed!" }} />
                 </h2>
                 <div className="mt-1.5 text-lg font-semibold text-brand-300">
                   {pick(puzzle.name, lang)}
                 </div>
                 <div className="mt-2 text-sm text-ink-400">
-                  <T value={{ ro: "Nivel", en: "Level" }} /> {levelIdx + 1} · {getDifficultyLabel(room.difficulty)} · {total}{" "}
-                  <T value={{ ro: "piese", en: "pieces" }} />
+                  {isCanvas
+                    ? `${pick(CANVAS_MODE_LABELS[room.difficulty] || { ro: room.difficulty, en: room.difficulty }, lang)} · ${puzzle.contentLanguage?.toUpperCase()} · ${completion.canvasTiles?.length ?? 0} ${lang === "ro" ? "cărți" : "tiles"}`
+                    : <><T value={{ ro: "Nivel", en: "Level" }} /> {levelIdx + 1} · {getDifficultyLabel(room.difficulty)} · {total} <T value={{ ro: "piese", en: "pieces" }} /></>}
                 </div>
               </div>
+
+              {isCanvas && (
+                <div className="mt-5">
+                  <div className="text-center text-[11px] font-bold uppercase tracking-[0.22em] text-ink-400">
+                    <T value={{ ro: "Compoziția echipei", en: "The team's composition" }} />
+                  </div>
+                  <pre className="mt-3 max-h-56 overflow-y-auto whitespace-pre-wrap rounded-2xl border border-white/10 bg-white/5 p-4 font-serif text-lg leading-relaxed text-white">
+                    {completion.canvasText?.trim() || <span className="text-sm text-ink-400"><T value={{ ro: "Foaia rămâne goală — și asta e un rezultat.", en: "The sheet stayed blank — that's a valid outcome too." }} /></span>}
+                  </pre>
+                </div>
+              )}
 
               <div className="mt-6 grid gap-3 sm:grid-cols-3">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center">

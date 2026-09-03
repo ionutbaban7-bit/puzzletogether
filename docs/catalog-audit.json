@@ -1,0 +1,644 @@
+{
+  "generatedAt": "2026-09-03T10:34:58.042Z",
+  "thresholds": {
+    "MIN_LONG_EDGE": 900,
+    "MIN_SHORT_EDGE": 600,
+    "DHASH_DUPLICATE_LIMIT": 2,
+    "DHASH_SUSPECT_LIMIT": 10
+  },
+  "errors": [
+    {
+      "code": "F1",
+      "message": "compliance violation (flagged): /images/new-york.jpg — watermark-visible:WIDEWALLPAPERS.NET, no-usable-license, stage-4-rule-no-watermark-violated"
+    },
+    {
+      "code": "F1",
+      "message": "compliance violation (flagged): /images/plitvice-lakes.jpg — watermark-visible:Dreamstime, no-usable-license, copyright-infringement-risk, stage-4-rule-no-watermark-violated"
+    }
+  ],
+  "warnings": [
+    {
+      "code": "W2",
+      "message": "/images/moraine-lake.jpg: license-inherited-from-legacy-catalog-not-reverified"
+    },
+    {
+      "code": "W2",
+      "message": "/images/eiffel-tower.jpg: license-inherited-from-legacy-catalog-not-reverified"
+    },
+    {
+      "code": "W2",
+      "message": "/images/statue-of-liberty.jpg: license-corrected-from-legacy-catalog:was-PD-is-CC-BY-SA-3.0"
+    },
+    {
+      "code": "W2",
+      "message": "/images/paris-louvre.jpg: license-inherited-from-legacy-catalog-not-reverified"
+    },
+    {
+      "code": "W2",
+      "message": "/images/venice.jpg: license-corrected-from-legacy-catalog:was-CC-BY-SA-4.0-is-CC-BY-SA-2.0"
+    },
+    {
+      "code": "W2",
+      "message": "/images/tokyo.jpg: license-inherited-from-legacy-catalog-not-reverified"
+    },
+    {
+      "code": "W1",
+      "message": "provenance not verified: /images/big-ben.jpg"
+    },
+    {
+      "code": "W2",
+      "message": "/images/big-ben.jpg: suspected-ai-generated:clock-face-and-vehicle-details-distorted"
+    },
+    {
+      "code": "W2",
+      "message": "/images/big-ben.jpg: provenance-not-verified"
+    },
+    {
+      "code": "W2",
+      "message": "/images/big-ben.jpg: source-url-is-repo-placeholder-not-a-claim-of-origin"
+    },
+    {
+      "code": "W1",
+      "message": "provenance not verified: /images/cherry-blossom.jpg"
+    },
+    {
+      "code": "W2",
+      "message": "/images/cherry-blossom.jpg: provenance-not-verified"
+    },
+    {
+      "code": "W2",
+      "message": "/images/cherry-blossom.jpg: no-exif-metadata"
+    },
+    {
+      "code": "W2",
+      "message": "/images/cherry-blossom.jpg: source-url-is-repo-placeholder-not-a-claim-of-origin"
+    },
+    {
+      "code": "W1",
+      "message": "provenance not verified: /images/grand-canyon.jpg"
+    },
+    {
+      "code": "W2",
+      "message": "/images/grand-canyon.jpg: provenance-not-verified"
+    },
+    {
+      "code": "W2",
+      "message": "/images/grand-canyon.jpg: no-exif-metadata"
+    },
+    {
+      "code": "W2",
+      "message": "/images/grand-canyon.jpg: source-url-is-repo-placeholder-not-a-claim-of-origin"
+    },
+    {
+      "code": "W1",
+      "message": "provenance not verified: /images/lavender-field.jpg"
+    },
+    {
+      "code": "W2",
+      "message": "/images/lavender-field.jpg: provenance-not-verified"
+    },
+    {
+      "code": "W2",
+      "message": "/images/lavender-field.jpg: no-exif-metadata"
+    },
+    {
+      "code": "W2",
+      "message": "/images/lavender-field.jpg: source-url-is-repo-placeholder-not-a-claim-of-origin"
+    },
+    {
+      "code": "W1",
+      "message": "provenance not verified: /images/mount-fuji.jpg"
+    },
+    {
+      "code": "W2",
+      "message": "/images/mount-fuji.jpg: provenance-not-verified"
+    },
+    {
+      "code": "W2",
+      "message": "/images/mount-fuji.jpg: no-exif-metadata"
+    },
+    {
+      "code": "W2",
+      "message": "/images/mount-fuji.jpg: source-url-is-repo-placeholder-not-a-claim-of-origin"
+    },
+    {
+      "code": "W1",
+      "message": "provenance not verified: /images/neuschwanstein.jpg"
+    },
+    {
+      "code": "W2",
+      "message": "/images/neuschwanstein.jpg: provenance-not-verified"
+    },
+    {
+      "code": "W2",
+      "message": "/images/neuschwanstein.jpg: no-exif-metadata"
+    },
+    {
+      "code": "W2",
+      "message": "/images/neuschwanstein.jpg: low-resolution-1000x750"
+    },
+    {
+      "code": "W2",
+      "message": "/images/neuschwanstein.jpg: source-url-is-repo-placeholder-not-a-claim-of-origin"
+    },
+    {
+      "code": "W2",
+      "message": "/images/new-york.jpg: watermark-visible:WIDEWALLPAPERS.NET"
+    },
+    {
+      "code": "W2",
+      "message": "/images/new-york.jpg: no-usable-license"
+    },
+    {
+      "code": "W2",
+      "message": "/images/new-york.jpg: stage-4-rule-no-watermark-violated"
+    },
+    {
+      "code": "W2",
+      "message": "/images/plitvice-lakes.jpg: watermark-visible:Dreamstime"
+    },
+    {
+      "code": "W2",
+      "message": "/images/plitvice-lakes.jpg: no-usable-license"
+    },
+    {
+      "code": "W2",
+      "message": "/images/plitvice-lakes.jpg: copyright-infringement-risk"
+    },
+    {
+      "code": "W2",
+      "message": "/images/plitvice-lakes.jpg: stage-4-rule-no-watermark-violated"
+    },
+    {
+      "code": "W1",
+      "message": "provenance not verified: /images/prague.jpg"
+    },
+    {
+      "code": "W2",
+      "message": "/images/prague.jpg: provenance-not-verified"
+    },
+    {
+      "code": "W2",
+      "message": "/images/prague.jpg: no-exif-metadata"
+    },
+    {
+      "code": "W2",
+      "message": "/images/prague.jpg: source-url-is-repo-placeholder-not-a-claim-of-origin"
+    },
+    {
+      "code": "W1",
+      "message": "provenance not verified: /images/pyramids-giza.jpg"
+    },
+    {
+      "code": "W2",
+      "message": "/images/pyramids-giza.jpg: provenance-not-verified"
+    },
+    {
+      "code": "W2",
+      "message": "/images/pyramids-giza.jpg: no-exif-metadata"
+    },
+    {
+      "code": "W2",
+      "message": "/images/pyramids-giza.jpg: source-url-is-repo-placeholder-not-a-claim-of-origin"
+    },
+    {
+      "code": "W3",
+      "message": "orphan asset (no puzzle references it): /images/big-ben.jpg"
+    },
+    {
+      "code": "W3",
+      "message": "orphan asset (no puzzle references it): /images/cherry-blossom.jpg"
+    },
+    {
+      "code": "W3",
+      "message": "orphan asset (no puzzle references it): /images/grand-canyon.jpg"
+    },
+    {
+      "code": "W3",
+      "message": "orphan asset (no puzzle references it): /images/lavender-field.jpg"
+    },
+    {
+      "code": "W3",
+      "message": "orphan asset (no puzzle references it): /images/mount-fuji.jpg"
+    },
+    {
+      "code": "W3",
+      "message": "orphan asset (no puzzle references it): /images/neuschwanstein.jpg"
+    },
+    {
+      "code": "W3",
+      "message": "orphan asset (no puzzle references it): /images/new-york.jpg"
+    },
+    {
+      "code": "W3",
+      "message": "orphan asset (no puzzle references it): /images/plitvice-lakes.jpg"
+    },
+    {
+      "code": "W3",
+      "message": "orphan asset (no puzzle references it): /images/prague.jpg"
+    },
+    {
+      "code": "W3",
+      "message": "orphan asset (no puzzle references it): /images/pyramids-giza.jpg"
+    }
+  ],
+  "entries": [
+    {
+      "asset": "/images/mona-lisa.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/starry-night.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/great-wave.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/girl-pearl-earring.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/sunrise.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/the-kiss.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/the-scream.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/water-lilies.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/cafe-terrace.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/the-milkmaid.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/matterhorn.jpg",
+      "category": "landscapes",
+      "status": "verified",
+      "license": "CC BY-SA 3.0",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/moraine-lake.jpg",
+      "category": "landscapes",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/santorini.jpg",
+      "category": "landscapes",
+      "status": "verified",
+      "license": "CC BY-SA 3.0",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/eiffel-tower.jpg",
+      "category": "landmarks",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/machu-picchu.jpg",
+      "category": "landmarks",
+      "status": "verified",
+      "license": "CC BY-SA 3.0",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/taj-mahal.jpg",
+      "category": "landmarks",
+      "status": "verified",
+      "license": "CC BY-SA 4.0",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/colosseum.jpg",
+      "category": "landmarks",
+      "status": "verified",
+      "license": "CC BY-SA 4.0",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/statue-of-liberty.jpg",
+      "category": "landmarks",
+      "status": "verified",
+      "license": "CC BY-SA 3.0",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/vatican.jpg",
+      "category": "landmarks",
+      "status": "verified",
+      "license": "CC BY-SA 3.0",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/aurora.jpg",
+      "category": "nature",
+      "status": "verified",
+      "license": "Public domain (U.S. federal government work)",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/flower.jpg",
+      "category": "nature",
+      "status": "verified",
+      "license": "CC BY-SA 3.0",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/waterfall.jpg",
+      "category": "nature",
+      "status": "verified",
+      "license": "CC BY-SA 4.0",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/golden-gate.jpg",
+      "category": "cities",
+      "status": "verified",
+      "license": "CC BY-SA 4.0",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/paris-louvre.jpg",
+      "category": "cities",
+      "status": "verified",
+      "license": "CC BY-SA 3.0",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/venice.jpg",
+      "category": "cities",
+      "status": "verified",
+      "license": "CC BY-SA 2.0",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/tokyo.jpg",
+      "category": "cities",
+      "status": "verified",
+      "license": "CC BY-SA 3.0",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/big-ben.jpg",
+      "category": "landmarks",
+      "status": "unverified",
+      "license": "Neverificată",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/cherry-blossom.jpg",
+      "category": "nature",
+      "status": "unverified",
+      "license": "Neverificată",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/grand-canyon.jpg",
+      "category": "landscapes",
+      "status": "unverified",
+      "license": "Neverificată",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/lavender-field.jpg",
+      "category": "landscapes",
+      "status": "unverified",
+      "license": "Neverificată",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/mount-fuji.jpg",
+      "category": "landscapes",
+      "status": "unverified",
+      "license": "Neverificată",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/neuschwanstein.jpg",
+      "category": "landmarks",
+      "status": "unverified",
+      "license": "Neverificată",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/new-york.jpg",
+      "category": "cities",
+      "status": "flagged",
+      "license": "Fără licență pentru acest proiect — marcaj vizibil de pe agregatorul de stock",
+      "ok": false,
+      "problems": [
+        "F1 flagged"
+      ]
+    },
+    {
+      "asset": "/images/plitvice-lakes.jpg",
+      "category": "landscapes",
+      "status": "flagged",
+      "license": "Fără licență — fișier este o previzualizare stock cu marcaj vizibil",
+      "ok": false,
+      "problems": [
+        "F1 flagged"
+      ]
+    },
+    {
+      "asset": "/images/prague.jpg",
+      "category": "cities",
+      "status": "unverified",
+      "license": "Neverificată",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/pyramids-giza.jpg",
+      "category": "landmarks",
+      "status": "unverified",
+      "license": "Neverificată",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/words-agile.svg",
+      "category": "letter-canvas",
+      "status": "verified",
+      "license": "All rights reserved — in-house work",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/words-innovation.svg",
+      "category": "letter-canvas",
+      "status": "verified",
+      "license": "All rights reserved — in-house work",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/words-scrabble.svg",
+      "category": "letter-canvas",
+      "status": "verified",
+      "license": "All rights reserved — in-house work",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/words-motto.svg",
+      "category": "letter-canvas",
+      "status": "verified",
+      "license": "All rights reserved — in-house work",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/sentence-funny-story.svg",
+      "category": "sentence-canvas",
+      "status": "verified",
+      "license": "All rights reserved — in-house work",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/sentence-travel.svg",
+      "category": "sentence-canvas",
+      "status": "verified",
+      "license": "All rights reserved — in-house work",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/sentence-nature.svg",
+      "category": "sentence-canvas",
+      "status": "verified",
+      "license": "All rights reserved — in-house work",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/sentence-future.svg",
+      "category": "sentence-canvas",
+      "status": "verified",
+      "license": "All rights reserved — in-house work",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/sentence-positive-message.svg",
+      "category": "sentence-canvas",
+      "status": "verified",
+      "license": "All rights reserved — in-house work",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/coaching/himalaya.svg",
+      "category": "coaching",
+      "status": "verified",
+      "license": "All rights reserved — in-house work",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/coaching/ocean.svg",
+      "category": "coaching",
+      "status": "verified",
+      "license": "All rights reserved — in-house work",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/coaching/moon.svg",
+      "category": "coaching",
+      "status": "verified",
+      "license": "All rights reserved — in-house work",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/coaching/compass.svg",
+      "category": "coaching",
+      "status": "verified",
+      "license": "All rights reserved — in-house work",
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "pass": false
+}

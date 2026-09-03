@@ -15,6 +15,7 @@ import { WebSocketServer } from "ws";
 
 import puzzlesData from "../shared/puzzles.json" with { type: "json" };
 import coachingData from "../shared/coaching.json" with { type: "json" };
+import sentenceVocab from "../shared/sentence-vocabulary.json" with { type: "json" };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
@@ -39,6 +40,7 @@ const VALID_STAGES = new Set(["lobby", "brief", "play", "reveal", "debrief", "ha
 const PUZZLES = puzzlesData.puzzles;
 const CATEGORIES = puzzlesData.categories;
 const DIFFICULTIES = puzzlesData.difficulties;
+const CANVAS_MODES = new Map((puzzlesData.canvasModes || []).map((m) => [m.id, m.tiles]));
 const COACHING = coachingData;
 const puzzleById = new Map(PUZZLES.map((p) => [p.id, p]));
 const activityById = new Map(COACHING.activities.map((a) => [a.id, a]));
@@ -66,25 +68,181 @@ function snapDistance(pieceW, pieceH) {
   return 24 + Math.min(pieceW, pieceH) * 0.15;
 }
 
-const WORD_PUZZLE_SETS = {
-  "agile-words": ["AGILE", "VALUES", "RETRO", "SPRINT", "TRUST", "FOCUS", "SCRUM", "FLOW", "TEAM", "GOAL", "LEARN", "DELIVER"],
-  "innovation-grid": ["IDEATE", "INSIGHT", "FUTURE", "VISION", "SPARK", "BRAINSTORM", "BUILD", "TEST", "LEARN", "MOMENTUM", "CURIOUS", "CREATE"],
-  "letter-anagrams": ["ANAGRAM", "LETTER", "SCORE", "BONUS", "WORDPLAY", "STACK", "CHAIN", "VALUE", "GRID", "CLUE", "BRAIN", "CREATE"],
-  "team-motto": ["MOTTO", "VALUES", "TRUST", "RESPECT", "CLARITY", "COURAGE", "GROWTH", "ALIGN", "OWNERSHIP", "IMPACT", "UNITY", "CARE"],
-};
-const WORD_TILE_PALETTE = ["#2563eb", "#0ea5e9", "#14b8a6", "#10b981", "#84cc16", "#f59e0b", "#f97316", "#ef4444", "#ec4899", "#8b5cf6"];
-const LETTER_POINTS = { A: 1, B: 3, C: 3, D: 2, E: 1, F: 4, G: 2, H: 4, I: 1, J: 8, K: 5, L: 1, M: 3, N: 1, O: 1, P: 3, Q: 10, R: 1, S: 1, T: 1, U: 1, V: 4, W: 4, X: 8, Y: 4, Z: 10 };
+// ---------------------------------------------------------------------------
+// Letter / Sentence Canvas — a SEPARATE model from the jigsaw pieces.
+//
+// There is deliberately no correctX/correctY, no snap-to-grid and no
+// per-piece lock. Tiles are freely placeable on a blank white sheet until the
+// facilitator locks the board or completes the session. Every tile action is
+// validated here (the server is authoritative for claims, inventory, undo,
+// duplication, deletion and completion).
+// ---------------------------------------------------------------------------
 
-function buildWordLetters(puzzleId, total) {
-  const base = WORD_PUZZLE_SETS[puzzleId] || WORD_PUZZLE_SETS["agile-words"];
-  const pool = base.join("").replace(/[^A-Z]/g, "").split("");
-  const letters = [];
-  while (letters.length < total) letters.push(...pool);
-  return letters.slice(0, total);
+const CANVAS_CATEGORIES = new Set(["letter-canvas", "sentence-canvas"]);
+const CANVAS_CONTENT_LANGUAGES = new Set(["ro", "en"]);
+
+/** Blank sheet (world units). The sheet is the whole board — nothing on it is "correct". */
+const CANVAS_SHEET_W = 1920;
+const CANVAS_SHEET_H = 1200;
+/** Letter canvas tile geometry. */
+const CANVAS_TILE_W = 100;
+const CANVAS_TILE_H = 100;
+/** Sentence canvas tile geometry (word width is computed from the text). */
+const CANVAS_WORD_H = 96;
+const CANVAS_WORD_GAP = 36;
+const CANVAS_PUNCT_W = 64;
+const CANVAS_MAX_CUSTOM_LEN = 40;
+/** A claim stays active this long after the last claim touch before it expires. */
+const CANVAS_CLAIM_TTL_MS = CLAIM_TTL_MS;
+/** Per-player undo history depth. */
+const CANVAS_UNDO_DEPTH = 60;
+
+/** Alphabets per content language (NFC-normalized; UI language is separate). */
+const CANVAS_LETTER_SETS = {
+  en: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+  ro: "ABCDEFGHIJKLMNOPQRSTUVWXYZĂÂÎȘȚ",
+};
+/** Approximate letter frequency weights used to build the finite inventory. */
+const CANVAS_LETTER_WEIGHTS = {
+  en: { A: 9, B: 2, C: 2, D: 4, E: 12, F: 2, G: 3, H: 2, I: 9, J: 1, K: 1, L: 4, M: 2, N: 6, O: 8, P: 2, Q: 1, R: 6, S: 4, T: 6, U: 4, V: 2, W: 1, X: 1, Y: 2, Z: 1 },
+  ro: { A: 7, B: 1, C: 3, D: 3, E: 9, F: 1, G: 3, H: 1, I: 5, J: 1, K: 1, L: 4, M: 2, N: 4, O: 6, P: 2, Q: 1, R: 7, S: 5, T: 6, U: 3, V: 2, W: 1, X: 1, Y: 1, Z: 1, Ă: 4, Â: 3, Î: 6, Ș: 1, Ț: 2 },
+};
+const CANVAS_PUNCT_SET = [".", ".", ".", ",", ",", "!", "?", "-", "'", "\"", ":", ";"];
+
+/** Wildcard tile marker (stands for any letter). */
+const CANVAS_WILDCARD = "?";
+
+function nfc(value) {
+  return String(value || "").normalize("NFC");
 }
 
-function wordTileColor(index, letter) {
-  return WORD_TILE_PALETTE[((letter?.charCodeAt?.(0) || 0) + index * 3) % WORD_TILE_PALETTE.length];
+function isCanvasPuzzle(puzzle) {
+  return CANVAS_CATEGORIES.has(puzzle?.category);
+}
+
+/** Deterministic word-tile width so every client renders identical tiles. */
+function canvasWordWidth(text, kind) {
+  if (kind === "punctuation") return CANVAS_PUNCT_W;
+  const len = [...nfc(text)].length;
+  return Math.max(96, Math.min(720, 40 + len * 19));
+}
+
+/**
+ * Builds the finite letter inventory (a Map letter -> remaining count) using
+ * largest-remainder distribution of the weighted frequencies.
+ * Returns null for the unlimited sandbox mode.
+ */
+function buildLetterInventory(mode, contentLanguage) {
+  const total = CANVAS_MODES.get(mode);
+  if (!total || total <= 0) return null; // sandbox = unlimited
+  const lang = contentLanguage === "ro" ? "ro" : "en";
+  const letters = CANVAS_LETTER_SETS[lang];
+  const weights = CANVAS_LETTER_WEIGHTS[lang];
+
+  const wildcards = Math.max(2, Math.round(total * 0.032));
+  const punctuationTotal = Math.max(6, Math.round(total * 0.075));
+  const letterBudget = total - wildcards - punctuationTotal;
+
+  const inventory = new Map();
+  inventory.set(CANVAS_WILDCARD, wildcards);
+  // Punctuation: weighted spread over the punctuation set (periods most common —
+  // the set lists the period three times, so it gets ~3x the share).
+  for (let i = 0; i < punctuationTotal; i++) {
+    const p = CANVAS_PUNCT_SET[i % CANVAS_PUNCT_SET.length];
+    inventory.set(p, (inventory.get(p) || 0) + 1);
+  }
+  // Letters: largest remainder of the weighted budget.
+  const weightSum = [...letters].reduce((sum, ch) => sum + (weights[ch] || 0), 0);
+  const shares = [...letters].map((ch) => ({ ch, exact: (letterBudget * (weights[ch] || 0)) / weightSum }));
+  for (const s of shares) inventory.set(s.ch, Math.floor(s.exact));
+  let rest = letterBudget - shares.reduce((sum, s) => sum + Math.floor(s.exact), 0);
+  shares.sort((a, b) => (b.exact - Math.floor(b.exact)) - (a.exact - Math.floor(a.exact)) || a.ch.localeCompare(b.ch));
+  for (let i = 0; rest > 0; i = (i + 1) % shares.length) {
+    inventory.set(shares[i].ch, (inventory.get(shares[i].ch) || 0) + 1);
+    rest--;
+  }
+  return inventory;
+}
+
+/** Builds the sentence inventory (a Map word -> remaining count) from the pack. */
+function buildSentenceInventory(contentLanguage) {
+  const pack = sentenceVocab[contentLanguage === "ro" ? "ro" : "en"] || sentenceVocab.en;
+  const inventory = new Map();
+  for (const entry of pack) {
+    const word = nfc(entry.w);
+    inventory.set(word, (inventory.get(word) || 0) + (entry.n || 1));
+  }
+  return inventory;
+}
+
+/** Clamps a tile inside the blank sheet. */
+function clampCanvasTile(canvas, tile) {
+  tile.x = Math.max(0, Math.min(canvas.sheetW - tile.w, tile.x));
+  tile.y = Math.max(0, Math.min(canvas.sheetH - tile.h, tile.y));
+}
+
+/**
+ * Sentence canvas only: align the dropped tile to the nearest row and snap its
+ * x to the discrete word gap next to the closest horizontal neighbour.
+ */
+function snapSentenceTile(canvas, tile) {
+  const others = [...canvas.tiles.values()].filter((t) => t.id !== tile.id);
+  const rowTol = tile.h * 0.55;
+  const nearRow = others.filter((t) => Math.abs(t.y - tile.y) <= rowTol);
+  if (nearRow.length) {
+    const rowY = Math.min(...nearRow.map((t) => t.y));
+    if (Math.abs(rowY - tile.y) <= rowTol) tile.y = rowY;
+  }
+  const row = others.filter((t) => Math.abs(t.y - tile.y) <= 10);
+  let best = null;
+  let bestScore = Infinity;
+  for (const t of row) {
+    const gapRight = tile.x - (t.x + t.w); // tile should sit to the right of t
+    const gapLeft = t.x - (tile.x + t.w); // tile should sit to the left of t
+    for (const [gap, side, of] of [[gapRight, "right", t], [gapLeft, "left", t]]) {
+      if (gap < -CANVAS_WORD_GAP || gap > CANVAS_WORD_GAP * 3.5) continue;
+      const score = Math.abs(gap - CANVAS_WORD_GAP);
+      if (score < bestScore) { bestScore = score; best = { side, of }; }
+    }
+  }
+  if (best && bestScore < CANVAS_WORD_GAP * 1.6) {
+    tile.x = best.side === "right" ? best.of.x + best.of.w + CANVAS_WORD_GAP : best.of.x - CANVAS_WORD_GAP - tile.w;
+  }
+  clampCanvasTile(canvas, tile);
+}
+
+/**
+ * Reconstructs the composition text from tile positions: tiles are grouped
+ * into rows by y-proximity, sorted by x, punctuation attaches without a space
+ * and large gaps become spaces. Shared with the client (src/lib/canvasText.ts).
+ */
+function reconstructCanvasText(tiles, opts = {}) {
+  const { bigGapFactor = 1.8, spaceBeforePunct = false } = opts;
+  if (!tiles.length) return "";
+  const list = [...tiles].sort((a, b) => a.y - b.y || a.x - b.x);
+  const rows = [];
+  for (const t of list) {
+    const row = rows.find((r) => Math.abs(r.y - t.y) < t.h * 0.55);
+    if (row) { row.items.push(t); row.y = (row.y * row.n + t.y) / (row.n + 1); row.n++; }
+    else rows.push({ y: t.y, n: 1, items: [t] });
+  }
+  const lines = rows.map((row) => {
+    row.items.sort((a, b) => a.x - b.x);
+    let line = "";
+    for (let i = 0; i < row.items.length; i++) {
+      const t = row.items[i];
+      if (i > 0) {
+        const prev = row.items[i - 1];
+        const gap = t.x - (prev.x + prev.w);
+        const eitherPunct = t.kind === "punctuation" || prev.kind === "punctuation";
+        const isSpace = !eitherPunct || spaceBeforePunct;
+        if (isSpace) line += gap > prev.w * bigGapFactor ? "  " : " ";
+      }
+      line += t.text;
+    }
+    return line.trim();
+  });
+  return lines.filter(Boolean).join("\n");
 }
 
 // ---------------------------------------------------------------------------
@@ -180,6 +338,7 @@ function roomView(room) {
     puzzleId: room.config.puzzleId,
     difficulty: room.config.difficulty,
     total: room.config.total,
+    contentLanguage: room.config.contentLanguage || null,
     maxPlayers: MAX_PLAYERS,
     createdAt: room.createdAt,
     startedAt: room.startedAt,
@@ -232,6 +391,36 @@ function puzzleView(room) {
       activity: sanitizedActivity(room),
     };
   }
+  if (room.canvas) {
+    const isLetter = room.canvas.category === "letter-canvas";
+    return {
+      image: room.puzzle.image,
+      name: room.puzzle.name,
+      category: room.puzzle.category,
+      credit: room.puzzle.credit,
+      license: room.puzzle.license,
+      source: room.puzzle.source,
+      width: room.puzzle.width,
+      height: room.puzzle.height,
+      cols: 0,
+      rows: 0,
+      pieceW: room.puzzle.pieceW,
+      pieceH: room.puzzle.pieceH,
+      seed: room.seed,
+      snapDistance: 0,
+      isCanvas: true,
+      canvasMode: room.canvas.mode,
+      contentLanguage: room.canvas.contentLanguage,
+      scenario: room.puzzle.scenario || null,
+      sheetW: room.canvas.sheetW,
+      sheetH: room.canvas.sheetH,
+      tileW: room.canvas.tileW,
+      tileH: room.canvas.tileH,
+      wordGap: room.canvas.wordGap,
+      // Sentence canvas: the client needs the pack to build the word tray.
+      sentencePack: isLetter ? undefined : (sentenceVocab[room.canvas.contentLanguage === "ro" ? "ro" : "en"] || []).map((e) => ({ w: e.w, c: e.c, n: e.n })),
+    };
+  }
   return {
     image: room.puzzle.image,
     name: room.puzzle.name,
@@ -247,7 +436,7 @@ function puzzleView(room) {
     pieceH: room.puzzle.pieceH,
     seed: room.seed,
     snapDistance: snapDistance(room.puzzle.pieceW, room.puzzle.pieceH),
-    wordModeNotice: room.puzzle.category === "words",
+    wordModeNotice: false,
   };
 }
 
@@ -325,10 +514,85 @@ function scatterPieces(room) {
   }
 }
 
+function normalizeContentLanguage(value, fallback = "en") {
+  return CANVAS_CONTENT_LANGUAGES.has(value) ? value : fallback;
+}
+
+function buildCanvasState(puzzle, mode, contentLanguage) {
+  const isLetter = puzzle.category === "letter-canvas";
+  const inventory = isLetter ? buildLetterInventory(mode, contentLanguage) : buildSentenceInventory(contentLanguage);
+  return {
+    category: puzzle.category,
+    mode,
+    contentLanguage,
+    sheetW: CANVAS_SHEET_W,
+    sheetH: CANVAS_SHEET_H,
+    tileW: isLetter ? CANVAS_TILE_W : 0, // sentence tile widths are per-word
+    tileH: isLetter ? CANVAS_TILE_H : CANVAS_WORD_H,
+    wordGap: isLetter ? 0 : CANVAS_WORD_GAP,
+    tiles: new Map(),
+    inventory, // Map<text, remaining> or null (sandbox)
+    nextId: 1,
+    history: new Map(), // playerId -> undo stack
+  };
+}
+
+function serializeCanvasTile(t) {
+  return {
+    id: t.id,
+    text: t.text,
+    kind: t.kind,
+    x: t.x,
+    y: t.y,
+    w: t.w,
+    h: t.h,
+    flipped: !!t.flipped,
+    heldBy: t.heldBy || null,
+    createdBy: t.createdBy || null,
+    custom: !!t.custom,
+  };
+}
+
 function buildPuzzleSetup(config) {
   const puzzle = puzzleById.get(config.puzzleId);
   const coachingActivity = !puzzle ? activityById.get(config.puzzleId) : null;
   if (!puzzle && !coachingActivity) throw new Error("Unknown puzzle or activity.");
+
+  if (isCanvasPuzzle(puzzle)) {
+    // Canvas modes replace the photo difficulties for these categories.
+    if (!CANVAS_MODES.has(config.difficulty)) throw new Error("Unknown canvas mode.");
+    const mode = config.difficulty;
+    const contentLanguage = normalizeContentLanguage(config.contentLanguage);
+    const canvas = buildCanvasState(puzzle, mode, contentLanguage);
+    const total = CANVAS_MODES.get(mode) || 0; // 0 = unlimited sandbox
+    return {
+      config: { puzzleId: puzzle.id, difficulty: mode, total, contentLanguage },
+      coachingActivity: null,
+      canvas,
+      board: { width: canvas.sheetW, height: canvas.sheetH, pieceW: canvas.tileW, pieceH: canvas.tileH },
+      rankingSlots: [],
+      puzzleMeta: {
+        image: puzzle.image, // cover — used in selectors only, never on the sheet
+        name: puzzle.name,
+        category: puzzle.category,
+        credit: puzzle.credit || "",
+        license: puzzle.license || "",
+        source: puzzle.source || "",
+        width: canvas.sheetW,
+        height: canvas.sheetH,
+        cols: 0,
+        rows: 0,
+        pieceW: canvas.tileW,
+        pieceH: canvas.tileH,
+        scenario: puzzle.scenario || null,
+        canvasMode: mode,
+        contentLanguage,
+        isCanvas: true,
+      },
+      pieces: [],
+    };
+  }
+
   const difficulty = DIFFICULTIES.find((d) => d.id === config.difficulty) || DIFFICULTIES[0];
   let total = difficulty.pieces;
   let layout = null;
@@ -352,15 +616,12 @@ function buildPuzzleSetup(config) {
 
   const dims = puzzle ? imageDims[puzzle.image.split("/").pop()] || { w: 1600, h: 1000 } : { w: 0, h: 0 };
   const grid = computeGrid(dims.w, dims.h, difficulty.pieces);
-  const isWordPuzzle = puzzle?.category === "words";
-  const letters = isWordPuzzle ? buildWordLetters(puzzle.id, difficulty.pieces) : [];
   const pieces = [];
 
   if (coachingActivity?.mode === "ranking") {
     coachingActivity.items.forEach((_item, id) => pieces.push({ id, x: 0, y: 0, correctX: 0, correctY: 0, drag: false, moved: false, locked: false, heldBy: null, heldAt: null, placedOnSlot: null }));
   } else if (!coachingActivity) {
     for (let id = 0; id < difficulty.pieces; id++) {
-      const letter = letters[id];
       pieces.push({
         id,
         x: 0,
@@ -373,14 +634,14 @@ function buildPuzzleSetup(config) {
         heldBy: null,
         heldAt: null,
         placedOnSlot: null,
-        ...(isWordPuzzle ? { letter, letterPoints: LETTER_POINTS[letter] || 1, letterColor: wordTileColor(id, letter) } : {}),
       });
     }
   }
 
   return {
-    config: { puzzleId: coachingActivity ? coachingActivity.id : puzzle.id, difficulty: difficulty.id, total },
+    config: { puzzleId: coachingActivity ? coachingActivity.id : puzzle.id, difficulty: difficulty.id, total, contentLanguage: null },
     coachingActivity: coachingActivity || null,
+    canvas: null,
     board,
     rankingSlots,
     puzzleMeta: {
@@ -396,6 +657,10 @@ function buildPuzzleSetup(config) {
       rows: layout ? layout.rows : grid.rows,
       pieceW: board ? board.pieceW : grid.pieceW,
       pieceH: board ? board.pieceH : grid.pieceH,
+      scenario: null,
+      canvasMode: null,
+      contentLanguage: null,
+      isCanvas: false,
     },
     pieces,
   };
@@ -404,6 +669,7 @@ function buildPuzzleSetup(config) {
 function resetWorkshopState(room, { lobby = true } = {}) {
   room.ratings.clear();
   room.scores.clear();
+  if (room.canvas) resetCanvasState(room);
   room.completed = false;
   room.completedAt = null;
   room.completedInMs = null;
@@ -425,6 +691,7 @@ function applyPuzzleToRoom(room, config) {
   const setup = buildPuzzleSetup(config);
   room.config = setup.config;
   room.coachingActivity = setup.coachingActivity;
+  room.canvas = setup.canvas;
   room.board = setup.board;
   room.rankingSlots = setup.rankingSlots;
   room.puzzle = setup.puzzleMeta;
@@ -432,6 +699,17 @@ function applyPuzzleToRoom(room, config) {
   room.seed = crypto.randomInt(1, 2 ** 31);
   if (room.pieces.length) scatterPieces(room);
   resetWorkshopState(room, { lobby: true });
+}
+
+/** Clears tiles and restores the full inventory (used by reset / puzzle switch). */
+function resetCanvasState(room) {
+  if (!room.canvas) return;
+  room.canvas.tiles.clear();
+  room.canvas.nextId = 1;
+  room.canvas.history.clear();
+  room.canvas.inventory = room.canvas.category === "letter-canvas"
+    ? buildLetterInventory(room.canvas.mode, room.canvas.contentLanguage)
+    : buildSentenceInventory(room.canvas.contentLanguage);
 }
 
 function createRoom(config, creator = {}) {
@@ -443,6 +721,7 @@ function createRoom(config, creator = {}) {
     hostId: null,
     config: null,
     coachingActivity: null,
+    canvas: null,
     board: null,
     rankingSlots: [],
     puzzle: null,
@@ -498,7 +777,15 @@ function scheduleSnapshot() {
 function persistableRoom(room) {
   return {
     id: room.id, code: room.code, sessionName: room.sessionName, hostId: room.hostId,
-    config: room.config, pieces: room.pieces.map(serializePiece), ratings: [...room.ratings], scores: [...room.scores],
+    config: room.config, pieces: room.pieces.map(serializePiece),
+    canvas: room.canvas ? {
+      category: room.canvas.category, mode: room.canvas.mode, contentLanguage: room.canvas.contentLanguage,
+      sheetW: room.canvas.sheetW, sheetH: room.canvas.sheetH, tileW: room.canvas.tileW, tileH: room.canvas.tileH,
+      wordGap: room.canvas.wordGap, nextId: room.canvas.nextId,
+      tiles: [...room.canvas.tiles.values()].map(serializeCanvasTile),
+      inventory: room.canvas.inventory ? [...room.canvas.inventory] : null,
+    } : null,
+    ratings: [...room.ratings], scores: [...room.scores],
     knownPlayers: [...room.knownPlayers], createdAt: room.createdAt, startedAt: room.startedAt,
     pausedAt: room.pausedAt, pausedDurationMs: room.pausedDurationMs, timerEndsAt: room.timerEndsAt,
     timerDurationMs: room.timerDurationMs, lastActivityAt: room.lastActivityAt, stage: room.stage,
@@ -535,6 +822,11 @@ function restoreSnapshots() {
       room.hostId = raw.hostId;
       room.knownPlayers = new Map(raw.knownPlayers || []);
       room.pieces = (raw.pieces || room.pieces).map((p) => ({ ...p, heldBy: null, heldAt: null, drag: false }));
+      if (room.canvas && raw.canvas) {
+        room.canvas.tiles = new Map((raw.canvas.tiles || []).map((t) => [t.id, { ...t, heldBy: null, heldAt: null }]));
+        room.canvas.inventory = raw.canvas.inventory ? new Map(raw.canvas.inventory) : null;
+        room.canvas.nextId = raw.canvas.nextId || (room.canvas.tiles.size + 1);
+      }
       room.ratings = new Map(raw.ratings || []);
       room.scores = new Map(raw.scores || []);
       Object.assign(room, {
@@ -592,6 +884,17 @@ function releaseClaims(room, playerId) {
     }
   }
   if (released.length) broadcast(room, { t: "pieces", list: released });
+  if (room.canvas) {
+    const canvasReleased = [];
+    for (const tile of room.canvas.tiles.values()) {
+      if (tile.heldBy === playerId) {
+        tile.heldBy = null;
+        tile.heldAt = null;
+        canvasReleased.push(serializeCanvasTile(tile));
+      }
+    }
+    if (canvasReleased.length) broadcast(room, { t: "canvas", list: canvasReleased });
+  }
 }
 
 function dropPlayerConnection(room, playerId) {
@@ -610,7 +913,7 @@ function dropPlayerConnection(room, playerId) {
 }
 
 function checkCompletion(room) {
-  if (room.completed || room.coachingActivity || !room.startedAt) return;
+  if (room.completed || room.coachingActivity || room.canvas || !room.startedAt) return;
   if (room.pieces.filter((p) => p.locked).length >= room.config.total) {
     room.completed = true;
     room.completedAt = Date.now();
@@ -694,6 +997,28 @@ function applyControl(room, playerId, msg, ws) {
     case "celebration":
       room.celebrationMode = msg.mode === "individual" ? "individual" : "team";
       break;
+    case "complete": {
+      // Canvas sessions are completed by the facilitator, never by placement.
+      if (!room.canvas) return send(ws, { t: "error", code: "not_canvas", message: "Only letter/sentence canvas sessions use Complete." });
+      if (room.completed) return;
+      room.completed = true;
+      room.completedAt = now;
+      room.completedInMs = elapsedMs(room, now);
+      room.boardLocked = true;
+      room.completionPlayers = activePlayerList(room).filter((p) => p.role !== "spectator").map((p) => p.name);
+      const canvasText = reconstructCanvasText([...room.canvas.tiles.values()]);
+      broadcast(room, {
+        t: "completion",
+        room: roomView(room),
+        players: room.completionPlayers,
+        scores: scoreList(room),
+        canvasText,
+        canvasTiles: [...room.canvas.tiles.values()].map(serializeCanvasTile),
+      });
+      logEvent("complete", room, { durationMs: room.completedInMs, tiles: room.canvas.tiles.size });
+      touch(room);
+      return;
+    }
     case "kick": {
       const target = String(msg.playerId || "");
       if (!target || target === room.hostId) return;
@@ -758,6 +1083,12 @@ function exportPayload(room) {
   const deviationScore = ranking?.every((entry) => entry.teamRank != null && entry.expertRank != null)
     ? ranking.reduce((sum, entry) => sum + Math.pow(entry.teamRank - entry.expertRank, 2), 0)
     : null;
+  const canvas = room.canvas ? {
+    mode: room.canvas.mode,
+    contentLanguage: room.canvas.contentLanguage,
+    text: reconstructCanvasText([...room.canvas.tiles.values()]),
+    tiles: [...room.canvas.tiles.values()].map(serializeCanvasTile),
+  } : null;
   return {
     schemaVersion: 1,
     exportedAt: new Date().toISOString(),
@@ -765,12 +1096,291 @@ function exportPayload(room) {
     participants: [...room.knownPlayers.entries()].map(([id, p]) => ({ id, name: p.name, role: p.role || "player" })),
     ranking,
     deviationScore,
+    canvas,
     profiles: [...room.ratings.entries()].filter(([, r]) => r.done).map(([playerId, r]) => ({ playerId, profileCode: r.profileCode })),
     insights: room.insights,
     debriefNotes: room.debriefNotes,
     actions: room.actions,
     facilitatorNotes: room.facilitatorNotes,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Canvas operations (letter + sentence). The server is authoritative for
+// every tile: claims, inventory, snapping, duplication, deletion, undo.
+// ---------------------------------------------------------------------------
+
+function canvasGuard(room, playerId, ws) {
+  const canvas = room.canvas;
+  if (!canvas) return null;
+  if (room.completed) { send(ws, { t: "error", code: "room_completed", message: "The session is complete — the canvas is frozen." }); return null; }
+  if (room.stage !== "play" || room.boardLocked) { send(ws, { t: "error", code: "board_locked", message: "The board is locked by the facilitator." }); return null; }
+  const player = room.players.get(playerId);
+  if (!player || player.role === "spectator") { send(ws, { t: "error", code: "spectator", message: "Spectators can't touch the canvas." }); return null; }
+  return canvas;
+}
+
+function canvasBroadcast(room, { list = [], removed = [], inventory = false } = {}) {
+  const payload = { t: "canvas" };
+  if (list.length) payload.list = list;
+  if (removed.length) payload.removed = removed;
+  if (inventory && room.canvas?.inventory) payload.inventory = Object.fromEntries(room.canvas.inventory);
+  if (!list.length && !removed.length && !payload.inventory) return;
+  broadcast(room, payload);
+}
+
+function takeCanvasInventory(canvas, text) {
+  if (!canvas.inventory) return true; // sandbox = unlimited
+  const left = canvas.inventory.get(text) || 0;
+  if (left <= 0) return false;
+  canvas.inventory.set(text, left - 1);
+  return true;
+}
+
+function returnCanvasInventory(canvas, text) {
+  if (!canvas.inventory) return;
+  canvas.inventory.set(text, (canvas.inventory.get(text) || 0) + 1);
+}
+
+function pushCanvasHistory(canvas, playerId, entry) {
+  const stack = canvas.history.get(playerId) || [];
+  stack.push(entry);
+  while (stack.length > CANVAS_UNDO_DEPTH) stack.shift();
+  canvas.history.set(playerId, stack);
+}
+
+function spawnCanvasTile(canvas, text, kind, opts) {
+  const isLetter = canvas.category === "letter-canvas";
+  const id = canvas.nextId++;
+  const tile = {
+    id,
+    text,
+    kind,
+    x: opts.x,
+    y: opts.y,
+    w: isLetter ? canvas.tileW : canvasWordWidth(text, kind),
+    h: canvas.tileH,
+    flipped: false,
+    heldBy: opts.heldBy || null,
+    heldAt: opts.heldBy ? Date.now() : null,
+    createdBy: opts.createdBy || null,
+    custom: !!opts.custom,
+  };
+  clampCanvasTile(canvas, tile);
+  canvas.tiles.set(id, tile);
+  return tile;
+}
+
+function applyCanvasOp(room, playerId, msg, ws) {
+  const canvas = canvasGuard(room, playerId, ws);
+  if (!canvas) return;
+  const now = Date.now();
+  const isLetter = canvas.category === "letter-canvas";
+  let inventoryChanged = false;
+  const list = [];
+  const removed = [];
+
+  const claimBlocked = (tile) => tile.heldBy && tile.heldBy !== playerId && now - (tile.heldAt || 0) < CANVAS_CLAIM_TTL_MS;
+  const rejectClaimed = (tile) => send(ws, { t: "canvasRejected", reason: "held", ownerId: tile.heldBy, tile: serializeCanvasTile(tile) });
+
+  switch (msg.op) {
+    case "spawn": {
+      const raw = nfc(String(msg.text || ""));
+      let text;
+      let kind;
+      if (isLetter) {
+        if (raw.length !== 1) { send(ws, { t: "error", code: "bad_letter", message: "One letter per tile." }); return; }
+        const alphabet = CANVAS_LETTER_SETS[canvas.contentLanguage];
+        if (raw === CANVAS_WILDCARD) { text = CANVAS_WILDCARD; kind = "wildcard"; }
+        else if (CANVAS_PUNCT_SET.includes(raw)) { text = raw; kind = "punctuation"; }
+        else if (alphabet.includes(raw.toUpperCase())) { text = raw.toUpperCase(); kind = "letter"; }
+        else { send(ws, { t: "error", code: "letter_unavailable", message: "This letter is not available in the selected content language." }); return; }
+      } else {
+        const custom = !!msg.custom;
+        if (custom) {
+          const trimmed = raw.replace(/\s+/g, " ").trim();
+          if (!trimmed || trimmed.length > CANVAS_MAX_CUSTOM_LEN) { send(ws, { t: "error", code: "bad_word", message: "Custom words must be 1–40 characters." }); return; }
+          text = trimmed;
+          kind = "custom";
+        } else if (CANVAS_PUNCT_SET.includes(raw)) {
+          text = raw;
+          kind = "punctuation";
+        } else if (canvas.inventory?.has(raw)) {
+          text = raw;
+          kind = "word";
+        } else {
+          send(ws, { t: "error", code: "word_unavailable", message: "This word is not in the vocabulary pack." });
+          return;
+        }
+      }
+      if (kind !== "custom") {
+        if (!takeCanvasInventory(canvas, text)) {
+          inventoryChanged = true;
+          send(ws, { t: "canvasRejected", reason: "inventory", text });
+          return;
+        }
+        inventoryChanged = true;
+      }
+      const jitter = ((canvas.nextId * 137) % 90) - 45;
+      const baseX = Number.isFinite(Number(msg.x)) ? Number(msg.x) : canvas.sheetW / 2;
+      const baseY = Number.isFinite(Number(msg.y)) ? Number(msg.y) : canvas.sheetH / 2;
+      const tile = spawnCanvasTile(canvas, text, kind, {
+        x: baseX + jitter, y: baseY + jitter,
+        heldBy: playerId, createdBy: playerId, custom: kind === "custom",
+      });
+      pushCanvasHistory(canvas, playerId, { op: "spawn", id: tile.id, fromInventory: !tile.custom });
+      list.push(serializeCanvasTile(tile));
+      break;
+    }
+    case "move": {
+      const tile = canvas.tiles.get(Number(msg.id));
+      if (!tile) { send(ws, { t: "error", code: "tile_missing", message: "Tile not found." }); return; }
+      const x = Math.max(-2000, Math.min(canvas.sheetW + 2000, Number(msg.x) || 0));
+      const y = Math.max(-2000, Math.min(canvas.sheetH + 2000, Number(msg.y) || 0));
+      if (msg.drag) {
+        if (claimBlocked(tile)) { rejectClaimed(tile); return; }
+        tile.heldBy = playerId;
+        tile.heldAt = now;
+        tile.x = x;
+        tile.y = y;
+        clampCanvasTile(canvas, tile);
+      } else {
+        if (claimBlocked(tile)) { rejectClaimed(tile); return; }
+        const prevX = tile.x;
+        const prevY = tile.y;
+        tile.x = x;
+        tile.y = y;
+        tile.heldBy = null;
+        tile.heldAt = null;
+        if (!isLetter) snapSentenceTile(canvas, tile);
+        else clampCanvasTile(canvas, tile);
+        pushCanvasHistory(canvas, playerId, { op: "move", id: tile.id, prevX, prevY });
+      }
+      list.push(serializeCanvasTile(tile));
+      break;
+    }
+    case "flip": {
+      const tile = canvas.tiles.get(Number(msg.id));
+      if (!tile) return;
+      if (claimBlocked(tile)) { rejectClaimed(tile); return; }
+      tile.flipped = !tile.flipped;
+      pushCanvasHistory(canvas, playerId, { op: "flip", id: tile.id, was: !tile.flipped });
+      list.push(serializeCanvasTile(tile));
+      break;
+    }
+    case "duplicate": {
+      const tile = canvas.tiles.get(Number(msg.id));
+      if (!tile) return;
+      if (claimBlocked(tile)) { rejectClaimed(tile); return; }
+      if (!tile.custom) {
+        if (!takeCanvasInventory(canvas, tile.text)) {
+          send(ws, { t: "canvasRejected", reason: "inventory", text: tile.text });
+          return;
+        }
+        inventoryChanged = true;
+      }
+      const gap = Math.max(canvas.wordGap, 20);
+      const candidates = [
+        { x: tile.x + tile.w + gap, y: tile.y },
+        { x: tile.x, y: tile.y + tile.h + 20 },
+        { x: tile.x - tile.w - gap, y: tile.y },
+        { x: 24, y: (tile.y + tile.h + 20) % Math.max(1, canvas.sheetH - tile.h - 24) },
+      ];
+      let pos = candidates[0];
+      for (const c of candidates) {
+        if (c.x >= 0 && c.y >= 0 && c.x + tile.w <= canvas.sheetW && c.y + tile.h <= canvas.sheetH) { pos = c; break; }
+      }
+      const copy = spawnCanvasTile(canvas, tile.text, tile.kind, {
+        x: pos.x, y: pos.y, heldBy: playerId, createdBy: playerId, custom: tile.custom,
+      });
+      pushCanvasHistory(canvas, playerId, { op: "duplicate", id: copy.id, fromInventory: !copy.custom });
+      list.push(serializeCanvasTile(copy));
+      break;
+    }
+    case "edit": {
+      const tile = canvas.tiles.get(Number(msg.id));
+      if (!tile || !tile.custom) { send(ws, { t: "error", code: "not_custom", message: "Only custom word tiles can be edited." }); return; }
+      if (claimBlocked(tile)) { rejectClaimed(tile); return; }
+      const next = nfc(String(msg.text || "")).replace(/\s+/g, " ").trim();
+      if (!next || next.length > CANVAS_MAX_CUSTOM_LEN) { send(ws, { t: "error", code: "bad_word", message: "Custom words must be 1–40 characters." }); return; }
+      const prevText = tile.text;
+      const prevW = tile.w;
+      tile.text = next;
+      tile.w = canvasWordWidth(next, "custom");
+      clampCanvasTile(canvas, tile);
+      pushCanvasHistory(canvas, playerId, { op: "edit", id: tile.id, prevText, prevW });
+      list.push(serializeCanvasTile(tile));
+      break;
+    }
+    case "delete": {
+      const tile = canvas.tiles.get(Number(msg.id));
+      if (!tile) return;
+      const isOwner = tile.createdBy === playerId;
+      if (!isOwner && claimBlocked(tile)) { rejectClaimed(tile); return; }
+      const snapshot = serializeCanvasTile(tile);
+      canvas.tiles.delete(tile.id);
+      if (!tile.custom) { returnCanvasInventory(canvas, tile.text); inventoryChanged = true; }
+      removed.push(tile.id);
+      pushCanvasHistory(canvas, playerId, { op: "delete", tile: snapshot, fromInventory: !tile.custom });
+      break;
+    }
+    case "undo": {
+      const stack = canvas.history.get(playerId) || [];
+      const entry = stack.pop();
+      if (!entry) { send(ws, { t: "canvasRejected", reason: "nothing_to_undo" }); return; }
+      if (entry.op === "spawn" || entry.op === "duplicate") {
+        const tile = canvas.tiles.get(entry.id);
+        if (tile) {
+          canvas.tiles.delete(entry.id);
+          if (entry.fromInventory) { returnCanvasInventory(canvas, tile.text); inventoryChanged = true; }
+          removed.push(entry.id);
+        }
+      } else if (entry.op === "move") {
+        const tile = canvas.tiles.get(entry.id);
+        if (tile) {
+          if (claimBlocked(tile)) { canvas.history.set(playerId, [entry, ...stack]); rejectClaimed(tile); return; }
+          tile.x = entry.prevX;
+          tile.y = entry.prevY;
+          clampCanvasTile(canvas, tile);
+          list.push(serializeCanvasTile(tile));
+        }
+      } else if (entry.op === "flip") {
+        const tile = canvas.tiles.get(entry.id);
+        if (tile) {
+          if (claimBlocked(tile)) { canvas.history.set(playerId, [entry, ...stack]); rejectClaimed(tile); return; }
+          tile.flipped = entry.was;
+          list.push(serializeCanvasTile(tile));
+        }
+      } else if (entry.op === "edit") {
+        const tile = canvas.tiles.get(entry.id);
+        if (tile) {
+          tile.text = entry.prevText;
+          tile.w = entry.prevW;
+          clampCanvasTile(canvas, tile);
+          list.push(serializeCanvasTile(tile));
+        }
+      } else if (entry.op === "delete") {
+        const t = entry.tile;
+        if (!canvas.tiles.has(t.id)) {
+          if (t.custom || takeCanvasInventory(canvas, t.text)) {
+            if (!t.custom) inventoryChanged = true;
+            canvas.tiles.set(t.id, { ...t, heldBy: null, heldAt: null });
+            list.push(serializeCanvasTile(t));
+          } else {
+            send(ws, { t: "canvasRejected", reason: "inventory" });
+          }
+        }
+      }
+      canvas.history.set(playerId, stack);
+      break;
+    }
+    default:
+      send(ws, { t: "error", code: "unknown_op", message: "Unknown canvas operation." });
+      return;
+  }
+
+  canvasBroadcast(room, { list, removed, inventory: inventoryChanged });
+  touch(room);
 }
 
 // ---------------------------------------------------------------------------
@@ -792,14 +1402,23 @@ function publicCoachingCatalog() {
     : activity);
   return catalog;
 }
-app.get("/api/puzzles", (_req, res) => res.json({ categories: CATEGORIES, difficulties: DIFFICULTIES, puzzles: PUZZLES.map((p) => ({ ...p })), coaching: publicCoachingCatalog(), maxPlayers: MAX_PLAYERS }));
+app.get("/api/puzzles", (_req, res) => res.json({
+  categories: CATEGORIES,
+  difficulties: DIFFICULTIES,
+  puzzles: PUZZLES.map((p) => ({ ...p })),
+  canvasModes: puzzlesData.canvasModes || [],
+  letterSets: CANVAS_LETTER_SETS,
+  sentencePacks: { ro: sentenceVocab.ro, en: sentenceVocab.en },
+  coaching: publicCoachingCatalog(),
+  maxPlayers: MAX_PLAYERS,
+}));
 app.get("/api/coaching", (_req, res) => res.json(publicCoachingCatalog()));
 
 app.post("/api/rooms", (req, res) => {
-  const { puzzleId, difficulty, name, sessionName, role } = req.body || {};
+  const { puzzleId, difficulty, name, sessionName, role, contentLanguage } = req.body || {};
   if (typeof name !== "string" || !name.trim()) return res.status(400).json({ error: "A display name is required." });
   try {
-    const room = createRoom({ puzzleId, difficulty }, { sessionName });
+    const room = createRoom({ puzzleId, difficulty, contentLanguage }, { sessionName });
     const playerId = crypto.randomUUID();
     const info = { name: name.trim().slice(0, 24), color: null, role: role === "spectator" ? "spectator" : "host" };
     room.hostId = playerId;
@@ -863,14 +1482,29 @@ app.post("/api/rooms/:id/takeover", (req, res) => {
   res.json({ ok: true, room: roomView(room) });
 });
 
+function canvasSnapshot(room) {
+  if (!room.canvas) return undefined;
+  return {
+    mode: room.canvas.mode,
+    contentLanguage: room.canvas.contentLanguage,
+    sheetW: room.canvas.sheetW,
+    sheetH: room.canvas.sheetH,
+    tileW: room.canvas.tileW,
+    tileH: room.canvas.tileH,
+    wordGap: room.canvas.wordGap,
+    tiles: [...room.canvas.tiles.values()].map(serializeCanvasTile),
+    inventory: room.canvas.inventory ? Object.fromEntries(room.canvas.inventory) : null,
+  };
+}
+
 app.post("/api/rooms/:id/puzzle", (req, res) => {
   const room = findRoom(req.params.id);
   if (!room) return res.status(404).json({ error: "Room not found.", code: "room_missing" });
-  const { puzzleId, difficulty, pid } = req.body || {};
+  const { puzzleId, difficulty, pid, contentLanguage } = req.body || {};
   if (!pid || pid !== room.hostId) return res.status(403).json({ error: "Only the facilitator can change the activity.", code: "not_host" });
-  try { applyPuzzleToRoom(room, { puzzleId, difficulty }); } catch { return res.status(400).json({ error: "Unknown puzzle or activity." }); }
+  try { applyPuzzleToRoom(room, { puzzleId, difficulty, contentLanguage }); } catch { return res.status(400).json({ error: "Unknown puzzle or activity." }); }
   touch(room);
-  broadcast(room, { t: "puzzle", room: roomView(room), puzzle: puzzleView(room), pieces: room.pieces.map(serializePiece), ratings: [] });
+  broadcast(room, { t: "puzzle", room: roomView(room), puzzle: puzzleView(room), pieces: room.pieces.map(serializePiece), ratings: [], canvas: canvasSnapshot(room) });
   logEvent("puzzle_change", room);
   res.json({ ok: true, room: roomView(room) });
 });
@@ -882,7 +1516,7 @@ app.post("/api/rooms/:id/reset", (req, res) => {
   if (room.pieces.length) scatterPieces(room);
   resetWorkshopState(room, { lobby: true });
   touch(room);
-  broadcast(room, { t: "reset", room: roomView(room), puzzle: puzzleView(room), pieces: room.pieces.map(serializePiece), ratings: [] });
+  broadcast(room, { t: "reset", room: roomView(room), puzzle: puzzleView(room), pieces: room.pieces.map(serializePiece), ratings: [], canvas: canvasSnapshot(room) });
   logEvent("room_reset", room);
   res.json({ ok: true });
 });
@@ -898,7 +1532,8 @@ app.get("/api/rooms/:id/export", (req, res) => {
   }
   const actions = payload.actions.map((a) => `<li>${htmlEscape(a.text)} — ${htmlEscape(room.knownPlayers.get(a.ownerId)?.name || "Unassigned")} ${a.due ? `(${htmlEscape(a.due)})` : ""}</li>`).join("");
   const ranking = payload.ranking ? `<h2>Team ranking${payload.deviationScore != null ? ` · deviation ${payload.deviationScore}` : ""}</h2><ol>${payload.ranking.map((r) => `<li>${htmlEscape(r.item.en || r.item.ro)} — team ${r.teamRank ?? "–"}${r.expertRank ? ` / expert ${r.expertRank}` : ""}</li>`).join("")}</ol>` : "";
-  res.type("html").send(`<!doctype html><html><head><meta charset="utf-8"><title>${htmlEscape(room.sessionName)} — PuzzleTogether</title><style>body{font:14px system-ui;max-width:800px;margin:40px auto;color:#172033}h1,h2{color:#27358f}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.card{border:1px solid #ddd;border-radius:12px;padding:14px}@media print{button{display:none}}</style></head><body><button onclick="print()">Print / Save PDF</button><h1>${htmlEscape(room.sessionName)}</h1><p>${htmlEscape(room.config.puzzleId)} · ${new Date(room.startedAt || room.createdAt).toLocaleString()}</p>${ranking}<h2>Insights</h2><div class="grid"><div class="card"><b>Observed</b><p>${htmlEscape(room.insights.observed)}</p></div><div class="card"><b>Learned</b><p>${htmlEscape(room.insights.learned)}</p></div><div class="card"><b>Try next</b><p>${htmlEscape(room.insights.tryNext)}</p></div></div><h2>Action items</h2><ul>${actions || "<li>No action items captured.</li>"}</ul></body></html>`);
+  const canvas = payload.canvas ? `<h2>Canvas composition (${payload.canvas.contentLanguage.toUpperCase()} · ${htmlEscape(payload.canvas.mode)} · ${payload.canvas.tiles.length} tiles)</h2><pre style="white-space:pre-wrap;font-family:Georgia,serif;font-size:17px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px">${htmlEscape(payload.canvas.text || "—")}</pre>` : "";
+  res.type("html").send(`<!doctype html><html><head><meta charset="utf-8"><title>${htmlEscape(room.sessionName)} — PuzzleTogether</title><style>body{font:14px system-ui;max-width:800px;margin:40px auto;color:#172033}h1,h2{color:#27358f}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.card{border:1px solid #ddd;border-radius:12px;padding:14px}@media print{button{display:none}}</style></head><body><button onclick="print()">Print / Save PDF</button><h1>${htmlEscape(room.sessionName)}</h1><p>${htmlEscape(room.config.puzzleId)} · ${new Date(room.startedAt || room.createdAt).toLocaleString()}</p>${ranking}${canvas}<h2>Insights</h2><div class="grid"><div class="card"><b>Observed</b><p>${htmlEscape(room.insights.observed)}</p></div><div class="card"><b>Learned</b><p>${htmlEscape(room.insights.learned)}</p></div><div class="card"><b>Try next</b><p>${htmlEscape(room.insights.tryNext)}</p></div></div><h2>Action items</h2><ul>${actions || "<li>No action items captured.</li>"}</ul></body></html>`);
 });
 
 app.use(express.static(publicDir, { maxAge: IS_PROD ? "7d" : 0 }));
@@ -944,6 +1579,17 @@ wss.on("connection", (ws) => {
           t: "init", protocolVersion: PROTOCOL_VERSION, you: pid, room: roomView(room), puzzle: puzzleView(room), players: activePlayerList(room), pieces: room.pieces.map(serializePiece), ratings: ratingListFor(room, pid), scores: scoreList(room), chat: room.chat,
           facilitator: isHost(room, pid) ? { notes: room.facilitatorNotes } : undefined,
           cursors: [...room.conns.entries()].filter(([id]) => id !== pid).map(([id, c]) => ({ id, x: c.cursor.x, y: c.cursor.y })),
+          canvas: room.canvas ? {
+            mode: room.canvas.mode,
+            contentLanguage: room.canvas.contentLanguage,
+            sheetW: room.canvas.sheetW,
+            sheetH: room.canvas.sheetH,
+            tileW: room.canvas.tileW,
+            tileH: room.canvas.tileH,
+            wordGap: room.canvas.wordGap,
+            tiles: [...room.canvas.tiles.values()].map(serializeCanvasTile),
+            inventory: room.canvas.inventory ? Object.fromEntries(room.canvas.inventory) : null,
+          } : undefined,
         });
         broadcast(room, { t: "players", list: activePlayerList(room) });
         logEvent("join_connected", room, { role: player.role });
@@ -1006,6 +1652,13 @@ wss.on("connection", (ws) => {
         if (!conn) break;
         conn.cursor.x = Number(msg.x) || 0; conn.cursor.y = Number(msg.y) || 0; conn.cursor.dirty = true;
         const player = room.players.get(playerId); if (player) player.lastSeenAt = Date.now();
+        break;
+      }
+      case "canvas": {
+        const { room, playerId } = attached;
+        const player = room.players.get(playerId);
+        if (player) player.lastSeenAt = Date.now();
+        applyCanvasOp(room, playerId, msg, ws);
         break;
       }
       case "rating": {
@@ -1071,6 +1724,13 @@ setInterval(() => {
       piece.heldBy = null; piece.heldAt = null; piece.drag = false; expiredClaims.push(serializePiece(piece));
     }
     if (expiredClaims.length) broadcast(room, { t: "pieces", list: expiredClaims });
+    if (room.canvas) {
+      const expiredTiles = [];
+      for (const tile of room.canvas.tiles.values()) if (tile.heldBy && now - (tile.heldAt || 0) > CANVAS_CLAIM_TTL_MS) {
+        tile.heldBy = null; tile.heldAt = null; expiredTiles.push(serializeCanvasTile(tile));
+      }
+      if (expiredTiles.length) broadcast(room, { t: "canvas", list: expiredTiles });
+    }
     if (room.conns.size) broadcast(room, { t: "players", list: activePlayerList(room) });
     if (!room.players.size && !room.conns.size && now - room.lastActivityAt > EMPTY_ROOM_TTL_MS) {
       rooms.delete(room.id); codeIndex.delete(room.code); stopCursorRelay(room); logEvent("room_empty_reaped", room);

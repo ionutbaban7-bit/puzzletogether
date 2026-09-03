@@ -42,6 +42,37 @@ export interface ActionItem {
   done: boolean;
 }
 
+/**
+ * A freely placeable canvas tile (Letter / Sentence Canvas).
+ * Deliberately NOT a jigsaw piece: no correctX/correctY, no grid, no lock.
+ * The only state that matters is free position, flip and claims.
+ */
+export interface CanvasTile {
+  id: number;
+  text: string;
+  kind: "letter" | "wildcard" | "punctuation" | "word" | "custom";
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  flipped: boolean;
+  heldBy?: string | null;
+  createdBy?: string | null;
+  custom?: boolean;
+}
+
+export interface CanvasState {
+  mode: "quick" | "standard" | "extended" | "sandbox" | string;
+  contentLanguage: "ro" | "en";
+  sheetW: number;
+  sheetH: number;
+  tileW: number;
+  tileH: number;
+  wordGap: number;
+  /** Finite inventory (text -> remaining). null = unlimited sandbox. */
+  inventory: Record<string, number> | null;
+}
+
 export interface RoomView {
   id: string;
   code?: string;
@@ -50,6 +81,8 @@ export interface RoomView {
   puzzleId: string;
   difficulty: string;
   total: number;
+  /** Canvas rooms only: the content language (independent of the UI language). */
+  contentLanguage?: "ro" | "en" | null;
   maxPlayers: number;
   createdAt: number;
   startedAt: number | null;
@@ -101,6 +134,17 @@ export interface PuzzleView {
   activity?: CoachingActivity;
   rankingSlots?: RankingSlot[];
   wordModeNotice?: boolean;
+  /** Letter / Sentence Canvas rooms. */
+  isCanvas?: boolean;
+  canvasMode?: string;
+  contentLanguage?: "ro" | "en";
+  scenario?: { title: Bilingual; situation: Bilingual } | null;
+  sheetW?: number;
+  sheetH?: number;
+  tileW?: number;
+  tileH?: number;
+  wordGap?: number;
+  sentencePack?: { w: string; c: string; n: number }[];
 }
 
 export interface RankingItem {
@@ -182,6 +226,26 @@ export interface CursorView { x: number; y: number; at: number }
 export interface ChatEntry { id: string; playerId: string; name: string; color: string; text: string; at: number }
 export interface Category { id: string; name: string; icon: string }
 export interface Difficulty { id: string; name: string; pieces: number }
-export interface PuzzleInfo { id: string; category: string; name: string; image: string; credit: string; license: string; source: string }
-export interface CatalogData { categories: Category[]; difficulties: Difficulty[]; puzzles: PuzzleInfo[]; coaching: CoachingCatalog; maxPlayers: number }
+export interface PuzzleInfo {
+  id: string;
+  category: string;
+  name: string;
+  image: string;
+  credit: string;
+  license: string;
+  source: string;
+  scenario?: { title: Bilingual; situation: Bilingual };
+}
+export interface CanvasMode { id: string; name: string; tiles: number }
+export interface SentencePackEntry { w: string; c: string; n: number }
+export interface CatalogData {
+  categories: Category[];
+  difficulties: Difficulty[];
+  puzzles: PuzzleInfo[];
+  canvasModes?: CanvasMode[];
+  letterSets?: Record<string, string>;
+  sentencePacks?: Record<string, SentencePackEntry[]>;
+  coaching: CoachingCatalog;
+  maxPlayers: number;
+}
 export type JoinStatus = "idle" | "connecting" | "joined" | "denied" | "closed";

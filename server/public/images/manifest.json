@@ -1,147 +1,147 @@
 {
-  "aurora.jpg": {
-    "w": 1920,
-    "h": 1251
-  },
-  "big-ben.jpg": {
-    "w": 1280,
-    "h": 720
-  },
-  "cafe-terrace.jpg": {
-    "w": 1558,
-    "h": 1920
-  },
-  "cherry-blossom.jpg": {
-    "w": 1920,
-    "h": 1080
-  },
-  "colosseum.jpg": {
-    "w": 1920,
-    "h": 1345
-  },
-  "eiffel-tower.jpg": {
-    "w": 1920,
-    "h": 3553
-  },
-  "flower.jpg": {
-    "w": 1920,
-    "h": 1920
-  },
-  "girl-pearl-earring.jpg": {
-    "w": 1920,
-    "h": 2248
-  },
-  "golden-gate.jpg": {
-    "w": 1920,
-    "h": 1200
-  },
-  "grand-canyon.jpg": {
-    "w": 1920,
-    "h": 1080
-  },
-  "great-wave.jpg": {
-    "w": 1920,
-    "h": 1324
-  },
-  "lavender-field.jpg": {
-    "w": 1920,
-    "h": 1283
-  },
-  "machu-picchu.jpg": {
-    "w": 1920,
-    "h": 1874
-  },
-  "matterhorn.jpg": {
-    "w": 1610,
-    "h": 1073
-  },
-  "mona-lisa.jpg": {
+  "mona-lisa.webp": {
     "w": 1920,
     "h": 2861
   },
-  "moraine-lake.jpg": {
-    "w": 1920,
-    "h": 1440
-  },
-  "mount-fuji.jpg": {
-    "w": 1920,
-    "h": 1274
-  },
-  "neuschwanstein.jpg": {
-    "w": 1000,
-    "h": 750
-  },
-  "new-york.jpg": {
-    "w": 1920,
-    "h": 1080
-  },
-  "paris-louvre.jpg": {
-    "w": 1920,
-    "h": 807
-  },
-  "plitvice-lakes.jpg": {
-    "w": 1200,
-    "h": 1200
-  },
-  "prague.jpg": {
-    "w": 1024,
-    "h": 601
-  },
-  "pyramids-giza.jpg": {
-    "w": 1200,
-    "h": 856
-  },
-  "santorini.jpg": {
-    "w": 1920,
-    "h": 1444
-  },
-  "starry-night.jpg": {
+  "starry-night.webp": {
     "w": 1920,
     "h": 1520
   },
-  "statue-of-liberty.jpg": {
-    "w": 1464,
-    "h": 2022
+  "great-wave.webp": {
+    "w": 1920,
+    "h": 1324
   },
-  "sunrise.jpg": {
+  "girl-pearl-earring.webp": {
+    "w": 1920,
+    "h": 2248
+  },
+  "sunrise.webp": {
     "w": 1600,
     "h": 1245
   },
-  "taj-mahal.jpg": {
-    "w": 1920,
-    "h": 1262
-  },
-  "the-kiss.jpg": {
+  "the-kiss.webp": {
     "w": 1400,
     "h": 1403
   },
-  "the-milkmaid.jpg": {
-    "w": 1100,
-    "h": 1217
-  },
-  "the-scream.jpg": {
+  "the-scream.webp": {
     "w": 1400,
     "h": 1739
   },
-  "tokyo.jpg": {
-    "w": 1920,
-    "h": 1023
-  },
-  "vatican.jpg": {
-    "w": 1920,
-    "h": 1078
-  },
-  "venice.jpg": {
-    "w": 1920,
-    "h": 2880
-  },
-  "water-lilies.jpg": {
+  "water-lilies.webp": {
     "w": 1500,
     "h": 1168
   },
-  "waterfall.jpg": {
+  "cafe-terrace.webp": {
+    "w": 1558,
+    "h": 1920
+  },
+  "the-milkmaid.webp": {
+    "w": 1100,
+    "h": 1217
+  },
+  "matterhorn.webp": {
+    "w": 1610,
+    "h": 1073
+  },
+  "moraine-lake.webp": {
+    "w": 1920,
+    "h": 1440
+  },
+  "santorini.webp": {
+    "w": 1920,
+    "h": 1444
+  },
+  "eiffel-tower.webp": {
+    "w": 1920,
+    "h": 3553
+  },
+  "machu-picchu.webp": {
+    "w": 1920,
+    "h": 1874
+  },
+  "taj-mahal.webp": {
+    "w": 1920,
+    "h": 1262
+  },
+  "colosseum.webp": {
+    "w": 1920,
+    "h": 1345
+  },
+  "statue-of-liberty.webp": {
+    "w": 1464,
+    "h": 2022
+  },
+  "vatican.webp": {
+    "w": 1920,
+    "h": 1078
+  },
+  "aurora.webp": {
+    "w": 1920,
+    "h": 1251
+  },
+  "flower.webp": {
+    "w": 1920,
+    "h": 1920
+  },
+  "waterfall.webp": {
     "w": 1920,
     "h": 1280
+  },
+  "golden-gate.webp": {
+    "w": 1920,
+    "h": 1200
+  },
+  "paris-louvre.webp": {
+    "w": 1920,
+    "h": 807
+  },
+  "venice.webp": {
+    "w": 1920,
+    "h": 2880
+  },
+  "tokyo.webp": {
+    "w": 1920,
+    "h": 1023
+  },
+  "big-ben.webp": {
+    "w": 1280,
+    "h": 720
+  },
+  "cherry-blossom.webp": {
+    "w": 1920,
+    "h": 1080
+  },
+  "grand-canyon.webp": {
+    "w": 1920,
+    "h": 1080
+  },
+  "lavender-field.webp": {
+    "w": 1920,
+    "h": 1283
+  },
+  "mount-fuji.webp": {
+    "w": 1920,
+    "h": 1274
+  },
+  "neuschwanstein.webp": {
+    "w": 1000,
+    "h": 750
+  },
+  "new-york.webp": {
+    "w": 1920,
+    "h": 1080
+  },
+  "plitvice-lakes.webp": {
+    "w": 1200,
+    "h": 1200
+  },
+  "prague.webp": {
+    "w": 1024,
+    "h": 601
+  },
+  "pyramids-giza.webp": {
+    "w": 1200,
+    "h": 856
   },
   "words-agile.svg": {
     "w": 1200,
@@ -151,12 +151,48 @@
     "w": 1200,
     "h": 800
   },
+  "words-scrabble.svg": {
+    "w": 1200,
+    "h": 800
+  },
   "words-motto.svg": {
     "w": 1200,
     "h": 800
   },
-  "words-scrabble.svg": {
-    "w": 1200,
-    "h": 800
+  "sentence-funny-story.svg": {
+    "w": 800,
+    "h": 600
+  },
+  "sentence-travel.svg": {
+    "w": 800,
+    "h": 600
+  },
+  "sentence-nature.svg": {
+    "w": 800,
+    "h": 600
+  },
+  "sentence-future.svg": {
+    "w": 800,
+    "h": 600
+  },
+  "sentence-positive-message.svg": {
+    "w": 800,
+    "h": 600
+  },
+  "himalaya.svg": {
+    "w": 800,
+    "h": 600
+  },
+  "ocean.svg": {
+    "w": 800,
+    "h": 600
+  },
+  "moon.svg": {
+    "w": 800,
+    "h": 600
+  },
+  "compass.svg": {
+    "w": 800,
+    "h": 600
   }
 }

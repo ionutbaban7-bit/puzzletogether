@@ -5,7 +5,8 @@ import { T, useLang } from "../lib/i18n";
 import type { CatalogData, RoomView } from "../types";
 
 const CATEGORY_EMOJI: Record<string, string> = {
-  words: "🔤",
+  "letter-canvas": "✍️",
+  "sentence-canvas": "💬",
   paintings: "🎨",
   landscapes: "🏔️",
   landmarks: "🗼",
@@ -13,6 +14,7 @@ const CATEGORY_EMOJI: Record<string, string> = {
   cities: "🏙️",
   coaching: "🧭",
 };
+const CANVAS_CATEGORIES = new Set(["letter-canvas", "sentence-canvas"]);
 
 /**
  * In-room puzzle picker: lets the host start a different puzzle/activity in
@@ -32,6 +34,7 @@ export default function PuzzlePicker({
   const [category, setCategory] = useState<string>("");
   const [puzzleId, setPuzzleId] = useState<string | null>(null);
   const [difficulty, setDifficulty] = useState<string>(room.difficulty || "medium");
+  const [contentLanguage, setContentLanguage] = useState<"ro" | "en">(room.contentLanguage === "en" ? "en" : "ro");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -54,7 +57,7 @@ export default function PuzzlePicker({
     setBusy(true);
     setError("");
     try {
-      await api.changePuzzle(room.id, puzzleId!, difficulty, youId);
+      await api.changePuzzle(room.id, puzzleId!, difficulty, youId, selectedPuzzle && CANVAS_CATEGORIES.has(selectedPuzzle.category) ? contentLanguage : undefined);
       onClose(); // everyone (including us) switches via the websocket broadcast
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not change the puzzle.");
@@ -104,6 +107,7 @@ export default function PuzzlePicker({
                   onClick={() => {
                     setCategory(c.id);
                     setPuzzleId(null);
+                    setDifficulty(CANVAS_CATEGORIES.has(c.id) ? "quick" : "medium");
                   }}
                   className={`rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition ${
                     category === c.id
@@ -205,10 +209,10 @@ export default function PuzzlePicker({
             {category && !isCoaching && (
               <div>
                 <div className="text-[11px] font-bold uppercase tracking-wider text-ink-400">
-                  <T value={{ ro: "Dificultate", en: "Difficulty" }} />
+                  {CANVAS_CATEGORIES.has(category) ? <T value={{ ro: "Modul foii", en: "Sheet mode" }} /> : <T value={{ ro: "Dificultate", en: "Difficulty" }} />}
                 </div>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {catalog.difficulties.map((d) => (
+                  {((CANVAS_CATEGORIES.has(category) ? catalog.canvasModes || [] : catalog.difficulties) as { id: string; name: string; pieces: number; tiles?: number }[]).map((d) => (
                     <button
                       key={d.id}
                       onClick={() => setDifficulty(d.id)}
@@ -219,10 +223,33 @@ export default function PuzzlePicker({
                       }`}
                     >
                       <span className="text-[13px] font-bold">{d.name}</span>
-                      <span className="ml-1.5 text-[11px] text-ink-300">{d.pieces}p</span>
+                      <span className="ml-1.5 text-[11px] text-ink-300">{CANVAS_CATEGORIES.has(category) ? (d.tiles === 0 ? "∞" : d.tiles) : d.pieces}p</span>
                     </button>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {CANVAS_CATEGORIES.has(category) && (
+              <div>
+                <div className="text-[11px] font-bold uppercase tracking-wider text-ink-400">
+                  <T value={{ ro: "Limba conținutului", en: "Content language" }} />
+                </div>
+                <div className="mt-2 flex gap-2">
+                  {(["ro", "en"] as const).map((l) => (
+                    <button
+                      key={l}
+                      onClick={() => setContentLanguage(l)}
+                      className={`rounded-xl border px-4 py-2 text-left transition ${contentLanguage === l ? "border-brand-500 bg-brand-600/20 text-white" : "border-white/10 bg-white/5 text-ink-200 hover:bg-white/10"}`}
+                    >
+                      <span className="text-[13px] font-bold">{l.toUpperCase()}</span>
+                      <span className="ml-1.5 text-[11px] text-ink-300">{l === "ro" ? "Ă Â Î Ș Ț" : "A–Z"}</span>
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-1.5 text-[11px] text-ink-400">
+                  <T value={{ ro: "Limba cărților — separată de limba interfeței.", en: "The tiles' language — separate from the interface language." }} />
+                </p>
               </div>
             )}
 
