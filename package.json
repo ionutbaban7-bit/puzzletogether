@@ -25,7 +25,8 @@
     "test:lobby-viewport": "LOBBY_ONLY=1 node scripts/jigsaw-browser-test.mjs",
     "catalog:seed-stage5": "node scripts/stage5-catalog-seed.mjs",
     "catalog:finalize-stage5": "node scripts/stage5-catalog-finalize.mjs",
-    "catalog:generate-procedural-stage5": "node scripts/generate-stage5-procedural-originals.mjs"
+    "catalog:generate-procedural-stage5": "node scripts/generate-stage5-procedural-originals.mjs",
+    "test:catalog-serve": "node scripts/catalog-serve-test.mjs"
   },
   "dependencies": {
     "express": "^5.2.1",
