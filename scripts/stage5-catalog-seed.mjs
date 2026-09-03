@@ -99,9 +99,9 @@ for (const addition of additions.entries) {
   if (!raw) fail(`missing generated source: ${addition.id}`);
   const asset = `/images/${addition.id}.jpg`;
   const importFile = path.join(publicImagesDir, `${addition.id}.jpg`);
-  const rawInputChecksum = rawHash(raw);
+  const rawInputChecksum = addition.generation?.rawInputChecksum || rawHash(raw);
   const rawExtension = path.extname(raw).toLowerCase();
-  const rawFilename = path.basename(raw);
+  const rawFilename = addition.generation?.originalInputFilename || path.basename(raw);
 
   // JPEG is only an archival format conversion of our own generated source;
   // it is intentionally high quality, and the source checksum remains recorded.

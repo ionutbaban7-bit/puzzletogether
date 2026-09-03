@@ -17,6 +17,9 @@ const out = path.join(root, "data/catalog/incoming");
 const W = 1800, H = 1200;
 fs.mkdirSync(out, { recursive: true });
 
+const landmarks = ["bran-castle-dawn", "palace-parliament-dusk", "corvin-castle", "sighisoara-clock-tower", "maramures-wooden-church"];
+const nature = ["carpathian-beech-forest", "danube-pelicans", "red-deer-meadow", "poppy-meadow", "ice-cave"];
+const cities = ["bucharest-calea-victoriei", "sibiu-square", "cluj-unirii-square", "timisoara-union-square", "brasov-council-square"];
 const isometric = ["iso-floating-garden", "iso-harbor-village", "iso-solar-observatory", "iso-mountain-railway", "iso-desert-oasis", "iso-coastal-lighthouse", "iso-forest-workshop", "iso-arctic-research", "iso-river-market", "iso-sky-islands"];
 const abstract = ["abstract-azure-arches", "abstract-pink-orbit", "abstract-violet-lattice", "abstract-crystalline", "abstract-tessellation", "abstract-fluid-topography", "abstract-paper-folds", "abstract-solar-rings", "abstract-kinetic-grid", "abstract-night-mosaic"];
 const blueprints = ["blueprint-bran-castle", "blueprint-modern-pavilion", "blueprint-observatory", "blueprint-bridge", "blueprint-greenhouse", "blueprint-train-station", "blueprint-library", "blueprint-amphitheater", "blueprint-lighthouse", "blueprint-courtyard-house"];
@@ -93,6 +96,69 @@ class Raster {
 }
 function choose(canvas) { return canvas.colors[2 + Math.floor(canvas.random() * 3) % 3]; }
 
+/** Illustrated landscapes / landmarks / cityscapes with lots of small puzzle detail. */
+function scenicArt(id, index, group) {
+  const art = new Raster(palettes[index % palettes.length], hash(id));
+  const r = art.random;
+  const [ink, blue, mint, gold, pink] = art.colors;
+  const sky = shift([255, 255, 255], -15);
+  // Clouds, distant mountain layers, fields and water all provide distinct local texture.
+  for (let i = 0; i < 38; i++) art.disc(40 + r() * (W - 80), 40 + r() * 360, 18 + r() * 68, sky, .08 + r() * .12);
+  for (let layer = 0; layer < 4; layer++) {
+    const y = 520 + layer * 92;
+    const points = [[0, H], [0, y]];
+    for (let x = 0; x <= W; x += 70) points.push([x, y - 70 - r() * (160 - layer * 18)]);
+    points.push([W, H]);
+    art.poly(points, layer % 2 ? shift(blue, -32) : shift(mint, -65), .84, shift(mint, 22), 2);
+  }
+  for (let i = 0; i < 250; i++) {
+    const x = r() * W, y = 635 + r() * 540;
+    art.line(x, y, x + 8 + r() * 30, y - 3 + r() * 8, i % 5 ? shift(mint, -45 + r() * 40) : gold, 1 + r() * 2, .35 + r() * .45);
+  }
+  if (group === "nature") {
+    if (index === 0) { // beech forest
+      for (let i = 0; i < 28; i++) { const x = 55 + i * 64 + r() * 26, base = 1040 - r() * 125, h = 320 + r() * 330; art.line(x, base, x + r() * 38 - 19, base - h, shift(gold, -95), 16 + r() * 16, .92); for (let k=0;k<11;k++) art.disc(x - 80 + r()*160, base-h+20+r()*210, 30+r()*70, shift(mint, -20+r()*30), .52); }
+    } else if (index === 1) { // pelicans over delta water
+      for (let y = 670; y < 1080; y += 22) art.line(40, y, W - 40, y + (r() - .5) * 12, shift([190,240,245],-20), 2, .48);
+      for (let i=0;i<32;i++) { const x=90+r()*(W-180),y=570+r()*270; art.line(x-34,y,x,y-15,[255,255,255],5,.92);art.line(x,y-15,x+34,y,[255,255,255],5,.92);art.line(x-3,y-12,x+10,y+12,gold,2,.85); }
+      for(let i=0;i<95;i++){const x=r()*W;art.line(x,880+r()*260,x,800+r()*150,shift(mint,-55),4,.78);}
+    } else if (index === 2) { // deer small within the meadow
+      for (let i=0;i<100;i++) art.disc(r()*W, 700+r()*330, 3+r()*13, i%3?pink:gold,.48);
+      const x=980,y=780; art.poly([[x-90,y],[x+80,y-10],[x+104,y+55],[x-100,y+54]],shift(gold,-70),.96,ink,4);art.line(x-62,y+48,x-72,y+145,ink,9);art.line(x+53,y+45,x+65,y+142,ink,9);art.line(x+75,y-4,x+104,y-66,ink,7);art.line(x+102,y-67,x+120,y-112,ink,4);art.line(x+105,y-67,x+139,y-96,ink,4);
+    } else if (index === 3) { // poppy field
+      for (let i=0;i<310;i++) { const x=r()*W,y=620+r()*440; art.line(x,y,x+(r()-.5)*8,y-23-r()*35,shift(mint,-58),2,.85); art.disc(x+(r()-.5)*8,y-23-r()*35,6+r()*12,pink,.88); }
+    } else { // ice cave
+      art.poly([[0,260],[220,80],[480,200],[710,70],[900,190],[1120,55],[1470,180],[1800,90],[1800,1200],[0,1200]],shift(blue,-28),.83,mint,3);
+      for(let i=0;i<135;i++){const x=r()*W,y=80+r()*890,len=25+r()*180;art.poly([[x,y],[x+12+r()*25,y+len],[x-10-r()*25,y+len]],i%2?mint:sky,.25+r()*.35,mint,1);}
+      art.ring(905,670,255,sky,9,.48,.75);art.ring(905,670,160,mint,7,.7,.75);
+    }
+  } else {
+    // Architectural / urban facades, repeatedly detailed with roof, windows and lamps.
+    const count = group === "cities" ? 15 : 7;
+    for (let i = 0; i < count; i++) {
+      const bw = 85 + r() * 105, bh = 190 + r() * 300, x = 45 + i * (W - 90) / count + r() * 28, y = 855 - bh;
+      const facade = i % 3 === 0 ? pink : i % 3 === 1 ? gold : mint;
+      art.poly([[x,y],[x+bw,y-30],[x+bw,y+bh-30],[x,y+bh]],facade,.79,ink,4);
+      art.poly([[x-12,y],[x+bw+12,y-35],[x+bw*.5,y-94]],shift(facade,42),.88,ink,3);
+      for(let row=0;row<Math.floor(bh/43);row++) for(let col=0;col<3;col++){const wx=x+16+col*(bw-28)/3,wy=y+25+row*43;art.poly([[wx,wy],[wx+15,wy-5],[wx+15,wy+20],[wx,wy+25]],ink,.75,gold,1);}
+    }
+    if (group === "landmarks") {
+      const x = 900, y = 810, motif = index;
+      if (motif === 0 || motif === 2) { // castles
+        art.poly([[x-225,y],[x-185,y-400],[x-85,y-400],[x-60,y],[x+35,y],[x+75,y-520],[x+190,y-520],[x+235,y]],shift(gold,-38),.96,ink,5); for(const tx of [x-135,x+130]){art.poly([[tx-76,y-400],[tx+76,y-400],[tx,y-530]],pink,.95,ink,4);} art.line(x-285,y,x+275,y,ink,12);
+      } else if (motif === 1) { // Parliament-like symmetric colonnade
+        art.poly([[x-370,y],[x-320,y-360],[x+320,y-360],[x+370,y]],shift(gold,-24),.93,ink,5);for(let i=0;i<13;i++){const cx=x-275+i*46;art.line(cx,y-18,cx,y-297,ink,13,.88);art.line(cx+10,y-18,cx+10,y-297,gold,5,.75);}art.poly([[x-420,y-360],[x+420,y-360],[x,y-470]],pink,.86,ink,5);
+      } else if (motif === 3) { // clock tower
+        art.poly([[x-82,y],[x-62,y-530],[x+62,y-530],[x+82,y]],shift(gold,-36),.96,ink,5);art.poly([[x-115,y-530],[x+115,y-530],[x,y-690]],pink,.95,ink,5);art.ring(x,y-365,58,sky,8,.95);art.line(x,y-365,x+27,y-398,sky,6,.95);art.line(x,y-365,x-20,y-330,sky,6,.95);
+      } else { // wooden church
+        art.poly([[x-125,y],[x-95,y-410],[x+95,y-410],[x+125,y]],shift(gold,-75),.98,ink,5);art.poly([[x-148,y-410],[x+148,y-410],[x,y-600]],shift(pink,-20),.9,ink,5);art.line(x,y-410,x,y-730,shift(gold,34),14);art.line(x-55,y-630,x+55,y-630,shift(gold,34),12);
+      }
+    }
+  }
+  for (let i=0;i<90;i++) art.disc(r()*W, 450+r()*590, .6+r()*2.1, [255,255,255], .18+r()*.38);
+  art.write(id);
+}
+
 function isometricArt(id, index) {
   const art = new Raster(palettes[index % palettes.length], hash(id)); const r = art.random, [ink, blue, mint, gold, pink] = art.colors;
   const p = (x, y, z = 0) => [900 + (x - y) * 1.12, 675 + (x + y) * .56 - z];
@@ -161,7 +227,10 @@ function blueprintArt(id,index) {
   for(let i=0;i<45;i++){const x=r()*W,y=r()*H,a=r()*6.28,len=30+r()*150;art.line(x,y,x+Math.cos(a)*len,y+Math.sin(a)*len,gold,2,.43);}
   art.write(id);
 }
+for (const [index,id] of landmarks.entries()) scenicArt(id,index,"landmarks");
+for (const [index,id] of nature.entries()) scenicArt(id,index,"nature");
+for (const [index,id] of cities.entries()) scenicArt(id,index + 2,"cities");
 for (const [index,id] of isometric.entries()) isometricArt(id,index);
 for (const [index,id] of abstract.entries()) abstractArt(id,index);
 for (const [index,id] of blueprints.entries()) blueprintArt(id,index);
-console.log(`Generated ${isometric.length + abstract.length + blueprints.length} original procedural Stage 5 sources.`);
+console.log(`Generated ${landmarks.length + nature.length + cities.length + isometric.length + abstract.length + blueprints.length} original procedural Stage 5 sources.`);

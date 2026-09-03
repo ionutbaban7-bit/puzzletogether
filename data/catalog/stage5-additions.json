@@ -22,7 +22,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject."
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:12e7d0d0c9f61a29ba9eb5c95f232fc134abf04445fa005be805305aa166dcd9",
+        "originalInputFilename": "aurora-abstraction.png"
       }
     },
     {
@@ -45,7 +47,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject."
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:5903a431b5492c56281f7aadf8d95a0f3731b81bf64aea6dbaf78c123cf20eb4",
+        "originalInputFilename": "carpathian-folk-painting.png"
       }
     },
     {
@@ -68,7 +72,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject."
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:f796953c8b682becbbfb45b5e557643f615acbbea5fd0b8a40ed29e500422a1c",
+        "originalInputFilename": "botanical-mosaic-painting.png"
       }
     },
     {
@@ -91,7 +97,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject."
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:639592140e5b1128487318b345feee8d4e8351691081ea35312a3bfb4d4fb3a9",
+        "originalInputFilename": "coastal-color-study.png"
       }
     },
     {
@@ -114,7 +122,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject."
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:4badb9e50486c4151db2a2f74dd2700227754156d6fcec07cda0f2a030390228",
+        "originalInputFilename": "night-garden-painting.png"
       }
     },
     {
@@ -137,7 +147,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject."
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:1da35ef4ac9f881f8c55a4cb12328c11f287be2d1aa1e30d2d8d15c1b0de43ed",
+        "originalInputFilename": "fagaras-sunrise.png"
       }
     },
     {
@@ -160,7 +172,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject."
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:87961313461d1db3f7fd30dbbc89ea2c65df811bc28cbd281b3a0c307282cc6f",
+        "originalInputFilename": "danube-delta-mist.png"
       }
     },
     {
@@ -183,7 +197,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject."
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:b776d314b1d963ac9a4fd50bb805ee1c1ba26ca85c6f4d06f94ed5481cb596e1",
+        "originalInputFilename": "apuseni-karst.png"
       }
     },
     {
@@ -206,7 +222,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject."
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:49159f3dc008fd77f0a3d4f170f8649e172d82ba1908c78aa3846cdf7d3ef453",
+        "originalInputFilename": "transfagarasan-autumn.png"
       }
     },
     {
@@ -229,7 +247,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject."
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:a5c866541dc5d59128b601c4e31a6a83d1692fa635855b4a0e0415728aff5ca8",
+        "originalInputFilename": "rila-lake.png"
       }
     },
     {
@@ -252,7 +272,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "required before catalog seed"
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:c96a5674a3aa6522e4e7db7ac62c68eb91a02ff61f37f13236f146140375e87c",
+        "originalInputFilename": "bran-castle-dawn.png"
       }
     },
     {
@@ -275,7 +297,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "required before catalog seed"
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:94039456c35826ff5e6b42de49c8e8c744552f7be38de0a8a61ee102e3721bfd",
+        "originalInputFilename": "palace-parliament-dusk.png"
       }
     },
     {
@@ -298,7 +322,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "required before catalog seed"
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:d03095eefa2c89ac15f0bfb6c9a98d68988737528e6d37135cedfa3917044b5a",
+        "originalInputFilename": "corvin-castle.png"
       }
     },
     {
@@ -321,7 +347,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "required before catalog seed"
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:e933c293fc6dcbcb16ddad25192725db11a296e5db141287da0c1a417d5b8901",
+        "originalInputFilename": "sighisoara-clock-tower.png"
       }
     },
     {
@@ -344,7 +372,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "required before catalog seed"
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:c23860899884269f5f3c3a2c1e256c540ba53a88a881ccf6509e15537f75fcac",
+        "originalInputFilename": "maramures-wooden-church.png"
       }
     },
     {
@@ -367,7 +397,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "required before catalog seed"
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:f86b8a93914b606524f85d8aaac860595f6d0b8c188459cbdf80971b71378ed8",
+        "originalInputFilename": "carpathian-beech-forest.png"
       }
     },
     {
@@ -390,7 +422,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "required before catalog seed"
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:54d493a68fd2a5be20c3b3faaae744642321a6c781916f81f2e4ed5c71ca248f",
+        "originalInputFilename": "danube-pelicans.png"
       }
     },
     {
@@ -413,7 +447,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "required before catalog seed"
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:dd3df2a0707f97d3afb93e3e706d0dbe82b2e0b373750fa15959b8cecc1cdece",
+        "originalInputFilename": "red-deer-meadow.png"
       }
     },
     {
@@ -436,7 +472,9 @@
       "generation": {
         "tool": "Arena image generation",
         "generatedAt": "2026-09-03",
-        "visualReview": "required before catalog seed"
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:9ed36d956fb0e4a95ec47e86d4724fcd6605a434f33515be1e6c039938fc4a10",
+        "originalInputFilename": "poppy-meadow.png"
       }
     },
     {
@@ -457,9 +495,10 @@
       "prompt": "Original high-detail blue ice cave, crystalline formations and reflected light, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "Arena image generation",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
-        "visualReview": "required before catalog seed"
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
       }
     },
     {
@@ -480,8 +519,9 @@
       "prompt": "Original high-detail Bucharest Calea Victoriei architectural streetscape, early morning, no people, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "Arena image generation",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "required before catalog seed"
       }
     },
@@ -503,8 +543,9 @@
       "prompt": "Original high-detail Sibiu Grand Square, colorful historic facades, no people, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "Arena image generation",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "required before catalog seed"
       }
     },
@@ -526,8 +567,9 @@
       "prompt": "Original high-detail Cluj Unirii Square architectural panorama, no people, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "Arena image generation",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "required before catalog seed"
       }
     },
@@ -549,8 +591,9 @@
       "prompt": "Original high-detail Timișoara Union Square colorful baroque facades, no people, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "Arena image generation",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "required before catalog seed"
       }
     },
@@ -572,8 +615,9 @@
       "prompt": "Original high-detail Brașov Council Square, historic facades and mountains, no people, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "Arena image generation",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "required before catalog seed"
       }
     },
@@ -595,7 +639,7 @@
       "prompt": "Original high-detail floating garden islands with waterfalls and miniature glass greenhouse, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -619,7 +663,7 @@
       "prompt": "Original high-detail coastal harbour village with quays, empty boats, tiled roofs, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -643,7 +687,7 @@
       "prompt": "Original high-detail mountain solar observatory with domes, panels and paths, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -667,7 +711,7 @@
       "prompt": "Original high-detail mountain railway diorama, viaduct, tunnels and alpine trees, no train text, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -691,7 +735,7 @@
       "prompt": "Original high-detail desert oasis diorama with palms, canals, stone terraces, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -715,7 +759,7 @@
       "prompt": "Original high-detail coastal lighthouse diorama, rocky cliffs, waves and terrace gardens, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -739,7 +783,7 @@
       "prompt": "Original high-detail forest workshop diorama, timber cabin, tools without text, paths, trees, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -763,7 +807,7 @@
       "prompt": "Original high-detail arctic research station diorama, icebergs, aurora and equipment, no people, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -787,7 +831,7 @@
       "prompt": "Original high-detail river market diorama, empty colorful stalls, bridges and boats, no people, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -811,7 +855,7 @@
       "prompt": "Original high-detail sky islands diorama, bridges, windmills with no text, waterfalls, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -835,7 +879,7 @@
       "prompt": "Original high-detail layered azure arches, deep navy ground, fine grain and reflections, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -859,7 +903,7 @@
       "prompt": "Original high-detail hot pink and violet orbital rings, dark field, fine particles, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -883,7 +927,7 @@
       "prompt": "Original high-detail intricate violet lattice, azure nodes, dimensional paper layers, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -907,7 +951,7 @@
       "prompt": "Original high-detail translucent crystalline facets, blue pink violet light, precise geometry, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -931,7 +975,7 @@
       "prompt": "Original high-detail complex seamless tessellation, azure pink purple and gold, tactile relief, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -955,7 +999,7 @@
       "prompt": "Original high-detail fluid topographic contour layers, rich blue magenta purple gradients, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -979,7 +1023,7 @@
       "prompt": "Original high-detail detailed paper folds, origami geometry, azure pink purple shadows, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -1003,7 +1047,7 @@
       "prompt": "Original high-detail concentric solar rings, glowing coral pink, azure and midnight blue, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -1027,7 +1071,7 @@
       "prompt": "Original high-detail kinetic geometric grid, shifting azure and purple planes, fine detail, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -1051,7 +1095,7 @@
       "prompt": "Original high-detail night mosaic of irregular tiles, dark blue pink purple luminous texture, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -1075,7 +1119,7 @@
       "prompt": "Original high-detail architectural blueprint of Bran Castle, axonometric cutaway, lines only, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -1099,7 +1143,7 @@
       "prompt": "Original high-detail modern pavilion architectural blueprint, axonometric sections and technical lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -1123,7 +1167,7 @@
       "prompt": "Original high-detail domed observatory blueprint, sectional axonometric design, precise lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -1147,7 +1191,7 @@
       "prompt": "Original high-detail suspension bridge blueprint, multiple technical perspectives and line details, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -1171,7 +1215,7 @@
       "prompt": "Original high-detail modular greenhouse blueprint, glass structure axonometric cutaway and lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -1195,7 +1239,7 @@
       "prompt": "Original high-detail contemporary train station blueprint, roof trusses, platforms, axonometric lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -1219,7 +1263,7 @@
       "prompt": "Original high-detail library blueprint, reading rooms and shelves as axonometric technical drawing, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -1243,7 +1287,7 @@
       "prompt": "Original high-detail outdoor amphitheater blueprint, seating rings, stage and site plan, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -1267,7 +1311,7 @@
       "prompt": "Original high-detail coastal lighthouse blueprint, vertical section, stair and foundation lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
@@ -1291,7 +1335,7 @@
       "prompt": "Original high-detail courtyard house blueprint, floor plan and axonometric cutaway, precise lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
       "origin": "original-generated",
       "generation": {
-        "tool": "PuzzleTogether deterministic SVG artwork",
+        "tool": "PuzzleTogether deterministic procedural artwork",
         "generatedAt": "2026-09-03",
         "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
         "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
