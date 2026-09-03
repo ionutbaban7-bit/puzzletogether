@@ -8,6 +8,8 @@ import { navigate } from "../lib/router";
 import { store, useStore } from "../store";
 import { Confetti, LogoMark, Modal, Spinner, useCopied } from "../components/ui";
 import PuzzlePicker from "../components/PuzzlePicker";
+import FacilitatorPanel from "../components/FacilitatorPanel";
+import HarvestBoard from "../components/HarvestBoard";
 import { LangToggle, pick, useLang, T } from "../lib/i18n";
 import { lockedCountOf } from "../store";
 
@@ -87,8 +89,16 @@ export default function GamePage() {
   const closedMessage = useStore((s) => s.closedMessage);
   const epoch = useStore((s) => s.epoch);
   const scores = useStore((s) => s.scores);
+  const connected = useStore((s) => s.connected);
+  const reconnectExhausted = useStore((s) => s.reconnectExhausted);
+  const protocolError = useStore((s) => s.protocolError);
+  const chat = useStore((s) => s.chat);
 
   const [shareOpen, setShareOpen] = useState(false);
+  const [facilitatorOpen, setFacilitatorOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatText, setChatText] = useState("");
+  const [completionVisible, setCompletionVisible] = useState(true);
   const [pickerOpen, setPickerOpen] = useState(false);
   // HUD starts collapsed on phones so the board gets the whole screen.
   const [hudOpen, setHudOpen] = useState(() =>
@@ -106,12 +116,21 @@ export default function GamePage() {
   // When the board is rebuilt (new puzzle / reset from anyone), close the picker.
   useEffect(() => {
     setPickerOpen(false);
+    setCompletionVisible(true);
   }, [epoch]);
+
+  useEffect(() => {
+    if (completion) setCompletionVisible(true);
+  }, [completion]);
 
   const locked = lockedCountOf(pieces);
   const total = room?.total || 1;
   const progress = Math.round((locked / total) * 100);
-  const elapsed = room ? (room.completed ? room.completedInMs || 0 : now - room.createdAt) : 0;
+  const elapsed = room?.startedAt
+    ? room.completed
+      ? room.completedInMs || 0
+      : Math.max(0, now - room.startedAt - room.pausedDurationMs - (room.pausedAt ? now - room.pausedAt : 0))
+    : 0;
   const playerCount = players.length;
   const isCoaching = !!puzzle?.isCoaching;
   const mode = puzzle?.mode;
@@ -119,15 +138,22 @@ export default function GamePage() {
   const scoreSource = completion?.scores?.length ? completion.scores : scores;
   const scoreByPlayer = new Map(scoreSource.map((sc) => [sc.playerId, sc.placed]));
 
-  // The room creator facilitates; if they left, the first connected player takes over.
-  const hostConnected = !!room?.hostId && players.some((p) => p.id === room.hostId);
-  const isHost =
-    !!youId && !!room && (room.hostId === youId || (!hostConnected && players[0]?.id === youId));
+  const hostConnected = !!room?.hostId && players.some((player) => player.id === room.hostId);
+  const isHost = !!youId && room?.hostId === youId;
+  const canTakeOver = !!youId && !hostConnected && players[0]?.id === youId && !isHost;
+  const meRole = players.find((player) => player.id === youId)?.role;
+  const inputEnabled = connected && room?.stage === "play" && !room?.boardLocked && meRole !== "spectator";
 
   async function handleReset() {
-    if (!room) return;
-    await api.resetRoom(room.id);
+    if (!room || !youId || !isHost) return;
+    await api.resetRoom(room.id, youId);
     setResetSignal((n) => n + 1);
+  }
+
+  function handleLeave() {
+    if (!window.confirm(lang === "ro" ? "Sigur vrei să părăsești sesiunea?" : "Leave this session?")) return;
+    store.leaveRoom();
+    navigate("/");
   }
 
   const getDifficultyLabel = (diff: string) => {
@@ -145,13 +171,14 @@ export default function GamePage() {
     return (
       <Screen>
         <div className="text-center">
-          <Spinner className="mx-auto h-8 w-8 text-brand-500" />
+          {reconnectExhausted ? <div className="text-4xl">📡</div> : <Spinner className="mx-auto h-8 w-8 text-brand-500" />}
           <div className="font-display mt-5 text-lg font-semibold text-white">
-            <T value={{ ro: "Se intră în cameră…", en: "Joining the room…" }} />
+            <T value={reconnectExhausted ? { ro: "Camera nu poate fi contactată", en: "The room cannot be reached" } : { ro: "Se intră în cameră…", en: "Joining the room…" }} />
           </div>
           <div className="mt-1 text-sm text-ink-400">
-            <T value={{ ro: "Conectare la colegi", en: "Connecting to your teammates" }} />
+            <T value={reconnectExhausted ? { ro: "Verifică rețeaua și reîncarcă pagina.", en: "Check your network and reload the page." } : { ro: "Conectare la colegi", en: "Connecting to your teammates" }} />
           </div>
+          {reconnectExhausted && <button className="btn-primary mt-5" onClick={() => location.reload()}><T value={{ ro: "Reîncarcă", en: "Reload" }} /></button>}
         </div>
       </Screen>
     );
@@ -223,13 +250,14 @@ export default function GamePage() {
     (a, b) => b.placed - a.placed || a.name.localeCompare(b.name),
   );
   const podium = finalRanking.slice(0, 3);
-  const restOfRanking = finalRanking.slice(3);
   const formatContribution = (placed: number) =>
     `${placed} ${lang === "ro" ? "piese" : "pieces"} · ${Math.round((placed / total) * 100)}%`;
 
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-ink-950">
-      {isCoaching && mode === "ranking" ? (
+      {(room.stage === "debrief" || room.stage === "harvest") ? (
+        <HarvestBoard room={room} activity={puzzle.activity} players={players} />
+      ) : isCoaching && mode === "ranking" ? (
         <RankingActivity
           key={`${room.puzzleId}:${epoch}`}
           puzzle={puzzle}
@@ -252,14 +280,15 @@ export default function GamePage() {
           players={players}
           youId={youId}
           onPieceDrop={() => {}}
-          onResetRequest={handleReset}
-          allowReset={!!room.completed}
+          onResetRequest={() => window.confirm(lang === "ro" ? "Resetezi puzzle-ul pentru toată echipa?" : "Reset the puzzle for everyone?") && handleReset()}
+          allowReset={!!room.completed && isHost}
           resetSignal={resetSignal + epoch}
+          inputEnabled={inputEnabled}
         />
       )}
 
       {/* ------------------------------------------------------- top bar */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between gap-2 p-2.5 sm:gap-3 sm:p-4">
+      <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between gap-2 p-2.5 sm:gap-3 sm:p-4" style={{ paddingTop: "max(0.625rem, env(safe-area-inset-top))" }}>
         {/* Game HUD (collapsible) */}
         {hudOpen ? (
           <div className="overlay-card pointer-events-auto w-[290px] max-w-[calc(100vw-108px)] p-4 sm:w-[300px]">
@@ -385,21 +414,24 @@ export default function GamePage() {
                 🧩<span className="hidden sm:inline">&nbsp;<T value={{ ro: "Alt puzzle", en: "New puzzle" }} /></span>
               </button>
             )}
-            {!isCoaching && (
-              <button
-                className="btn btn-dark btn-sm !px-2.5 sm:!px-4"
-                onClick={() => setShareOpen(true)}
-                title="Share"
-              >
-                🔗<span className="hidden sm:inline">&nbsp;<T value={{ ro: "Partajează", en: "Share" }} /></span>
-              </button>
-            )}
             <button
               className="btn btn-dark btn-sm !px-2.5 sm:!px-4"
-              onClick={() => {
-                store.leaveRoom();
-                navigate("/");
-              }}
+              onClick={() => setShareOpen(true)}
+              title="Share"
+            >
+              🔗<span className="hidden sm:inline">&nbsp;<T value={{ ro: "Partajează", en: "Share" }} /></span>
+            </button>
+            {isHost && (
+              <button className="btn btn-dark btn-sm !border-emerald-400/30 !px-2.5 sm:!px-4" onClick={() => setFacilitatorOpen(true)} title="Facilitator controls">
+                🎛<span className="hidden sm:inline">&nbsp;<T value={{ ro: "Facilitează", en: "Facilitate" }} /></span>
+              </button>
+            )}
+            <button className="btn btn-dark btn-sm !px-2.5 sm:!px-4" onClick={() => setChatOpen((open) => !open)} title="Team chat">
+              💬<span className="hidden sm:inline">&nbsp;Chat</span>{chat.length > 0 && <span className="rounded-full bg-brand-500 px-1.5 text-[10px]">{chat.length}</span>}
+            </button>
+            <button
+              className="btn btn-dark btn-sm !px-2.5 sm:!px-4"
+              onClick={handleLeave}
               title="Leave room"
             >
               🚪<span className="hidden sm:inline">&nbsp;<T value={{ ro: "Pleacă", en: "Leave" }} /></span>
@@ -408,6 +440,48 @@ export default function GamePage() {
         </div>
       </div>
 
+
+      {/* Connection and facilitator state are always visible. Input is frozen offline. */}
+      {!connected && status === "joined" && (
+        <div className={`pointer-events-auto absolute inset-x-3 top-20 z-40 mx-auto max-w-md rounded-2xl border px-4 py-3 text-center text-sm font-semibold shadow-pop ${reconnectExhausted ? "border-rose-400/40 bg-rose-950/95 text-rose-100" : "border-amber-300/40 bg-amber-950/95 text-amber-100"}`}>
+          {reconnectExhausted
+            ? <T value={{ ro: "Conexiunea s-a pierdut. Reîncarcă pagina pentru a reintra în cameră.", en: "Connection lost. Reload the page to rejoin the room." }} />
+            : <T value={{ ro: "Se reconectează… board-ul este blocat ca să nu pierzi mutări.", en: "Reconnecting… the board is frozen so no moves are lost." }} />}
+        </div>
+      )}
+      {protocolError && <button className="absolute bottom-5 left-1/2 z-40 max-w-md -translate-x-1/2 rounded-xl border border-rose-400/30 bg-rose-950/95 px-4 py-2 text-sm text-rose-100" onClick={() => store.clearError()}>{protocolError} · ✕</button>}
+      {room.startedAt && room.stage !== "lobby" && (
+        <div className="pointer-events-none absolute left-1/2 top-3 z-20 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-ink-900/85 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white backdrop-blur sm:flex">
+          <span>{room.boardLocked ? "🔒" : "●"}</span><span>{room.stage}</span>{room.timerEndsAt && <span className="font-mono text-amber-200">{formatClock(Math.max(0, room.timerEndsAt - now))}</span>}
+        </div>
+      )}
+
+      {/* Lobby keeps the clock honest and gives the facilitator a clear start. */}
+      {room.stage === "lobby" && (
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink-950/80 p-4 backdrop-blur-md">
+          <div className="overlay-card w-[560px] max-w-full p-6 text-center sm:p-8">
+            <div className="text-[11px] font-bold uppercase tracking-[.25em] text-brand-300"><T value={{ ro: "Lobby de workshop", en: "Workshop lobby" }} /></div>
+            <h1 className="font-display mt-3 text-2xl font-extrabold text-white sm:text-3xl">{room.sessionName}</h1>
+            <p className="mt-2 text-sm text-ink-300"><T value={{ ro: "Activitatea și cronometrul pornesc numai când facilitatorul apasă Start.", en: "The activity and session clock begin only when the facilitator presses Start." }} /></p>
+            <div className="mx-auto mt-6 inline-block rounded-2xl border border-white/10 bg-white/5 px-6 py-4"><div className="text-[10px] font-bold uppercase tracking-wider text-ink-400"><T value={{ ro: "Cod de intrare", en: "Join code" }} /></div><div className="font-display mt-1 text-3xl font-extrabold tracking-[.35em] text-white">{room.code}</div></div>
+            <div className="mt-6 flex flex-wrap justify-center gap-2">{players.map((player) => <span key={player.id} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white"><i className="h-2 w-2 rounded-full" style={{ backgroundColor: player.color }} />{player.name}{player.role === "spectator" ? " · 👁" : ""}</span>)}</div>
+            <div className="mt-4 text-xs text-ink-400">{players.length} {lang === "ro" ? "conectați" : "connected"}</div>
+            {isHost ? <div className="mt-6 grid gap-2 sm:grid-cols-2"><button className="btn-primary" onClick={() => store.sendControl("start")}>▶ <T value={{ ro: "Start pentru toți", en: "Start for everyone" }} /></button><button className="btn btn-dark" onClick={() => setShareOpen(true)}>🔗 <T value={{ ro: "Invită colegi", en: "Invite teammates" }} /></button></div> : canTakeOver ? <button className="btn-primary mt-6" onClick={() => youId && api.takeover(room.id, youId)}>🎛 <T value={{ ro: "Preia rolul de facilitator", en: "Take over facilitation" }} /></button> : <div className="mt-6 rounded-xl bg-white/5 px-4 py-3 text-sm text-ink-300">⏳ <T value={{ ro: "Așteptăm facilitatorul…", en: "Waiting for the facilitator…" }} /></div>}
+          </div>
+        </div>
+      )}
+
+      {room.stage === "brief" && (
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink-950/80 p-4 backdrop-blur-md">
+          <div className="overlay-card w-[680px] max-w-full p-6 sm:p-9">
+            <div className="text-[11px] font-bold uppercase tracking-[.25em] text-brand-300"><T value={{ ro: "Brief de activitate", en: "Activity brief" }} /></div>
+            <h1 className="font-display mt-3 text-2xl font-extrabold text-white"><T value={puzzle.activity?.scenario?.title || puzzle.activity?.name || puzzle.name} /></h1>
+            <p className="mt-4 text-base leading-relaxed text-ink-200"><T value={puzzle.activity?.scenario?.situation || puzzle.activity?.description || { ro: "Facilitatorul prezintă regulile înainte de joc.", en: "The facilitator introduces the rules before play." }} /></p>
+            {puzzle.activity?.instructions && <p className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-ink-300"><T value={puzzle.activity.instructions} /></p>}
+            {isHost ? <button className="btn-primary mt-6 w-full" onClick={() => store.sendControl("stage", { stage: "play" })}>▶ <T value={{ ro: "Am înțeles — începe activitatea", en: "Understood — begin activity" }} /></button> : <div className="mt-6 text-center text-sm text-ink-400">⏳ <T value={{ ro: "Facilitatorul va porni activitatea.", en: "The facilitator will start the activity." }} /></div>}
+          </div>
+        </div>
+      )}
 
       {/* My cursor chip */}
       {me && !isCoaching && (
@@ -468,7 +542,7 @@ export default function GamePage() {
                   markCopied();
                 }}
               >
-                {copied ? "✓ " : ""}<T value={{ ro: "Copiat", en: "Copied" }} />
+                {copied ? "✓ " : ""}<T value={copied ? { ro: "Copiat", en: "Copied" } : { ro: "Copiază", en: "Copy" }} />
               </button>
             </div>
 
@@ -497,11 +571,12 @@ export default function GamePage() {
       )}
 
       {/* ---------------------------------------------- completion modal */}
-      {!isCoaching && completion && room.completed && (
+      {!isCoaching && completion && room.completed && completionVisible && (
         <>
           <Confetti />
-          <Modal dismissable={false}>
-            <div className="overlay-card max-h-[92vh] w-[760px] max-w-[96vw] overflow-y-auto p-5 sm:p-8">
+          <Modal onClose={() => setCompletionVisible(false)}>
+            <div className="overlay-card relative max-h-[92vh] w-[760px] max-w-[96vw] overflow-y-auto p-5 sm:p-8">
+              <button className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-xl text-ink-300 hover:bg-white/10" onClick={() => setCompletionVisible(false)} aria-label="Close and view completed puzzle">✕</button>
               <div className="text-center">
                 <div className="text-5xl">🎉</div>
                 <h2 className="font-display mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
@@ -542,127 +617,33 @@ export default function GamePage() {
                 </div>
               </div>
 
-              <div className="mt-7">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-ink-400">
-                      <T value={{ ro: "Podium colaborativ", en: "Collaborative podium" }} />
-                    </div>
-                    <div className="mt-1 text-sm text-ink-300">
-                      <T value={{ ro: "Top 3 jucători după numărul de piese plasate", en: "Top 3 players by placed pieces" }} />
-                    </div>
-                  </div>
-                  {completion.players.length > 0 && (
-                    <div className="hidden rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-ink-300 sm:block">
-                      <T value={{ ro: "Finalizat de", en: "Completed by" }} /> {completion.players.length}
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-5 flex flex-wrap items-end justify-center gap-3 lg:gap-4">
-                  {[1, 0, 2].map((rankIndex) => {
-                    const entry = podium[rankIndex];
-                    const style = PODIUM_STYLES[rankIndex];
-                    if (!entry) return null;
-                    const isMvp = rankIndex === 0;
-                    return (
-                      <button
-                        key={entry.playerId}
-                        type="button"
-                        className={`group relative flex w-[170px] flex-col items-center rounded-[26px] border border-white/10 bg-white/[0.05] px-4 pb-4 pt-5 text-center transition duration-200 hover:-translate-y-1 hover:bg-white/[0.08] ${
-                          isMvp ? "ring-2 ring-amber-300/30" : ""
-                        }`}
-                      >
-                        {isMvp && (
-                          <div className="absolute -top-4 inline-flex items-center gap-1 rounded-full border border-amber-300/40 bg-amber-400/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-amber-100">
-                            👑 MVP · 🏆
-                          </div>
-                        )}
-                        <div className={`text-3xl ${style.accent}`}>{style.medal}</div>
-                        <div className="mt-2 flex items-center gap-2">
-                          <span className="h-3 w-3 rounded-full ring-2 ring-white/15" style={{ backgroundColor: entry.color }} />
-                          <span className="max-w-[110px] truncate text-sm font-bold text-white">{entry.name}</span>
-                        </div>
-                        <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-ink-400">
-                          <T value={style.label} />
-                        </div>
-                        <div className={`mt-3 flex w-full flex-col items-center justify-center rounded-[22px] border ${style.box} ${style.height}`}>
-                          <div className="font-display text-3xl font-extrabold text-white">{entry.placed}</div>
-                          <div className="mt-1 text-[11px] font-semibold text-white/75">{formatContribution(entry.placed)}</div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="mt-7 rounded-[24px] border border-white/10 bg-white/[0.04] p-4 sm:p-5">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-ink-400">
-                      <T value={{ ro: "Clasament complet", en: "Full team ranking" }} />
-                    </div>
-                    <div className="mt-1 text-sm text-ink-300">
-                      <T value={{ ro: "Contribuția fiecărui jucător la puzzle-ul final", en: "Each player’s contribution to the finished puzzle" }} />
-                    </div>
-                  </div>
-                  <div className="text-xs font-medium text-ink-400">100% · {total} <T value={{ ro: "piese", en: "pieces" }} /></div>
-                </div>
-
-                <div className="mt-4 overflow-x-auto rounded-2xl border border-white/8">
-                  <div className="grid grid-cols-[62px_minmax(0,1fr)_110px_120px] gap-3 bg-white/[0.04] px-4 py-3 text-[11px] font-bold uppercase tracking-wide text-ink-400">
-                    <span>#</span>
-                    <span><T value={{ ro: "Jucător", en: "Player" }} /></span>
-                    <span className="text-right"><T value={{ ro: "Piese", en: "Pieces" }} /></span>
-                    <span className="text-right">%</span>
-                  </div>
-                  <div className="divide-y divide-white/6 bg-ink-950/20">
-                    {finalRanking.map((entry, index) => {
-                      const share = Math.round((entry.placed / total) * 100);
-                      const isMvp = index === 0;
-                      return (
-                        <div key={entry.playerId} className="grid grid-cols-[62px_minmax(0,1fr)_110px_120px] items-center gap-3 px-4 py-3 text-sm">
-                          <div className="flex items-center gap-2 text-white">
-                            <span className="font-display text-lg font-bold">{index + 1}</span>
-                            {index < 3 && <span className="text-base">{PODIUM_STYLES[index].medal}</span>}
-                          </div>
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className="h-3 w-3 shrink-0 rounded-full ring-2 ring-white/15" style={{ backgroundColor: entry.color }} />
-                              <span className="truncate font-semibold text-white">{entry.name}</span>
-                              {entry.playerId === youId && (
-                                <span className="rounded-full bg-brand-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-200">
-                                  <T value={{ ro: "Tu", en: "You" }} />
-                                </span>
-                              )}
-                              {isMvp && (
-                                <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-200">
-                                  👑 MVP
-                                </span>
-                              )}
-                            </div>
-                            <div className="mt-1 text-xs text-ink-400">{formatContribution(entry.placed)}</div>
-                          </div>
-                          <div className="text-right font-display text-lg font-bold text-white">{entry.placed}</div>
-                          <div className="text-right font-semibold text-ink-200">{share}%</div>
-                        </div>
-                      );
+              {room.celebrationMode === "individual" ? (
+                <div className="mt-7">
+                  <div className="text-center text-[11px] font-bold uppercase tracking-[0.22em] text-ink-400"><T value={{ ro: "Podium opțional de contribuție", en: "Optional contribution podium" }} /></div>
+                  <div className="mx-auto mt-5 grid max-w-xl grid-cols-3 items-end gap-3">
+                    {[podium[1], podium[0], podium[2]].map((entry, visualIndex) => {
+                      if (!entry) return <div key={`empty-${visualIndex}`} />;
+                      const rank = finalRanking.findIndex((candidate) => candidate.playerId === entry.playerId);
+                      const style = PODIUM_STYLES[rank];
+                      return <div key={entry.playerId} className="text-center"><div className="text-2xl">{style.medal}</div><div className="mt-1 truncate text-sm font-bold text-white">{entry.name}</div><div className={`mt-3 flex flex-col items-center justify-center rounded-2xl border ${style.box} ${style.height}`}><b className="font-display text-3xl">{entry.placed}</b><span className="text-[10px] text-white/70">{formatContribution(entry.placed)}</span></div></div>;
                     })}
-                    {restOfRanking.length === 0 && finalRanking.length <= 3 && (
-                      <div className="px-4 py-3 text-sm text-ink-400">
-                        <T value={{ ro: "Podiumul reprezintă întregul clasament al echipei.", en: "The podium already represents the full team ranking." }} />
-                      </div>
-                    )}
                   </div>
+                  <details className="mt-5 rounded-2xl border border-white/10 bg-white/[.04] p-4"><summary className="cursor-pointer text-sm font-semibold text-ink-200"><T value={{ ro: "Vezi toate contribuțiile", en: "View all contributions" }} /></summary><div className="mt-3 space-y-2">{finalRanking.map((entry, index) => <div key={entry.playerId} className="flex items-center gap-3 rounded-xl bg-white/[.03] px-3 py-2 text-sm"><b className="w-5 text-ink-500">{index + 1}</b><span className="h-2.5 w-2.5 rounded-full" style={{ background: entry.color }} /><span className="flex-1 truncate text-white">{entry.name}</span><span className="font-semibold text-brand-200">{entry.placed}</span></div>)}</div></details>
                 </div>
-              </div>
+              ) : (
+                <div className="mt-7 rounded-3xl border border-emerald-400/20 bg-emerald-500/10 p-6 text-center">
+                  <div className="text-4xl">🤝</div>
+                  <h3 className="font-display mt-2 text-xl font-bold text-white"><T value={{ ro: "O singură echipă, un singur rezultat", en: "One team, one shared result" }} /></h3>
+                  <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-ink-300"><T value={{ ro: `Ați plasat împreună toate cele ${total} de piese. Contribuția individuală rămâne în fundal; timpul și rezultatul echipei sunt ceea ce celebrăm.`, en: `Together you placed all ${total} pieces. Individual contribution stays in the background; the team's time and outcome are what we celebrate.` }} /></p>
+                </div>
+              )}
 
               <div className="mt-7 space-y-3">
                 {isHost ? (
                   <div className="grid gap-3 lg:grid-cols-3">
                     <button
                       className={`${nextLevel ? "btn w-full border border-white/10 bg-white/5 text-white hover:bg-white/10" : "btn-primary w-full"}`}
-                      onClick={handleReset}
+                      onClick={() => window.confirm(lang === "ro" ? "Reîncepi pentru toată echipa?" : "Replay for the whole team?") && handleReset()}
                     >
                       ↺ <T value={{ ro: "Replay", en: "Replay" }} />
                     </button>
@@ -718,6 +699,18 @@ export default function GamePage() {
             </div>
           </Modal>
         </>
+      )}
+
+      {facilitatorOpen && isHost && youId && (
+        <FacilitatorPanel room={room} players={players} youId={youId} onClose={() => setFacilitatorOpen(false)} onReset={handleReset} />
+      )}
+
+      {chatOpen && (
+        <aside className="safe-bottom fixed bottom-3 right-3 z-40 flex max-h-[60vh] w-[340px] max-w-[calc(100vw-1.5rem)] flex-col overflow-hidden rounded-2xl border border-white/10 bg-ink-900/95 text-white shadow-pop backdrop-blur">
+          <header className="flex items-center justify-between border-b border-white/10 px-4 py-3"><b className="font-display text-sm"><T value={{ ro: "Chat de echipă", en: "Team chat" }} /></b><button onClick={() => setChatOpen(false)}>✕</button></header>
+          <div className="flex-1 space-y-2 overflow-y-auto p-3">{chat.length === 0 ? <p className="py-8 text-center text-xs text-ink-500"><T value={{ ro: "Începe conversația.", en: "Start the conversation." }} /></p> : chat.map((entry) => <div key={entry.id} className="rounded-xl bg-white/5 px-3 py-2 text-sm"><div className="text-[10px] font-bold" style={{ color: entry.color }}>{entry.name}</div><div className="mt-0.5 break-words text-ink-200">{entry.text}</div></div>)}</div>
+          <form className="flex gap-2 border-t border-white/10 p-3" onSubmit={(event) => { event.preventDefault(); if (!chatText.trim()) return; store.sendChat(chatText); setChatText(""); }}><input className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none" value={chatText} maxLength={500} onChange={(event) => setChatText(event.target.value)} placeholder={lang === "ro" ? "Scrie un mesaj…" : "Write a message…"} /><button className="btn-primary btn-sm" type="submit">↑</button></form>
+        </aside>
       )}
 
       {/* --------------------------------------------- puzzle picker (host) */}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../lib/api";
 import { Modal, Spinner } from "./ui";
-import { T } from "../lib/i18n";
+import { T, useLang } from "../lib/i18n";
 import type { CatalogData, RoomView } from "../types";
 
 const CATEGORY_EMOJI: Record<string, string> = {
@@ -27,6 +27,7 @@ export default function PuzzlePicker({
   youId: string | null;
   onClose: () => void;
 }) {
+  const { lang } = useLang();
   const [catalog, setCatalog] = useState<CatalogData | null>(null);
   const [category, setCategory] = useState<string>("");
   const [puzzleId, setPuzzleId] = useState<string | null>(null);
@@ -49,6 +50,7 @@ export default function PuzzlePicker({
 
   async function handleStart() {
     if (!canStart || !youId || busy) return;
+    if (!window.confirm(lang === "ro" ? "Progresul activității curente se va pierde. Pregătești următoarea activitate?" : "Current activity progress will be lost. Prepare the next activity?")) return;
     setBusy(true);
     setError("");
     try {
@@ -247,7 +249,7 @@ export default function PuzzlePicker({
             <T value={{ ro: "Anulează", en: "Cancel" }} />
           </button>
           <button className="btn-primary btn-sm" disabled={!canStart || busy} onClick={handleStart}>
-            {busy ? <Spinner /> : <>▶ <T value={{ ro: "Începe pentru toți", en: "Start for everyone" }} /></>}
+            {busy ? <Spinner /> : <>→ <T value={{ ro: "Pregătește lobby-ul", en: "Prepare lobby" }} /></>}
           </button>
         </div>
       </div>

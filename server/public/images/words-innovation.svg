@@ -28,7 +28,7 @@
   <circle cx="940" cy="650" r="190" fill="#EC4899" fill-opacity="0.08"/>
   <rect x="70" y="70" width="1060" height="660" rx="34" fill="url(#panel)" stroke="white" stroke-opacity="0.08"/>
   <text x="110" y="145" fill="#A5F3FC" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="3">WORD WORLD</text>
-  <text x="110" y="232" fill="white" font-family="Sora, Inter, Arial, sans-serif" font-size="58" font-weight="800">Innovation &amp; Brainstorming Sandbox</text>
+  <text x="110" y="232" fill="white" font-family="Sora, Inter, Arial, sans-serif" font-size="58" font-weight="800">Innovation Letter Mosaic</text>
   <text x="110" y="292" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="24">High-energy word tiles for ideation labs, sprint planning and future-back thinking.</text>
   <g transform="translate(110 360)">
     <rect x="0" y="0" width="215" height="132" rx="26" fill="url(#brainA)"/>

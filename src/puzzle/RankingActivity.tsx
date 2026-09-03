@@ -1,554 +1,202 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Modal, Spinner } from "../components/ui";
+import { Modal } from "../components/ui";
 import { pick, T, useLang } from "../lib/i18n";
-import { api } from "../lib/api";
 import { store, useStore } from "../store";
 import { MAX_SCALE, MIN_SCALE, useViewport } from "./useViewport";
 import type { CoachingActivity, Piece, PlayerView, PuzzleView } from "../types";
 
-interface Props {
-  puzzle: PuzzleView;
-  pieces: Record<number, Piece>;
-  players: PlayerView[];
-  youId: string | null;
-}
+interface Props { puzzle: PuzzleView; pieces: Record<number, Piece>; players: PlayerView[]; youId: string | null }
 
 export default function RankingActivity({ puzzle, pieces, players, youId }: Props) {
-  const activity = puzzle.activity as CoachingActivity;
   const { lang } = useLang();
+  const activity = puzzle.activity as CoachingActivity;
   const items = activity.items || [];
+  const slots = puzzle.rankingSlots || [];
   const layout = activity.layout || { cols: 2, rows: 6, padX: 70, padY: 70, slotW: 460, slotH: 110, gapX: 28, gapY: 24 };
-
   const boardW = Math.max(1400, layout.padX * 2 + layout.cols * layout.slotW + (layout.cols - 1) * layout.gapX);
   const boardH = layout.padY * 2 + layout.rows * layout.slotH + (layout.rows - 1) * layout.gapY;
-
-  const { camera, cameraRef, zoomAt, zoomBy, fit } = useViewport();
+  const room = useStore((state) => state.room);
+  const connected = useStore((state) => state.connected);
+  const cursors = useStore((state) => state.cursors);
+  const canMove = !!room && room.stage === "play" && !room.boardLocked && connected && players.find((player) => player.id === youId)?.role !== "spectator";
+  const { camera, cameraRef, setCamera, zoomAt, zoomBy } = useViewport();
   const [showResults, setShowResults] = useState(false);
-  const [resetSignal, setResetSignal] = useState(0);
-  const [busyReset, setBusyReset] = useState(false);
-
-  const lockedCount = Object.values(pieces).filter((p) => p.locked).length;
-  const allPlaced = lockedCount >= items.length;
-
-  // auto-open results once everything is placed
-  const openedForCompletion = useRef(false);
-  useEffect(() => {
-    if (allPlaced && !openedForCompletion.current) {
-      openedForCompletion.current = true;
-      const t = setTimeout(() => setShowResults(true), 900);
-      return () => clearTimeout(t);
-    }
-    if (!allPlaced) openedForCompletion.current = false;
-  }, [allPlaced]);
-
-  // initial fit
-  const fitted = useRef(false);
-  useEffect(() => {
-    if (!fitted.current) {
-      fitted.current = true;
-      fit({ width: boardW, height: boardH } as PuzzleView);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Debug/testing hook: expose the live camera.
-  useEffect(() => {
-    (window as unknown as { __ptCamera?: unknown }).__ptCamera = cameraRef;
-    return () => {
-      delete (window as unknown as { __ptCamera?: unknown }).__ptCamera;
-    };
-  }, [cameraRef]);
-
-  useEffect(() => {
-    if (resetSignal > 0) {
-      fitted.current = false;
-      fit({ width: boardW, height: boardH } as PuzzleView);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resetSignal]);
-
-  // ------------------------------------------------------------- gestures
   const containerRef = useRef<HTMLDivElement | null>(null);
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pan = useRef<{ id: number; sx: number; sy: number; cx: number; cy: number } | null>(null);
   const pinch = useRef<{ dist: number; sx: number; sy: number; scale: number } | null>(null);
-  const drag = useRef<{ id: number; offsetX: number; offsetY: number; throttle: number; first: boolean } | null>(null);
+  const drag = useRef<{ id: number; offsetX: number; offsetY: number; throttle: number } | null>(null);
+  const dragPosition = useRef<{ x: number; y: number } | null>(null);
   const gesture = useRef<"none" | "pan" | "drag" | "pinch">("none");
-  const [frame, setFrame] = useState(0);
-  const lastMoveSent = useRef(0);
+  const [, redraw] = useState(0);
+  const lastCursorSent = useRef(0);
 
-  const screenToWorld = useCallback((sx: number, sy: number) => {
-    const { x, y, scale } = cameraRef.current;
-    return { x: (sx - x) / scale, y: (sy - y) / scale };
+  const fit = useCallback(() => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const worldH = boardH + 760;
+    const pad = width < 640 ? 24 : 120;
+    const scale = width < 640
+      ? 0.55
+      : Math.max(0.62, Math.min(0.92, (width - pad * 2) / boardW, (height - 80) / worldH));
+    // Phones open at a readable card size and pan across the board instead of
+    // shrinking 460px cards into illegible thumbnails.
+    setCamera({ x: width < 640 ? 16 : (width - boardW * scale) / 2, y: width < 640 ? 84 : 72, scale });
+  }, [boardH, boardW, setCamera]);
+
+  useEffect(() => { fit(); }, [fit]);
+  useEffect(() => { if (room?.revealed) setShowResults(true); }, [room?.revealed]);
+  useEffect(() => {
+    (window as Window & { __ptCamera?: unknown }).__ptCamera = cameraRef;
+    return () => { delete (window as Window & { __ptCamera?: unknown }).__ptCamera; };
   }, [cameraRef]);
 
-  function posFromEvent(e: React.PointerEvent) {
+  const screenToWorld = useCallback((sx: number, sy: number) => {
+    const camera = cameraRef.current;
+    return { x: (sx - camera.x) / camera.scale, y: (sy - camera.y) / camera.scale };
+  }, [cameraRef]);
+  const eventPosition = (event: React.PointerEvent) => {
     const rect = containerRef.current!.getBoundingClientRect();
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  };
+
+  function beginDrag(id: number, point: { x: number; y: number }) {
+    const piece = pieces[id];
+    if (!piece || !canMove || (piece.heldBy && piece.heldBy !== youId)) return false;
+    const world = screenToWorld(point.x, point.y);
+    drag.current = { id, offsetX: world.x - piece.x, offsetY: world.y - piece.y, throttle: 0 };
+    dragPosition.current = { x: piece.x, y: piece.y };
+    gesture.current = "drag";
+    store.sendPiece(id, piece.x, piece.y, true);
+    redraw((value) => value + 1);
+    return true;
   }
 
-  function onPointerDown(e: React.PointerEvent<HTMLDivElement>) {
-    const el = containerRef.current;
-    if (!el) return;
-    el.setPointerCapture(e.pointerId);
-    const pos = posFromEvent(e);
-    pointers.current.set(e.pointerId, pos);
-
-    const cardEl = (e.target as HTMLElement).closest("[data-item]") as HTMLElement | null;
-    if (cardEl && e.pointerType === "mouse") {
-      const id = Number(cardEl.dataset.item);
-      const piece = pieces[id];
-      if (piece && !piece.locked) {
-        const world = screenToWorld(pos.x, pos.y);
-        gesture.current = "drag";
-        drag.current = { id, offsetX: world.x - piece.x, offsetY: world.y - piece.y, throttle: performance.now(), first: true };
-        store.sendPiece(id, piece.x, piece.y, true);
-        bump();
-        return;
-      }
+  function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    containerRef.current?.setPointerCapture(event.pointerId);
+    const point = eventPosition(event);
+    pointers.current.set(event.pointerId, point);
+    const card = (event.target as HTMLElement).closest("[data-ranking-item]") as HTMLElement | null;
+    if (card && beginDrag(Number(card.dataset.rankingItem), point)) return;
+    if (event.pointerType === "touch" && pointers.current.size === 2) {
+      const points = [...pointers.current.values()];
+      pinch.current = { dist: Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y), sx: (points[0].x + points[1].x) / 2, sy: (points[0].y + points[1].y) / 2, scale: cameraRef.current.scale };
+      gesture.current = "pinch";
+      return;
     }
-
-    if (e.pointerType === "touch") {
-      if (pointers.current.size === 1 && cardEl) {
-        const id = Number(cardEl.dataset.item);
-        const piece = pieces[id];
-        if (piece && !piece.locked) {
-          const world = screenToWorld(pos.x, pos.y);
-          gesture.current = "drag";
-          drag.current = { id, offsetX: world.x - piece.x, offsetY: world.y - piece.y, throttle: performance.now(), first: true };
-          store.sendPiece(id, piece.x, piece.y, true);
-          bump();
-          return;
-        }
-      }
-      if (pointers.current.size === 2) {
-        if (gesture.current === "drag" && drag.current) {
-          const p = pieces[drag.current.id];
-          if (p) store.sendPiece(drag.current.id, p.x, p.y, false);
-          drag.current = null;
-        }
-        const pts = [...pointers.current.values()];
-        pinch.current = {
-          dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y),
-          sx: (pts[0].x + pts[1].x) / 2,
-          sy: (pts[0].y + pts[1].y) / 2,
-          scale: cameraRef.current.scale,
-        };
-        gesture.current = "pinch";
-        return;
-      }
-    }
-
     gesture.current = "pan";
-    pan.current = { id: e.pointerId, sx: pos.x, sy: pos.y, cx: cameraRef.current.x, cy: cameraRef.current.y };
+    pan.current = { id: event.pointerId, sx: point.x, sy: point.y, cx: cameraRef.current.x, cy: cameraRef.current.y };
   }
 
-  function onPointerMove(e: React.PointerEvent<HTMLDivElement>) {
-    const pos = posFromEvent(e);
-    if (!pointers.current.has(e.pointerId)) return;
-    pointers.current.set(e.pointerId, pos);
-
+  function onPointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    const point = eventPosition(event);
+    if (!pointers.current.has(event.pointerId)) return;
+    pointers.current.set(event.pointerId, point);
     if (gesture.current === "drag" && drag.current) {
-      const world = screenToWorld(pos.x, pos.y);
-      const piece = pieces[drag.current.id];
-      if (piece) {
-        const x = world.x - drag.current.offsetX;
-        const y = world.y - drag.current.offsetY;
-        dragPos.current = { x, y };
-        const now = performance.now();
-        if (now - drag.current.throttle >= 50 || drag.current.first) {
-          drag.current.throttle = now;
-          drag.current.first = false;
-          store.sendPiece(piece.id, x, y, true);
-        }
-      }
-      bump();
+      const world = screenToWorld(point.x, point.y);
+      const x = world.x - drag.current.offsetX;
+      const y = world.y - drag.current.offsetY;
+      dragPosition.current = { x, y };
+      const now = performance.now();
+      if (now - drag.current.throttle >= 50) { drag.current.throttle = now; store.sendPiece(drag.current.id, x, y, true); }
+      redraw((value) => value + 1);
       return;
     }
-
-    if (gesture.current === "pan" && pan.current && e.pointerId === pan.current.id) {
-      cameraRef.current.x = pan.current.cx + (pos.x - pan.current.sx);
-      cameraRef.current.y = pan.current.cy + (pos.y - pan.current.sy);
-      setFrame((f) => f + 1);
+    if (gesture.current === "pan" && pan.current && pan.current.id === event.pointerId) {
+      cameraRef.current.x = pan.current.cx + point.x - pan.current.sx;
+      cameraRef.current.y = pan.current.cy + point.y - pan.current.sy;
+      setCamera({ ...cameraRef.current });
       return;
     }
-
     if (gesture.current === "pinch" && pinch.current && pointers.current.size >= 2) {
-      const pts = [...pointers.current.values()];
-      const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
-      if (pinch.current.dist > 0) {
-        const factor = dist / pinch.current.dist;
-        const base = cameraRef.current;
-        const scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, pinch.current.scale * factor));
-        const k = scale / base.scale;
-        base.scale = scale;
-        base.x = pinch.current.sx - (pinch.current.sx - base.x) * k;
-        base.y = pinch.current.sy - (pinch.current.sy - base.y) * k;
-        setFrame((f) => f + 1);
-      }
+      const points = [...pointers.current.values()];
+      const distance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+      const scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, pinch.current.scale * distance / Math.max(1, pinch.current.dist)));
+      const previous = cameraRef.current.scale;
+      const ratio = scale / previous;
+      setCamera({ scale, x: pinch.current.sx - (pinch.current.sx - cameraRef.current.x) * ratio, y: pinch.current.sy - (pinch.current.sy - cameraRef.current.y) * ratio });
       return;
     }
-
-    const now = performance.now();
-    if (now - lastMoveSent.current > 40) {
-      lastMoveSent.current = now;
-      const world = screenToWorld(pos.x, pos.y);
+    if (performance.now() - lastCursorSent.current > 40) {
+      lastCursorSent.current = performance.now();
+      const world = screenToWorld(point.x, point.y);
       store.sendCursor(world.x, world.y);
     }
   }
 
-  function onPointerUp(e: React.PointerEvent<HTMLDivElement>) {
-    pointers.current.delete(e.pointerId);
+  function onPointerUp(event: React.PointerEvent<HTMLDivElement>) {
+    pointers.current.delete(event.pointerId);
     if (gesture.current === "drag" && drag.current) {
-      const d = drag.current;
+      const current = drag.current;
+      const point = eventPosition(event);
+      const world = screenToWorld(point.x, point.y);
+      store.sendPiece(current.id, world.x - current.offsetX, world.y - current.offsetY, false);
       drag.current = null;
-      dragPos.current = null;
-      const piece = pieces[d.id];
-      if (piece) {
-        const pos = posFromEvent(e);
-        const world = screenToWorld(pos.x, pos.y);
-        const x = world.x - d.offsetX;
-        const y = world.y - d.offsetY;
-        const dist = Math.hypot(x - piece.correctX, y - piece.correctY);
-        const snapped = dist <= puzzle.snapDistance;
-        store.sendPiece(piece.id, x, y, false);
-        store.applyLocalDrop(piece.id, x, y, snapped);
-      }
+      dragPosition.current = null;
     }
     if (gesture.current === "pan") pan.current = null;
     if (gesture.current === "pinch") pinch.current = null;
-    if (pointers.current.size === 0) gesture.current = "none";
+    if (!pointers.current.size) gesture.current = "none";
+    redraw((value) => value + 1);
   }
 
-  function bump() {
-    setFrame((f) => f + 1);
-  }
-
-  function onWheel(e: React.WheelEvent<HTMLDivElement>) {
-    e.preventDefault();
-    const pos = posFromEvent(e as unknown as React.PointerEvent);
-    zoomAt(pos.x, pos.y, Math.exp(-e.deltaY * 0.0016));
-  }
-
-  // ------------------------------------------------------------- results
-  const teamRanks = useMemo(() => {
-    const ranks = new Map<number, number>();
-    for (const p of Object.values(pieces)) {
-      if (p.locked) ranks.set(p.id, p.id + 1); // slot order = reading order = rank
-    }
-    return ranks;
-  }, [pieces]);
-
-  const score = useMemo(() => {
-    let s = 0;
-    let n = 0;
-    for (const item of items) {
-      const team = teamRanks.get(item.id);
-      if (team) {
-        s += Math.pow(team - item.expertRank, 2);
-        n += 1;
-      }
-    }
-    return { value: s, count: n };
-  }, [items, teamRanks]);
-
-  async function handleReset() {
-    setBusyReset(true);
-    const roomId = store.getState().room?.id;
-    if (roomId) await api.resetRoom(roomId);
-    setShowResults(false);
-    setResetSignal((n) => n + 1);
-    setBusyReset(false);
-  }
-
-  const cursors = useStore((s) => s.cursors);
-  const playersById = useMemo(() => new Map(players.map((p) => [p.id, p])), [players]);
+  const teamRanks = useMemo(() => new Map(Object.values(pieces).filter((piece) => piece.placedOnSlot != null).map((piece) => [piece.id, piece.placedOnSlot!])), [pieces]);
+  const score = useMemo(() => [...teamRanks].reduce((sum, [id, rank]) => {
+    const expert = items.find((item) => item.id === id)?.expertRank;
+    return expert ? sum + Math.pow(rank - expert, 2) : sum;
+  }, 0), [items, teamRanks]);
+  const playersById = useMemo(() => new Map(players.map((player) => [player.id, player])), [players]);
+  const placedCount = teamRanks.size;
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-ink-950" style={{ touchAction: "none" }}>
-      {/* world */}
-      <div
-        ref={containerRef}
-        className="absolute inset-0"
-        style={{ cursor: gesture.current === "pan" ? "grabbing" : "grab" }}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
-        onWheel={onWheel}
-        onContextMenu={(e) => e.preventDefault()}
-      >
-        <div
-          className="absolute left-0 top-0"
-          style={{
-            transform: `translate(${camera.x}px, ${camera.y}px) scale(${camera.scale})`,
-            transformOrigin: "0 0",
-          }}
-        >
-          {/* board frame */}
-          <div
-            className="absolute rounded-2xl border-2 border-dashed border-white/15"
-            style={{ left: 0, top: 0, width: boardW, height: boardH }}
-          >
-            <div className="absolute -top-9 left-2 text-[13px] font-semibold text-ink-300">
-              {lang === "ro" ? "1 = cel mai important · 12 = cel mai puțin important" : "1 = most important · 12 = least important"}
-            </div>
-            {items.map((item, i) => {
-              const col = i % layout.cols;
-              const row = Math.floor(i / layout.cols);
-              const x = layout.padX + col * (layout.slotW + layout.gapX);
-              const y = layout.padY + row * (layout.slotH + layout.gapY);
-              return (
-                <div key={item.id} className="absolute rounded-xl border border-white/10 bg-white/[0.03]" style={{ left: x, top: y, width: layout.slotW, height: layout.slotH }}>
-                  <span className="absolute left-2.5 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-[11px] font-bold text-ink-200">
-                    {i + 1}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* item cards */}
-          {items.map((item) => {
-            const piece = pieces[item.id];
-            if (!piece) return null;
-            const dragged = drag.current?.id === piece.id;
-            const local = dragged ? dragPos.current : null;
-            const px = local ? local.x : piece.x;
-            const py = local ? local.y : piece.y;
-            const locked = piece.locked;
-            return (
-              <div
-                key={item.id}
-                data-item={item.id}
-                className={`absolute flex select-none flex-col justify-between rounded-xl border-2 bg-white p-3 shadow-lg transition-shadow ${
-                  locked
-                    ? "border-emerald-400 shadow-emerald-500/20"
-                    : dragged
-                      ? "border-brand-400 shadow-pop cursor-grabbing"
-                      : "border-ink-200 shadow-chip cursor-grab hover:border-brand-300"
-                }`}
-                style={{ left: px, top: py, width: layout.slotW, height: layout.slotH }}
-              >
-                <div className="text-[15px] font-semibold leading-snug text-ink-900">
-                  <T value={item.label} />
-                </div>
-                {locked && (
-                  <div className="flex items-center gap-1.5">
-                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-700">
-                      {lang === "ro" ? "Poziția" : "Rank"} {teamRanks.get(item.id) ?? piece.id + 1}
-                    </span>
-                    <span className="text-[10px] text-ink-400">{lang === "ro" ? "blocat" : "locked"}</span>
-                  </div>
-                )}
-              </div>
-            );
+    <div className={`relative h-full w-full overflow-hidden bg-ink-950 ${!connected ? "pointer-events-none" : ""}`} style={{ touchAction: "none" }}>
+      <div ref={containerRef} className="absolute inset-0" onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp} onWheel={(event) => { event.preventDefault(); const point = eventPosition(event as unknown as React.PointerEvent); zoomAt(point.x, point.y, Math.exp(-event.deltaY * 0.0016)); }}>
+        <div className="absolute left-0 top-0 origin-top-left" style={{ width: boardW, height: boardH + 850, transform: `translate(${camera.x}px,${camera.y}px) scale(${camera.scale})` }}>
+          <div className="absolute inset-x-0 top-0 rounded-[32px] border-2 border-dashed border-white/15 bg-white/[0.025]" style={{ height: boardH }} />
+          {slots.map((slot) => <div key={slot.rank} className="absolute flex items-center rounded-2xl border-2 border-dashed border-white/15 bg-white/[0.03]" style={{ left: slot.x, top: slot.y, width: layout.slotW, height: layout.slotH }}><span className="ml-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 font-display text-lg font-extrabold text-white/50">{slot.rank}</span></div>)}
+          {Object.values(pieces).map((piece) => {
+            const item = items.find((entry) => entry.id === piece.id);
+            if (!item) return null;
+            const locallyDragged = drag.current?.id === piece.id && dragPosition.current;
+            const x = locallyDragged ? dragPosition.current!.x : piece.x;
+            const y = locallyDragged ? dragPosition.current!.y : piece.y;
+            const owner = piece.heldBy ? playersById.get(piece.heldBy) : undefined;
+            const blocked = !!piece.heldBy && piece.heldBy !== youId;
+            return <div key={piece.id} data-ranking-item={piece.id} className={`absolute flex select-none items-center rounded-2xl border bg-ink-800 px-5 shadow-xl transition-shadow ${blocked ? "cursor-not-allowed" : canMove ? "cursor-grab active:cursor-grabbing" : "cursor-default"}`} style={{ left: x, top: y, width: layout.slotW, height: layout.slotH, borderColor: owner?.color || (piece.placedOnSlot ? "#34d399" : "rgba(255,255,255,.16)"), zIndex: locallyDragged ? 50 : piece.placedOnSlot ? 5 : 10 }}>
+              <span className="mr-4 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/10 font-display font-bold text-white">{piece.placedOnSlot || "·"}</span><span className="text-[15px] font-semibold leading-snug text-white"><T value={item.label} /></span>{owner && <span className="ml-auto rounded-full px-2 py-1 text-[10px] font-bold text-white" style={{ backgroundColor: owner.color }}>{owner.name}</span>}
+            </div>;
           })}
         </div>
       </div>
 
-      {/* remote cursors */}
-      <div className="pointer-events-none absolute inset-0">
-        {Object.entries(cursors).map(([id, c]) => {
-          if (id === youId) return null;
-          if (Date.now() - c.at > 4000) return null;
-          const player = playersById.get(id);
-          if (!player) return null;
-          const sx = c.x * camera.scale + camera.x;
-          const sy = c.y * camera.scale + camera.y;
-          return (
-            <div key={id} className="absolute" style={{ left: sx, top: sy }}>
-              <svg width="16" height="18" viewBox="0 0 16 18">
-                <path d="M1 1 L1 14.5 L5.5 11.5 L7.5 16.5 L10 15.5 L8 10.5 L14.5 12 Z" fill={player.color} stroke="#fff" strokeWidth="1.2" />
-              </svg>
-              <span className="ml-1 rounded-full px-2 py-0.5 text-[10px] font-bold text-white shadow-chip" style={{ backgroundColor: player.color }}>
-                {player.name} 👆
-              </span>
-            </div>
-          );
-        })}
-      </div>
+      <div className="pointer-events-none absolute inset-0">{Object.entries(cursors).map(([id, cursor]) => {
+        if (id === youId || Date.now() - cursor.at > 4000) return null;
+        const player = playersById.get(id); if (!player) return null;
+        return <div key={id} className="absolute" style={{ left: cursor.x * camera.scale + camera.x, top: cursor.y * camera.scale + camera.y }}><span className="rounded-full px-2 py-1 text-[10px] font-bold text-white" style={{ backgroundColor: player.color }}>↖ {player.name}</span></div>;
+      })}</div>
 
-      {/* zoom controls */}
-      <div className="absolute bottom-5 left-5 flex flex-col items-center gap-2">
-        <button className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-ink-900/85 text-lg font-semibold text-white shadow-chip backdrop-blur transition hover:bg-ink-800" onClick={() => zoomBy(1.25)} title="Zoom in">+</button>
-        <button className="flex h-8 w-10 items-center justify-center rounded-lg border border-white/10 bg-ink-900/85 text-[11px] font-semibold text-ink-200 shadow-chip backdrop-blur" onClick={() => fit({ width: boardW, height: boardH } as PuzzleView)}>
-          {Math.round(camera.scale * 100)}%
-        </button>
-        <button className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-ink-900/85 text-lg font-semibold text-white shadow-chip backdrop-blur transition hover:bg-ink-800" onClick={() => zoomBy(0.8)} title="Zoom out">−</button>
-      </div>
+      <div className="safe-bottom absolute bottom-3 left-3 flex flex-col gap-2 sm:bottom-5 sm:left-5"><button className="btn btn-dark h-10 w-10" onClick={() => zoomBy(1.25)}>+</button><button className="btn btn-dark h-9 w-10 !px-1 text-[10px]" onClick={fit}>{Math.round(camera.scale * 100)}%</button><button className="btn btn-dark h-10 w-10" onClick={() => zoomBy(.8)}>−</button></div>
 
-      {/* reset view */}
-      <button className="btn btn-dark btn-sm absolute bottom-5 left-1/2 -translate-x-1/2" onClick={() => fit({ width: boardW, height: boardH } as PuzzleView)}>
-        ⌂ {lang === "ro" ? "Resetare vizualizare" : "Reset view"}
-      </button>
+      <aside className="overlay-card ranking-sheet absolute inset-x-2 bottom-2 z-20 max-h-[42vh] overflow-y-auto p-4 sm:inset-x-auto sm:bottom-auto sm:right-4 sm:top-24 sm:w-[340px] sm:max-h-[calc(100vh-8rem)] sm:p-5">
+        <div className="text-[11px] font-bold uppercase tracking-wider text-emerald-300">🧭 Team ranking</div>
+        <h1 className="font-display mt-1 text-lg font-bold text-white"><T value={activity.scenario?.title || activity.name} /></h1>
+        <p className="mt-2 text-[13px] leading-relaxed text-ink-300"><T value={activity.scenario?.situation || activity.description} /></p>
+        <p className="mt-2 text-xs text-ink-400"><T value={activity.instructions || { ro: "Trageți cardurile pe orice rang. Le puteți reordona până când facilitatorul blochează board-ul.", en: "Drag cards to any rank. Reorder them until the facilitator locks the board." }} /></p>
+        <p className="mt-1 text-[11px] text-ink-500"><T value={{ ro: "Pan în jos pentru cardurile neclasificate · pinch pentru zoom", en: "Pan down for unranked cards · pinch to zoom" }} /></p>
+        <div className="mt-3 flex items-center justify-between text-xs text-ink-300"><span>{lang === "ro" ? "Rankingul echipei" : "Team ranking"}</span><b>{placedCount}/{items.length}</b></div>
+        <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full bg-emerald-400 transition-all" style={{ width: `${items.length ? placedCount / items.length * 100 : 0}%` }} /></div>
+        <div className={`mt-3 rounded-xl px-3 py-2 text-xs ${room?.revealed ? "bg-emerald-500/15 text-emerald-200" : canMove ? "bg-brand-500/15 text-brand-200" : "bg-amber-500/15 text-amber-200"}`}>{room?.revealed ? (lang === "ro" ? "Ranking expert dezvăluit" : "Expert ranking revealed") : canMove ? (lang === "ro" ? "Board deschis — discutați și reordonați" : "Board open — discuss and reorder") : (lang === "ro" ? "Board blocat de facilitator" : "Board locked by facilitator")}</div>
+        {room?.revealed && <button className="btn-primary btn-sm mt-3 w-full !bg-emerald-600" onClick={() => setShowResults(true)}>{lang === "ro" ? "Vezi rezultate și debrief" : "View results and debrief"}</button>}
+      </aside>
 
-      {/* side panel */}
-      <div className="overlay-card absolute right-4 top-4 flex w-[340px] flex-col p-5">
-        <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-emerald-300">
-          🧭 {lang === "ro" ? "Team Coaching" : "Team Coaching"}
-        </div>
-        <h1 className="font-display mt-1 text-lg font-bold text-white">
-          <T value={activity.scenario?.title || activity.name} />
-        </h1>
-        <p className="mt-2 max-h-40 overflow-y-auto text-[13px] leading-relaxed text-ink-300">
-          <T value={activity.scenario?.situation || activity.description} />
-        </p>
-        <p className="mt-2 text-[12px] text-ink-400">
-          <T value={activity.instructions || { ro: "", en: "" }} />
-        </p>
-
-        <div className="mt-3">
-          <div className="flex justify-between text-[11px] font-semibold text-ink-300">
-            <span>{lang === "ro" ? "Progres" : "Progress"}</span>
-            <span>{lockedCount} / {items.length}</span>
-          </div>
-          <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-white/10">
-            <div className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-brand-400 transition-all duration-500" style={{ width: `${(lockedCount / items.length) * 100}%` }} />
-          </div>
-        </div>
-
-        <div className="mt-4 flex gap-2">
-          <button className="btn-primary btn-sm flex-1 !bg-emerald-600 hover:!bg-emerald-500" onClick={() => setShowResults(true)}>
-            {lang === "ro" ? "Vezi rankingul experților" : "See expert ranking"}
-          </button>
-          <button className="btn btn-sm border border-white/10 bg-white/5 text-white hover:bg-white/10" onClick={handleReset} disabled={busyReset}>
-            {busyReset ? <Spinner className="h-3.5 w-3.5" /> : "↺"}
-          </button>
-        </div>
-      </div>
-
-      {/* results modal */}
-      {showResults && (
-        <ResultsModal
-          activity={activity}
-          items={items}
-          teamRanks={teamRanks}
-          score={score}
-          onClose={() => setShowResults(false)}
-          onReset={handleReset}
-          busyReset={busyReset}
-        />
-      )}
+      {showResults && room?.revealed && <ResultsModal activity={activity} items={items} teamRanks={teamRanks} score={score} onClose={() => setShowResults(false)} />}
     </div>
   );
 }
 
-// Live drag position (updated via ref during pointermove, rendered by `frame` bumps)
-const dragPos = { current: null as { x: number; y: number } | null };
-
-function ResultsModal({
-  activity,
-  items,
-  teamRanks,
-  score,
-  onClose,
-  onReset,
-  busyReset,
-}: {
-  activity: CoachingActivity;
-  items: NonNullable<CoachingActivity["items"]>;
-  teamRanks: Map<number, number>;
-  score: { value: number; count: number };
-  onClose: () => void;
-  onReset: () => void;
-  busyReset: boolean;
-}) {
+function ResultsModal({ activity, items, teamRanks, score, onClose }: { activity: CoachingActivity; items: NonNullable<CoachingActivity["items"]>; teamRanks: Map<number, number>; score: number; onClose: () => void }) {
   const { lang } = useLang();
-  const verdict =
-    score.value <= 30
-      ? lang === "ro" ? "Excelent — echipa voastră gândește ca experții." : "Excellent — your team thinks like the experts."
-      : score.value <= 80
-        ? lang === "ro" ? "Bun — cu câteva diferențe de prioritizare de discutat." : "Good — a few prioritization differences worth discussing."
-        : lang === "ro" ? "Interesant — diferențele de prioritizare sunt mari. Debrief-ul contează cel mai mult." : "Interesting — large prioritization gaps. The debrief matters most.";
-
-  const sorted = [...items].sort((a, b) => (teamRanks.get(a.id) ?? 99) - (teamRanks.get(b.id) ?? 99));
-
-  return (
-    <Modal onClose={onClose}>
-      <div className="overlay-card flex max-h-[85vh] w-[560px] max-w-[92vw] flex-col p-6">
-        <div className="flex items-start justify-between">
-          <div>
-            <h2 className="font-display text-xl font-bold text-white">
-              {lang === "ro" ? "Rezultatele echipei" : "Team results"}
-            </h2>
-            <div className="mt-0.5 text-sm text-ink-300">
-              <T value={activity.name} />
-            </div>
-          </div>
-          <button onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-400 transition hover:bg-white/10 hover:text-white" aria-label="Close">✕</button>
-        </div>
-
-        <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4">
-          <div className="flex items-baseline justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-ink-400">
-              {lang === "ro" ? "Scor de deviere" : "Deviation score"}
-            </span>
-            <span className="font-display text-2xl font-extrabold text-emerald-300">{score.value}</span>
-          </div>
-          <p className="mt-1 text-[13px] text-ink-300">{verdict}</p>
-          <p className="mt-1 text-[11px] text-ink-500">
-            {lang === "ro"
-              ? "Suma pătratelor diferențelor față de rankingul experților — mai mic = mai aproape de experți."
-              : "Sum of squared differences vs. the experts' ranking — lower = closer to the experts."}
-          </p>
-        </div>
-
-        <div className="mt-4 flex-1 space-y-1.5 overflow-y-auto pr-1">
-          {sorted.map((item) => {
-            const team = teamRanks.get(item.id);
-            const diff = team != null ? Math.abs(team - item.expertRank) : null;
-            return (
-              <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-2.5">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-[13px] font-semibold text-white">
-                    <T value={item.label} />
-                  </span>
-                  <span className="flex shrink-0 items-center gap-2 text-[11px]">
-                    <span className="rounded-md bg-white/10 px-2 py-0.5 font-bold text-white">
-                      {lang === "ro" ? "Echipa" : "Team"}: {team ?? "–"}
-                    </span>
-                    <span className="rounded-md bg-emerald-500/20 px-2 py-0.5 font-bold text-emerald-300">
-                      {lang === "ro" ? "Expert" : "Expert"}: {item.expertRank}
-                    </span>
-                    {diff !== null && (
-                      <span className={`rounded-md px-2 py-0.5 font-bold ${diff <= 2 ? "bg-emerald-500/15 text-emerald-300" : "bg-amber-500/15 text-amber-300"}`}>
-                        Δ {diff}
-                      </span>
-                    )}
-                  </span>
-                </div>
-                <p className="mt-1 text-[11.5px] leading-relaxed text-ink-400">
-                  <T value={item.rationale} />
-                </p>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-4 border-t border-white/10 pt-4">
-          <div className="text-[11px] font-bold uppercase tracking-wider text-ink-400">
-            {lang === "ro" ? "Întrebări de debrief" : "Debrief questions"}
-          </div>
-          <ol className="mt-2 space-y-1.5">
-            {(activity.debrief || []).map((q, i) => (
-              <li key={i} className="flex gap-2 text-[12.5px] leading-relaxed text-ink-200">
-                <span className="font-bold text-brand-300">{i + 1}.</span>
-                <span>{pick(q, lang)}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-
-        <div className="mt-5 flex gap-2">
-          <button className="btn-primary btn-sm flex-1 !bg-emerald-600 hover:!bg-emerald-500" onClick={onReset} disabled={busyReset}>
-            {busyReset ? <Spinner className="h-3.5 w-3.5" /> : lang === "ro" ? "↺ Joacă din nou" : "↺ Play again"}
-          </button>
-          <button className="btn btn-sm border border-white/10 bg-white/5 text-white hover:bg-white/10" onClick={onClose}>
-            {lang === "ro" ? "Închide" : "Close"}
-          </button>
-        </div>
-      </div>
-    </Modal>
-  );
+  const sorted = [...items].sort((a, b) => (teamRanks.get(a.id) || 99) - (teamRanks.get(b.id) || 99));
+  const verdict = score <= 30 ? (lang === "ro" ? "Excelent — prioritizarea este aproape de cea a experților." : "Excellent — your priorities are close to the experts'.") : score <= 80 ? (lang === "ro" ? "Bun — aveți câteva diferențe valoroase de discutat." : "Good — you have a few useful differences to discuss.") : (lang === "ro" ? "Diferențele sunt mari — aici începe conversația utilă." : "The differences are large — this is where the useful conversation begins.");
+  return <Modal onClose={onClose}><div className="overlay-card flex max-h-[88vh] w-[640px] max-w-[95vw] flex-col p-5 sm:p-6"><div className="flex items-start justify-between"><div><h2 className="font-display text-xl font-bold text-white">{lang === "ro" ? "Rezultatele echipei" : "Team results"}</h2><p className="text-sm text-ink-300"><T value={activity.name} /></p></div><button className="h-9 w-9 rounded-lg text-ink-300 hover:bg-white/10" onClick={onClose}>✕</button></div><div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4"><div className="flex items-baseline justify-between"><b className="text-xs uppercase tracking-wider text-ink-400">{lang === "ro" ? "Scor de deviere" : "Deviation score"}</b><span className="font-display text-3xl font-extrabold text-emerald-300">{score}</span></div><p className="mt-1 text-sm text-ink-300">{verdict}</p></div><div className="mt-4 flex-1 space-y-2 overflow-y-auto">{sorted.map((item) => { const team = teamRanks.get(item.id); const expert = item.expertRank; return <div key={item.id} className="rounded-xl border border-white/10 bg-white/[.04] p-3"><div className="flex flex-wrap items-center justify-between gap-2"><b className="text-sm text-white"><T value={item.label} /></b><div className="flex gap-2 text-xs"><span className="rounded-md bg-white/10 px-2 py-1">{lang === "ro" ? "Echipă" : "Team"}: {team || "–"}</span><span className="rounded-md bg-emerald-500/20 px-2 py-1 text-emerald-200">Expert: {expert || "–"}</span>{expert && team && <span className="rounded-md bg-amber-500/15 px-2 py-1 text-amber-200">Δ {Math.abs(team - expert)}</span>}</div></div>{item.rationale && <p className="mt-2 text-xs leading-relaxed text-ink-400"><T value={item.rationale} /></p>}</div>; })}</div>{activity.debrief?.length ? <div className="mt-4 border-t border-white/10 pt-4"><b className="text-xs uppercase tracking-wider text-ink-400">{lang === "ro" ? "Întrebări de debrief" : "Debrief questions"}</b><ol className="mt-2 space-y-1 text-xs text-ink-200">{activity.debrief.map((question, index) => <li key={index}>{index + 1}. {pick(question, lang)}</li>)}</ol></div> : null}</div></Modal>;
 }
