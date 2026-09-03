@@ -325,11 +325,6 @@ export default function Board({
     return { x: (sx - x) / scale, y: (sy - y) / scale };
   };
 
-  function worldToScreen(piece: Piece) {
-    const { x, y, scale } = cameraRef.current;
-    return { x: piece.x * scale + x, y: piece.y * scale + y };
-  }
-
   // ------------------------------------------------------------- sprites
   function isWordPiece(piece: Piece) {
     return puzzleRef.current.category === "words" || !!piece.letter;
