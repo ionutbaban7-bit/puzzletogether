@@ -7,7 +7,7 @@ import { pick, T } from "../lib/i18n";
 import type { CatalogData, CoachingActivity, Difficulty, PuzzleInfo } from "../types";
 
 const CATEGORY_EMOJI: Record<string, string> = {
-  "kids-magic": "🪄",
+  words: "🔤",
   paintings: "🎨",
   landscapes: "🏔️",
   landmarks: "🗼",

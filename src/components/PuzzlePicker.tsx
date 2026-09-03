@@ -5,7 +5,7 @@ import { T } from "../lib/i18n";
 import type { CatalogData, RoomView } from "../types";
 
 const CATEGORY_EMOJI: Record<string, string> = {
-  "kids-magic": "🪄",
+  words: "🔤",
   paintings: "🎨",
   landscapes: "🏔️",
   landmarks: "🗼",

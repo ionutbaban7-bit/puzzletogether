@@ -1,0 +1,49 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="50" x2="1120" y2="770" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A"/>
+      <stop offset="0.52" stop-color="#11213F"/>
+      <stop offset="1" stop-color="#122B50"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#2DD4BF"/>
+      <stop offset="1" stop-color="#3B82F6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" rx="40" fill="url(#bg)"/>
+  <circle cx="1020" cy="130" r="190" fill="#2DD4BF" fill-opacity="0.08"/>
+  <circle cx="180" cy="640" r="210" fill="#60A5FA" fill-opacity="0.10"/>
+  <rect x="72" y="72" width="1056" height="656" rx="34" fill="#0A1229" fill-opacity="0.72" stroke="white" stroke-opacity="0.08"/>
+  <text x="112" y="146" fill="#99F6E4" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="3">WORD WORLD</text>
+  <text x="112" y="232" fill="white" font-family="Sora, Inter, Arial, sans-serif" font-size="58" font-weight="800">Team Motto &amp; Values Board</text>
+  <text x="112" y="292" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="24">Shape the words that describe your culture, principles and shared identity.</text>
+  <g transform="translate(112 356)">
+    <rect x="0" y="0" width="582" height="248" rx="30" fill="#111827" fill-opacity="0.84" stroke="white" stroke-opacity="0.08"/>
+    <text x="42" y="62" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">VALUES WALL</text>
+    <g>
+      <rect x="42" y="88" width="148" height="58" rx="16" fill="#14B8A6"/>
+      <rect x="204" y="88" width="160" height="58" rx="16" fill="#3B82F6"/>
+      <rect x="378" y="88" width="162" height="58" rx="16" fill="#8B5CF6"/>
+      <rect x="42" y="162" width="166" height="58" rx="16" fill="#F97316"/>
+      <rect x="222" y="162" width="154" height="58" rx="16" fill="#EC4899"/>
+      <rect x="390" y="162" width="150" height="58" rx="16" fill="#22C55E"/>
+      <g fill="white" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="800">
+        <text x="72" y="126">TRUST</text>
+        <text x="238" y="126">OWNERSHIP</text>
+        <text x="412" y="126">RESPECT</text>
+        <text x="74" y="200">CURIOSITY</text>
+        <text x="250" y="200">COURAGE</text>
+        <text x="418" y="200">CLARITY</text>
+      </g>
+    </g>
+  </g>
+  <g transform="translate(742 350)">
+    <rect x="0" y="0" width="270" height="270" rx="36" fill="url(#accent)" fill-opacity="0.16" stroke="url(#accent)"/>
+    <circle cx="135" cy="94" r="56" fill="white" fill-opacity="0.92"/>
+    <path d="M135 66L144 84L164 87L149 101L153 122L135 112L117 122L121 101L106 87L126 84L135 66Z" fill="#0F172A"/>
+    <text x="135" y="187" fill="white" font-family="Sora, Inter, Arial, sans-serif" font-size="34" font-weight="800" text-anchor="middle">OUR MOTTO</text>
+    <text x="135" y="226" fill="#E0F2FE" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700" text-anchor="middle">Build trust. Solve together.</text>
+  </g>
+  <text x="112" y="690" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600">Facilitation prompts for values definition, mottos, norms and team identity.</text>
+  <text x="112" y="726" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="600">Workshop Suite · Team culture board · 1200×800</text>
+</svg>

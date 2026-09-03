@@ -8,6 +8,9 @@ export interface Piece {
   drag: boolean;
   moved: boolean;
   locked: boolean;
+  letter?: string;
+  letterPoints?: number;
+  letterColor?: string;
 }
 
 export interface PlayerView {

@@ -3,6 +3,18 @@
     "w": 1920,
     "h": 1251
   },
+  "big-ben.jpg": {
+    "w": 1280,
+    "h": 720
+  },
+  "cafe-terrace.jpg": {
+    "w": 1558,
+    "h": 1920
+  },
+  "cherry-blossom.jpg": {
+    "w": 1920,
+    "h": 1080
+  },
   "colosseum.jpg": {
     "w": 1920,
     "h": 1345
@@ -23,9 +35,17 @@
     "w": 1920,
     "h": 1200
   },
+  "grand-canyon.jpg": {
+    "w": 1920,
+    "h": 1080
+  },
   "great-wave.jpg": {
     "w": 1920,
     "h": 1324
+  },
+  "lavender-field.jpg": {
+    "w": 1920,
+    "h": 1283
   },
   "machu-picchu.jpg": {
     "w": 1920,
@@ -43,9 +63,33 @@
     "w": 1920,
     "h": 1440
   },
+  "mount-fuji.jpg": {
+    "w": 1920,
+    "h": 1274
+  },
+  "neuschwanstein.jpg": {
+    "w": 1000,
+    "h": 750
+  },
+  "new-york.jpg": {
+    "w": 1920,
+    "h": 1080
+  },
   "paris-louvre.jpg": {
     "w": 1920,
     "h": 807
+  },
+  "plitvice-lakes.jpg": {
+    "w": 1200,
+    "h": 1200
+  },
+  "prague.jpg": {
+    "w": 1024,
+    "h": 601
+  },
+  "pyramids-giza.jpg": {
+    "w": 1200,
+    "h": 856
   },
   "santorini.jpg": {
     "w": 1920,
@@ -67,6 +111,18 @@
     "w": 1920,
     "h": 1262
   },
+  "the-kiss.jpg": {
+    "w": 1400,
+    "h": 1403
+  },
+  "the-milkmaid.jpg": {
+    "w": 1100,
+    "h": 1217
+  },
+  "the-scream.jpg": {
+    "w": 1400,
+    "h": 1739
+  },
   "tokyo.jpg": {
     "w": 1920,
     "h": 1023
@@ -79,88 +135,28 @@
     "w": 1920,
     "h": 2880
   },
-  "waterfall.jpg": {
-    "w": 1920,
-    "h": 1280
-  },
-  "the-kiss.jpg": {
-    "w": 1400,
-    "h": 1403
-  },
-  "the-scream.jpg": {
-    "w": 1400,
-    "h": 1739
-  },
   "water-lilies.jpg": {
     "w": 1500,
     "h": 1168
   },
-  "cafe-terrace.jpg": {
-    "w": 1558,
-    "h": 1920
-  },
-  "the-milkmaid.jpg": {
-    "w": 1100,
-    "h": 1217
-  },
-  "grand-canyon.jpg": {
+  "waterfall.jpg": {
     "w": 1920,
-    "h": 1080
+    "h": 1280
   },
-  "mount-fuji.jpg": {
-    "w": 1920,
-    "h": 1274
-  },
-  "plitvice-lakes.jpg": {
+  "words-agile.svg": {
     "w": 1200,
-    "h": 1200
+    "h": 800
   },
-  "big-ben.jpg": {
-    "w": 1280,
-    "h": 720
-  },
-  "pyramids-giza.jpg": {
+  "words-innovation.svg": {
     "w": 1200,
-    "h": 856
+    "h": 800
   },
-  "neuschwanstein.jpg": {
-    "w": 1000,
-    "h": 750
+  "words-motto.svg": {
+    "w": 1200,
+    "h": 800
   },
-  "cherry-blossom.jpg": {
-    "w": 1920,
-    "h": 1080
-  },
-  "lavender-field.jpg": {
-    "w": 1920,
-    "h": 1283
-  },
-  "new-york.jpg": {
-    "w": 1920,
-    "h": 1080
-  },
-  "prague.jpg": {
-    "w": 1024,
-    "h": 601
-  },
-  "unicorn-magic.jpg": {
-    "w": 1536,
-    "h": 1024
-  },
-  "dragon-castle.jpg": {
-    "w": 1122,
-    "h": 1402
-  },
-  "space-adventure.jpg": {
-    "w": 1536,
-    "h": 1024
-  },
-  "ocean-kingdom.jpg": {
-    "w": 1536,
-    "h": 1024
-  },
-  "cute-kittens.jpg": {
-    "w": 1536,
-    "h": 1024
+  "words-scrabble.svg": {
+    "w": 1200,
+    "h": 800
   }
 }

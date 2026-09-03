@@ -1,0 +1,59 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="90" y1="40" x2="1110" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#101A35"/>
+      <stop offset="0.5" stop-color="#1C2149"/>
+      <stop offset="1" stop-color="#0F2E4E"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#0F172A" stop-opacity="0.94"/>
+      <stop offset="1" stop-color="#111827" stop-opacity="0.76"/>
+    </linearGradient>
+    <linearGradient id="brainA" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FB7185"/>
+      <stop offset="1" stop-color="#DB2777"/>
+    </linearGradient>
+    <linearGradient id="brainB" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="brainC" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#F59E0B"/>
+      <stop offset="1" stop-color="#EA580C"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" rx="40" fill="url(#bg)"/>
+  <circle cx="160" cy="140" r="180" fill="#22D3EE" fill-opacity="0.10"/>
+  <circle cx="1020" cy="170" r="210" fill="#F59E0B" fill-opacity="0.08"/>
+  <circle cx="940" cy="650" r="190" fill="#EC4899" fill-opacity="0.08"/>
+  <rect x="70" y="70" width="1060" height="660" rx="34" fill="url(#panel)" stroke="white" stroke-opacity="0.08"/>
+  <text x="110" y="145" fill="#A5F3FC" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="3">WORD WORLD</text>
+  <text x="110" y="232" fill="white" font-family="Sora, Inter, Arial, sans-serif" font-size="58" font-weight="800">Innovation &amp; Brainstorming Sandbox</text>
+  <text x="110" y="292" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="24">High-energy word tiles for ideation labs, sprint planning and future-back thinking.</text>
+  <g transform="translate(110 360)">
+    <rect x="0" y="0" width="215" height="132" rx="26" fill="url(#brainA)"/>
+    <rect x="242" y="0" width="215" height="132" rx="26" fill="url(#brainB)"/>
+    <rect x="484" y="0" width="215" height="132" rx="26" fill="url(#brainC)"/>
+    <rect x="726" y="0" width="215" height="132" rx="26" fill="url(#brainB)"/>
+    <g fill="white" font-family="Sora, Inter, Arial, sans-serif" font-size="34" font-weight="800" text-anchor="middle">
+      <text x="107.5" y="74">IDEATE</text>
+      <text x="349.5" y="74">BUILD</text>
+      <text x="591.5" y="74">TEST</text>
+      <text x="833.5" y="74">LEARN</text>
+    </g>
+    <g fill="#F8FAFC" fill-opacity="0.82" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" text-anchor="middle">
+      <text x="107.5" y="104">Opportunity canvas</text>
+      <text x="349.5" y="104">Prototype board</text>
+      <text x="591.5" y="104">Signal capture</text>
+      <text x="833.5" y="104">Decision review</text>
+    </g>
+  </g>
+  <g transform="translate(770 500)">
+    <circle cx="90" cy="90" r="90" fill="#0F172A" fill-opacity="0.56" stroke="white" stroke-opacity="0.08"/>
+    <path d="M88 38C60 38 38 60 38 88C38 112 54 132 76 140V162C76 168 81 173 87 173H93C99 173 104 168 104 162V140C126 132 142 112 142 88C142 60 120 38 92 38H88Z" fill="#F8FAFC" fill-opacity="0.94"/>
+    <path d="M82 140H100" stroke="#0F172A" stroke-width="10" stroke-linecap="round"/>
+    <path d="M63 24L55 4M125 24L133 4M28 61L8 55M152 61L172 55" stroke="#FCD34D" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <text x="110" y="660" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600">Vision · Curiosity · Hypothesis · Momentum · Insight · Experiment</text>
+  <text x="110" y="700" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="600">Workshop Suite · Innovation facilitation board · 1200×800</text>
+</svg>

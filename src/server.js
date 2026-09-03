@@ -72,6 +72,120 @@ function snapDistance(pieceW, pieceH) {
   return 24 + Math.min(pieceW, pieceH) * 0.15;
 }
 
+const WORD_PUZZLE_SETS = {
+  "agile-words": [
+    "AGILE",
+    "VALUES",
+    "RETRO",
+    "SPRINT",
+    "TRUST",
+    "FOCUS",
+    "SCRUM",
+    "FLOW",
+    "TEAM",
+    "GOAL",
+    "LEARN",
+    "DELIVER",
+  ],
+  "innovation-grid": [
+    "IDEATE",
+    "INSIGHT",
+    "FUTURE",
+    "VISION",
+    "SPARK",
+    "BRAINSTORM",
+    "BUILD",
+    "TEST",
+    "LEARN",
+    "MOMENTUM",
+    "CURIOUS",
+    "CREATE",
+  ],
+  "scrabble-anagrams": [
+    "SCRABBLE",
+    "ANAGRAM",
+    "LETTER",
+    "SCORE",
+    "BONUS",
+    "WORDPLAY",
+    "STACK",
+    "CHAIN",
+    "VALUE",
+    "GRID",
+    "CLUE",
+    "BRAIN",
+  ],
+  "team-motto": [
+    "MOTTO",
+    "VALUES",
+    "TRUST",
+    "RESPECT",
+    "CLARITY",
+    "COURAGE",
+    "GROWTH",
+    "ALIGN",
+    "OWNERSHIP",
+    "IMPACT",
+    "UNITY",
+    "CARE",
+  ],
+};
+
+const WORD_TILE_PALETTE = [
+  "#2563eb",
+  "#0ea5e9",
+  "#14b8a6",
+  "#10b981",
+  "#84cc16",
+  "#f59e0b",
+  "#f97316",
+  "#ef4444",
+  "#ec4899",
+  "#8b5cf6",
+];
+
+const SCRABBLE_POINTS = {
+  A: 1,
+  B: 3,
+  C: 3,
+  D: 2,
+  E: 1,
+  F: 4,
+  G: 2,
+  H: 4,
+  I: 1,
+  J: 8,
+  K: 5,
+  L: 1,
+  M: 3,
+  N: 1,
+  O: 1,
+  P: 3,
+  Q: 10,
+  R: 1,
+  S: 1,
+  T: 1,
+  U: 1,
+  V: 4,
+  W: 4,
+  X: 8,
+  Y: 4,
+  Z: 10,
+};
+
+function buildWordLetters(puzzleId, total) {
+  const baseSet = WORD_PUZZLE_SETS[puzzleId] || WORD_PUZZLE_SETS["agile-words"];
+  const pool = baseSet.join(" ").toUpperCase().replace(/[^A-Z]/g, "").split("");
+  const letters = [];
+  while (letters.length < total) letters.push(...pool);
+  return letters.slice(0, total);
+}
+
+function wordTileColor(index, letter) {
+  const seed = (letter?.charCodeAt?.(0) || 0) + index * 3;
+  return WORD_TILE_PALETTE[seed % WORD_TILE_PALETTE.length];
+}
+
 // ---------------------------------------------------------------------------
 // Rooms (in-memory)
 // ---------------------------------------------------------------------------
@@ -134,6 +248,9 @@ function serializePiece(p) {
     drag: !!p.drag,
     moved: !!p.moved,
     locked: !!p.locked,
+    letter: p.letter,
+    letterPoints: p.letterPoints,
+    letterColor: p.letterColor,
   };
 }
 
@@ -273,6 +390,8 @@ function buildPuzzleSetup(config) {
 
   const dims = puzzle ? imageDims[puzzle.image.split("/").pop()] || { w: 1600, h: 1000 } : { w: 0, h: 0 };
   const grid = computeGrid(dims.w, dims.h, difficulty.pieces);
+  const isWordPuzzle = !!puzzle && puzzle.category === "words";
+  const wordLetters = isWordPuzzle ? buildWordLetters(puzzle.id, difficulty.pieces) : [];
 
   const pieces = [];
   if (coachingActivity) {
@@ -299,6 +418,7 @@ function buildPuzzleSetup(config) {
     for (let i = 0; i < difficulty.pieces; i++) {
       const col = i % grid.cols;
       const row = Math.floor(i / grid.cols);
+      const letter = wordLetters[i];
       pieces.push({
         id: i,
         x: 0,
@@ -308,6 +428,13 @@ function buildPuzzleSetup(config) {
         drag: false,
         moved: false,
         locked: false,
+        ...(isWordPuzzle
+          ? {
+              letter,
+              letterPoints: SCRABBLE_POINTS[letter] || 1,
+              letterColor: wordTileColor(i, letter),
+            }
+          : {}),
       });
     }
   }

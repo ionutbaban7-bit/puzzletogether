@@ -1,9 +1,9 @@
 {
   "categories": [
     {
-      "id": "kids-magic",
-      "name": "Kids & Magic",
-      "icon": "🪄"
+      "id": "words",
+      "name": "Word World & Team Words",
+      "icon": "🔤"
     },
     {
       "id": "paintings",
@@ -33,11 +33,6 @@
   ],
   "difficulties": [
     {
-      "id": "kids",
-      "name": "Kids (12 piese)",
-      "pieces": 12
-    },
-    {
       "id": "easy",
       "name": "Easy",
       "pieces": 25
@@ -60,49 +55,40 @@
   ],
   "puzzles": [
     {
-      "id": "unicorn-magic",
-      "category": "kids-magic",
-      "name": "Pădurea Inorogului Magic",
-      "image": "/images/unicorn-magic.jpg",
-      "credit": "PuzzleTogether Magic",
-      "license": "AI Generated",
-      "source": "AI"
+      "id": "agile-words",
+      "category": "words",
+      "name": "Agile Values & Team Words",
+      "image": "/images/words-agile.svg",
+      "credit": "PuzzleTogether B2B Studio",
+      "license": "Original SVG",
+      "source": "PuzzleTogether"
     },
     {
-      "id": "dragon-castle",
-      "category": "kids-magic",
-      "name": "Castelul Dragonului Prietenos",
-      "image": "/images/dragon-castle.jpg",
-      "credit": "PuzzleTogether Magic",
-      "license": "AI Generated",
-      "source": "AI"
+      "id": "innovation-grid",
+      "category": "words",
+      "name": "Innovation & Brainstorming Sandbox",
+      "image": "/images/words-innovation.svg",
+      "credit": "PuzzleTogether B2B Studio",
+      "license": "Original SVG",
+      "source": "PuzzleTogether"
     },
     {
-      "id": "space-adventure",
-      "category": "kids-magic",
-      "name": "Aventura Spațială & Extratereștrii",
-      "image": "/images/space-adventure.jpg",
-      "credit": "PuzzleTogether Magic",
-      "license": "AI Generated",
-      "source": "AI"
+      "id": "scrabble-anagrams",
+      "category": "words",
+      "name": "Multicolor Anagrams & Scrabble Grid",
+      "image": "/images/words-scrabble.svg",
+      "credit": "PuzzleTogether B2B Studio",
+      "license": "Original SVG",
+      "source": "PuzzleTogether"
     },
     {
-      "id": "ocean-kingdom",
-      "category": "kids-magic",
-      "name": "Regatul Submarin al Delfinului",
-      "image": "/images/ocean-kingdom.jpg",
-      "credit": "PuzzleTogether Magic",
-      "license": "AI Generated",
-      "source": "AI"
-    },
-    {
-      "id": "cute-kittens",
-      "category": "kids-magic",
-      "name": "Pisicuțele Jucăușe",
-      "image": "/images/cute-kittens.jpg",
-      "credit": "PuzzleTogether Magic",
-      "license": "AI Generated",
-      "source": "AI"
+      "id": "team-motto",
+      "category": "words",
+      "name": "Team Motto & Values Board",
+      "image": "/images/words-motto.svg",
+      "credit": "PuzzleTogether B2B Studio",
+      "license": "Original SVG",
+      "source": "PuzzleTogether"
     },
     {
       "id": "mona-lisa",

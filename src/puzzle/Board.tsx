@@ -29,6 +29,23 @@ interface Grab {
 const SNAP_RING_COLOR = "#34d399";
 const TARGET_RING_COLOR = "rgba(99,102,241,0.9)";
 const PLACED_RING_COLOR = "rgba(52,211,153,0.9)";
+const WORD_TILE_RADIUS = 18;
+
+function buildRoundedRectPath(width: number, height: number, radius: number) {
+  const r = Math.min(radius, width / 2, height / 2);
+  const path = new Path2D();
+  path.moveTo(r, 0);
+  path.lineTo(width - r, 0);
+  path.quadraticCurveTo(width, 0, width, r);
+  path.lineTo(width, height - r);
+  path.quadraticCurveTo(width, height, width - r, height);
+  path.lineTo(r, height);
+  path.quadraticCurveTo(0, height, 0, height - r);
+  path.lineTo(0, r);
+  path.quadraticCurveTo(0, 0, r, 0);
+  path.closePath();
+  return path;
+}
 
 export default function Board({
   puzzle,
@@ -62,6 +79,7 @@ export default function Board({
   const pan = useRef<{ id: number; sx: number; sy: number; cx: number; cy: number } | null>(null);
   const grab = useRef<Grab | null>(null);
   const raf = useRef(0);
+  const renderLoop = useRef(0);
   const cursorScreen = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const lastMoveSent = useRef(0);
   const gestureType = useRef<"none" | "pan" | "drag" | "pinch">("none");
@@ -151,6 +169,21 @@ export default function Board({
   const drawRef = useRef<() => void>(() => {});
   drawRef.current = () => draw();
 
+  useEffect(() => {
+    let active = true;
+    const loop = () => {
+      if (!active) return;
+      drawRef.current();
+      renderLoop.current = requestAnimationFrame(loop);
+    };
+    renderLoop.current = requestAnimationFrame(loop);
+    return () => {
+      active = false;
+      if (renderLoop.current) cancelAnimationFrame(renderLoop.current);
+      if (raf.current) cancelAnimationFrame(raf.current);
+    };
+  }, []);
+
   // External resets: clear sprite cache & re-fit
   useEffect(() => {
     if (resetSignal > 0) {
@@ -225,20 +258,25 @@ export default function Board({
   }
 
   // ------------------------------------------------------------- sprites
+  function isWordPiece(piece: Piece) {
+    return puzzleRef.current.category === "words" || !!piece.letter;
+  }
+
   function getPiecePath(piece: Piece): Path2D {
     const cached = pathCache.current.get(piece.id);
     if (cached) return cached;
     const { pieceW, pieceH, cols } = puzzleRef.current;
-    const col = piece.id % cols;
-    const row = Math.floor(piece.id / cols);
-    const path = buildPiecePath(pieceW, pieceH, pieceEdges(edgeMapRef.current, col, row));
+    const path = isWordPiece(piece)
+      ? buildRoundedRectPath(pieceW, pieceH, Math.min(WORD_TILE_RADIUS, pieceW * 0.18, pieceH * 0.18))
+      : buildPiecePath(pieceW, pieceH, pieceEdges(edgeMapRef.current, piece.id % cols, Math.floor(piece.id / cols)));
     pathCache.current.set(piece.id, path);
     return path;
   }
 
   function getSprite(piece: Piece): HTMLCanvasElement | null {
     const img = imgRef.current;
-    if (!img || !img.complete || !img.naturalWidth) return null;
+    const wordPiece = isWordPiece(piece);
+    if (!wordPiece && (!img || !img.complete || !img.naturalWidth)) return null;
     const key = `${piece.id}`;
     const cached = spriteCache.current.get(key);
     if (cached) return cached;
@@ -256,31 +294,109 @@ export default function Board({
 
     ctx.save();
     ctx.translate(pad, pad); // piece-local origin
-    ctx.save();
-    ctx.clip(path);
-    // Photo, positioned so this piece's region (plus tab bleed) lines up.
-    ctx.drawImage(img, -correctX, -correctY);
-    // Bevel: light catch on the top-left, soft shade on the bottom-right.
-    ctx.save();
-    ctx.translate(-lw * 0.6, -lw * 0.6);
-    ctx.strokeStyle = "rgba(255,255,255,0.35)";
-    ctx.lineWidth = lw * 2.1;
-    ctx.stroke(path);
-    ctx.restore();
-    ctx.save();
-    ctx.translate(lw * 0.6, lw * 0.6);
-    ctx.strokeStyle = "rgba(0,0,0,0.32)";
-    ctx.lineWidth = lw * 2.1;
-    ctx.stroke(path);
-    ctx.restore();
-    ctx.restore();
-    // Crisp die-cut outline.
-    ctx.strokeStyle = "rgba(10,13,26,0.55)";
-    ctx.lineWidth = lw;
-    ctx.lineJoin = "round";
-    ctx.stroke(path);
-    ctx.restore();
 
+    if (wordPiece) {
+      const radius = Math.min(WORD_TILE_RADIUS, pieceW * 0.18, pieceH * 0.18);
+      const tilePath = buildRoundedRectPath(pieceW, pieceH, radius);
+      const base = piece.letterColor || "#6366f1";
+      const gloss = ctx.createLinearGradient(0, 0, 0, pieceH);
+      gloss.addColorStop(0, "rgba(255,255,255,0.22)");
+      gloss.addColorStop(0.45, "rgba(255,255,255,0.06)");
+      gloss.addColorStop(1, "rgba(2,6,23,0.22)");
+      const sheen = ctx.createLinearGradient(0, 0, pieceW, pieceH * 0.9);
+      sheen.addColorStop(0, "rgba(255,255,255,0.26)");
+      sheen.addColorStop(0.28, "rgba(255,255,255,0.08)");
+      sheen.addColorStop(0.55, "rgba(255,255,255,0)");
+      sheen.addColorStop(1, "rgba(255,255,255,0)");
+
+      ctx.fillStyle = base;
+      ctx.fill(tilePath);
+      ctx.fillStyle = gloss;
+      ctx.fill(tilePath);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(0, radius + 8);
+      ctx.quadraticCurveTo(pieceW * 0.22, -6, pieceW * 0.54, pieceH * 0.18);
+      ctx.quadraticCurveTo(pieceW * 0.76, pieceH * 0.28, pieceW, pieceH * 0.18);
+      ctx.lineTo(pieceW, 0);
+      ctx.lineTo(0, 0);
+      ctx.closePath();
+      ctx.clip(tilePath);
+      ctx.fillStyle = sheen;
+      ctx.fillRect(0, 0, pieceW, pieceH * 0.48);
+      ctx.restore();
+
+      ctx.strokeStyle = "rgba(255,255,255,0.22)";
+      ctx.lineWidth = lw;
+      ctx.lineJoin = "round";
+      ctx.stroke(tilePath);
+
+      ctx.save();
+      ctx.strokeStyle = "rgba(15,23,42,0.2)";
+      ctx.lineWidth = lw * 2.2;
+      ctx.translate(lw * 0.5, lw * 0.7);
+      ctx.stroke(tilePath);
+      ctx.restore();
+
+      const letter = (piece.letter || "?").slice(0, 1).toUpperCase();
+      const fontSize = Math.max(22, Math.min(pieceW, pieceH) * 0.52);
+      ctx.fillStyle = "#ffffff";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.font = `900 ${fontSize}px Inter, system-ui, sans-serif`;
+      ctx.shadowColor = "rgba(15,23,42,0.28)";
+      ctx.shadowBlur = Math.max(4, fontSize * 0.08);
+      ctx.shadowOffsetY = Math.max(1, fontSize * 0.04);
+      ctx.fillText(letter, pieceW / 2, pieceH / 2 + fontSize * 0.02);
+      ctx.shadowColor = "transparent";
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
+
+      const badgeSize = Math.max(18, Math.min(pieceW, pieceH) * 0.22);
+      const badgeX = pieceW - badgeSize - Math.max(8, pieceW * 0.08);
+      const badgeY = pieceH - badgeSize - Math.max(8, pieceH * 0.08);
+      const badgePath = buildRoundedRectPath(badgeSize, badgeSize, badgeSize * 0.34);
+      ctx.save();
+      ctx.translate(badgeX, badgeY);
+      ctx.fillStyle = "rgba(15,23,42,0.28)";
+      ctx.fill(badgePath);
+      ctx.strokeStyle = "rgba(255,255,255,0.26)";
+      ctx.lineWidth = 1.2;
+      ctx.stroke(badgePath);
+      ctx.fillStyle = "rgba(255,255,255,0.96)";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.font = `800 ${Math.max(10, badgeSize * 0.42)}px Inter, system-ui, sans-serif`;
+      ctx.fillText(String(piece.letterPoints || 1), badgeSize / 2, badgeSize / 2 + 0.5);
+      ctx.restore();
+    } else {
+      ctx.save();
+      ctx.clip(path);
+      // Photo, positioned so this piece's region (plus tab bleed) lines up.
+      ctx.drawImage(img!, -correctX, -correctY);
+      // Bevel: light catch on the top-left, soft shade on the bottom-right.
+      ctx.save();
+      ctx.translate(-lw * 0.6, -lw * 0.6);
+      ctx.strokeStyle = "rgba(255,255,255,0.35)";
+      ctx.lineWidth = lw * 2.1;
+      ctx.stroke(path);
+      ctx.restore();
+      ctx.save();
+      ctx.translate(lw * 0.6, lw * 0.6);
+      ctx.strokeStyle = "rgba(0,0,0,0.32)";
+      ctx.lineWidth = lw * 2.1;
+      ctx.stroke(path);
+      ctx.restore();
+      ctx.restore();
+      // Crisp die-cut outline.
+      ctx.strokeStyle = "rgba(10,13,26,0.55)";
+      ctx.lineWidth = lw;
+      ctx.lineJoin = "round";
+      ctx.stroke(path);
+    }
+
+    ctx.restore();
     spriteCache.current.set(key, spr);
     return spr;
   }
@@ -585,7 +701,7 @@ export default function Board({
     } else if (e.pointerType === "touch") {
       if (pointers.current.size === 1) {
         const world = screenToWorld(pos.x, pos.y);
-        const hit = pickPiece(world.x, world.y, false);
+        const hit = pickPiece(world.x, world.y, false, 20);
         if (hit) {
           gestureType.current = "drag";
           grab.current = {
@@ -639,14 +755,20 @@ export default function Board({
     schedule();
   }
 
-  function pickPiece(wx: number, wy: number, allowLocked: boolean): Piece | null {
+  function pickPiece(wx: number, wy: number, allowLocked: boolean, touchMargin = 0): Piece | null {
     const pieces = piecesRef.current;
     const puzzle = puzzleRef.current;
+    const margin = touchMargin / Math.max(cameraRef.current.scale, 0.001);
     let best: Piece | null = null;
     let bestFree = false;
     for (const p of Object.values(pieces)) {
       if (p.locked && !allowLocked) continue;
-      if (wx >= p.x && wx <= p.x + puzzle.pieceW && wy >= p.y && wy <= p.y + puzzle.pieceH) {
+      if (
+        wx >= p.x - margin &&
+        wx <= p.x + puzzle.pieceW + margin &&
+        wy >= p.y - margin &&
+        wy <= p.y + puzzle.pieceH + margin
+      ) {
         if (p.locked && !bestFree) {
           best = best || p;
           continue;
@@ -790,7 +912,7 @@ export default function Board({
       <canvas
         ref={canvasRef}
         className="block h-full w-full touch-none cursor-grab active:cursor-grabbing"
-        style={{ backgroundColor: "#0b0e1a" }}
+        style={{ backgroundColor: "#0b0e1a", touchAction: "none" }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}

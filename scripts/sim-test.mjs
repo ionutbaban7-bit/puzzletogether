@@ -85,8 +85,8 @@ const health = await api.get("/api/health");
 ok("health endpoint", health.ok === true);
 const catalog = await api.get("/api/puzzles");
 ok("catalog: 6 categories", catalog.categories?.length === 6, `${catalog.categories?.length}`);
-ok("catalog: 41 puzzles", catalog.puzzles?.length === 41, `${catalog.puzzles?.length}`);
-ok("catalog: 5 difficulties", catalog.difficulties?.length === 5);
+ok("catalog: 40 puzzles", catalog.puzzles?.length === 40, `${catalog.puzzles?.length}`);
+ok("catalog: 4 difficulties", catalog.difficulties?.length === 4);
 
 // 1. create room
 const create = await api.post("/api/rooms", {

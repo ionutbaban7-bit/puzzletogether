@@ -12,6 +12,7 @@ import { LangToggle, pick, useLang, T } from "../lib/i18n";
 import { lockedCountOf } from "../store";
 
 const CATEGORY_ICON: Record<string, string> = {
+  words: "🔤",
   paintings: "🎨",
   landscapes: "🏔️",
   landmarks: "🗼",
@@ -29,16 +30,47 @@ const LEVELS = [
 ] as const;
 
 const PODIUM_STYLES = [
-  { medal: "\u{1F947}", height: "h-20", box: "border-amber-300/60 bg-gradient-to-b from-amber-400/50 to-amber-500/15" },
-  { medal: "\u{1F948}", height: "h-14", box: "border-slate-300/50 bg-gradient-to-b from-slate-300/40 to-slate-400/10" },
-  { medal: "\u{1F949}", height: "h-11", box: "border-orange-400/50 bg-gradient-to-b from-orange-500/40 to-orange-600/10" },
-];
+  {
+    place: 1,
+    medal: "\u{1F947}",
+    label: { ro: "Locul 1", en: "1st Place" },
+    accent: "text-amber-200",
+    height: "h-28",
+    box: "border-amber-300/60 bg-gradient-to-b from-amber-300/60 via-amber-400/30 to-amber-500/10",
+  },
+  {
+    place: 2,
+    medal: "\u{1F948}",
+    label: { ro: "Locul 2", en: "2nd Place" },
+    accent: "text-slate-200",
+    height: "h-20",
+    box: "border-slate-300/55 bg-gradient-to-b from-slate-200/45 via-slate-300/18 to-slate-400/8",
+  },
+  {
+    place: 3,
+    medal: "\u{1F949}",
+    label: { ro: "Locul 3", en: "3rd Place" },
+    accent: "text-orange-200",
+    height: "h-16",
+    box: "border-orange-300/55 bg-gradient-to-b from-orange-300/45 via-orange-400/20 to-orange-500/8",
+  },
+] as const;
 
 const DIFFICULTY_STRINGS = {
   easy: { ro: "Ușor", en: "Easy" },
   medium: { ro: "Mediu", en: "Medium" },
   hard: { ro: "Greu", en: "Hard" },
   expert: { ro: "Expert", en: "Expert" },
+} as const;
+
+const CATEGORY_LABELS = {
+  words: { ro: "Word World", en: "Word World" },
+  paintings: { ro: "Picturi celebre", en: "Famous Paintings" },
+  landscapes: { ro: "Peisaje celebre", en: "Famous Landscapes" },
+  landmarks: { ro: "Repere globale", en: "World Landmarks" },
+  nature: { ro: "Natură", en: "Nature" },
+  cities: { ro: "Orașe", en: "Cities" },
+  coaching: { ro: "Coaching", en: "Coaching" },
 } as const;
 
 export default function GamePage() {
@@ -84,7 +116,8 @@ export default function GamePage() {
   const isCoaching = !!puzzle?.isCoaching;
   const mode = puzzle?.mode;
 
-  const scoreByPlayer = new Map(scores.map((sc) => [sc.playerId, sc.placed]));
+  const scoreSource = completion?.scores?.length ? completion.scores : scores;
+  const scoreByPlayer = new Map(scoreSource.map((sc) => [sc.playerId, sc.placed]));
 
   // The room creator facilitates; if they left, the first connected player takes over.
   const hostConnected = !!room?.hostId && players.some((p) => p.id === room.hostId);
@@ -100,6 +133,11 @@ export default function GamePage() {
   const getDifficultyLabel = (diff: string) => {
     const key = diff as keyof typeof DIFFICULTY_STRINGS;
     return pick(DIFFICULTY_STRINGS[key] || { ro: diff, en: diff }, lang);
+  };
+
+  const getCategoryLabel = (category: string) => {
+    const key = category as keyof typeof CATEGORY_LABELS;
+    return pick(CATEGORY_LABELS[key] || { ro: category, en: category }, lang);
   };
 
   // --------------------------------------------------------------- states
@@ -164,11 +202,30 @@ export default function GamePage() {
   // Level progression + final leaderboard (completion modal)
   const levelIdx = Math.max(0, LEVELS.findIndex((l) => l.id === room.difficulty));
   const nextLevel = levelIdx < LEVELS.length - 1 ? LEVELS[levelIdx + 1] : null;
-  const finalScores = (completion?.scores?.length ? completion.scores : scores).filter(
-    (s) => s.placed > 0,
+  const rankingMap = new Map<string, { playerId: string; name: string; color: string; placed: number }>();
+  players.forEach((player) => {
+    rankingMap.set(player.id, {
+      playerId: player.id,
+      name: player.name,
+      color: player.color,
+      placed: scoreByPlayer.get(player.id) || 0,
+    });
+  });
+  scoreSource.forEach((entry) => {
+    rankingMap.set(entry.playerId, {
+      playerId: entry.playerId,
+      name: entry.name,
+      color: entry.color,
+      placed: entry.placed,
+    });
+  });
+  const finalRanking = [...rankingMap.values()].sort(
+    (a, b) => b.placed - a.placed || a.name.localeCompare(b.name),
   );
-  const podium = finalScores.slice(0, 3);
-  const restOfRanking = finalScores.slice(3, 12);
+  const podium = finalRanking.slice(0, 3);
+  const restOfRanking = finalRanking.slice(3);
+  const formatContribution = (placed: number) =>
+    `${placed} ${lang === "ro" ? "piese" : "pieces"} · ${Math.round((placed / total) * 100)}%`;
 
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-ink-950">
@@ -219,7 +276,7 @@ export default function GamePage() {
                         ? "Team ranking · " + total + " items"
                         : "Questionnaire · " + total + " questions"
                       : `${getDifficultyLabel(room.difficulty)} · ${total} pieces${
-                          puzzle.category ? ` · ${CATEGORY_ICON[puzzle.category] || ""} ${puzzle.category}` : ""
+                          puzzle.category ? ` · ${CATEGORY_ICON[puzzle.category] || ""} ${getCategoryLabel(puzzle.category)}` : ""
                         }`}
                   </div>
                 </div>
@@ -444,130 +501,203 @@ export default function GamePage() {
         <>
           <Confetti />
           <Modal dismissable={false}>
-            <div className="overlay-card max-h-[90vh] w-[470px] max-w-full overflow-y-auto p-6 text-center sm:p-8">
-              <div className="text-5xl">🎉</div>
-              <h2 className="font-display mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-                <T value={{ ro: "Puzzle finalizat!", en: "Puzzle completed!" }} />
-              </h2>
-              <div className="mt-1.5 text-lg font-semibold text-brand-300">
-                {pick(puzzle.name, lang)}
-              </div>
-              <div className="mt-1 text-sm text-ink-400">
-                <T value={{ ro: "Nivel", en: "Level" }} /> {levelIdx + 1} · {getDifficultyLabel(room.difficulty)} · {total}{" "}
-                <T value={{ ro: "piese", en: "pieces" }} /> · ⏱ {formatClock(room.completedInMs || 0)}
+            <div className="overlay-card max-h-[92vh] w-[760px] max-w-[96vw] overflow-y-auto p-5 sm:p-8">
+              <div className="text-center">
+                <div className="text-5xl">🎉</div>
+                <h2 className="font-display mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                  <T value={{ ro: "Puzzle finalizat!", en: "Puzzle completed!" }} />
+                </h2>
+                <div className="mt-1.5 text-lg font-semibold text-brand-300">
+                  {pick(puzzle.name, lang)}
+                </div>
+                <div className="mt-2 text-sm text-ink-400">
+                  <T value={{ ro: "Nivel", en: "Level" }} /> {levelIdx + 1} · {getDifficultyLabel(room.difficulty)} · {total}{" "}
+                  <T value={{ ro: "piese", en: "pieces" }} />
+                </div>
               </div>
 
-              {/* ----------------------------------------------- podium */}
-              {podium.length > 0 ? (
-                <div className="mt-6">
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-ink-400">
-                    <T value={{ ro: "Clasamentul pieselor puse", en: "Pieces placed — leaderboard" }} />
+              <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center">
+                  <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-ink-400">
+                    <T value={{ ro: "Timp total", en: "Total time" }} />
                   </div>
-                  <div className="mt-4 flex items-end justify-center gap-2">
-                    {[1, 0, 2].map((rank) => {
-                      const s = podium[rank];
-                      if (!s) return null;
-                      const style = PODIUM_STYLES[rank];
-                      return (
-                        <div key={s.playerId} className="flex w-[88px] flex-col items-center sm:w-24">
-                          <div className="text-2xl">{style.medal}</div>
-                          <div className="mt-0.5 flex w-full items-center justify-center gap-1">
-                            <span
-                              className="h-2 w-2 shrink-0 rounded-full"
-                              style={{ backgroundColor: s.color }}
-                            />
-                            <span className="truncate text-xs font-bold text-white">{s.name}</span>
-                          </div>
-                          <div
-                            className={`mt-1.5 flex w-full flex-col items-center justify-center rounded-t-xl border-t border-x ${style.box} ${style.height}`}
-                          >
-                            <span className="font-display text-xl font-extrabold text-white">
-                              {s.placed}
-                            </span>
-                            <span className="text-[10px] font-semibold uppercase tracking-wide text-white/70">
-                              <T value={{ ro: "piese", en: "pieces" }} />
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    })}
+                  <div className="mt-2 font-display text-2xl font-extrabold text-white">
+                    {formatClock(room.completedInMs || 0)}
                   </div>
-                  {restOfRanking.length > 0 && (
-                    <div className="mx-auto mt-2 max-w-xs divide-y divide-white/5 rounded-xl border border-white/10 bg-white/5">
-                      {restOfRanking.map((s, i) => (
-                        <div key={s.playerId} className="flex items-center gap-2 px-3.5 py-2 text-[13px]">
-                          <span className="w-5 shrink-0 text-left font-bold text-ink-400">{i + 4}.</span>
-                          <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: s.color }} />
-                          <span className="min-w-0 flex-1 truncate text-left font-medium text-white">{s.name}</span>
-                          <span className="shrink-0 font-bold text-ink-200">
-                            {s.placed} <span className="text-[10px] font-semibold text-ink-400">🧩</span>
-                          </span>
-                        </div>
-                      ))}
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center">
+                  <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-ink-400">
+                    <T value={{ ro: "Echipă activă", en: "Active team" }} />
+                  </div>
+                  <div className="mt-2 font-display text-2xl font-extrabold text-white">{finalRanking.length}</div>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center">
+                  <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-ink-400">
+                    <T value={{ ro: "Total puzzle", en: "Puzzle total" }} />
+                  </div>
+                  <div className="mt-2 font-display text-2xl font-extrabold text-white">{total}</div>
+                  <div className="text-xs text-ink-400">
+                    <T value={{ ro: "piese finalizate", en: "pieces completed" }} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-7">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-ink-400">
+                      <T value={{ ro: "Podium colaborativ", en: "Collaborative podium" }} />
+                    </div>
+                    <div className="mt-1 text-sm text-ink-300">
+                      <T value={{ ro: "Top 3 jucători după numărul de piese plasate", en: "Top 3 players by placed pieces" }} />
+                    </div>
+                  </div>
+                  {completion.players.length > 0 && (
+                    <div className="hidden rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-ink-300 sm:block">
+                      <T value={{ ro: "Finalizat de", en: "Completed by" }} /> {completion.players.length}
                     </div>
                   )}
                 </div>
-              ) : (
-                completion.players.length > 0 && (
-                  <div className="mt-5">
-                    <div className="text-[11px] font-bold uppercase tracking-wider text-ink-400">
-                      <T value={{ ro: "Rezolvat de", en: "Solved by" }} />
+
+                <div className="mt-5 flex flex-wrap items-end justify-center gap-3 lg:gap-4">
+                  {[1, 0, 2].map((rankIndex) => {
+                    const entry = podium[rankIndex];
+                    const style = PODIUM_STYLES[rankIndex];
+                    if (!entry) return null;
+                    const isMvp = rankIndex === 0;
+                    return (
+                      <button
+                        key={entry.playerId}
+                        type="button"
+                        className={`group relative flex w-[170px] flex-col items-center rounded-[26px] border border-white/10 bg-white/[0.05] px-4 pb-4 pt-5 text-center transition duration-200 hover:-translate-y-1 hover:bg-white/[0.08] ${
+                          isMvp ? "ring-2 ring-amber-300/30" : ""
+                        }`}
+                      >
+                        {isMvp && (
+                          <div className="absolute -top-4 inline-flex items-center gap-1 rounded-full border border-amber-300/40 bg-amber-400/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-amber-100">
+                            👑 MVP · 🏆
+                          </div>
+                        )}
+                        <div className={`text-3xl ${style.accent}`}>{style.medal}</div>
+                        <div className="mt-2 flex items-center gap-2">
+                          <span className="h-3 w-3 rounded-full ring-2 ring-white/15" style={{ backgroundColor: entry.color }} />
+                          <span className="max-w-[110px] truncate text-sm font-bold text-white">{entry.name}</span>
+                        </div>
+                        <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-ink-400">
+                          <T value={style.label} />
+                        </div>
+                        <div className={`mt-3 flex w-full flex-col items-center justify-center rounded-[22px] border ${style.box} ${style.height}`}>
+                          <div className="font-display text-3xl font-extrabold text-white">{entry.placed}</div>
+                          <div className="mt-1 text-[11px] font-semibold text-white/75">{formatContribution(entry.placed)}</div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="mt-7 rounded-[24px] border border-white/10 bg-white/[0.04] p-4 sm:p-5">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-ink-400">
+                      <T value={{ ro: "Clasament complet", en: "Full team ranking" }} />
                     </div>
-                    <div className="mt-2 flex flex-wrap justify-center gap-1.5">
-                      {completion.players.slice(0, 20).map((name, i) => (
-                        <span
-                          key={`${name}-${i}`}
-                          className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white"
-                        >
-                          {name}
-                        </span>
-                      ))}
+                    <div className="mt-1 text-sm text-ink-300">
+                      <T value={{ ro: "Contribuția fiecărui jucător la puzzle-ul final", en: "Each player’s contribution to the finished puzzle" }} />
                     </div>
                   </div>
-                )
-              )}
+                  <div className="text-xs font-medium text-ink-400">100% · {total} <T value={{ ro: "piese", en: "pieces" }} /></div>
+                </div>
 
-              <div className="mt-7 grid gap-2">
-                {isHost ? (
-                  <>
-                    {nextLevel && (
-                      <button
-                        className="btn-primary w-full"
-                        onClick={() =>
-                          youId && api.changePuzzle(room.id, room.puzzleId, nextLevel.id, youId)
-                        }
-                      >
-                        ⬆ <T value={{ ro: "Mergi mai departe — Nivel", en: "Level up — Level" }} /> {levelIdx + 2}
-                        {": "}
-                        {getDifficultyLabel(nextLevel.id)} · {nextLevel.pieces}{" "}
-                        <T value={{ ro: "piese", en: "pieces" }} />
-                      </button>
+                <div className="mt-4 overflow-x-auto rounded-2xl border border-white/8">
+                  <div className="grid grid-cols-[62px_minmax(0,1fr)_110px_120px] gap-3 bg-white/[0.04] px-4 py-3 text-[11px] font-bold uppercase tracking-wide text-ink-400">
+                    <span>#</span>
+                    <span><T value={{ ro: "Jucător", en: "Player" }} /></span>
+                    <span className="text-right"><T value={{ ro: "Piese", en: "Pieces" }} /></span>
+                    <span className="text-right">%</span>
+                  </div>
+                  <div className="divide-y divide-white/6 bg-ink-950/20">
+                    {finalRanking.map((entry, index) => {
+                      const share = Math.round((entry.placed / total) * 100);
+                      const isMvp = index === 0;
+                      return (
+                        <div key={entry.playerId} className="grid grid-cols-[62px_minmax(0,1fr)_110px_120px] items-center gap-3 px-4 py-3 text-sm">
+                          <div className="flex items-center gap-2 text-white">
+                            <span className="font-display text-lg font-bold">{index + 1}</span>
+                            {index < 3 && <span className="text-base">{PODIUM_STYLES[index].medal}</span>}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="h-3 w-3 shrink-0 rounded-full ring-2 ring-white/15" style={{ backgroundColor: entry.color }} />
+                              <span className="truncate font-semibold text-white">{entry.name}</span>
+                              {entry.playerId === youId && (
+                                <span className="rounded-full bg-brand-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-200">
+                                  <T value={{ ro: "Tu", en: "You" }} />
+                                </span>
+                              )}
+                              {isMvp && (
+                                <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-200">
+                                  👑 MVP
+                                </span>
+                              )}
+                            </div>
+                            <div className="mt-1 text-xs text-ink-400">{formatContribution(entry.placed)}</div>
+                          </div>
+                          <div className="text-right font-display text-lg font-bold text-white">{entry.placed}</div>
+                          <div className="text-right font-semibold text-ink-200">{share}%</div>
+                        </div>
+                      );
+                    })}
+                    {restOfRanking.length === 0 && finalRanking.length <= 3 && (
+                      <div className="px-4 py-3 text-sm text-ink-400">
+                        <T value={{ ro: "Podiumul reprezintă întregul clasament al echipei.", en: "The podium already represents the full team ranking." }} />
+                      </div>
                     )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-7 space-y-3">
+                {isHost ? (
+                  <div className="grid gap-3 lg:grid-cols-3">
                     <button
                       className={`${nextLevel ? "btn w-full border border-white/10 bg-white/5 text-white hover:bg-white/10" : "btn-primary w-full"}`}
                       onClick={handleReset}
                     >
-                      ↺ <T value={{ ro: "Reia jocul (același puzzle)", en: "Replay this puzzle" }} />
+                      ↺ <T value={{ ro: "Replay", en: "Replay" }} />
                     </button>
+                    {nextLevel ? (
+                      <button
+                        className="btn-primary w-full"
+                        onClick={() => youId && api.changePuzzle(room.id, room.puzzleId, nextLevel.id, youId)}
+                      >
+                        ⬆ <T value={{ ro: "Level Up", en: "Level Up" }} />
+                      </button>
+                    ) : (
+                      <button className="btn w-full border border-white/10 bg-white/5 text-white/60" disabled>
+                        ✅ <T value={{ ro: "Nivel maxim atins", en: "Top level reached" }} />
+                      </button>
+                    )}
                     <button
                       className="btn w-full border border-white/10 bg-white/5 text-white hover:bg-white/10"
                       onClick={() => setPickerOpen(true)}
                     >
-                      🧩 <T value={{ ro: "Joacă alt puzzle în această cameră", en: "Play another puzzle in this room" }} />
+                      🧩 <T value={{ ro: "Selectează Alt Puzzle", en: "Select Another Puzzle" }} />
                     </button>
-                  </>
+                  </div>
                 ) : (
-                  <div className="rounded-xl border border-brand-400/30 bg-brand-500/10 px-4 py-3 text-sm text-brand-100">
+                  <div className="rounded-2xl border border-brand-400/30 bg-brand-500/10 px-4 py-3 text-sm text-brand-100">
                     <span className="mr-1.5">⏳</span>
                     <T
                       value={{
-                        ro: "Gazda alege următorul nivel sau puzzle — rămâi conectat, jocul pornește automat pentru toți.",
-                        en: "The host is picking the next level or puzzle — stay connected, the game starts automatically for everyone.",
+                        ro: "Gazda pregătește următoarea rundă. Rămâi conectat pentru Replay, Level Up sau selectarea altui puzzle.",
+                        en: "The host is preparing the next round. Stay connected for Replay, Level Up or another puzzle selection.",
                       }}
                     />
                   </div>
                 )}
-                <div className="grid grid-cols-2 gap-2">
+
+                <div className="grid gap-2 sm:grid-cols-2">
                   <button
                     className="btn btn-sm border border-white/10 bg-white/5 text-white hover:bg-white/10"
                     onClick={() => {
