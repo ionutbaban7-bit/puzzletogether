@@ -242,7 +242,10 @@ export interface PuzzleInfo {
   id: string;
   category: string;
   name: string;
+  /** Optimized full-size source used by the active jigsaw board. */
   image: string;
+  /** Lightweight 4:3 derivative used by catalog/selector cards. */
+  thumbnail?: string;
   credit: string;
   license: string;
   source: string;

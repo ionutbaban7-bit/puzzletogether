@@ -152,9 +152,17 @@ export default function PuzzlePicker({
                   >
                     <div className="aspect-[4/3] overflow-hidden bg-ink-900">
                       <img
-                        src={p.image}
+                        src={p.thumbnail || p.image}
                         alt={p.name}
                         loading="lazy"
+                        decoding="async"
+                        onError={(event) => {
+                          // If a thumbnail cache entry is unavailable, make a
+                          // single graceful retry with the board's full image.
+                          if (!p.thumbnail || event.currentTarget.dataset.fullFallback === "true") return;
+                          event.currentTarget.dataset.fullFallback = "true";
+                          event.currentTarget.src = p.image;
+                        }}
                         className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.04]"
                       />
                     </div>

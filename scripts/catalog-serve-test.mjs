@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 /**
- * Stage 5 delivery gate: validate that every catalog image is served and that
- * every Stage 5 jigsaw image can be instantiated at every advertised jigsaw
- * difficulty. Run against a freshly started server so imageDims includes the
- * generated manifest.
+ * Stage 5 delivery gate: validate that every catalog image is GET-served with
+ * a non-empty expected image payload, every API puzzle exposes its lightweight
+ * selector thumbnail, and every Stage 5 jigsaw image can be instantiated at
+ * every advertised jigsaw difficulty. Run against a freshly started server so
+ * imageDims includes the generated manifest.
  *
  * Usage: BASE=http://127.0.0.1:3000 node scripts/catalog-serve-test.mjs
  */
@@ -47,12 +48,48 @@ for (const entry of catalog.entries) {
   }
 }
 const served = await mapLimit(imageUrls, 12, async (item) => {
-  const response = await request(`${BASE}${item.url}`, { method: "HEAD" });
-  return { ...item, status: response.status, type: response.headers.get("content-type") || "" };
+  // Use GET and consume the body rather than a HEAD-only status check. This
+  // catches the exact failure mode a catalog card would see: a proxy/CDN can
+  // answer HEAD but fail to send a decodable image response.
+  const response = await request(`${BASE}${item.url}`);
+  let bytes = 0;
+  let signature = "";
+  if (response.ok) {
+    const body = Buffer.from(await response.arrayBuffer());
+    bytes = body.length;
+    signature = body.subarray(0, 2048).toString("utf8");
+    if (/^image\/webp/i.test(response.headers.get("content-type") || "")) {
+      signature = body.subarray(0, 12).toString("ascii");
+    }
+  }
+  return { ...item, status: response.status, type: response.headers.get("content-type") || "", bytes, signature };
 });
 for (const result of served) {
-  ok(`${result.kind}: ${result.url}`, result.status === 200 && /^image\/(webp|jpeg|png|svg\+xml)/i.test(result.type), `${result.status} ${result.type}`);
+  const isWebp = /^image\/webp/i.test(result.type) && result.signature.startsWith("RIFF") && result.signature.includes("WEBP");
+  const isSvg = /^image\/svg\+xml/i.test(result.type) && /<svg[\s>]/i.test(result.signature);
+  const isRaster = /^image\/(jpeg|png)/i.test(result.type) && result.bytes > 0;
+  ok(`${result.kind}: ${result.url}`, result.status === 200 && result.bytes > 0 && (isWebp || isSvg || isRaster), `${result.status} ${result.type}, ${result.bytes} bytes`);
 }
+
+const catalogEntriesByPuzzleId = new Map(catalog.entries.filter((entry) => entry.puzzleId).map((entry) => [entry.puzzleId, entry]));
+const linkedEntries = [...catalogEntriesByPuzzleId.values()];
+ok(
+  "catalog API exposes matching lightweight card thumbnails",
+  linkedEntries.every((entry) => byPuzzleId.get(entry.puzzleId)?.thumbnail === entry.thumbnail),
+  `${linkedEntries.filter((entry) => byPuzzleId.get(entry.puzzleId)?.thumbnail === entry.thumbnail).length}/${linkedEntries.length}`,
+);
+ok(
+  "catalog API retains matching full board images",
+  linkedEntries.every((entry) => byPuzzleId.get(entry.puzzleId)?.image === entry.fullImage),
+  `${linkedEntries.filter((entry) => byPuzzleId.get(entry.puzzleId)?.image === entry.fullImage).length}/${linkedEntries.length}`,
+);
+const pickerSource = fs.readFileSync(path.join(root, "src", "pages", "CreateRoom.tsx"), "utf8");
+const inRoomPickerSource = fs.readFileSync(path.join(root, "src", "components", "PuzzlePicker.tsx"), "utf8");
+ok(
+  "both catalog pickers prefer thumbnails and retry their full image once",
+  pickerSource.includes("puzzle.thumbnail || puzzle.image") && pickerSource.includes("dataset.fullFallback") &&
+    inRoomPickerSource.includes("p.thumbnail || p.image") && inRoomPickerSource.includes("dataset.fullFallback"),
+);
 
 const additionIds = new Set(additions.entries.map((entry) => entry.id));
 const stage5Puzzles = catalog.entries.filter((entry) => additionIds.has(entry.puzzleId));

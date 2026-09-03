@@ -169,16 +169,30 @@ for (const e of catalog.entries) {
 }
 
 // ---- merge metadata into shared/puzzles.json -------------------------------
+// A pipeline run rewrites puzzle.image from the original .jpg/.png to its
+// /images/full/*.webp derivative. Match by the stable puzzle id first so a
+// later idempotent run continues to enrich the record (notably thumbnail),
+// then retain path matching for legacy records without a puzzleId.
 const entriesByFilename = new Map();
-for (const e of catalog.entries) entriesByFilename.set(path.basename(e.asset), e);
+const entriesByPuzzleId = new Map();
+for (const e of catalog.entries) {
+  entriesByFilename.set(path.basename(e.asset), e);
+  if (e.fullImage) entriesByFilename.set(path.basename(e.fullImage), e);
+  if (e.thumbnail) entriesByFilename.set(path.basename(e.thumbnail), e);
+  if (e.puzzleId) entriesByPuzzleId.set(e.puzzleId, e);
+}
 
 let touched = 0;
 for (const p of puzzles.puzzles) {
   if (!p.image) continue;
   const fn = path.basename(p.image);
-  const e = entriesByFilename.get(fn);
+  const e = entriesByPuzzleId.get(p.id) || entriesByFilename.get(fn);
   if (!e) continue;
   if (e.fullImage) p.image = e.fullImage;
+  // Selector cards must use the small derivative. The full image is reserved
+  // for the active jigsaw board; loading ten 1800px images in a picker can
+  // leave cards blank or late on slower/mobile connections.
+  p.thumbnail = e.thumbnail || e.fullImage || p.image;
   p.nameRo = e.name.ro;
   p.alt = e.alt;
   p.attribution = e.attribution;
