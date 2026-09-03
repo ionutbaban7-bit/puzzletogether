@@ -1,105 +1,101 @@
-# PuzzleTogether — 8-stage delivery plan (session 2026-09-03)
+# PuzzleTogether — seven-stage delivery workplan
 
-Status legend: [ ] todo · [~] in progress · [x] done · [-] deferred (with reason)
+**Session date:** 2026-09-03
+**Status legend:** [ ] todo · [~] in progress · [x] complete · [-] deferred with a reason
 
-## Stage 1 — Letter Canvas („Foaie de litere")
-- [x] Remove non-functional `words` category from the menu; replace with `letter-canvas`
-- [x] Separate server model (NO correctX/correctY/locked jigsaw mechanics)
-  - [x] free-position tiles, claims server-authoritative, CLAIM_TTL
-  - [x] spawn / move / flip / duplicate / delete / undo (server-validated)
-  - [x] finite inventory (Quick 96 / Standard 180 / Extended 260) + unlimited sandbox
-  - [x] wildcards + punctuation in inventory
-  - [x] contentLanguage RO/EN (separate from UI language), NFC normalization, Ă Â Î Ș Ț
-  - [x] completion triggered by facilitator control, not by placement
-- [x] Frontend LetterCanvas: blank white sheet (no image/ghost/reference/dots)
-  - [x] side tray (desktop) / bottom sheet (mobile), tap-to-spawn
-  - [x] drag, double-tap flip, duplicate, delete, undo, keyboard shortcuts
-  - [x] export composition PNG + text
-  - [x] cover used only in the selector
-- [x] `scripts/canvas-protocol-test.mjs` — claims, concurrent edits, duplicate, delete,
-      lock, reconnect, persistence (server restart), completion, diacritics
-      → **44/44 passing**
+This supersedes the earlier exploratory plan. It records the agreed delivery
+sequence and the release evidence for the active branch.
 
-## Stage 2 — Sentence Canvas („Foaie de propoziții") + tests
-- [x] Whole-word tiles, new `sentence-canvas` category
-- [x] Vocabulary packs RO + EN (RO 188 / EN 178 entries → 198/192 tiles, function-word
-      duplicates included) with categories: pronouns, articles, nouns, verbs,
-      adjectives, adverbs, prepositions, conjunctions, punctuation
-- [x] Custom word tiles: spawn / edit / duplicate / delete (inventory-exempt)
-- [x] Automatic row alignment + discrete word snap (server-side, drop-only)
-- [x] Punctuation tiles with reduced width
-- [x] Soft spellcheck (never rejects names/acronyms; suggestions only)
-- [x] Text reconstruction by rows + coordinates
-- [x] Export UTF-8 text, PNG, JSON
-- [x] 5 general scenarios (funny story, travel, nature, future, positive message)
-      — NO coaching/retrospective/team-values scenarios
-- [x] `scripts/sentence-protocol-test.mjs` — RO/EN sentences, diacritics,
-      punctuation, custom words, simultaneous collaboration
-      → **29/29 passing** (also found + fixed a real server bug: custom words were
-      incorrectly consuming the inventory on spawn)
-- [~] `scripts/canvas-browser-test.mjs` — mobile (tray, pan, zoom, tap-to-place) +
-      desktop. **Written and reviewed against the UI, but unrunnable in this sandbox**
-      (no browser binaries obtainable — all browser CDNs blocked). Runs in any
-      environment with `npx playwright install` (Chromium + Firefox + WebKit).
+## Stage 0 — Reachable room overlays
+- [x] Made every room-overlay card height-aware and vertically scrollable on
+  short/mobile viewports; primary actions remain reachable.
+- [x] Added the focused Playwright viewport gate for create → lobby → Start.
+- [x] Validated all **16/16** combinations: jigsaw, Letter Canvas, Sentence
+  Canvas, and Team Coaching at four viewport sizes.
 
-## Stage 3 — Catalog pipeline (+ report for the 10 orphan images)
-- [x] Extended metadata per asset: name.ro/en, alt.ro/en, creator, sourceName,
-      sourceUrl, license, licenseUrl, attribution, changesMade, downloadedAt,
-      originalFilename, checksum, width, height, thumbnail, fullImage, focalPoint
-      → `data/catalog/sources.json` (49 entries)
-- [x] `scripts/catalog-pipeline.mjs` — checksums, WebP thumbnails (480×360, focal-point
-      crop), optimized fulls (≤2200px q82), originals kept outside public bundle
-      (`data/catalog/originals/`), puzzles.json merge, manifest regeneration.
-      Idempotent; 36 photos converted, 13 SVGs checksummed.
-- [x] `scripts/audit-catalog.mjs` — fails on: missing file (S1), missing sourceUrl (S2),
-      missing licenseUrl (S3), too small (S4, photo floor 900×600), checksum duplicates
-      (S5), perceptual duplicates (S6, dHash ≤ 2), invalid category (S7), missing
-      thumbnail (S8), checksum mismatch (S9), uncatalogued assets in public (S10),
-      flagged compliance violations (F1); cross-checks X1/X2; warnings W1–W4.
-- [x] Catalog entries for the 10 existing orphan images — **honest finding: none of the
-      10 has a verifiable free license** (2 are watermarked stock previews —
-      Dreamstime, WideWallpapers — = copyright violations; 1 suspected AI-generated;
-      7 genuine-looking photos with stripped EXIF and no identifiable source).
-      All 10 catalogued with status `unverified`/`flagged` + explicit issues.
-      The 26 legacy photos were re-verified against their exact Wikimedia Commons
-      file pages via the Commons API (2 license corrections: statue-of-liberty →
-      CC BY-SA 3.0, venice → CC BY-SA 2.0).
-- [x] `docs/catalog-report.md` — source + license of every image (generated by
-      `scripts/catalog-report.mjs`; machine-readable `docs/catalog-audit.json`)
-- [x] No NEW images in this stage
-- NOTE: `npm run catalog:audit` exits non-zero today **by design** — 2 F1 fatal flags
-      for the watermarked stock images. All S1–S10 structural rules pass. The audit
-      goes fully green after Stage 4 replaces the flagged/unverified images.
+## Stage 1 — Jigsaw rendering budget
+- [x] Baked ordinary free-piece shadows into reusable cached sprites. A live
+  lift shadow is drawn only for the actively grabbed piece.
+- [x] Kept dirty, request-animation-frame-on-change rendering and bounded the
+  placement-glow/cursor animation loops.
+- [x] Made the dot grid scale its spacing at low zoom and skip safely when the
+  threshold is not reached.
+- [x] Added the source-level renderer contract gate (`npm run
+  test:render-contract`, **7/7** on the final pass) alongside the browser FPS
+  harness for 144- and 192-piece boards.
 
-## Stage 4 — 50 new puzzles (10 per photo category)
-- [ ] DEFERRED in this session — user instruction: „Nu adăuga încă imagini noi"
-- [ ] Must also replace the 10 orphan images (2 flagged = hard copyright risk)
-- [ ] ≥5 Romania-relevant subjects; PD/CC0/CC BY 4.0; verified at original source;
-      no watermark/logo/identifiable people as main subject; detail for 144 pieces
+## Stage 2 — Server-authoritative jigsaw layouts
+- [x] Made scattered, unplaced pieces the default server layout.
+- [x] Added the authorized `layout` WebSocket operation for scattered/tray
+  layouts: only eligible non-spectator players during unlocked jigsaw play can
+  invoke it; locked and held pieces are preserved and a layout operation never
+  sets `moved=true`.
+- [x] Added Romanian/English Mix and Help controls, a tray panel only in tray
+  mode, and bounds-aware fit/bring-unplaced behavior.
+- [x] Covered layout, rejection, reconnect, lock, held-piece, and moved-state
+  cases in the protocol suite (**10/10** layout checks).
 
-## Stage 5/6 — Classic jigsaw finishing ✅
-- [x] Dirty rendering (kill the 60 FPS continuous redraw loop) — `schedule()` rAF-only-when-dirty; `window.__ptDraws` test hook; glow/cursor animation loops bounded
-- [x] Tray for unplaced pieces, overlap-free scatter layout — deterministic `src/puzzle/tray.ts` (grid right/below target, cell = piece + 24px); server scatters with `moved=false` so all clients agree without new protocol
-- [x] Filters: edge / interior / unplaced (aria-pressed pills, dim non-matching pieces)
-- [x] Minimap (bottom-right, drag to navigate; excluded from piece picking)
-- [x] „Bring unplaced pieces into view" button (fits the tray, max 1.6×)
-- [x] Portrait/landscape camera optimization — `fit()` targets puzzle ∪ tray bounds
-- [x] FPS + memory test at 144 and 192 pieces — `master` (192) difficulty added; `scripts/jigsaw-perf-test.mjs` (idle draws ≈ 0, pan FPS, heap)
-- [x] Full touch support, accessible keyboard interactions (filter pills focusable, Enter/Space)
-- [x] RO/EN translation of every control (STR constants, `pick(b, lang)`)
-- [x] Visible + accessible attribution — lobby card with license/source links, HUD credit line, reference-panel caption, canvas aria-label
-- [x] Custom image upload — `POST /api/uploads` (jpeg/png/webp, 1 KB–9 MB, 200–6000 px, re-encoded to WebP ≤ 2200 px), stored in `.data/uploads`, room-scoped, deleted on room reap; RO/EN privacy notice in CreateRoom
-- [x] Optional mystery mode — flag through createRoom; ghost + reference hidden until >50% placed
-- [x] Playwright on Chromium + Firefox + WebKit, iPhone + Android viewports — `scripts/jigsaw-browser-test.mjs` (tray tap, pan, filters, zoom, keyboard, RO/EN, mystery, upload)
-- [x] No changes to Letter Canvas, Sentence Canvas or Team Coaching in this stage
-- All protocol suites re-run green: sim 25/25 · letter-canvas 44/44 · sentence-canvas 29/29 · coaching 17/17
-- Bonus fix: snapshot restore is now per-room fault-tolerant (one unrestorable room no longer blocks the rest) and custom-upload rooms persist across restarts
+## Stage 3 — In-play puzzle reset
+- [x] Added host-only `POST /api/rooms/:id/puzzle-reset` for jigsaw play.
+- [x] Reset preserves room stage, timer, players, and workshop state; the
+  existing workshop `POST /api/rooms/:id/reset` behavior is unchanged.
+- [x] Added a confirmed facilitator HUD action and two-client/non-host/coaching
+  regression coverage (**7/7** reset checks; coaching **17/17**).
 
-## Stage 7 — Team Coaching audit (read-only, no code changes)
-- [ ] `docs/coaching-audit.md` — pedagogy, expert-ranking provenance, stage machine,
-      timer/lock semantics, questionnaire privacy, wording, accessibility,
-      debrief/ownership, concurrent editing, RO/EN export, outcomes
+## Stage 4 — Coaching Partners marketing refresh
+- [x] Applied Coaching Partners azure, pink, purple, blue-gray, and white to
+  marketing surfaces while retaining a near-black gameplay surface.
+- [x] Added “by Coaching Partners” below the landing wordmark and in the
+  footer; kept Romanian and English copy short and plain.
+- [x] Retained a concise, honest Letter Canvas roadmap line and made no
+  unrequested changes to canvas or coaching mechanics.
+- [x] Captured reproducible desktop/mobile landing, create, and jigsaw-play
+  screenshots under `docs/screenshots/`.
 
-## Stage 8 — Push everything to GitHub
-- [ ] Full test run (protocol suites green: 44/44, 29/29, 25/25, 17/17)
-- [ ] Commit + push `arena/01a066b0-puzzletogether`
+## Stage 5 — Licensed catalog expansion
+- [x] Added **55 reviewed CC0 originals**: five each in paintings, landscapes,
+  landmarks, nature, and cities; ten each in isometric worlds, abstract
+  geometry, and blueprint architecture. The Romanian subjects include
+  Bucharest, Brașov, Cluj, Sibiu, Timișoara, Sighișoara, Bran, Corvin, Apuseni,
+  the Carpathians, and the Danube Delta.
+- [x] Archived source originals and provenance in `data/catalog/originals/`,
+  produced optimized full/thumbnail WebP assets, and refreshed the manifest
+  and puzzle records. The final catalog has **94 records / 90 puzzle-linked
+  records**.
+- [x] Delisted the two fatal legacy assets (`new-york`, `plitvice-lakes`) and
+  eight other legacy orphan assets; `data/catalog/incoming/` was finalized
+  empty.
+- [x] Added glyphs for the three new categories and generated source/audit
+  documentation. The final audit has **0 structural failures**; its 43
+  nonfatal advisory warnings are documented in `docs/catalog-audit.json`.
+- [x] Verified production serving with **454/454** catalog/API/image/difficulty
+  matrix checks.
+
+## Stage 6 — Ten-expert QA gate
+- [x] Wrote `docs/qa-report.md` with ten independently scoped PASS decisions,
+  commands/evidence, browser-runtime note, and remaining non-product
+  environment limitation.
+- [x] Final local evidence: TypeScript and production build pass; protocol
+  suites pass (**132/132** total); catalog audit passes structurally; catalog
+  serving passes **454/454**; twenty-client load test passes.
+- [x] Updated all maintained Chromium scripts to consume the shared optional
+  runtime helper and use current bilingual branding selectors.
+
+## Stage 7 — Release and handoff
+- [x] Inspected the final diff and created logical Stage 5 and Stage 6 commits:
+  `64ed0c5` (licensed catalog finalization) and `544b45a` (QA gate).
+- [x] Pushed `arena/01a06746-puzzletogether` to GitHub and confirmed the draft
+  pull request remains available for review.
+- [x] Published the final handoff through this workplan and `docs/qa-report.md`:
+  change summary, test results, source/license reference, and the explicitly
+  scoped browser-runtime environment limitation.
+
+## Deferred items
+- [-] **Current-sandbox rerun of Playwright browser suites:** the sandbox has
+  no compatible Chromium/Chrome/Firefox/WebKit executable, and package/CDN and
+  Debian mirror retrieval were unavailable. This is an execution-environment
+  constraint, not a product defect or an omitted browser test: the completed
+  16/16 viewport gate and Stage 4 screenshots are retained as release evidence,
+  and every browser script now accepts
+  `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` plus optional
+  `PLAYWRIGHT_CHROMIUM_ARGS` for a supplied compatible runtime.
