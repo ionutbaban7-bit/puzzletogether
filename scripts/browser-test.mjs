@@ -1,22 +1,23 @@
 /* Browser smoke test for the current lobby-first jigsaw flow. */
 import { mkdirSync } from "node:fs";
 import { chromium } from "playwright";
+import { chromiumLaunchOptions } from "./playwright-runtime.mjs";
 const BASE = process.env.BASE || "http://127.0.0.1:3000";
 const ARTIFACTS = new URL("../test-artifacts/", import.meta.url).pathname;
 mkdirSync(ARTIFACTS, { recursive: true });
 const checks = [];
 const ok = (name, value) => { checks.push(!!value); console.log(`${value ? "✅" : "❌"} ${name}`); };
-const browser = await chromium.launch();
+const browser = await chromium.launch(chromiumLaunchOptions());
 const errors = [];
 const watch = (page, label) => { page.on("pageerror", (error) => errors.push(`[${label}] ${error.message}`)); page.on("console", (message) => { if (message.type() === "error") errors.push(`[${label}] ${message.text()}`); }); };
 try {
   const hostContext = await browser.newContext({ viewport: { width: 1280, height: 820 }, locale: "en-US" });
   const host = await hostContext.newPage(); watch(host, "host");
   await host.goto(BASE);
-  await host.getByText("Play together. Leave with a decision.").waitFor();
+  await host.getByRole("heading", { name: /Play\. Talk\. Decide\.|Jucați\. Vorbiți\. Decideți\./i }).waitFor();
   ok("honest workshop landing renders", true);
   await host.screenshot({ path: `${ARTIFACTS}01-landing.png`, fullPage: true });
-  await host.getByRole("button", { name: /Create a session/i }).click();
+  await host.getByRole("button", { name: /Create session|Creează sesiune/i }).click();
   await host.getByRole("button", { name: /Paintings/i }).click();
   await host.getByRole("button", { name: /Starry Night/i }).click();
   await host.getByRole("button", { name: /^Easy/ }).click();
@@ -28,7 +29,7 @@ try {
   await host.waitForFunction(() => window.__ptStore?.getState().status === "joined");
   const initial = await host.evaluate(() => window.__ptStore.getState());
   ok("creator enters a frozen 25-piece lobby", initial.room.stage === "lobby" && initial.room.total === 25 && Object.keys(initial.pieces).length === 25);
-  ok("lobby shows access code and honest zero clock", await host.getByText("Workshop lobby").isVisible() && /^[A-HJ-NP-Z2-9]{6}$/.test(initial.room.code));
+  ok("lobby shows access code and honest zero clock", await host.getByText(/Workshop lobby|Lobby de workshop/i).isVisible() && /^[A-HJ-NP-Z2-9]{6}$/.test(initial.room.code));
 
   const guestContext = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: "en-US" });
   const guest = await guestContext.newPage(); watch(guest, "guest");

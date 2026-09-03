@@ -10,14 +10,13 @@
  */
 import { chromium } from "playwright";
 import { mkdirSync } from "node:fs";
+import { chromiumLaunchOptions } from "./playwright-runtime.mjs";
 
 const BASE = process.env.BASE || "http://127.0.0.1:3000";
 const OUT = new URL("../docs/screenshots/", import.meta.url).pathname;
-const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
-const args = (process.env.PLAYWRIGHT_CHROMIUM_ARGS || "").split(",").map((value) => value.trim()).filter(Boolean);
 mkdirSync(OUT, { recursive: true });
 
-const browser = await chromium.launch({ ...(executablePath ? { executablePath } : {}), ...(args.length ? { args } : {}) });
+const browser = await chromium.launch(chromiumLaunchOptions());
 try {
   let context = await browser.newContext({ viewport: { width: 1440, height: 960 }, locale: "en-US" });
   let page = await context.newPage();

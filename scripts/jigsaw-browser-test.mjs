@@ -11,16 +11,12 @@
  */
 import { chromium, firefox, webkit } from "playwright";
 import { mkdirSync, writeFileSync } from "node:fs";
+import { chromiumLaunchOptions } from "./playwright-runtime.mjs";
 
 const BASE = process.env.BASE || "http://127.0.0.1:3000";
 // Optional executable support makes the focused viewport gate usable in
 // constrained CI images. Normal runs still use Playwright's installed browser.
-const CHROMIUM_EXECUTABLE = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
-const CHROMIUM_ARGS = (process.env.PLAYWRIGHT_CHROMIUM_ARGS || "").split(",").map((value) => value.trim()).filter(Boolean);
-const launchChromium = () => chromium.launch({
-  ...(CHROMIUM_EXECUTABLE ? { executablePath: CHROMIUM_EXECUTABLE } : {}),
-  ...(CHROMIUM_ARGS.length ? { args: CHROMIUM_ARGS } : {}),
-});
+const launchChromium = () => chromium.launch(chromiumLaunchOptions());
 const ARTIFACTS = new URL("../test-artifacts/", import.meta.url).pathname;
 mkdirSync(ARTIFACTS, { recursive: true });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

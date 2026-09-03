@@ -16,6 +16,7 @@
  * Usage: node scripts/jigsaw-perf-test.mjs   (BASE=http://127.0.0.1:3000)
  */
 import { chromium } from "playwright";
+import { chromiumLaunchOptions } from "./playwright-runtime.mjs";
 import { mkdirSync } from "node:fs";
 import { writeFileSync } from "node:fs";
 
@@ -30,7 +31,7 @@ const ok = (name, value, extra = "") => {
 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const browser = await chromium.launch();
+const browser = await chromium.launch(chromiumLaunchOptions());
 const errors = [];
 
 async function openPlayRoom(difficultyLabel, report) {
@@ -38,8 +39,8 @@ async function openPlayRoom(difficultyLabel, report) {
   const page = await context.newPage();
   page.on("pageerror", (e) => errors.push(`[${difficultyLabel}] ${e.message}`));
   await page.goto(BASE);
-  await page.getByText("Play together. Leave with a decision.").waitFor();
-  await page.getByRole("button", { name: /Create a session/i }).click();
+  await page.getByRole("heading", { name: /Play\. Talk\. Decide\.|Jucați\. Vorbiți\. Decideți\./i }).waitFor();
+  await page.getByRole("button", { name: /Create session|Creează sesiune/i }).click();
   await page.getByRole("button", { name: /Paintings/i }).click();
   await page.getByRole("button", { name: /Starry Night/i }).click();
   await page.getByRole("button", { name: new RegExp(`^${difficultyLabel}`) }).click();

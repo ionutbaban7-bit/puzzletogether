@@ -15,6 +15,7 @@
     "test:protocol": "node scripts/sim-test.mjs && node scripts/jigsaw-layout-test.mjs && node scripts/puzzle-reset-test.mjs && node scripts/coaching-test.mjs && node scripts/canvas-protocol-test.mjs && node scripts/sentence-protocol-test.mjs",
     "test:protocol:canvas": "node scripts/canvas-protocol-test.mjs && node scripts/sentence-protocol-test.mjs",
     "test:load": "node scripts/load-test.mjs",
+    "test:render-contract": "node scripts/render-contract-test.mjs",
     "test:e2e": "node scripts/browser-test.mjs && node scripts/coaching-browser-test.mjs && node scripts/canvas-browser-test.mjs",
     "test:e2e:canvas": "node scripts/canvas-browser-test.mjs",
     "catalog:audit": "node scripts/audit-catalog.mjs",

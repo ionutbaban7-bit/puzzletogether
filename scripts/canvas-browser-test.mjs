@@ -9,7 +9,8 @@
  * Requires Playwright browsers: `npx playwright install chromium`
  */
 import { mkdirSync } from "node:fs";
-import { chromium, webkit } from "playwright";
+import { chromium } from "playwright";
+import { chromiumLaunchOptions } from "./playwright-runtime.mjs";
 
 const BASE = process.env.BASE || "http://127.0.0.1:3000";
 const ARTIFACTS = new URL("../test-artifacts/", import.meta.url).pathname;
@@ -36,7 +37,7 @@ const screenPos = async (page, tile) => {
 // ------------------------------------------------------------------ helpers
 async function createLobby(page, { categoryLabel, puzzleLabel, modeLabel, sessionName, name, contentLanguage = "ro", ro = false }) {
   await page.goto(BASE);
-  await page.getByRole("button", { name: ro ? /Creează o sesiune|Create a session/i : /Create a session/i }).click();
+  await page.getByRole("button", { name: ro ? /Creează sesiune|Create session/i : /Create session/i }).click();
   await page.getByRole("button", { name: categoryLabel }).click();
   await page.getByRole("button", { name: puzzleLabel }).click();
   await page.getByRole("button", { name: new RegExp(`^${modeLabel}`) }).click();
@@ -55,7 +56,7 @@ async function startAndWait(page) {
 }
 
 // ================================================================ DESKTOP
-const browser = await chromium.launch();
+const browser = await chromium.launch(chromiumLaunchOptions());
 const desktop = await browser.newContext({ viewport: { width: 1280, height: 820 }, locale: "en-US" });
 const page = await desktop.newPage();
 watch(page, "desktop");

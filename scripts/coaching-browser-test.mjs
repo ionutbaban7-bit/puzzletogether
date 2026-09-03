@@ -1,19 +1,20 @@
 /* Browser smoke test for the facilitator-controlled ranking flow. */
 import { mkdirSync } from "node:fs";
 import { chromium } from "playwright";
+import { chromiumLaunchOptions } from "./playwright-runtime.mjs";
 const BASE = process.env.BASE || "http://127.0.0.1:3000";
 const ARTIFACTS = new URL("../test-artifacts/", import.meta.url).pathname;
 mkdirSync(ARTIFACTS, { recursive: true });
 const checks = [];
 const ok = (name, value) => { checks.push(!!value); console.log(`${value ? "✅" : "❌"} ${name}`); };
-const browser = await chromium.launch();
+const browser = await chromium.launch(chromiumLaunchOptions());
 const errors = [];
 try {
   const context = await browser.newContext({ viewport: { width: 1280, height: 820 }, locale: "en-US" });
   const page = await context.newPage();
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(BASE);
-  await page.getByRole("button", { name: /Create a session/i }).click();
+  await page.getByRole("button", { name: /Create session|Creează sesiune/i }).click();
   await page.getByRole("button", { name: /Team coaching/i }).click();
   await page.getByRole("button", { name: /The Himalayan Expedition/i }).click();
   ok("coaching picker describes free ranking and gated reveal", await page.getByText(/Free ranking/).isVisible());
