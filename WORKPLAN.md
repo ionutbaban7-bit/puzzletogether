@@ -68,8 +68,12 @@ sequence and the release evidence for the active branch.
 - [x] Added glyphs for the three new categories and generated source/audit
   documentation. The final audit has **0 structural failures**; its 43
   nonfatal advisory warnings are documented in `docs/catalog-audit.json`.
-- [x] Verified production serving with **454/454** catalog/API/image/difficulty
-  matrix checks.
+- [x] Verified production serving with **457/457** catalog/API/image/difficulty
+  matrix checks, including non-empty GET payloads and API thumbnail mappings.
+- [x] Corrected the idempotent pipeline matching and catalog-card data path:
+  all 90 API puzzle records now expose `thumbnail`, both pickers load the
+  480×360 derivative first, and retry the full board image exactly once only
+  if a thumbnail fails.
 
 ## Stage 6 — Ten-expert QA gate
 - [x] Wrote `docs/qa-report.md` with ten independently scoped PASS decisions,
@@ -77,13 +81,14 @@ sequence and the release evidence for the active branch.
   environment limitation.
 - [x] Final local evidence: TypeScript and production build pass; protocol
   suites pass (**132/132** total); catalog audit passes structurally; catalog
-  serving passes **454/454**; twenty-client load test passes.
+  serving passes **457/457**; twenty-client load test passes.
 - [x] Updated all maintained Chromium scripts to consume the shared optional
   runtime helper and use current bilingual branding selectors.
 
 ## Stage 7 — Release and handoff
-- [x] Inspected the final diff and created logical Stage 5 and Stage 6 commits:
-  `64ed0c5` (licensed catalog finalization) and `544b45a` (QA gate).
+- [x] Inspected the final diff and created logical delivery commits:
+  `64ed0c5` (licensed catalog finalization), `544b45a` (QA gate), and
+  `398abeb` (catalog preview loading repair).
 - [x] Pushed `arena/01a06746-puzzletogether` to GitHub and confirmed the draft
   pull request remains available for review.
 - [x] Published the final handoff through this workplan and `docs/qa-report.md`:

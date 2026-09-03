@@ -26,7 +26,7 @@ Team Coaching mechanics.
 | 5 | Team Coaching regression | **PASS** | Coaching protocol suite **17/17** |
 | 6 | Letter and Sentence Canvas regression | **PASS** | Canvas protocol suites: Letter **44/44**, Sentence **29/29** |
 | 7 | Catalog license/provenance compliance | **PASS** | `npm run catalog:audit` — **0 structural failures**, 55 reviewed CC0 additions |
-| 8 | Catalog asset/API/difficulty serving | **PASS** | `BASE=http://127.0.0.1:3000 npm run test:catalog-serve` — **454/454** |
+| 8 | Catalog asset/API/difficulty serving | **PASS** | `BASE=http://127.0.0.1:3000 npm run test:catalog-serve` — **457/457** |
 | 9 | Resilience and multi-client load | **PASS** | `BASE=http://127.0.0.1:3000 npm run test:load` — 20 clients, 800 piece frames + 400 cursors |
 | 10 | Responsive accessibility and Coaching Partners visual/copy review | **PASS** | Stage 0 viewport gate **16/16**; retained desktop/mobile screenshots; post-refresh selector/runtime review |
 
@@ -160,13 +160,32 @@ attribution.
 BASE=http://127.0.0.1:3000 npm run test:catalog-serve
 ```
 
-Result: **454/454 checks passed**.
+Result: **457/457 checks passed**.
 
 The gate verifies the health and puzzle APIs, every full WebP, thumbnail WebP,
 and SVG catalog cover, all 55 new catalog records in the API, and every new
-jigsaw image × advertised jigsaw-difficulty room-creation matrix. This exercises
-actual serving and server-side image dimension discovery, rather than merely
-checking file presence.
+jigsaw image × advertised jigsaw-difficulty room-creation matrix. It now
+consumes every asset with `GET`, validates a non-empty WebP/SVG payload, and
+asserts that all 90 catalog puzzles expose the matching lightweight card
+thumbnail while retaining the full board image. This exercises actual serving
+and server-side image dimension discovery, rather than merely checking file
+presence.
+
+### Catalog-card loading repair
+
+A post-gate visual report exposed the missing data path: after its first pass,
+the idempotent pipeline compared a processed `/images/full/*.webp` puzzle path
+only to the original source filename, so later runs did not propagate the
+existing `thumbnail` field into the puzzle API. The catalog cards therefore
+requested the much larger full board images concurrently.
+
+The pipeline now matches the stable `puzzleId` first (with original/full/
+thumbnail path fallback), emits `thumbnail` for all **90** puzzle API records,
+and both catalog pickers request the 480×360 derivative first. Each picker has
+a one-time full-image fallback only if its thumbnail itself errors. The updated
+GET-serving gate passed **457/457**, including non-empty payload checks,
+thumbnail/full mapping checks, picker-use regression checks, and the complete
+Stage 5 difficulty matrix.
 
 ## 9. Resilience and multi-client load — PASS
 
