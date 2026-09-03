@@ -13,7 +13,7 @@ const CATEGORY_NAMES: Record<string, { ro: string; en: string }> = {
   nature: { ro: "Natură", en: "Nature" }, cities: { ro: "Orașe", en: "Cities" }, coaching: { ro: "Team coaching", en: "Team coaching" },
 };
 const DIFFICULTY_META: Record<string, { minutes: string; people: string }> = {
-  easy: { minutes: "8–12 min", people: "2–6" }, medium: { minutes: "15–25 min", people: "3–8" }, hard: { minutes: "25–40 min", people: "4–10" }, expert: { minutes: "40–60 min", people: "4–12" },
+  easy: { minutes: "8–12 min", people: "2–6" }, medium: { minutes: "15–25 min", people: "3–8" }, hard: { minutes: "25–40 min", people: "4–10" }, expert: { minutes: "40–60 min", people: "4–12" }, master: { minutes: "60–90 min", people: "4–12" },
   quick: { minutes: "10–20 min", people: "2–8" }, standard: { minutes: "20–35 min", people: "2–10" }, extended: { minutes: "35–50 min", people: "2–12" }, sandbox: { minutes: "liber", people: "2–20" },
 };
 const CANVAS_CATEGORIES = new Set(["letter-canvas", "sentence-canvas"]);
@@ -29,6 +29,10 @@ export default function CreateRoom() {
   const [puzzleId, setPuzzleId] = useState<string | null>(null);
   const [difficulty, setDifficulty] = useState("medium");
   const [contentLanguage, setContentLanguage] = useState<"ro" | "en">("ro");
+  const [mystery, setMystery] = useState(false);
+  const [upload, setUpload] = useState<{ url: string; file: string; width: number; height: number } | null>(null);
+  const [uploadName, setUploadName] = useState("");
+  const [uploading, setUploading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -40,17 +44,35 @@ export default function CreateRoom() {
   const difficultyList = isCanvas ? (catalog?.canvasModes || []) : (catalog?.difficulties || []);
   const selectedDifficulty = (difficultyList as { id: string; name: string; pieces: number }[]).find((d) => d.id === difficulty) || null;
   const puzzles = useMemo(() => (catalog?.puzzles || []).filter((p) => p.category === category), [catalog, category]);
-  const selectionReady = isCoaching ? !!selectedActivity : !!selectedPuzzle && !!selectedDifficulty;
+  const isJigsaw = !isCanvas && !isCoaching && !!category;
+  const selectionReady = isCoaching ? !!selectedActivity : !!selectedDifficulty && (!!selectedPuzzle || !!upload);
+
+  async function handleUploadFile(file: File) {
+    setUploading(true); setError("");
+    try {
+      const result = await api.uploadImage(file);
+      setUpload(result);
+      setUploadName(file.name.replace(/\.[^.]+$/, "").slice(0, 60));
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : lang === "ro" ? "Imaginea nu a putut fi încărcată." : "Could not upload the image.");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function create() {
     if (!name.trim() || !selectionReady) return;
     setBusy(true); setError("");
     try {
-      const chosen = selectedActivity?.id || selectedPuzzle!.id;
+      const chosen = selectedActivity?.id || selectedPuzzle?.id || "custom-upload";
       const response = await api.createRoom(chosen, isCanvas ? difficulty : (selectedDifficulty?.id || "easy"), name.trim(), {
-        sessionName: sessionName.trim() || (selectedActivity ? pick(selectedActivity.name, lang) : selectedPuzzle!.name),
+        sessionName: sessionName.trim() || (selectedActivity ? pick(selectedActivity.name, lang) : upload ? uploadName || pick({ ro: "Imagine personalizată", en: "Custom image" }, lang) : selectedPuzzle!.name),
         role: facilitatorOnly ? "spectator" : "host",
         ...(isCanvas ? { contentLanguage } : {}),
+        ...(isJigsaw ? {
+          mystery,
+          customImage: upload ? { url: upload.url, file: upload.file, width: upload.width, height: upload.height, name: uploadName } : undefined,
+        } : {}),
       });
       saveSession({ name: name.trim(), pid: response.playerId, roomId: response.room.id });
       navigate(`/room/${response.room.id}`);
@@ -80,7 +102,7 @@ export default function CreateRoom() {
             </div>
             <section>
               <div className="flex flex-wrap gap-2">
-                {catalog?.categories.map((item) => <CategoryButton key={item.id} id={item.id} active={category === item.id} onClick={() => { setCategory(item.id); setPuzzleId(null); setDifficulty(CANVAS_CATEGORIES.has(item.id) ? "quick" : "medium"); }} lang={lang} />)}
+                {catalog?.categories.map((item) => <CategoryButton key={item.id} id={item.id} active={category === item.id} onClick={() => { setCategory(item.id); setPuzzleId(null); setUpload(null); setDifficulty(CANVAS_CATEGORIES.has(item.id) ? "quick" : "medium"); }} lang={lang} />)}
                 {catalog?.coaching && <CategoryButton id="coaching" active={category === "coaching"} onClick={() => { setCategory("coaching"); setPuzzleId(null); setDifficulty("medium"); }} lang={lang} coaching />}
               </div>
             </section>
@@ -95,9 +117,10 @@ export default function CreateRoom() {
               </div>
             )}
 
-            {category && !isCoaching && <section><h2 className="font-display text-lg font-bold text-ink-900"><T value={{ ro: "Alege imaginea", en: "Choose an image" }} /> <span className="ml-1 text-sm font-medium text-ink-400">({puzzles.length})</span></h2><div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{puzzles.map((puzzle) => <PuzzleCard key={puzzle.id} puzzle={puzzle} selected={puzzle.id === puzzleId} onSelect={() => setPuzzleId(puzzle.id)} />)}</div></section>}
+            {isJigsaw && <section className="rounded-2xl border border-ink-200 bg-white p-4"><div className="flex flex-wrap items-center gap-3"><label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-ink-300 bg-ink-50 px-4 py-3 transition hover:border-brand-500"><input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleUploadFile(file); e.target.value = ""; }} /><span className="text-sm font-semibold text-ink-700">{uploading ? <Spinner /> : "📷 "}{upload ? (lang === "ro" ? "Schimbă imaginea" : "Change image") : lang === "ro" ? "Încarcă o imagine proprie (JPEG, PNG, WebP)" : "Upload your own image (JPEG, PNG, WebP)"}</span></label>{upload && <button onClick={() => { setUpload(null); setUploadName(""); }} className="btn-secondary btn-sm">{lang === "ro" ? "Renunță la imaginea proprie" : "Use a catalog image"}</button>}{upload && <label className="ml-auto flex min-w-0 items-center gap-2 text-sm"><span className="shrink-0 font-semibold text-ink-700">{lang === "ro" ? "Nume:" : "Name:"}</span><input className="input w-44" maxLength={60} value={uploadName} onChange={(e) => setUploadName(e.target.value)} placeholder={lang === "ro" ? "ex. Fotografia echipei" : "e.g. Team photo"} /></label>}</div>{upload && <div className="mt-3 flex items-center gap-3"><img src={upload.url} alt={uploadName || "custom"} className="h-20 w-28 rounded-xl border border-ink-200 object-cover" /><p className="text-xs leading-relaxed text-ink-500"><b className="text-ink-700">{lang === "ro" ? "Confidențialitate:" : "Privacy:"}</b> {lang === "ro" ? "Imaginea se salvează doar pentru această cameră, pe server, și este ștearsă automat când camera expiră. Nu este publicată în bibliotecă." : "The image is stored only for this room, on the server, and is deleted automatically when the room expires. It is not published in the library."}</p></div>}</section>}
+            {isJigsaw && !upload && <section><h2 className="font-display text-lg font-bold text-ink-900"><T value={{ ro: "Alege imaginea", en: "Choose an image" }} /> <span className="ml-1 text-sm font-medium text-ink-400">({puzzles.length})</span></h2><div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{puzzles.map((puzzle) => <PuzzleCard key={puzzle.id} puzzle={puzzle} selected={puzzle.id === puzzleId} onSelect={() => setPuzzleId(puzzle.id)} />)}</div></section>}
             {isCoaching && <section><h2 className="font-display text-lg font-bold text-ink-900"><T value={{ ro: "Exerciții pentru 3–8 participanți", en: "Exercises for 3–8 participants" }} /></h2><div className="mt-3 grid gap-4 sm:grid-cols-2">{catalog?.coaching.activities.map((activity) => <ActivityCard key={activity.id} activity={activity} selected={activity.id === puzzleId} onSelect={() => setPuzzleId(activity.id)} lang={lang} />)}</div></section>}
-            {category && !isCoaching && <section><h2 className="font-display text-lg font-bold text-ink-900">{isCanvas ? <T value={{ ro: "Modul foii", en: "Sheet mode" }} /> : <T value={{ ro: "Dificultate", en: "Difficulty" }} />}</h2><div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">{(isCanvas ? (catalog?.canvasModes || []).map((m) => ({ id: m.id, name: m.name, pieces: m.tiles })) : catalog?.difficulties || []).map((item) => <DifficultyCard key={item.id} difficulty={item as Difficulty} selected={difficulty === item.id} onSelect={() => setDifficulty(item.id)} lang={lang} canvas={isCanvas} />)}</div></section>}
+            {category && !isCoaching && <section><h2 className="font-display text-lg font-bold text-ink-900">{isCanvas ? <T value={{ ro: "Modul foii", en: "Sheet mode" }} /> : <T value={{ ro: "Dificultate", en: "Difficulty" }} />}</h2><div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">{(isCanvas ? (catalog?.canvasModes || []).map((m) => ({ id: m.id, name: m.name, pieces: m.tiles })) : catalog?.difficulties || []).map((item) => <DifficultyCard key={item.id} difficulty={item as Difficulty} selected={difficulty === item.id} onSelect={() => setDifficulty(item.id)} lang={lang} canvas={isCanvas} />)}</div>{isJigsaw && <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-2xl border border-ink-200 bg-white p-4"><input type="checkbox" className="mt-1 h-4 w-4 accent-brand-600" checked={mystery} onChange={(e) => setMystery(e.target.checked)} /><span><b className="block text-sm text-ink-900">🕵️ {lang === "ro" ? "Mod mister" : "Mystery mode"}</b><span className="mt-1 block text-xs leading-relaxed text-ink-500">{lang === "ro" ? "Fără imagine de referință până când echipa plasează peste jumătate din piese. Piesele se pot roti liber — doar poziția contează." : "No reference image until the team places more than half the pieces. Pieces can be freely rotated — only the position counts."}</span></span></label>}</section>}
             {isCanvas && <section><h2 className="font-display text-lg font-bold text-ink-900"><T value={{ ro: "Limba conținutului", en: "Content language" }} /></h2><p className="mt-1 text-sm text-ink-500"><T value={{ ro: "Alfabetele și vocabularul cărților — separat de limba interfeței.", en: "The alphabet and vocabulary of the tiles — independent of the interface language." }} /></p><div className="mt-3 grid grid-cols-2 gap-3 sm:max-w-sm"><button onClick={() => setContentLanguage("ro")} className={`rounded-2xl border p-4 text-left transition ${contentLanguage === "ro" ? "border-brand-600 bg-brand-50 ring-4 ring-brand-600/10" : "border-ink-200 bg-white hover:border-ink-300"}`}><b className={contentLanguage === "ro" ? "text-brand-700" : "text-ink-900"}>RO · Română</b><div className="mt-1 text-xs text-ink-500">A B C … Z Ă Â Î Ș Ț</div></button><button onClick={() => setContentLanguage("en")} className={`rounded-2xl border p-4 text-left transition ${contentLanguage === "en" ? "border-brand-600 bg-brand-50 ring-4 ring-brand-600/10" : "border-ink-200 bg-white hover:border-ink-300"}`}><b className={contentLanguage === "en" ? "text-brand-700" : "text-ink-900"}>EN · English</b><div className="mt-1 text-xs text-ink-500">A B C … Z</div></button></div></section>}
 
             {error && <ErrorBox>{error}</ErrorBox>}

@@ -10,6 +10,7 @@ import http from "node:http";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { WebSocketServer } from "ws";
 
@@ -20,6 +21,7 @@ import sentenceVocab from "../shared/sentence-vocabulary.json" with { type: "jso
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
 const publicDir = path.join(rootDir, "server", "public");
+const uploadsDir = path.join(rootDir, ".data", "uploads");
 const distDir = path.join(rootDir, "dist");
 const dataDir = path.join(rootDir, ".data");
 const snapshotFile = path.join(dataDir, "rooms.json");
@@ -424,10 +426,15 @@ function puzzleView(room) {
   return {
     image: room.puzzle.image,
     name: room.puzzle.name,
+    nameRo: room.puzzle.nameRo,
     category: room.puzzle.category,
     credit: room.puzzle.credit,
     license: room.puzzle.license,
     source: room.puzzle.source,
+    attribution: room.puzzle.attribution,
+    sourceUrl: room.puzzle.sourceUrl,
+    licenseUrl: room.puzzle.licenseUrl,
+    mystery: room.puzzle.mystery || undefined,
     width: room.puzzle.width,
     height: room.puzzle.height,
     cols: room.puzzle.cols,
@@ -506,7 +513,9 @@ function scatterPieces(room) {
     p.x = x0 + Math.random() * (x1 - x0);
     p.y = bandY0 + Math.random() * (bandY1 - bandY0);
     p.drag = false;
-    p.moved = true;
+    // Unplaced: the client renders these in the deterministic tray until
+    // someone actually moves them (server confirms moved=true on first move).
+    p.moved = false;
     p.locked = false;
     p.heldBy = null;
     p.heldAt = null;
@@ -554,8 +563,32 @@ function serializeCanvasTile(t) {
 }
 
 function buildPuzzleSetup(config) {
-  const puzzle = puzzleById.get(config.puzzleId);
+  let puzzle = puzzleById.get(config.puzzleId) || null;
   const coachingActivity = !puzzle ? activityById.get(config.puzzleId) : null;
+  // Custom user-uploaded image (room-scoped; the file is deleted when the
+  // room is reaped — see reapRoom cleanup).
+  if (!puzzle && !coachingActivity && config.customImage) {
+    const ci = config.customImage;
+    if (typeof ci.url !== "string" || !ci.url.startsWith("/uploads/")) {
+      throw new Error("Invalid custom image.");
+    }
+    if (typeof ci.file !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.webp$/i.test(ci.file)) {
+      throw new Error("Invalid custom image file.");
+    }
+    puzzle = {
+      id: "custom-upload",
+      category: "custom",
+      image: ci.url,
+      name: typeof ci.name === "string" && ci.name.trim() ? ci.name.trim().slice(0, 60) : "Imagine personalizată",
+      nameRo: "Imagine personalizată",
+      credit: `Upload local — ${typeof ci.by === "string" && ci.by.trim() ? ci.by.trim().slice(0, 24) : "echipa"}`,
+      license: "Personal upload (doar pentru această cameră)",
+      source: "Upload local (șters la închiderea camerei)",
+      attribution: "Imagine încărcată local pentru această sesiune — nu este stocată decât pentru camera curentă.",
+      width: Math.min(4096, Math.max(300, Math.round(ci.width) || 1600)),
+      height: Math.min(4096, Math.max(300, Math.round(ci.height) || 1000)),
+    };
+  }
   if (!puzzle && !coachingActivity) throw new Error("Unknown puzzle or activity.");
 
   if (isCanvasPuzzle(puzzle)) {
@@ -614,7 +647,10 @@ function buildPuzzleSetup(config) {
     total = coachingActivity.questions.length;
   }
 
-  const dims = puzzle ? imageDims[puzzle.image.split("/").pop()] || { w: 1600, h: 1000 } : { w: 0, h: 0 };
+  const dims = puzzle
+    ? imageDims[puzzle.image.split("/").pop()] ||
+      (puzzle.id === "custom-upload" ? { w: puzzle.width, h: puzzle.height } : { w: 1600, h: 1000 })
+    : { w: 0, h: 0 };
   const grid = computeGrid(dims.w, dims.h, difficulty.pieces);
   const pieces = [];
 
@@ -639,7 +675,13 @@ function buildPuzzleSetup(config) {
   }
 
   return {
-    config: { puzzleId: coachingActivity ? coachingActivity.id : puzzle.id, difficulty: difficulty.id, total, contentLanguage: null },
+    config: {
+      puzzleId: coachingActivity ? coachingActivity.id : puzzle.id,
+      difficulty: difficulty.id,
+      total,
+      contentLanguage: null,
+      customImage: config.customImage || undefined,
+    },
     coachingActivity: coachingActivity || null,
     canvas: null,
     board,
@@ -647,10 +689,15 @@ function buildPuzzleSetup(config) {
     puzzleMeta: {
       image: coachingActivity ? coachingActivity.cover : puzzle.image,
       name: coachingActivity ? coachingActivity.name : puzzle.name,
+      nameRo: puzzle?.nameRo || undefined,
       category: coachingActivity ? "coaching" : puzzle.category,
       credit: puzzle?.credit || "",
       license: puzzle?.license || "",
       source: puzzle?.source || "",
+      attribution: puzzle?.attribution || undefined,
+      sourceUrl: puzzle?.sourceUrl || undefined,
+      licenseUrl: puzzle?.licenseUrl || undefined,
+      mystery: !coachingActivity ? !!config.mystery : undefined,
       width: board ? board.width : dims.w,
       height: board ? board.height : dims.h,
       cols: layout ? layout.cols : grid.cols,
@@ -697,6 +744,11 @@ function applyPuzzleToRoom(room, config) {
   room.puzzle = setup.puzzleMeta;
   room.pieces = setup.pieces;
   room.seed = crypto.randomInt(1, 2 ** 31);
+  // Track the uploaded file (if any) so it is deleted when the room is reaped.
+  room.customImageFile =
+    setup.puzzleMeta && setup.puzzleMeta.image && setup.puzzleMeta.image.startsWith("/uploads/")
+      ? path.basename(config.customImage?.file || "")
+      : null;
   if (room.pieces.length) scatterPieces(room);
   resetWorkshopState(room, { lobby: true });
 }
@@ -814,9 +866,12 @@ function restoreSnapshots() {
     const now = Date.now();
     for (const raw of saved) {
       if (!raw?.id || now - raw.lastActivityAt > ROOM_TTL_MS) continue;
-      const room = createRoom(raw.config, { sessionName: raw.sessionName });
-      rooms.delete(room.id);
-      codeIndex.delete(room.code);
+      try {
+        // A custom-upload room whose image file was deleted can no longer be served.
+        if (raw.config?.customImage && !fs.existsSync(path.join(uploadsDir, path.basename(String(raw.config.customImage.file || ""))))) continue;
+        const room = createRoom(raw.config, { sessionName: raw.sessionName });
+        rooms.delete(room.id);
+        codeIndex.delete(room.code);
       room.id = raw.id;
       room.code = raw.code;
       room.hostId = raw.hostId;
@@ -842,6 +897,10 @@ function restoreSnapshots() {
       });
       rooms.set(room.id, room);
       codeIndex.set(room.code, room.id);
+      } catch (err) {
+        // One unrestorable snapshot must never block the rest.
+        console.error("Skipping unrestorable room snapshot", raw?.id, err?.message || err);
+      }
     }
     if (rooms.size) console.log(`Restored ${rooms.size} room snapshot(s).`);
   } catch (error) {
@@ -1415,10 +1474,29 @@ app.get("/api/puzzles", (_req, res) => res.json({
 app.get("/api/coaching", (_req, res) => res.json(publicCoachingCatalog()));
 
 app.post("/api/rooms", (req, res) => {
-  const { puzzleId, difficulty, name, sessionName, role, contentLanguage } = req.body || {};
+  const { puzzleId, difficulty, name, sessionName, role, contentLanguage, mystery, customImage } = req.body || {};
   if (typeof name !== "string" || !name.trim()) return res.status(400).json({ error: "A display name is required." });
   try {
-    const room = createRoom({ puzzleId, difficulty, contentLanguage }, { sessionName });
+    const ci = customImage && typeof customImage === "object" ? customImage : null;
+    const room = createRoom(
+      {
+        puzzleId,
+        difficulty,
+        contentLanguage,
+        mystery: !!mystery,
+        customImage: ci
+          ? {
+              url: String(ci.url || "").slice(0, 200),
+              file: String(ci.file || "").slice(0, 64),
+              width: Number(ci.width),
+              height: Number(ci.height),
+              name: String(ci.name || "").slice(0, 60),
+              by: name.trim().slice(0, 24),
+            }
+          : undefined,
+      },
+      { sessionName },
+    );
     const playerId = crypto.randomUUID();
     const info = { name: name.trim().slice(0, 24), color: null, role: role === "spectator" ? "spectator" : "host" };
     room.hostId = playerId;
@@ -1535,6 +1613,59 @@ app.get("/api/rooms/:id/export", (req, res) => {
   const canvas = payload.canvas ? `<h2>Canvas composition (${payload.canvas.contentLanguage.toUpperCase()} · ${htmlEscape(payload.canvas.mode)} · ${payload.canvas.tiles.length} tiles)</h2><pre style="white-space:pre-wrap;font-family:Georgia,serif;font-size:17px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px">${htmlEscape(payload.canvas.text || "—")}</pre>` : "";
   res.type("html").send(`<!doctype html><html><head><meta charset="utf-8"><title>${htmlEscape(room.sessionName)} — PuzzleTogether</title><style>body{font:14px system-ui;max-width:800px;margin:40px auto;color:#172033}h1,h2{color:#27358f}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.card{border:1px solid #ddd;border-radius:12px;padding:14px}@media print{button{display:none}}</style></head><body><button onclick="print()">Print / Save PDF</button><h1>${htmlEscape(room.sessionName)}</h1><p>${htmlEscape(room.config.puzzleId)} · ${new Date(room.startedAt || room.createdAt).toLocaleString()}</p>${ranking}${canvas}<h2>Insights</h2><div class="grid"><div class="card"><b>Observed</b><p>${htmlEscape(room.insights.observed)}</p></div><div class="card"><b>Learned</b><p>${htmlEscape(room.insights.learned)}</p></div><div class="card"><b>Try next</b><p>${htmlEscape(room.insights.tryNext)}</p></div></div><h2>Action items</h2><ul>${actions || "<li>No action items captured.</li>"}</ul></body></html>`);
 });
+
+// Custom image uploads (room-scoped). The file is stored under .data/uploads
+// (never in the public bundle) and deleted when its room is reaped.
+app.post("/api/uploads", express.raw({ type: "*/*", limit: "10mb" }), (req, res) => {
+  const type = String(req.headers["content-type"] || "").split(";")[0].trim().toLowerCase();
+  if (!["image/jpeg", "image/png", "image/webp"].includes(type)) {
+    return res.status(415).json({ error: "Only JPEG, PNG or WebP images are allowed." });
+  }
+  const body = req.body;
+  if (!Buffer.isBuffer(body) || body.length < 1024) {
+    return res.status(400).json({ error: "Upload is empty or too small (min 1 KB)." });
+  }
+  if (body.length > 9 * 1024 * 1024) {
+    return res.status(413).json({ error: "Image is too large (max 9 MB)." });
+  }
+  try {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+    const file = `${crypto.randomUUID()}.webp`;
+    const dest = path.join(uploadsDir, file);
+    // Validate it really is an image and read dimensions via ImageMagick.
+    const tmp = path.join(uploadsDir, `${crypto.randomUUID()}.in`);
+    fs.writeFileSync(tmp, body);
+    let dims = null;
+    try {
+      const out = execFileSync("identify", ["-format", "%w %h", tmp], { encoding: "utf8", stdio: "pipe" }).trim().split(/\s+/);
+      const w = parseInt(out[0], 10);
+      const h = parseInt(out[1], 10);
+      if (Number.isFinite(w) && Number.isFinite(h) && w >= 200 && h >= 200 && w <= 6000 && h <= 6000) dims = { w, h };
+    } catch { /* not an image */ }
+    if (!dims) {
+      try { fs.unlinkSync(tmp); } catch {}
+      return res.status(400).json({ error: "Could not read a valid image (200–6000px per side)." });
+    }
+    // Re-encode to WebP, capped at 2200px, so the room image is optimized.
+    const maxEdge = Math.max(dims.w, dims.h) > 2200 ? 2200 : null;
+    const args = [tmp];
+    if (maxEdge) args.push("-resize", `${maxEdge}x${maxEdge}>`);
+    args.push("-quality", "82", dest);
+    execFileSync("convert", args, { stdio: "pipe" });
+    try { fs.unlinkSync(tmp); } catch {}
+    let outDims = dims;
+    try {
+      const out2 = execFileSync("identify", ["-format", "%w %h", dest], { encoding: "utf8", stdio: "pipe" }).trim().split(/\s+/);
+      outDims = { w: parseInt(out2[0], 10), h: parseInt(out2[1], 10) };
+    } catch {}
+    return res.json({ url: `/uploads/${file}`, file, width: outDims.w, height: outDims.h });
+  } catch (err) {
+    return res.status(500).json({ error: "Could not process the image." });
+  }
+});
+
+// Serve room uploads (no long cache — they are room-scoped and short-lived).
+app.use("/uploads", express.static(uploadsDir, { maxAge: 0, immutable: false, fallthrough: false }));
 
 app.use(express.static(publicDir, { maxAge: IS_PROD ? "7d" : 0 }));
 
@@ -1711,6 +1842,20 @@ wss.on("connection", (ws) => {
 // Housekeeping
 // ---------------------------------------------------------------------------
 
+/** Remove a room and any user-uploaded image file that belonged to it. */
+function reapRoom(room) {
+  if (room.customImageFile) {
+    try {
+      const file = path.join(uploadsDir, path.basename(room.customImageFile));
+      if (file.startsWith(uploadsDir + path.sep) && fs.existsSync(file)) fs.unlinkSync(file);
+    } catch { /* best effort */ }
+  }
+  rooms.delete(room.id);
+  codeIndex.delete(room.code);
+  stopCursorRelay(room);
+  scheduleSnapshot();
+}
+
 setInterval(() => {
   const now = Date.now();
   for (const room of rooms.values()) {
@@ -1733,7 +1878,7 @@ setInterval(() => {
     }
     if (room.conns.size) broadcast(room, { t: "players", list: activePlayerList(room) });
     if (!room.players.size && !room.conns.size && now - room.lastActivityAt > EMPTY_ROOM_TTL_MS) {
-      rooms.delete(room.id); codeIndex.delete(room.code); stopCursorRelay(room); logEvent("room_empty_reaped", room);
+      reapRoom(room); logEvent("room_empty_reaped", room);
     }
   }
 }, HEARTBEAT_MS).unref();
@@ -1742,7 +1887,7 @@ setInterval(() => {
   const now = Date.now();
   for (const [id, room] of [...rooms]) if (now - room.lastActivityAt > ROOM_TTL_MS) {
     for (const [, conn] of room.conns) { send(conn.ws, { t: "closed", code: "room_expired", message: "This room expired after 24 hours of inactivity." }); try { conn.ws.close(); } catch {} }
-    stopCursorRelay(room); rooms.delete(id); codeIndex.delete(room.code); logEvent("room_expired", room);
+    reapRoom(room); logEvent("room_expired", room);
   }
   saveSnapshots();
 }, 5 * 60_000).unref();

@@ -145,6 +145,15 @@ export interface PuzzleView {
   tileH?: number;
   wordGap?: number;
   sentencePack?: { w: string; c: string; n: number }[];
+  /** Jigsaw mystery mode: reference + ghost hidden until 50% of pieces are locked. */
+  mystery?: boolean;
+  /** Catalog metadata (visible attribution). */
+  nameRo?: string;
+  alt?: Bilingual;
+  attribution?: string;
+  sourceName?: string;
+  sourceUrl?: string;
+  licenseUrl?: string;
 }
 
 export interface RankingItem {

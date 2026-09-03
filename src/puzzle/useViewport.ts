@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import type { PuzzleView } from "../types";
+import { trayBounds } from "./tray";
 
 export interface Camera {
   x: number;
@@ -43,27 +44,32 @@ export function useViewport() {
     [zoomAt],
   );
 
-  /** Fit the puzzle rect + the scattered-piece area into view. */
+  /**
+   * Fit the target area + the unplaced-piece tray into view, keeping the whole
+   * board (pieces included) readable. The tray sits to the right of the target
+   * for landscape puzzles and below it for portrait ones, so the content
+   * bounds are computed from the puzzle geometry rather than fixed padding —
+   * this is the portrait/landscape camera optimization.
+   */
   const fit = useCallback(
     (puzzle: PuzzleView | null) => {
       if (!puzzle) return;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       const mobile = vw < 640;
-      const padX = mobile ? 100 : 260;
-      const padTop = 90;
-      const padBottom = mobile ? 560 : 880;
-      const bw = puzzle.width + padX * 2;
-      const bh = puzzle.height + padTop + padBottom;
-      // Do not make the whole scatter band fit at the cost of an unusably tiny
-      // board. Start readable and let users pan to the remaining pieces.
-      const readableMinimum = mobile ? 0.3 : 0.35;
+      const total = (puzzle.cols || 1) * (puzzle.rows || 1);
+      const b = trayBounds(puzzle, total);
+      const padX = mobile ? 64 : 140;
+      const padY = mobile ? 64 : 110;
+      const bw = b.x1 - b.x0 + padX * 2;
+      const bh = b.y1 - b.y0 + padY * 2;
+      const readableMinimum = mobile ? 0.22 : 0.26;
       const scale = clamp(Math.max(readableMinimum, Math.min(vw / bw, vh / bh)), MIN_SCALE, 1.05);
-      const boundsX = -padX;
-      const boundsY = -padTop;
+      const cx = (b.x0 + b.x1) / 2;
+      const cy = (b.y0 + b.y1) / 2;
       setCamera({
-        x: (vw - bw * scale) / 2 - boundsX * scale,
-        y: (vh - bh * scale) / 2 - boundsY * scale,
+        x: vw / 2 - cx * scale,
+        y: vh / 2 - cy * scale,
         scale,
       });
     },

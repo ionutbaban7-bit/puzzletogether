@@ -329,6 +329,9 @@ export default function GamePage() {
                   <div className="font-display truncate text-[15px] font-bold text-white">
                     {pick(puzzle.name, lang)}
                   </div>
+                  <div className="truncate text-[10px] text-ink-400">
+                    {isCoaching ? "" : puzzle.attribution ? puzzle.attribution : puzzle.credit ? `${puzzle.credit}${puzzle.license ? " · " + puzzle.license : ""}` : ""}
+                  </div>
                   <div className="truncate text-xs text-ink-300">
                     {isCoaching
                       ? mode === "ranking"
@@ -514,6 +517,19 @@ export default function GamePage() {
               <p className="mt-3 text-xs text-ink-400">
                 <T value={{ ro: "Foaie albă, fără imagine de referință. Finalizarea o declanșează facilitatorul.", en: "Blank sheet, no reference image. The facilitator triggers completion." }} />
               </p>
+            )}
+            {!isCoaching && !isCanvas && (puzzle.attribution || puzzle.credit || puzzle.license) && (
+              <div className="mx-auto mt-5 max-w-md rounded-2xl border border-white/10 bg-white/5 p-4 text-left">
+                <div className="text-[10px] font-bold uppercase tracking-[.2em] text-brand-300"><T value={{ ro: "Atribuire imagine", en: "Image attribution" }} /></div>
+                <p className="mt-1 text-xs leading-relaxed text-ink-300">
+                  {puzzle.attribution || `${puzzle.credit}${puzzle.license ? ` · ${puzzle.license}` : ""}`}
+                </p>
+                <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-0.5 text-[11px]">
+                  {puzzle.licenseUrl && <a className="text-brand-300 underline hover:text-white" href={puzzle.licenseUrl} target="_blank" rel="noreferrer"><T value={{ ro: "Licență", en: "License" }} /> ↗</a>}
+                  {puzzle.sourceUrl && <a className="text-brand-300 underline hover:text-white" href={puzzle.sourceUrl} target="_blank" rel="noreferrer"><T value={{ ro: "Sursă", en: "Source" }} /> ↗</a>}
+                  {puzzle.license && <span className="text-ink-400">{puzzle.license}</span>}
+                </div>
+              </div>
             )}
             <div className="mx-auto mt-6 inline-block rounded-2xl border border-white/10 bg-white/5 px-6 py-4"><div className="text-[10px] font-bold uppercase tracking-wider text-ink-400"><T value={{ ro: "Cod de intrare", en: "Join code" }} /></div><div className="font-display mt-1 text-3xl font-extrabold tracking-[.35em] text-white">{room.code}</div></div>
             <div className="mt-6 flex flex-wrap justify-center gap-2">{players.map((player) => <span key={player.id} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white"><i className="h-2 w-2 rounded-full" style={{ backgroundColor: player.color }} />{player.name}{player.role === "spectator" ? " · 👁" : ""}</span>)}</div>

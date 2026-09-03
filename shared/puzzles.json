@@ -56,6 +56,11 @@
       "id": "expert",
       "name": "Expert",
       "pieces": 144
+    },
+    {
+      "id": "master",
+      "name": "Master",
+      "pieces": 192
     }
   ],
   "canvasModes": [

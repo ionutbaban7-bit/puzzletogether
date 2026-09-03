@@ -13,8 +13,14 @@ async function post<T>(url: string, body: unknown): Promise<T> {
 
 export const api = {
   fetchCatalog(): Promise<CatalogData> { return fetch("/api/puzzles").then((response) => response.json()); },
-  createRoom(puzzleId: string, difficulty: string, name: string, options: { sessionName?: string; role?: "host" | "spectator"; contentLanguage?: "ro" | "en" } = {}) {
+  createRoom(puzzleId: string, difficulty: string, name: string, options: { sessionName?: string; role?: "host" | "spectator"; contentLanguage?: "ro" | "en"; mystery?: boolean; customImage?: { url: string; file: string; width: number; height: number; name: string } } = {}) {
     return post<{ room: RoomView; playerId: string }>("/api/rooms", { puzzleId, difficulty, name, ...options });
+  },
+  async uploadImage(file: File): Promise<{ url: string; file: string; width: number; height: number }> {
+    const response = await fetch("/api/uploads", { method: "POST", headers: { "Content-Type": file.type || "application/octet-stream" }, body: file });
+    const data = await response.json().catch(() => null);
+    if (!response.ok || !data) throw new Error(data?.error || "Upload failed.");
+    return data;
   },
   joinRoom(ref: string, name: string, pid?: string, code?: string) {
     return post<{ room: RoomView; playerId: string; returning?: boolean }>(`/api/rooms/${encodeURIComponent(ref)}/join`, { name, pid, code });

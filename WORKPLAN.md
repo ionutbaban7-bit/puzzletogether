@@ -77,21 +77,23 @@ Status legend: [ ] todo · [~] in progress · [x] done · [-] deferred (with rea
 - [ ] ≥5 Romania-relevant subjects; PD/CC0/CC BY 4.0; verified at original source;
       no watermark/logo/identifiable people as main subject; detail for 144 pieces
 
-## Stage 5/6 — Classic jigsaw finishing
-- [ ] Dirty rendering (kill the 60 FPS continuous redraw loop)
-- [ ] Tray for unplaced pieces, overlap-free scatter layout
-- [ ] Filters: edge / interior / unplaced
-- [ ] Minimap
-- [ ] „Bring unplaced pieces into view" button
-- [ ] Portrait/landscape camera optimization
-- [ ] FPS + memory test at 144 and 192 pieces (add 192-piece difficulty)
-- [ ] Full touch support, accessible keyboard interactions
-- [ ] RO/EN translation of every control
-- [ ] Visible + accessible attribution (from catalog metadata)
-- [ ] Custom image upload (type/size validation + privacy notice)
-- [ ] Optional mystery mode
-- [ ] Playwright on Chromium + Firefox + WebKit, iPhone + Android viewports
-- [ ] No changes to Letter Canvas, Sentence Canvas or Team Coaching in this stage
+## Stage 5/6 — Classic jigsaw finishing ✅
+- [x] Dirty rendering (kill the 60 FPS continuous redraw loop) — `schedule()` rAF-only-when-dirty; `window.__ptDraws` test hook; glow/cursor animation loops bounded
+- [x] Tray for unplaced pieces, overlap-free scatter layout — deterministic `src/puzzle/tray.ts` (grid right/below target, cell = piece + 24px); server scatters with `moved=false` so all clients agree without new protocol
+- [x] Filters: edge / interior / unplaced (aria-pressed pills, dim non-matching pieces)
+- [x] Minimap (bottom-right, drag to navigate; excluded from piece picking)
+- [x] „Bring unplaced pieces into view" button (fits the tray, max 1.6×)
+- [x] Portrait/landscape camera optimization — `fit()` targets puzzle ∪ tray bounds
+- [x] FPS + memory test at 144 and 192 pieces — `master` (192) difficulty added; `scripts/jigsaw-perf-test.mjs` (idle draws ≈ 0, pan FPS, heap)
+- [x] Full touch support, accessible keyboard interactions (filter pills focusable, Enter/Space)
+- [x] RO/EN translation of every control (STR constants, `pick(b, lang)`)
+- [x] Visible + accessible attribution — lobby card with license/source links, HUD credit line, reference-panel caption, canvas aria-label
+- [x] Custom image upload — `POST /api/uploads` (jpeg/png/webp, 1 KB–9 MB, 200–6000 px, re-encoded to WebP ≤ 2200 px), stored in `.data/uploads`, room-scoped, deleted on room reap; RO/EN privacy notice in CreateRoom
+- [x] Optional mystery mode — flag through createRoom; ghost + reference hidden until >50% placed
+- [x] Playwright on Chromium + Firefox + WebKit, iPhone + Android viewports — `scripts/jigsaw-browser-test.mjs` (tray tap, pan, filters, zoom, keyboard, RO/EN, mystery, upload)
+- [x] No changes to Letter Canvas, Sentence Canvas or Team Coaching in this stage
+- All protocol suites re-run green: sim 25/25 · letter-canvas 44/44 · sentence-canvas 29/29 · coaching 17/17
+- Bonus fix: snapshot restore is now per-room fault-tolerant (one unrestorable room no longer blocks the rest) and custom-upload rooms persist across restarts
 
 ## Stage 7 — Team Coaching audit (read-only, no code changes)
 - [ ] `docs/coaching-audit.md` — pedagogy, expert-ranking provenance, stage machine,
