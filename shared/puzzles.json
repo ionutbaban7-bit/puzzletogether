@@ -1574,27 +1574,27 @@
     {
       "id": "bucharest-calea-victoriei",
       "category": "cities",
-      "name": "Big Ben, London",
-      "nameRo": "Big Ben, Londra",
+      "name": "Calea Victoriei, Bucharest",
+      "nameRo": "Calea Victoriei, București",
       "image": "/images/full/bucharest-calea-victoriei.webp",
-      "credit": "Big Ben & Houses of Parliament, London — CC BY 4.0",
-      "license": "CC BY 4.0",
-      "source": "london.com.ua",
-      "attribution": "Big Ben & Houses of Parliament, London — CC BY 4.0",
-      "sourceName": "london.com.ua",
-      "sourceUrl": "https://london.com.ua/big-ben-houses-of-parliament",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "big-ben-houses-of-parliament.jpg",
+      "credit": "Stefan Jurca — Bucharest Day 3 - Victoriei (9338461638), CC BY-SA 2.0, via Wikimedia Commons",
+      "license": "CC BY-SA 2.0",
+      "source": "Wikimedia Commons",
+      "attribution": "Stefan Jurca — Bucharest Day 3 - Victoriei (9338461638), CC BY-SA 2.0, via Wikimedia Commons",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bucharest_Day_3_-_Victoriei_(9338461638).jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+      "changesMade": "resized from the Wikimedia Commons original; WebP full derivative and focal-point thumbnail generated for the puzzle catalog.",
+      "originalFilename": "Bucharest Day 3 - Victoriei (9338461638).jpg",
       "focalPoint": [
-        0.5,
+        0.55,
         0.5
       ],
       "alt": {
-        "ro": "Big Ben și Palatul Westminster de-a lungul Tamisei, Londra, Regatul Unit",
-        "en": "Big Ben and the Palace of Westminster along the Thames, London, UK"
+        "ro": "Vedere urbană de-a lungul Căii Victoriei, București.",
+        "en": "Urban view along Calea Victoriei, Bucharest."
       },
-      "checksum": "sha256:37145a762132ce2d571e7227ce50551682956efd4fdf139449b17da9a406b43d",
+      "checksum": "sha256:45861baa016bb81ae1b73f0b064f9f4cd3edbb1a1ee52ad3cb668e73ecccec8f",
       "thumbnail": "/images/thumbs/bucharest-calea-victoriei.webp"
     },
     {
@@ -1966,26 +1966,26 @@
       "category": "nature",
       "name": "Antelope Canyon",
       "image": "/images/full/antelope-canyon.webp",
-      "credit": "Antelope Canyon — CC BY 4.0",
-      "license": "CC BY 4.0",
-      "source": "arizona-leisure.com",
+      "credit": "Luca Galuzzi — USA 10150 Antelope Canyon, CC BY-SA 2.5, via Wikimedia Commons",
+      "license": "CC BY-SA 2.5",
+      "source": "Wikimedia Commons",
       "nameRo": "Canionul Antelope",
       "alt": {
-        "ro": "Canionul Antelope, Arizona, SUA — formațiuni de gresie și raze de lumină",
-        "en": "Antelope Canyon, Arizona, USA — sandstone formations and light beams"
+        "ro": "Formațiuni ondulate din gresie în interiorul canionului Upper Antelope, Arizona, SUA.",
+        "en": "Wavy sandstone formations inside Upper Antelope Canyon, Arizona, USA."
       },
-      "attribution": "Antelope Canyon — CC BY 4.0",
-      "sourceName": "arizona-leisure.com",
-      "sourceUrl": "https://www.arizona-leisure.com/antelope-canyon.html",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "antelope-canyon.jpg",
+      "attribution": "Luca Galuzzi — USA 10150 Antelope Canyon, CC BY-SA 2.5, via Wikimedia Commons",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:USA_10150_Antelope_Canyon_Luca_Galuzzi_2007.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5/",
+      "changesMade": "resized from the Wikimedia Commons original; WebP full derivative and focal-point thumbnail generated for the puzzle catalog.",
+      "originalFilename": "USA 10150 Antelope Canyon Luca Galuzzi 2007.jpg",
       "focalPoint": [
         0.5,
         0.5
       ],
       "thumbnail": "/images/thumbs/antelope-canyon.webp",
-      "checksum": "sha256:f81bb03f5080a39a6acbfebd1b6637d9cd04116f117acf6e841dc9a744ff148e"
+      "checksum": "sha256:4c8c2f26a817f71e47bda5e1689bd7efafcce02e94e12963d17415afa951557e"
     },
     {
       "id": "victoria-falls",
