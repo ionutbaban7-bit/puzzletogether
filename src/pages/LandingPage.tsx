@@ -113,22 +113,6 @@ export default function LandingPage() {
             </div>
           </section>
 
-          {/* Letter canvas showcase */}
-          <section className="mt-16 overflow-hidden rounded-[30px] border border-cp-purple-200 bg-gradient-to-br from-cp-purple-50 via-white to-cp-pink-50 px-6 py-7 sm:px-8">
-            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-              <div>
-                <h2 className="font-display text-xl font-extrabold text-cp-purple-700"><T value={{ ro: "Canvas de litere cu Joker", en: "Letter Canvas with a Joker" }} /></h2>
-                <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-ink-700">
-                  <T value={{ ro: "Litere împrăștiate jos, câte o bancă per echipă și un Joker surpriză pentru fiecare echipă.", en: "Scattered letters below, a bank per team, plus a surprise Joker for each team." }} />
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="rounded-full border border-cp-purple-200 bg-white px-3 py-1.5 text-xs font-bold text-cp-purple-700 shadow-sm">🃏 Joker</span>
-                <span className="rounded-full border border-brand-200 bg-white px-3 py-1.5 text-xs font-bold text-brand-700 shadow-sm">✍️ Litere</span>
-              </div>
-            </div>
-          </section>
-
           <section id="privacy" className="mt-16 grid gap-4 text-sm text-ink-700 sm:grid-cols-2">
             <div className="rounded-[26px] border border-brand-100 bg-white p-5">
               <b className="text-ink-900"><T value={{ ro: "Confidențialitate", en: "Privacy" }} /></b>
