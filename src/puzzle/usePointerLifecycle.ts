@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, type MutableRefObject, type RefObject } from "react";
+import { recordPointerTrace } from "./pointerTelemetry";
 
 /**
  * A compact, shared Pointer Events lifecycle for board-like interactions.
@@ -36,6 +37,9 @@ interface PointerLifecycleCallbacks {
   onMove?: (sample: PointerSample) => void;
   /** Called exactly once per active pointer on every terminal path. */
   onTerminate: (sample: PointerSample, reason: PointerTerminationReason) => void;
+  /** Optional privacy-safe physical-device diagnostic label/state. */
+  debugScope?: string;
+  debugState?: () => string;
 }
 
 function sampleOf(event: PointerLike): PointerSample {
@@ -85,6 +89,7 @@ export function usePointerLifecycle<T extends HTMLElement>(
   callbacks: PointerLifecycleCallbacks,
 ) {
   const captured = useRef(new Set<number>());
+  const startedAt = useRef(new Map<number, number>());
   // React forwards the browser's native PointerEvent to the element handler;
   // the same event may then bubble to our window fallback. WeakSet keeps a
   // capture failure from applying one physical movement twice.
@@ -103,6 +108,18 @@ export function usePointerLifecycle<T extends HTMLElement>(
     // Delete before release: releasePointerCapture itself may synchronously
     // emit lostpointercapture, which then becomes a harmless duplicate.
     pointers.current.delete(pointerId);
+    const started = startedAt.current.get(pointerId);
+    startedAt.current.delete(pointerId);
+    const scope = callbacksRef.current.debugScope;
+    if (scope) recordPointerTrace({
+      scope,
+      event: "terminate",
+      pointerType: current.pointerType,
+      capture: captured.current.has(pointerId) ? "captured" : "fallback",
+      reason,
+      durationMs: started ? Math.max(0, Date.now() - started) : undefined,
+      state: callbacksRef.current.debugState?.(),
+    });
     release(pointerId);
     callbacksRef.current.onTerminate(current, reason);
     return current;
@@ -111,8 +128,18 @@ export function usePointerLifecycle<T extends HTMLElement>(
   const begin = useCallback((event: PointerLike) => {
     const next = sampleOf(event);
     pointers.current.set(next.pointerId, next);
-    if (safelySetPointerCapture(targetRef.current, next.pointerId)) captured.current.add(next.pointerId);
+    startedAt.current.set(next.pointerId, Date.now());
+    const captureSucceeded = safelySetPointerCapture(targetRef.current, next.pointerId);
+    if (captureSucceeded) captured.current.add(next.pointerId);
     else captured.current.delete(next.pointerId);
+    const scope = callbacksRef.current.debugScope;
+    if (scope) recordPointerTrace({
+      scope,
+      event: "begin",
+      pointerType: next.pointerType,
+      capture: captureSucceeded ? "captured" : "fallback",
+      state: callbacksRef.current.debugState?.(),
+    });
     return next;
   }, [pointers, targetRef]);
 
@@ -144,7 +171,12 @@ export function usePointerLifecycle<T extends HTMLElement>(
       // The element gets the normal path when capture succeeded. Listen at the
       // window only for a capture failure, avoiding duplicate movement frames.
       if (!pointers.current.has(event.pointerId) || captured.current.has(event.pointerId)) return;
-      move(event);
+      const previous = pointers.current.get(event.pointerId);
+      const moved = move(event);
+      if (moved && previous) {
+        const scope = callbacksRef.current.debugScope;
+        if (scope) recordPointerTrace({ scope, event: "fallback-move", pointerType: moved.pointerType, capture: "fallback", state: callbacksRef.current.debugState?.() });
+      }
     };
     const onWindowUp = (event: PointerEvent) => {
       if (!pointers.current.has(event.pointerId) || captured.current.has(event.pointerId)) return;
@@ -182,6 +214,7 @@ export function usePointerLifecycle<T extends HTMLElement>(
       viewport?.removeEventListener("resize", onResize);
       viewport?.removeEventListener("scroll", onResize);
       cancelAll("unmount");
+      startedAt.current.clear();
     };
   }, [cancelAll, finish, move, pointers]);
 

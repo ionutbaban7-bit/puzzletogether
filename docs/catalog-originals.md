@@ -14,9 +14,9 @@ a `flagged` or `unverified` record is not eligible for the final catalog.
 
 ## Stage 5 originals
 
-The 55 Stage 5 images are original visuals created on 2026-09-03. Nineteen
-paintings, landscapes, landmarks and nature scenes use prompt-directed Arena
-image generation. The remaining 36 city, ice-cave, isometric, abstract and
+The active Stage 5 catalog contains 35 reviewed original visuals created on
+2026-09-03. Nineteen paintings, landscapes, landmarks and nature scenes use
+prompt-directed Arena image generation. The remaining 16 city, ice-cave and
 blueprint images are produced by original deterministic artwork in
 `scripts/generate-stage5-procedural-originals.mjs`. No third-party source image
 was supplied as an input. PuzzleTogether dedicates any copyright and related
@@ -34,8 +34,17 @@ preserve a reproducible and auditable chain while keeping the repository practic
 
 Visual review is required before the import is marked `verified`: reject any
 output with visible text, logos, watermarks, identifiable people as the main
-subject, or insufficient puzzle detail. The 55 images include Romanian subjects
-in the paintings, landscapes, landmarks, nature and cities groups.
+subject, insufficient puzzle detail, **or visually repetitive art direction**.
+The active set includes Romanian subjects in the paintings, landscapes,
+landmarks, nature and cities groups.
+
+Twenty former Stage 5 entries — ten Isometric Worlds and ten Abstract Geometry
+images — were **retired from the active catalog on 2026-09-04** after failing a
+contact-sheet differentiation review. Their archival source records and CC0
+provenance are retained in
+[`data/catalog/retired-stage5.json`](../data/catalog/retired-stage5.json); their
+public derivatives are intentionally removed. See the
+[catalog retirement record](catalog-retirement-2026-09-04.md).
 
 ## License table
 
@@ -47,6 +56,6 @@ in the paintings, landscapes, landmarks, nature and cities groups.
 | Stage 5 original landmarks | 5 | PuzzleTogether original; brief in additions manifest | CC0 1.0 | `PuzzleTogether original — CC0 1.0` |
 | Stage 5 original nature | 5 | PuzzleTogether original; brief in additions manifest | CC0 1.0 | `PuzzleTogether original — CC0 1.0` |
 | Stage 5 original cities | 5 | PuzzleTogether original; brief in additions manifest | CC0 1.0 | `PuzzleTogether original — CC0 1.0` |
-| Stage 5 original isometric worlds | 10 | PuzzleTogether original; brief in additions manifest | CC0 1.0 | `PuzzleTogether original — CC0 1.0` |
-| Stage 5 original abstract geometry | 10 | PuzzleTogether original; brief in additions manifest | CC0 1.0 | `PuzzleTogether original — CC0 1.0` |
+| Retired Stage 5 isometric worlds | 10 | Archived only; see retirement record | CC0 1.0 | Not publicly served |
+| Retired Stage 5 abstract geometry | 10 | Archived only; see retirement record | CC0 1.0 | Not publicly served |
 | Stage 5 original blueprint architecture | 10 | PuzzleTogether original; brief in additions manifest | CC0 1.0 | `PuzzleTogether original — CC0 1.0` |

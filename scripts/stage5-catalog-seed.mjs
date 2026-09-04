@@ -46,6 +46,10 @@ const write = (file, value) => fs.writeFileSync(file, `${JSON.stringify(value, n
 const fail = (message) => { console.error(`✗ ${message}`); process.exit(1); };
 
 const additions = json(additionsPath);
+const retiredCategories = new Set(["isometric-worlds", "abstract-geometry"]);
+if (additions.entries.some((entry) => retiredCategories.has(entry.category))) {
+  fail("this historical Stage 5 additions manifest contains delisted repetitive art. Do not re-import it; create a newly reviewed replacement manifest instead.");
+}
 const listedCounts = Object.fromEntries(Object.keys(expectedCounts).map((category) => [
   category,
   additions.entries.filter((entry) => entry.category === category).length,

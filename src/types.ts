@@ -1,5 +1,17 @@
 export type RoomStage = "lobby" | "brief" | "play" | "reveal" | "debrief" | "harvest" | "closed";
 export type PlayerRole = "host" | "player" | "spectator";
+export type TeamMode = "shared" | "color-teams";
+export type TeamColor = "red" | "yellow" | "green" | "blue" | "purple" | "orange";
+
+/** Colour is paired with a marker/name so team identity never relies on hue alone. */
+export interface TeamView {
+  id: string;
+  name: string;
+  color: TeamColor;
+  marker: string;
+  order: number;
+  memberIds: string[];
+}
 
 export interface Piece {
   id: number;
@@ -24,6 +36,8 @@ export interface PlayerView {
   name: string;
   color: string;
   role: PlayerRole;
+  /** Server-authoritative selected team. Personal `color` stays a presence cue. */
+  teamId?: string | null;
   joinedAt?: number;
   lastSeenAt?: number;
 }
@@ -59,9 +73,31 @@ export interface CanvasTile {
   heldBy?: string | null;
   createdBy?: string | null;
   custom?: boolean;
+  /** v2 semantic composition location; x/y remain only for visual placement. */
+  laneId?: string | null;
+  laneIndex?: number | null;
+  /** Owning colour team in team mode; absent in shared rooms/legacy v1. */
+  teamId?: string | null;
+}
+
+export interface CanvasLane {
+  id: string;
+  teamId?: string | null;
+  teamColor?: TeamColor;
+  teamMarker?: string;
+  teamName?: string;
+  kind: "word" | "idea" | "reason" | "commitment";
+  label: Bilingual;
+  hint: Bilingual;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
 }
 
 export interface CanvasState {
+  /** v1 remains available for active/restored legacy rooms; new rooms use v2. */
+  version?: 1 | 2;
   mode: "quick" | "standard" | "extended" | "sandbox" | string;
   contentLanguage: "ro" | "en";
   sheetW: number;
@@ -71,6 +107,9 @@ export interface CanvasState {
   wordGap: number;
   /** Finite inventory (text -> remaining). null = unlimited sandbox. */
   inventory: Record<string, number> | null;
+  /** Team-scoped finite banks in colour-team mode. */
+  teamInventory?: Record<string, Record<string, number> | null> | null;
+  lanes?: CanvasLane[];
 }
 
 export interface RoomView {
@@ -83,6 +122,11 @@ export interface RoomView {
   total: number;
   /** Canvas rooms only: the content language (independent of the UI language). */
   contentLanguage?: "ro" | "en" | null;
+  teamMode?: TeamMode;
+  teams?: TeamView[];
+  canvasVersion?: 1 | 2;
+  /** A short-lived legacy room whose delisted image is served from archive. */
+  retiredCatalog?: boolean;
   maxPlayers: number;
   createdAt: number;
   startedAt: number | null;

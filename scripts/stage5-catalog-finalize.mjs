@@ -10,6 +10,10 @@ const catalog = JSON.parse(fs.readFileSync(path.join(root, "data/catalog/sources
 const puzzles = JSON.parse(fs.readFileSync(path.join(root, "shared/puzzles.json"), "utf8"));
 const fail = (message) => { console.error(`✗ ${message}`); process.exit(1); };
 
+if (additions.entries.some((entry) => ["isometric-worlds", "abstract-geometry"].includes(entry.category))) {
+  fail("this historical Stage 5 manifest contains retired repetitive categories. Do not finalize/re-import it.");
+}
+
 for (const addition of additions.entries) {
   const entry = catalog.entries.find((item) => item.puzzleId === addition.id);
   const puzzle = puzzles.puzzles.find((item) => item.id === addition.id);

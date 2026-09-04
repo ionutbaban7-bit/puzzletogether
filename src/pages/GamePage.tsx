@@ -15,6 +15,7 @@ import { LangToggle, pick, useLang, T } from "../lib/i18n";
 import { lockedCountOf } from "../store";
 import ChatSheet from "../components/ChatSheet";
 import { useVisualViewport } from "../lib/useVisualViewport";
+import TeamSetup, { TeamBadge } from "../components/TeamSetup";
 
 const CATEGORY_ICON: Record<string, string> = {
   "letter-canvas": "✍️",
@@ -295,6 +296,15 @@ export default function GamePage() {
   }
 
   const me = players.find((p) => p.id === youId);
+  const teams = room.teams || [];
+  const teamFor = (teamId?: string | null) => teams.find((team) => team.id === teamId) || null;
+  const unassignedTeamMembers = room.teamMode === "color-teams"
+    ? players.filter((player) => player.role !== "spectator" && !player.teamId)
+    : [];
+  const canStartTeams = unassignedTeamMembers.length === 0;
+  const ownCanvasInventory = canvas?.teamInventory && me?.teamId
+    ? canvas.teamInventory[me.teamId] ?? null
+    : canvas?.inventory;
 
   // Level progression + final leaderboard (completion modal)
   const levelIdx = Math.max(0, LEVELS.findIndex((l) => l.id === room.difficulty));
@@ -324,7 +334,7 @@ export default function GamePage() {
     `${placed} ${lang === "ro" ? "piese" : "pieces"} · ${Math.round((placed / total) * 100)}%`;
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-ink-950">
+    <div className="game-shell relative w-screen overflow-hidden bg-ink-950">
       {(room.stage === "debrief" || room.stage === "harvest") ? (
         <HarvestBoard room={room} activity={puzzle.activity} players={players} />
       ) : isCoaching && mode === "ranking" ? (
@@ -428,9 +438,11 @@ export default function GamePage() {
                 )}
                 <div className="mt-1 text-[11px] text-ink-400">
                   {isCanvas
-                    ? canvas?.inventory
-                      ? `${tileCount} / ${total} ${lang === "ro" ? "cărți din inventar" : "tiles from inventory"}`
-                      : `${tileCount} ${lang === "ro" ? "cărți · sandbox nelimitat" : "tiles · unlimited sandbox"}`
+                    ? ownCanvasInventory
+                      ? room.teamMode === "color-teams"
+                        ? `${tileCount} ${lang === "ro" ? "cărți · banca echipei" : "tiles · team bank"}`
+                        : `${tileCount} / ${total} ${lang === "ro" ? "cărți din inventar" : "tiles from inventory"}`
+                      : `${tileCount} ${canvas?.teamInventory && room.teamMode === "color-teams" ? (lang === "ro" ? "cărți · alege echipa" : "tiles · choose a team") : (lang === "ro" ? "cărți · sandbox nelimitat" : "tiles · unlimited sandbox")}`
                     : `${locked} / ${total} pieces`}
                 </div>
               </div>
@@ -460,6 +472,7 @@ export default function GamePage() {
                           </span>
                         )}
                       </span>
+                      <TeamBadge team={teamFor(p.teamId)} className="shrink-0" />
                       {(scoreByPlayer.get(p.id) || 0) > 0 && (
                         <span className="shrink-0 rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-bold text-brand-200">
                           🧩 {scoreByPlayer.get(p.id)}
@@ -595,6 +608,7 @@ export default function GamePage() {
         </div>
       )}
       {protocolError && <button className="absolute bottom-5 left-1/2 z-40 max-w-md -translate-x-1/2 rounded-xl border border-rose-400/30 bg-rose-950/95 px-4 py-2 text-sm text-rose-100" onClick={() => store.clearError()}>{protocolError} · ✕</button>}
+      {room.retiredCatalog && <div className="pointer-events-none absolute inset-x-3 bottom-5 z-30 mx-auto max-w-xl rounded-2xl border border-amber-300/30 bg-amber-950/90 px-4 py-2.5 text-center text-xs leading-relaxed text-amber-100 shadow-pop"><T value={{ ro: "Această cameră existentă folosește o imagine retrasă din catalog. Runda rămâne disponibilă; alege o activitate revizuită pentru următoarea rundă.", en: "This existing room uses an image retired from the catalog. This round remains available; choose a reviewed activity for the next round." }} /></div>}
       {room.startedAt && room.stage !== "lobby" && (
         <div className="pointer-events-none absolute left-1/2 top-3 z-20 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-ink-900/85 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white backdrop-blur sm:flex">
           <span>{room.boardLocked ? "🔒" : "●"}</span><span>{room.stage}</span>{room.timerEndsAt && <span className="font-mono text-amber-200">{formatClock(Math.max(0, room.timerEndsAt - now))}</span>}
@@ -618,7 +632,7 @@ export default function GamePage() {
               )}
               {isCanvas && (
                 <p className="mt-3 text-xs text-ink-400">
-                  <T value={{ ro: "Foaie liberă. Facilitatorul finalizează.", en: "Free sheet. The facilitator completes it." }} />
+                  <T value={{ ro: "Alegeți zonele de compoziție, construiți împreună, apoi facilitatorul finalizează.", en: "Choose composition lanes, build together, then the facilitator completes it." }} />
                 </p>
               )}
               {!isCoaching && !isCanvas && (puzzle.attribution || puzzle.credit || puzzle.license) && (
@@ -635,11 +649,12 @@ export default function GamePage() {
                 </div>
               )}
               <div className="mx-auto mt-6 inline-block rounded-2xl border border-white/10 bg-white/5 px-6 py-4"><div className="text-[10px] font-bold uppercase tracking-wider text-ink-400"><T value={{ ro: "Cod de intrare", en: "Join code" }} /></div><div className="font-display mt-1 text-3xl font-extrabold tracking-[.35em] text-white">{room.code}</div></div>
-              <div className="mt-6 flex flex-wrap justify-center gap-2">{players.map((player) => <span key={player.id} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white"><i className="h-2 w-2 rounded-full" style={{ backgroundColor: player.color }} />{player.name}{player.role === "spectator" ? " · 👁" : ""}</span>)}</div>
+              <div className="mt-6 flex flex-wrap justify-center gap-2">{players.map((player) => <span key={player.id} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white"><i className="h-2 w-2 rounded-full" style={{ backgroundColor: player.color }} />{player.name}{player.role === "spectator" ? " · 👁" : ""}<TeamBadge team={teamFor(player.teamId)} /></span>)}</div>
               <div className="mt-4 text-xs text-ink-400">{players.length} {lang === "ro" ? "conectați" : "connected"}</div>
+              {isCanvas && <TeamSetup room={room} players={players} youId={youId} isHost={isHost} />}
             </div>
             <div className="shrink-0 border-t border-white/10 bg-ink-900/95 p-3 backdrop-blur sm:p-4">
-              {isHost ? <div className="grid gap-2 sm:grid-cols-2"><button className="btn-primary min-h-11" onClick={() => store.sendControl("start")}>▶ <T value={{ ro: "Start pentru toți", en: "Start for everyone" }} /></button><button className="btn btn-dark min-h-11" onClick={() => setShareOpen(true)}>🔗 <T value={{ ro: "Invită colegi", en: "Invite teammates" }} /></button></div> : canTakeOver ? <button className="btn-primary min-h-11 w-full" onClick={() => youId && api.takeover(room.id, youId)}>🎛 <T value={{ ro: "Preia rolul de facilitator", en: "Take over facilitation" }} /></button> : <div className="rounded-xl bg-white/5 px-4 py-3 text-sm text-ink-300">⏳ <T value={{ ro: "Așteptăm facilitatorul…", en: "Waiting for the facilitator…" }} /></div>}
+              {isHost ? <div><div className="grid gap-2 sm:grid-cols-2"><button className="btn-primary min-h-11 disabled:cursor-not-allowed disabled:opacity-45" disabled={!canStartTeams} onClick={() => store.sendControl("start")}>▶ <T value={{ ro: "Start pentru toți", en: "Start for everyone" }} /></button><button className="btn btn-dark min-h-11" onClick={() => setShareOpen(true)}>🔗 <T value={{ ro: "Invită colegi", en: "Invite teammates" }} /></button></div>{!canStartTeams && <p className="mt-2 text-center text-xs text-amber-200"><T value={{ ro: `${unassignedTeamMembers.length} participant(i) fără echipă. Repartizează-i înainte de Start.`, en: `${unassignedTeamMembers.length} participant(s) need a team before Start.` }} /></p>}</div> : canTakeOver ? <button className="btn-primary min-h-11 w-full" onClick={() => youId && api.takeover(room.id, youId)}>🎛 <T value={{ ro: "Preia rolul de facilitator", en: "Take over facilitation" }} /></button> : <div className="rounded-xl bg-white/5 px-4 py-3 text-sm text-ink-300">⏳ <T value={{ ro: "Așteptăm facilitatorul…", en: "Waiting for the facilitator…" }} /></div>}
             </div>
           </div>
         </div>

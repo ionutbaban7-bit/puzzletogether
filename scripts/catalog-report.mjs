@@ -55,8 +55,9 @@ const assetRows = [...catalog.entries]
     `[source](${entry.sourceUrl})`,
   ]);
 
+const retiredCategories = Object.keys(catalog.retiredCategories || {});
 const stage5Statement = catalog.stage5ImportedAt
-  ? `The Stage 5 import is recorded on **${catalog.stage5ImportedAt}**: ${originalEntries.length} reviewed CC0 originals are linked to their puzzle records.`
+  ? `The Stage 5 import is recorded on **${catalog.stage5ImportedAt}**: ${originalEntries.length} active reviewed CC0 originals are linked to puzzle records.${retiredCategories.length ? ` ${retiredCategories.length} visually repetitive category set(s) were explicitly retired on 2026-09-04; see [the retirement record](catalog-retirement-2026-09-04.md).` : ""}`
   : "The Stage 5 additions manifest is staged but has not yet been imported into the live catalog.";
 
 const report = `# Image Catalog Report
@@ -78,7 +79,8 @@ ${stage5Statement}
 The audit enforces source and license URLs, bilingual metadata, focal points,
 source checksums, source/full/thumbnail files, dimensions, exact and perceptual
 duplicates, valid categories, public-bundle coverage, puzzle linkage, flagged
-compliance records, and the complete Stage 5 category set after import.
+compliance records, active Stage 5 category coverage after import, and the
+absence of any declared retired category from the public catalog.
 
 ## Catalog coverage
 
@@ -92,25 +94,26 @@ ${markdownTable(["Class", "Entries"], licenseRows)}
 
 Each record below links its source documentation and retains bilingual name/alt,
 creator, attribution, license URL, source filename, focal point, dimensions and
-SHA-256 checksum in \`data/catalog/sources.json\`. For the 55 Stage 5 originals,
-the linked source document and generation record state the CC0 dedication,
-source brief, raw-input checksum and archival derivative.
+SHA-256 checksum in \`data/catalog/sources.json\`. Active Stage 5 generation
+records state the CC0 dedication, source brief, raw-input checksum and archival
+derivative. Delisted historical records are retained separately in
+\`data/catalog/retired-stage5.json\` and are not served.
 
 ${markdownTable(["Asset", "Title", "Category", "License", "Status", "Puzzle/activity", "Source", "Record"], assetRows)}
 
 ## Reproducible processing
 
-1. Review each generated/original input for detail and prohibited visible text,
-   watermarks, logos and identifiable people as a main subject.
-2. Run \`npm run catalog:seed-stage5\` only after all 55 source reviews pass.
-   It imports high-quality archival derivatives and delists the prior unverified
-   orphan/fatal assets.
-3. Run \`npm run catalog:pipeline -- --force\` to archive the source files,
+1. Review each candidate at thumbnail and puzzle scale for differentiation,
+   detail, truthful naming, and prohibited visible text, watermarks, logos, or
+   identifiable people as a main subject.
+2. Prepare a **new** reviewed additions manifest; the historical Stage 5 seed
+   manifest fails closed because it contains the retired repetitive sets.
+3. Run \`npm run catalog:pipeline -- --force\` to archive approved source files,
    write optimized full/thumbnail WebP assets, checksum them and update puzzle
    metadata plus the public dimension manifest.
 4. Run \`npm run catalog:audit\`, then \`npm run catalog:report\`.
-5. After a green audit, run \`npm run catalog:finalize-stage5\` to remove only
-   the temporary raw generator imports; the audited archival source remains.
+5. Retain rejected/delisted provenance in a separate retirement ledger; do not
+   silently reintroduce it through a bulk importer.
 
 ---
 Generated from \`data/catalog/sources.json\`, \`shared/puzzles.json\`, and

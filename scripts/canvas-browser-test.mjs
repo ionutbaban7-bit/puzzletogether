@@ -1,9 +1,9 @@
 /*
  * Browser tests for Letter Canvas + Sentence Canvas.
  *
- * Desktop (1280x820): side tray, tap-to-spawn, drag, double-click flip,
+ * Desktop (1280x820): lower letter rack, semantic lane placement, drag, double-click flip,
  * duplicate / delete / undo via the selection bar, PNG + text + JSON export.
- * Mobile (iPhone 390x844, touch): bottom sheet tray, tap-to-place, pan,
+ * Mobile (iPhone 390x844, touch): bottom sheet rack, tap-to-place, pan,
  * zoom, custom word (sentence canvas).
  *
  * Requires Playwright browsers: `npx playwright install chromium`
@@ -64,14 +64,14 @@ watch(page, "desktop");
 await createLobby(page, { categoryLabel: "Letter Canvas", puzzleLabel: "Agile Values Letter Canvas", modeLabel: "Quick", sessionName: "Canvas browser test", name: "Ionut" });
 const state0 = await store(page);
 ok("desktop: lobby boots the letter canvas (blank sheet, RO content)", state0.room.stage === "lobby" && state0.room.contentLanguage === "ro" && state0.puzzle.isCanvas === true && Object.keys(state0.canvasTiles).length === 0);
-ok("desktop: lobby shows the content language + blank-sheet note", await page.getByText("Blank sheet, no reference image").isVisible().catch(() => false));
+ok("desktop: lobby explains the collaborative lane workflow", await page.getByText("Choose composition lanes, build together, then the facilitator completes it.").isVisible().catch(() => false));
 await page.screenshot({ path: `${ARTIFACTS}canvas-01-lobby.png` });
 
 await startAndWait(page);
-ok("desktop: side tray renders on desktop", await page.getByText("Tile tray").isVisible());
+ok("desktop: lower letter rack renders on desktop", await page.getByText("Letter rack").isVisible());
 ok("desktop: tray lists RO diacritics + wildcards + punctuation", (await page.getByRole("button", { name: /^Ă \(/ }).count()) > 0 && (await page.getByRole("button", { name: /^\? \(/ }).count()) > 0);
 
-// tap-to-spawn from the tray
+// tap-to-place from the lower rack
 await page.getByRole("button", { name: /^A \(/ }).click();
 await page.waitForFunction(() => Object.keys(window.__ptStore.getState().canvasTiles).length === 1);
 let tiles = (await store(page)).canvasTiles;
@@ -88,11 +88,13 @@ await page.mouse.move(before.x + tile.w / 2 + 160, before.y + tile.h / 2 + 90, {
 await page.mouse.up();
 await page.waitForFunction(({ id, sx }) => {
   const t = window.__ptStore.getState().canvasTiles[id];
-  return t && !t.heldBy && Math.abs(t.x - sx) > 40;
+  // A v2 lane drop may reorder into a deterministic slot instead of preserving
+  // raw x/y; free-canvas movement remains valid for a drop outside a lane.
+  return t && !t.heldBy && (t.laneId || Math.abs(t.x - sx) > 40);
 }, { id: tile.id, sx: start.x });
 tiles = (await store(page)).canvasTiles;
 tile = tiles[tile.id];
-ok("desktop: drag moves the tile (server-confirmed)", Math.abs(tile.x - start.x) > 40 && !tile.heldBy, `dx=${Math.round(tile.x - start.x)}`);
+ok("desktop: drag commits a server-confirmed move or semantic lane placement", (!!tile.laneId || Math.abs(tile.x - start.x) > 40) && !tile.heldBy, tile.laneId || `dx=${Math.round(tile.x - start.x)}`);
 
 // double-click flip
 const tPos = await screenPos(page, tile);
@@ -163,12 +165,12 @@ const mPage = await phone.newPage();
 watch(mPage, "mobile");
 await createLobby(mPage, { categoryLabel: "Letter Canvas", puzzleLabel: "Team Values Letter Canvas", modeLabel: "Quick", sessionName: "Mobile canvas", name: "Ana" });
 await startAndWait(mPage);
-ok("mobile: bottom sheet tray renders (collapsed)", await mPage.getByRole("button", { name: /Open tray/i }).isVisible());
+ok("mobile: bottom sheet tray renders (collapsed)", await mPage.getByRole("button", { name: /Open rack/i }).isVisible());
 
 // expand the sheet
-await mPage.getByRole("button", { name: /Open tray/i }).click();
+await mPage.getByRole("button", { name: /Open rack/i }).click();
 await mPage.waitForTimeout(300);
-ok("mobile: tray expands on tap", await mPage.getByRole("button", { name: /Collapse tray/i }).isVisible());
+ok("mobile: tray expands on tap", await mPage.getByRole("button", { name: /Collapse rack/i }).isVisible());
 await mPage.screenshot({ path: `${ARTIFACTS}canvas-05-mobile-tray.png` });
 
 // tap-to-place from the tray
@@ -212,7 +214,7 @@ const sPage = await phone2.newPage();
 watch(sPage, "sentence-mobile");
 await createLobby(sPage, { categoryLabel: "Foaie de propoziții", puzzleLabel: "Funny Story Canvas", modeLabel: "Quick", sessionName: "Mobile sentence", name: "Mihai", ro: true });
 await startAndWait(sPage);
-await sPage.getByRole("button", { name: /Deschide tray-ul/i }).click();
+await sPage.getByRole("button", { name: /Deschide rastelul/i }).click();
 await sPage.waitForTimeout(300);
 ok("sentence mobile: bottom sheet shows word categories + custom word", (await sPage.getByText("Punctuație", { exact: true }).count()) > 0 && (await sPage.getByLabel("Cuvânt personal").count()) === 1);
 // spawn a pack word by tapping it

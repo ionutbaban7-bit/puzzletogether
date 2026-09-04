@@ -33,6 +33,8 @@ export default function RankingActivity({ puzzle, pieces, players, youId }: Prop
   const [, redraw] = useState(0);
   const lastCursorSent = useRef(0);
   const pointerLifecycle = usePointerLifecycle(containerRef, pointerSamples, {
+    debugScope: "ranking",
+    debugState: () => gesture.current,
     onMove: handleTrackedPointerMove,
     onTerminate: handlePointerTermination,
   });

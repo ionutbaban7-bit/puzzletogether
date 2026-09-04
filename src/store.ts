@@ -60,6 +60,7 @@ function canvasFromMessage(msg: Record<string, unknown>): CanvasState | null {
   const canvas = msg.canvas as (CanvasState & { tiles: CanvasTile[] }) | undefined;
   if (!canvas) return null;
   return {
+    version: canvas.version,
     mode: canvas.mode,
     contentLanguage: canvas.contentLanguage,
     sheetW: canvas.sheetW,
@@ -68,6 +69,8 @@ function canvasFromMessage(msg: Record<string, unknown>): CanvasState | null {
     tileH: canvas.tileH,
     wordGap: canvas.wordGap,
     inventory: canvas.inventory,
+    teamInventory: canvas.teamInventory,
+    lanes: canvas.lanes,
   };
 }
 
@@ -100,8 +103,12 @@ function handleMessage(msg: { t: string; [key: string]: unknown }) {
       for (const tile of list) tiles[tile.id] = tile;
       for (const id of removed) delete tiles[id];
       const patch: Partial<StoreState> = { canvasTiles: tiles };
-      if (msg.inventory !== undefined) {
-        patch.canvas = state.canvas ? { ...state.canvas, inventory: msg.inventory as Record<string, number> } : state.canvas;
+      if (msg.inventory !== undefined || msg.teamInventory !== undefined) {
+        patch.canvas = state.canvas ? {
+          ...state.canvas,
+          ...(msg.inventory !== undefined ? { inventory: msg.inventory as Record<string, number> | null } : {}),
+          ...(msg.teamInventory !== undefined ? { teamInventory: msg.teamInventory as CanvasState["teamInventory"] } : {}),
+        } : state.canvas;
       }
       set(patch);
       break;
@@ -241,6 +248,8 @@ export const store = {
   sendCursor(x: number, y: number) { if (state.connected) socket.send({ t: "cursor", x: Math.round(x), y: Math.round(y) }); },
   sendRating(answers: Record<string, "A" | "B">, done: boolean) { if (state.connected) socket.send({ t: "rating", answers, done }); },
   sendControl(action: string, data: Record<string, unknown> = {}) { if (state.connected) socket.send({ t: "control", action, ...data }); },
+  /** Participant-safe lobby team selection; host configuration uses sendControl. */
+  sendTeam(action: "select", teamId: string) { if (state.connected) socket.send({ t: "team", action, teamId }); },
   saveInsights(value: WorkshopInsights) { if (state.connected) socket.send({ t: "harvest", kind: "insights", value }); },
   saveDebrief(value: string[]) { if (state.connected) socket.send({ t: "harvest", kind: "debrief", value }); },
   saveActions(value: ActionItem[]) { if (state.connected) socket.send({ t: "harvest", kind: "actions", value }); },

@@ -11,8 +11,6 @@ const CATEGORY_NAMES: Record<string, { ro: string; en: string }> = {
   "letter-canvas": { ro: "Foaie de litere", en: "Letter Canvas" }, "sentence-canvas": { ro: "Foaie de propoziții", en: "Sentence Canvas" },
   paintings: { ro: "Picturi", en: "Paintings" }, landscapes: { ro: "Peisaje", en: "Landscapes" }, landmarks: { ro: "Repere", en: "Landmarks" },
   nature: { ro: "Natură", en: "Nature" }, cities: { ro: "Orașe", en: "Cities" },
-  "isometric-worlds": { ro: "Lumi izometrice", en: "Isometric worlds" },
-  "abstract-geometry": { ro: "Geometrie abstractă", en: "Abstract geometry" },
   "blueprint-architecture": { ro: "Planuri arhitecturale", en: "Blueprint architecture" },
   coaching: { ro: "Team coaching", en: "Team coaching" },
 };
@@ -34,6 +32,8 @@ export default function CreateRoom() {
   const [difficulty, setDifficulty] = useState("medium");
   const [contentLanguage, setContentLanguage] = useState<"ro" | "en">("ro");
   const [mystery, setMystery] = useState(false);
+  const [teamMode, setTeamMode] = useState<"shared" | "color-teams">("shared");
+  const [teamCount, setTeamCount] = useState(2);
   const [upload, setUpload] = useState<{ url: string; file: string; width: number; height: number } | null>(null);
   const [uploadName, setUploadName] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -73,6 +73,8 @@ export default function CreateRoom() {
         sessionName: sessionName.trim() || (selectedActivity ? pick(selectedActivity.name, lang) : upload ? uploadName || pick({ ro: "Imagine personalizată", en: "Custom image" }, lang) : selectedPuzzle!.name),
         role: facilitatorOnly ? "spectator" : "host",
         ...(isCanvas ? { contentLanguage } : {}),
+        teamMode,
+        teamCount,
         ...(isJigsaw ? {
           mystery,
           customImage: upload ? { url: upload.url, file: upload.file, width: upload.width, height: upload.height, name: uploadName } : undefined,
@@ -115,8 +117,8 @@ export default function CreateRoom() {
 
             {isCanvas && (
               <div className="rounded-[24px] border border-cp-purple-300 bg-cp-purple-50 px-4 py-3 text-sm leading-relaxed text-cp-purple-700">
-                <b><T value={{ ro: "Foaie liberă.", en: "Free sheet." }} /></b>{" "}
-                <T value={{ ro: "Facilitatorul pornește și finalizează.", en: "The facilitator starts and completes it." }} />
+                <b><T value={{ ro: "Construire colaborativă.", en: "Collaborative building." }} /></b>{" "}
+                <T value={{ ro: "Alegeți zone, combinați cărți și finalizați împreună.", en: "Choose lanes, combine tiles and finish together." }} />
               </div>
             )}
 
@@ -139,6 +141,15 @@ export default function CreateRoom() {
             <label className="mt-5 block text-sm font-semibold text-ink-700" htmlFor="display-name"><T value={{ ro: "Numele tău", en: "Your display name" }} /></label>
             <input id="display-name" className="input mt-2" maxLength={24} value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Ana" autoFocus />
             <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-2xl border border-brand-100 bg-brand-50 p-4"><input type="checkbox" className="mt-1 h-4 w-4 accent-brand-600" checked={facilitatorOnly} onChange={(e) => setFacilitatorOnly(e.target.checked)} /><span><b className="block text-sm text-ink-900"><T value={{ ro: "Facilitez, nu joc", en: "I facilitate, I don't play" }} /></b><span className="mt-1 block text-xs leading-relaxed text-ink-600"><T value={{ ro: "Vezi, dar nu muți piese sau carduri.", en: "Watch, but do not move pieces or cards." }} /></span></span></label>
+            {isCanvas && <section className="mt-5 rounded-2xl border border-cp-purple-200 bg-cp-purple-50 p-4">
+              <div className="text-sm font-bold text-ink-900"><T value={{ ro: "Cum colaborați?", en: "How will you collaborate?" }} /></div>
+              <p className="mt-1 text-xs leading-relaxed text-ink-600"><T value={{ ro: "Alegeți acum sau reconfigurați în lobby. Echipele colorate au și simboluri/nume, nu doar culori.", en: "Choose now or reconfigure in the lobby. Colour teams also have markers/names, not colour alone." }} /></p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <button type="button" onClick={() => setTeamMode("shared")} className={`rounded-xl border p-3 text-left text-sm font-semibold transition ${teamMode === "shared" ? "border-cp-purple-600 bg-white ring-2 ring-cp-purple-300" : "border-cp-purple-200 bg-white/60 hover:bg-white"}`}>🤝 <T value={{ ro: "O echipă comună", en: "One shared group" }} /><span className="mt-1 block text-[11px] font-normal text-ink-500"><T value={{ ro: "Toți construiesc împreună.", en: "Everyone builds together." }} /></span></button>
+                <button type="button" onClick={() => setTeamMode("color-teams")} className={`rounded-xl border p-3 text-left text-sm font-semibold transition ${teamMode === "color-teams" ? "border-cp-purple-600 bg-white ring-2 ring-cp-purple-300" : "border-cp-purple-200 bg-white/60 hover:bg-white"}`}>● ▲ <T value={{ ro: "Echipe colorate", en: "Colour teams" }} /><span className="mt-1 block text-[11px] font-normal text-ink-500"><T value={{ ro: "Bănci și zone separate pe canvas.", en: "Separate banks and lanes on canvas." }} /></span></button>
+              </div>
+              {teamMode === "color-teams" && <div className="mt-3 flex flex-wrap items-center gap-2"><span className="text-xs font-semibold text-ink-700"><T value={{ ro: "Număr de echipe:", en: "Number of teams:" }} /></span>{[2, 3, 4, 5, 6].map((count) => <button type="button" key={count} onClick={() => setTeamCount(count)} className={`h-8 min-w-8 rounded-lg text-xs font-bold ${teamCount === count ? "bg-cp-purple-700 text-white" : "border border-cp-purple-200 bg-white text-cp-purple-700"}`}>{count}</button>)}</div>}
+            </section>}
             {error && <div className="mt-4"><ErrorBox>{error}</ErrorBox></div>}
             <button className="btn-primary mt-6 w-full" disabled={!name.trim() || busy} onClick={create}>{busy ? <Spinner /> : <><T value={{ ro: "Creează lobby-ul", en: "Create lobby" }} /> →</>}</button>
           </div>

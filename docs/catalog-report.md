@@ -1,33 +1,32 @@
 # Image Catalog Report
 
-**Generated:** 2026-09-03
+**Generated:** 2026-09-04
 
 **Pipeline:** `npm run catalog:pipeline` · **Audit:** `npm run catalog:audit` · **Source policy:** [catalog originals](catalog-originals.md)
 
 ## Result
 
-The Stage 5 import is recorded on **2026-09-03**: 55 reviewed CC0 originals are linked to their puzzle records.
+The Stage 5 import is recorded on **2026-09-03**: 35 active reviewed CC0 originals are linked to puzzle records. 2 visually repetitive category set(s) were explicitly retired on 2026-09-04; see [the retirement record](catalog-retirement-2026-09-04.md).
 
-- Catalog entries: **94**
-- Entries linked to a served puzzle: **90**
-- Archived prompt-directed originals: **55**
+- Catalog entries: **74**
+- Entries linked to a served puzzle: **70**
+- Archived prompt-directed originals: **35**
 - Orphan catalog records: **0**
-- Latest audit: **0 fatal**, **43 warning** (generated 2026-09-03T15:17:42.232Z)
+- Latest audit: **0 fatal**, **41 warning** (generated 2026-09-04T16:14:45.167Z)
 
 The audit enforces source and license URLs, bilingual metadata, focal points,
 source checksums, source/full/thumbnail files, dimensions, exact and perceptual
 duplicates, valid categories, public-bundle coverage, puzzle linkage, flagged
-compliance records, and the complete Stage 5 category set after import.
+compliance records, active Stage 5 category coverage after import, and the
+absence of any declared retired category from the public catalog.
 
 ## Catalog coverage
 
 | Category | Entries | Stage 5 CC0 originals |
 | --- | --- | --- |
-| abstract-geometry | 10 | 10 |
 | blueprint-architecture | 10 | 10 |
 | cities | 9 | 5 |
 | coaching | 4 | — |
-| isometric-worlds | 10 | 10 |
 | landmarks | 11 | 5 |
 | landscapes | 8 | 5 |
 | letter-canvas | 4 | — |
@@ -40,7 +39,7 @@ compliance records, and the complete Stage 5 category set after import.
 | Class | Entries |
 | --- | --- |
 | cc-by-sa | 13 |
-| cc0 | 55 |
+| cc0 | 35 |
 | in-house | 13 |
 | pd | 13 |
 
@@ -48,22 +47,13 @@ compliance records, and the complete Stage 5 category set after import.
 
 Each record below links its source documentation and retains bilingual name/alt,
 creator, attribution, license URL, source filename, focal point, dimensions and
-SHA-256 checksum in `data/catalog/sources.json`. For the 55 Stage 5 originals,
-the linked source document and generation record state the CC0 dedication,
-source brief, raw-input checksum and archival derivative.
+SHA-256 checksum in `data/catalog/sources.json`. Active Stage 5 generation
+records state the CC0 dedication, source brief, raw-input checksum and archival
+derivative. Delisted historical records are retained separately in
+`data/catalog/retired-stage5.json` and are not served.
 
 | Asset | Title | Category | License | Status | Puzzle/activity | Source | Record |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `/images/abstract-azure-arches.jpg` | Azure Arches | abstract-geometry | CC0 1.0 Universal | verified | abstract-azure-arches | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/abstract-crystalline.jpg` | Crystalline | abstract-geometry | CC0 1.0 Universal | verified | abstract-crystalline | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/abstract-fluid-topography.jpg` | Fluid Topography | abstract-geometry | CC0 1.0 Universal | verified | abstract-fluid-topography | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/abstract-kinetic-grid.jpg` | Kinetic Grid | abstract-geometry | CC0 1.0 Universal | verified | abstract-kinetic-grid | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/abstract-night-mosaic.jpg` | Night Mosaic | abstract-geometry | CC0 1.0 Universal | verified | abstract-night-mosaic | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/abstract-paper-folds.jpg` | Paper Folds | abstract-geometry | CC0 1.0 Universal | verified | abstract-paper-folds | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/abstract-pink-orbit.jpg` | Pink Orbit | abstract-geometry | CC0 1.0 Universal | verified | abstract-pink-orbit | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/abstract-solar-rings.jpg` | Solar Rings | abstract-geometry | CC0 1.0 Universal | verified | abstract-solar-rings | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/abstract-tessellation.jpg` | Tessellation | abstract-geometry | CC0 1.0 Universal | verified | abstract-tessellation | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/abstract-violet-lattice.jpg` | Violet Lattice | abstract-geometry | CC0 1.0 Universal | verified | abstract-violet-lattice | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/blueprint-amphitheater.jpg` | Amphitheater Blueprint | blueprint-architecture | CC0 1.0 Universal | verified | blueprint-amphitheater | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/blueprint-bran-castle.jpg` | Bran Castle Blueprint | blueprint-architecture | CC0 1.0 Universal | verified | blueprint-bran-castle | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/blueprint-bridge.jpg` | Suspension Bridge Blueprint | blueprint-architecture | CC0 1.0 Universal | verified | blueprint-bridge | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
@@ -87,16 +77,6 @@ source brief, raw-input checksum and archival derivative.
 | `/images/coaching/himalaya.svg` | The Himalayan Expedition | coaching | All rights reserved — in-house work | verified | himalaya-expedition | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
 | `/images/coaching/moon.svg` | The Moon Mission | coaching | All rights reserved — in-house work | verified | moon-mission | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
 | `/images/coaching/ocean.svg` | Lost in the Pacific | coaching | All rights reserved — in-house work | verified | ocean-survival | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
-| `/images/iso-arctic-research.jpg` | Arctic Research Station | isometric-worlds | CC0 1.0 Universal | verified | iso-arctic-research | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/iso-coastal-lighthouse.jpg` | Isometric Lighthouse | isometric-worlds | CC0 1.0 Universal | verified | iso-coastal-lighthouse | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/iso-desert-oasis.jpg` | Desert Oasis | isometric-worlds | CC0 1.0 Universal | verified | iso-desert-oasis | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/iso-floating-garden.jpg` | Floating Garden | isometric-worlds | CC0 1.0 Universal | verified | iso-floating-garden | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/iso-forest-workshop.jpg` | Forest Workshop | isometric-worlds | CC0 1.0 Universal | verified | iso-forest-workshop | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/iso-harbor-village.jpg` | Isometric Harbour Village | isometric-worlds | CC0 1.0 Universal | verified | iso-harbor-village | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/iso-mountain-railway.jpg` | Mountain Railway | isometric-worlds | CC0 1.0 Universal | verified | iso-mountain-railway | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/iso-river-market.jpg` | River Market | isometric-worlds | CC0 1.0 Universal | verified | iso-river-market | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/iso-sky-islands.jpg` | Sky Islands | isometric-worlds | CC0 1.0 Universal | verified | iso-sky-islands | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
-| `/images/iso-solar-observatory.jpg` | Solar Observatory | isometric-worlds | CC0 1.0 Universal | verified | iso-solar-observatory | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/bran-castle-dawn.jpg` | Bran Castle at Dawn | landmarks | CC0 1.0 Universal | verified | bran-castle-dawn | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/colosseum.jpg` | The Colosseum | landmarks | CC BY-SA 4.0 | verified | colosseum | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Colosseo_2020.jpg) |
 | `/images/corvin-castle.jpg` | Corvin Castle | landmarks | CC0 1.0 Universal | verified | corvin-castle | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
@@ -151,17 +131,17 @@ source brief, raw-input checksum and archival derivative.
 
 ## Reproducible processing
 
-1. Review each generated/original input for detail and prohibited visible text,
-   watermarks, logos and identifiable people as a main subject.
-2. Run `npm run catalog:seed-stage5` only after all 55 source reviews pass.
-   It imports high-quality archival derivatives and delists the prior unverified
-   orphan/fatal assets.
-3. Run `npm run catalog:pipeline -- --force` to archive the source files,
+1. Review each candidate at thumbnail and puzzle scale for differentiation,
+   detail, truthful naming, and prohibited visible text, watermarks, logos, or
+   identifiable people as a main subject.
+2. Prepare a **new** reviewed additions manifest; the historical Stage 5 seed
+   manifest fails closed because it contains the retired repetitive sets.
+3. Run `npm run catalog:pipeline -- --force` to archive approved source files,
    write optimized full/thumbnail WebP assets, checksum them and update puzzle
    metadata plus the public dimension manifest.
 4. Run `npm run catalog:audit`, then `npm run catalog:report`.
-5. After a green audit, run `npm run catalog:finalize-stage5` to remove only
-   the temporary raw generator imports; the audited archival source remains.
+5. Retain rejected/delisted provenance in a separate retirement ledger; do not
+   silently reintroduce it through a bulk importer.
 
 ---
 Generated from `data/catalog/sources.json`, `shared/puzzles.json`, and

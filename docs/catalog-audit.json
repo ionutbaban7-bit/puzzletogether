@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-03T15:25:42.308Z",
+  "generatedAt": "2026-09-04T16:18:28.028Z",
   "thresholds": {
     "MIN_LONG_EDGE": 900,
     "MIN_SHORT_EDGE": 600,
@@ -31,14 +31,6 @@
     {
       "code": "W2",
       "message": "/images/tokyo.jpg: license-inherited-from-legacy-catalog-not-reverified"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 10) — manual review: /images/iso-floating-garden.jpg ≈ /images/iso-solar-observatory.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 10) — manual review: /images/iso-harbor-village.jpg ≈ /images/iso-desert-oasis.jpg"
     },
     {
       "code": "W4",
@@ -689,166 +681,6 @@
     {
       "asset": "/images/brasov-council-square.jpg",
       "category": "cities",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/iso-floating-garden.jpg",
-      "category": "isometric-worlds",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/iso-harbor-village.jpg",
-      "category": "isometric-worlds",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/iso-solar-observatory.jpg",
-      "category": "isometric-worlds",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/iso-mountain-railway.jpg",
-      "category": "isometric-worlds",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/iso-desert-oasis.jpg",
-      "category": "isometric-worlds",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/iso-coastal-lighthouse.jpg",
-      "category": "isometric-worlds",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/iso-forest-workshop.jpg",
-      "category": "isometric-worlds",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/iso-arctic-research.jpg",
-      "category": "isometric-worlds",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/iso-river-market.jpg",
-      "category": "isometric-worlds",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/iso-sky-islands.jpg",
-      "category": "isometric-worlds",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/abstract-azure-arches.jpg",
-      "category": "abstract-geometry",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/abstract-pink-orbit.jpg",
-      "category": "abstract-geometry",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/abstract-violet-lattice.jpg",
-      "category": "abstract-geometry",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/abstract-crystalline.jpg",
-      "category": "abstract-geometry",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/abstract-tessellation.jpg",
-      "category": "abstract-geometry",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/abstract-fluid-topography.jpg",
-      "category": "abstract-geometry",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/abstract-paper-folds.jpg",
-      "category": "abstract-geometry",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/abstract-solar-rings.jpg",
-      "category": "abstract-geometry",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/abstract-kinetic-grid.jpg",
-      "category": "abstract-geometry",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/abstract-night-mosaic.jpg",
-      "category": "abstract-geometry",
       "status": "verified",
       "license": "CC0 1.0 Universal",
       "ok": true,

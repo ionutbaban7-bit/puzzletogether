@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { CanvasState, CanvasTile, CursorView, PlayerView, PuzzleView } from "../types";
+import type { CanvasLane, CanvasState, CanvasTile, CursorView, PlayerView, PuzzleView } from "../types";
 import { MAX_SCALE, MIN_SCALE, useViewport } from "./useViewport";
 import { usePointerLifecycle, type PointerSample, type PointerTerminationReason } from "./usePointerLifecycle";
 import { store } from "../store";
 import { pick, useLang } from "../lib/i18n";
+import { useMediaQuery } from "../lib/useMediaQuery";
+import { useVisualViewport } from "../lib/useVisualViewport";
 import { downloadJsonFile, downloadTextFile, exportCanvasPng, reconstructCanvasText, roundRectPath } from "../lib/canvasText";
 
 interface CanvasBoardProps {
@@ -17,9 +19,18 @@ interface CanvasBoardProps {
   resetSignal: number;
 }
 
-const DESK_BG = "#0b0e1a";
-const SHEET_BG = "#ffffff";
-const SELECT_COLOR = "#8a58c0";
+const DESK_BG = "#080b14";
+const SHEET_BG = "#12192b";
+const SELECT_COLOR = "#c084fc";
+const TEAM_HEX: Record<string, string> = {
+  red: "#f87171", yellow: "#facc15", green: "#4ade80", blue: "#60a5fa", purple: "#c084fc", orange: "#fb923c",
+};
+
+function withAlpha(hex: string, alpha: number) {
+  const clean = hex.replace("#", "");
+  const value = Number.parseInt(clean.length === 3 ? clean.split("").map((v) => v + v).join("") : clean, 16);
+  return `rgba(${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255}, ${alpha})`;
+}
 
 interface TileStyle {
   fill: string;
@@ -27,11 +38,11 @@ interface TileStyle {
   text: string;
 }
 
-function tileStyle(tile: CanvasTile): TileStyle {
-  if (tile.kind === "wildcard") return { fill: "#4f46e5", border: "#3730a3", text: "#ffffff" };
-  if (tile.kind === "punctuation") return { fill: "#334155", border: "#1e293b", text: "#ffffff" };
-  if (tile.kind === "custom") return { fill: "#fff7ed", border: "#fdba74", text: "#7c2d12" };
-  return { fill: "#fffef8", border: "#d9d3c0", text: "#26221a" };
+function tileStyle(tile: CanvasTile, accent?: string): TileStyle {
+  if (tile.kind === "wildcard") return { fill: "#4f46e5", border: accent || "#818cf8", text: "#ffffff" };
+  if (tile.kind === "punctuation") return { fill: "#334155", border: accent || "#64748b", text: "#ffffff" };
+  if (tile.kind === "custom") return { fill: "#fff7ed", border: accent || "#fdba74", text: "#7c2d12" };
+  return { fill: "#fffef8", border: accent || "#d9d3c0", text: "#26221a" };
 }
 
 /**
@@ -45,7 +56,7 @@ function paintTile(
   y: number,
   w: number,
   h: number,
-  opts: { selected?: boolean; shadow?: boolean } = {},
+  opts: { selected?: boolean; shadow?: boolean; accent?: string } = {},
 ) {
   const radius = Math.min(16, w * 0.16, h * 0.2);
   ctx.save();
@@ -54,7 +65,7 @@ function paintTile(
     ctx.shadowBlur = opts.selected ? 18 : 8;
     ctx.shadowOffsetY = opts.selected ? 8 : 3;
   }
-  const style = tileStyle(tile);
+  const style = tileStyle(tile, opts.accent);
   if (tile.flipped) {
     // Reversible: the back of the card is plain (no letter, no decorations).
     ctx.fillStyle = "#f3f4f6";
@@ -103,6 +114,43 @@ function paintTile(
   ctx.restore();
 }
 
+function paintCanvasLane(
+  ctx: CanvasRenderingContext2D,
+  lane: CanvasLane,
+  camera: { x: number; y: number; scale: number },
+  lang: "ro" | "en",
+  selected: boolean,
+) {
+  const { x: cx, y: cy, scale } = camera;
+  const x = cx + lane.x * scale;
+  const y = cy + lane.y * scale;
+  const w = lane.w * scale;
+  const h = lane.h * scale;
+  const accent = lane.teamColor ? TEAM_HEX[lane.teamColor] || "#60a5fa" : "#60a5fa";
+  const radius = Math.min(18, 16 * scale);
+  ctx.save();
+  ctx.fillStyle = withAlpha(accent, selected ? 0.22 : 0.09);
+  roundRectPath(ctx, x, y, w, h, radius);
+  ctx.fill();
+  ctx.strokeStyle = withAlpha(accent, selected ? 0.95 : 0.4);
+  ctx.lineWidth = selected ? Math.max(2, 3 * scale) : Math.max(1, 1.5 * scale);
+  roundRectPath(ctx, x, y, w, h, radius);
+  ctx.stroke();
+  const pad = Math.max(9, 16 * scale);
+  const title = `${lane.teamMarker ? `${lane.teamMarker} ${lane.teamName || ""} · ` : ""}${lane.label[lang]}`;
+  ctx.font = `700 ${Math.max(10, 17 * scale)}px Inter, system-ui, sans-serif`;
+  ctx.fillStyle = "#f8fafc";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+  ctx.fillText(title, x + pad, y + Math.max(14, 21 * scale));
+  if (h > 100 * scale) {
+    ctx.font = `500 ${Math.max(8, 12 * scale)}px Inter, system-ui, sans-serif`;
+    ctx.fillStyle = "#aab8d3";
+    ctx.fillText(lane.hint[lang], x + pad, y + Math.max(29, 43 * scale));
+  }
+  ctx.restore();
+}
+
 /** Tiny Levenshtein for the soft spellcheck (suggestions only, never rejects). */
 function levenshtein(a: string, b: string): number {
   if (a === b) return 0;
@@ -140,7 +188,8 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
   const isLetter = puzzle.category === "letter-canvas";
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const { camera, cameraRef, setCamera, zoomAt, zoomBy } = useViewport();
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const isMobile = useMediaQuery("(max-width: 767px)");
+  const visualViewport = useVisualViewport();
 
   const tilesRef = useRef(tiles);
   tilesRef.current = tiles;
@@ -158,9 +207,14 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
   puzzleRef.current = puzzle;
 
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedLaneId, setSelectedLaneId] = useState<string | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [trayCategory, setTrayCategory] = useState("all");
   const [customWord, setCustomWord] = useState("");
+  // A real pixel height (rather than a static CSS vh) keeps the mobile rack
+  // reachable when iPhone Safari shows its browser chrome or keyboard.
+  const visibleHeight = visualViewport.height || (typeof window !== "undefined" ? window.innerHeight : 0);
+  const mobileRackHeight = sheetOpen ? Math.max(220, Math.round(visibleHeight * 0.56)) : 104;
 
   // The shared lifecycle owns capture, fallback and terminal event hygiene.
   const pointerSamples = useRef(new Map<number, PointerSample>());
@@ -174,21 +228,33 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
   const lastMoveSent = useRef(0);
 
   const selectedTile = selectedId != null ? tiles[selectedId] : null;
+  const me = players.find((player) => player.id === youId);
+  const myTeamId = me?.teamId || null;
+  const lanes = canvas.version === 2 ? canvas.lanes || [] : [];
+  const availableLanes = lanes.filter((lane) => !lane.teamId || lane.teamId === myTeamId);
+  const selectedLane = availableLanes.find((lane) => lane.id === selectedLaneId) || availableLanes[0] || null;
+  const inventory = canvas.teamInventory && myTeamId ? canvas.teamInventory[myTeamId] ?? null : canvas.inventory;
+
+  useEffect(() => {
+    if (selectedLane && selectedLane.id !== selectedLaneId) setSelectedLaneId(selectedLane.id);
+  }, [selectedLane, selectedLaneId]);
 
   const fitSheet = useCallback(() => {
     const c = canvasRefState.current;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
+    const element = canvasRef.current;
+    const vw = element?.clientWidth || visualViewport.width || window.innerWidth;
+    const vh = element?.clientHeight || visualViewport.height || window.innerHeight;
     const mobile = vw < 768;
-    const padLeft = mobile ? 16 : 300; // desktop side tray
-    const padRight = mobile ? 16 : 70;
-    const padTop = mobile ? 84 : 96;
-    const padBottom = mobile ? (sheetOpen ? 320 : 130) : 130;
+    const padLeft = mobile ? 16 : 76;
+    const padRight = mobile ? 16 : 84;
+    const padTop = mobile ? 84 : 90;
+    // Reserve room for both the lower source bank and its compact action strip.
+    const padBottom = mobile ? mobileRackHeight + 66 : 278;
     const scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, Math.min(vw / (c.sheetW + padLeft + padRight), vh / (c.sheetH + padTop + padBottom))));
     const targetX = padLeft + (vw - padLeft - padRight - c.sheetW * scale) / 2;
     const targetY = padTop + (vh - padTop - padBottom - c.sheetH * scale) / 2;
     setCamera({ x: targetX, y: targetY, scale });
-  }, [setCamera, sheetOpen]);
+  }, [setCamera, mobileRackHeight, visualViewport.height, visualViewport.width]);
 
   // Initial fit + refit on reset / sheet resize
   const fittedFor = useRef("");
@@ -231,6 +297,8 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
   }, []);
 
   const pointerLifecycle = usePointerLifecycle(canvasRef, pointerSamples, {
+    debugScope: "canvas",
+    debugState: () => gestureType.current,
     onMove: handleTrackedPointerMove,
     onTerminate: handlePointerTermination,
   });
@@ -238,7 +306,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
   drawRef.current = () => draw();
 
   // Redraw on any relevant state change (dirty rendering — no continuous loop).
-  useEffect(() => { schedule(); }, [tiles, cursors, selectedId, schedule]);
+  useEffect(() => { schedule(); }, [tiles, cursors, canvas, selectedId, selectedLaneId, schedule]);
 
   // ------------------------------------------------------------- canvas setup
   useEffect(() => {
@@ -331,7 +399,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
     ctx.fillStyle = DESK_BG;
     ctx.fillRect(0, 0, w, h);
 
-    // The white sheet
+    // Structured, dark game surface — never a blank white worksheet.
     const sx = cx;
     const sy = cy;
     const sw = c.sheetW * scale;
@@ -344,10 +412,15 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
     roundRectPath(ctx, sx, sy, sw, sh, 18 * scale);
     ctx.fill();
     ctx.restore();
-    ctx.strokeStyle = "rgba(15,23,42,0.09)";
+    ctx.strokeStyle = "rgba(148,163,184,0.34)";
     ctx.lineWidth = 1.5;
     roundRectPath(ctx, sx, sy, sw, sh, 18 * scale);
     ctx.stroke();
+
+    // v2 gives every composition a visible destination. v1 snapshots retain
+    // their original open sheet with no generated lanes.
+    const lanes = c.version === 2 ? c.lanes || [] : [];
+    for (const lane of lanes) paintCanvasLane(ctx, lane, { x: cx, y: cy, scale }, lang, lane.id === selectedLaneId);
 
     // Tiles (selected / claimed drawn last)
     const sorted = [...list].sort((a, b) => {
@@ -358,7 +431,9 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
     for (const tile of sorted) {
       const x = cx + tile.x * scale;
       const y = cy + tile.y * scale;
-      paintTile(ctx, tile, x, y, tile.w * scale, tile.h * scale, { selected: tile.id === selectedId, shadow: true });
+      const lane = tile.laneId ? lanes.find((item) => item.id === tile.laneId) : null;
+      const accent = lane?.teamColor ? TEAM_HEX[lane.teamColor] : undefined;
+      paintTile(ctx, tile, x, y, tile.w * scale, tile.h * scale, { selected: tile.id === selectedId, shadow: true, accent });
       const claimOwner = tile.heldBy ? playersById.get(tile.heldBy) : null;
       if (claimOwner && tile.heldBy !== you) {
         ctx.save();
@@ -428,6 +503,20 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
     return best;
   }
 
+  /** Returns only a player's shared/own lane. Team isolation is also enforced
+   * server-side; this is the optimistic interaction affordance. */
+  function pickLane(wx: number, wy: number): CanvasLane | null {
+    const current = canvasRefState.current;
+    if (current.version !== 2) return null;
+    const mine = playersRef.current.find((player) => player.id === youRef.current)?.teamId || null;
+    const candidates = (current.lanes || []).filter((lane) => !lane.teamId || lane.teamId === mine);
+    for (let index = candidates.length - 1; index >= 0; index--) {
+      const lane = candidates[index];
+      if (wx >= lane.x && wx <= lane.x + lane.w && wy >= lane.y && wy <= lane.y + lane.h) return lane;
+    }
+    return null;
+  }
+
   const posFromSample = (sample: Pick<PointerSample, "clientX" | "clientY">) => {
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return { x: 0, y: 0 };
@@ -490,6 +579,8 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
       };
       gestureType.current = "press";
     } else {
+      const lane = pickLane(world.x, world.y);
+      if (lane) setSelectedLaneId(lane.id);
       gestureType.current = "pan";
       pan.current = { id: sample.pointerId, sx: pos.x, sy: pos.y, cx: cameraRef.current.x, cy: cameraRef.current.y };
       setSelectedId(null);
@@ -569,7 +660,13 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
       grab.current = null;
       if (tile) {
         if (reason === "up") {
-          store.sendCanvas("move", { id: tile.id, x: tile.x, y: tile.y, drag: false });
+          const lane = pickLane(tile.x + tile.w / 2, tile.y + tile.h / 2);
+          if (lane) {
+            setSelectedLaneId(lane.id);
+            store.sendCanvas("place", { id: tile.id, laneId: lane.id });
+          } else {
+            store.sendCanvas("move", { id: tile.id, x: tile.x, y: tile.y, drag: false });
+          }
         } else {
           store.sendCanvas("move", { id: tile.id, x: tile.x, y: tile.y, drag: false, cancel: true, cancelReason: reason });
         }
@@ -625,12 +722,12 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
 
   const spawnLetter = (text: string) => {
     const center = viewCenter();
-    store.sendCanvas("spawn", { text, x: center.x, y: center.y });
+    store.sendCanvas("spawn", { text, x: center.x, y: center.y, ...(selectedLane ? { laneId: selectedLane.id } : {}) });
   };
 
   const spawnWord = (word: string, custom = false) => {
     const center = viewCenter();
-    store.sendCanvas("spawn", { text: word, x: center.x, y: center.y, custom });
+    store.sendCanvas("spawn", { text: word, x: center.x, y: center.y, custom, ...(selectedLane ? { laneId: selectedLane.id } : {}) });
   };
 
   const doExport = (kind: "png" | "txt" | "json") => {
@@ -645,6 +742,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
         mode: canvas.mode,
         contentLanguage: canvas.contentLanguage,
         text,
+        lanes: canvas.lanes,
         tiles: tileList.map((t) => ({ ...t })),
       });
     }
@@ -653,6 +751,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
         sheetW: canvas.sheetW,
         sheetH: canvas.sheetH,
         tiles: tileList,
+        lanes: canvas.lanes,
         isLetter,
         filename: `${base}.png`,
         drawTile: (ctx, tile, x, y, w, h) => paintTile(ctx, tile, x, y, w, h, { shadow: true }),
@@ -662,7 +761,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
 
   // ------------------------------------------------------------- tray data
   const alphabet = canvas.contentLanguage === "ro" ? "ABCDEFGHIJKLMNOPQRSTUVWXYZĂÂÎȘȚ" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const inventory = canvas.inventory; // null = sandbox
+  // null means an unlimited sandbox; colour-team rooms select their own bank above.
   const remainingOf = (text: string) => (inventory ? Math.max(0, inventory[text] ?? 0) : Infinity);
 
   const packWords = useMemo(() => {
@@ -715,26 +814,32 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
     </button>
   );
 
-  const trayContent = isLetter ? (
-    <LetterTray
-      alphabet={alphabet}
-      remainingOf={remainingOf}
-      onSpawn={spawnLetter}
-      disabled={!inputEnabled}
-    />
-  ) : (
-    <SentenceTray
-      categories={packWordsByCategory}
-      selected={trayCategory}
-      onSelectCategory={setTrayCategory}
-      remainingOf={remainingOf}
-      onSpawn={spawnWord}
-      disabled={!inputEnabled}
-      customWord={customWord}
-      setCustomWord={setCustomWord}
-      suggestions={suggestions}
-      inPack={!!inPack}
-    />
+  const trayContent = (
+    <div className="space-y-3">
+      {canvas.version === 2 && <LanePicker lanes={availableLanes} selectedId={selectedLane?.id || null} onSelect={setSelectedLaneId} isLetter={isLetter} />}
+      {canvas.version === 2 && selectedLane && <CompositionOutline lane={selectedLane} tiles={Object.values(tiles)} selectedId={selectedId} onSelect={setSelectedId} />}
+      {isLetter ? (
+        <LetterTray
+          alphabet={alphabet}
+          remainingOf={remainingOf}
+          onSpawn={spawnLetter}
+          disabled={!inputEnabled || (canvas.teamInventory != null && !myTeamId)}
+        />
+      ) : (
+        <SentenceTray
+          categories={packWordsByCategory}
+          selected={trayCategory}
+          onSelectCategory={setTrayCategory}
+          remainingOf={remainingOf}
+          onSpawn={spawnWord}
+          disabled={!inputEnabled || (canvas.teamInventory != null && !myTeamId)}
+          customWord={customWord}
+          setCustomWord={setCustomWord}
+          suggestions={suggestions}
+          inPack={!!inPack}
+        />
+      )}
+    </div>
   );
 
   return (
@@ -753,48 +858,47 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
         aria-label={lang === "ro" ? "Foaie de lucru — canvas de litere" : "Work sheet — letter canvas"}
       />
 
-      {/* Desktop side tray */}
+      {/* The source bank deliberately lives along the lower board edge, not as
+          a detached left inventory. It makes selecting, composing and seeing
+          the current destination feel like one game surface. */}
       {!isMobile && (
-        <aside className="safe-top absolute bottom-20 left-3 top-24 flex w-[264px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-ink-900/95 text-white shadow-pop backdrop-blur">
-          <div className="border-b border-white/10 px-4 py-3">
-            <div className="text-[10px] font-bold uppercase tracking-[.2em] text-ink-400">
-              {lang === "ro" ? "Tray de cărți" : "Tile tray"}
-            </div>
-            <div className="mt-0.5 truncate text-sm font-bold text-white">
-              {pick(puzzle.name, lang)}
-              <span className="ml-2 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold text-brand-200">
-                {canvas.contentLanguage.toUpperCase()}
-              </span>
-            </div>
+        <aside className="absolute bottom-4 left-1/2 z-20 flex max-h-[232px] w-[min(940px,calc(100vw-132px))] -translate-x-1/2 flex-col overflow-hidden rounded-3xl border border-white/15 bg-ink-900/96 text-white shadow-pop backdrop-blur">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 px-4 py-2.5">
+            <div><div className="text-[10px] font-bold uppercase tracking-[.2em] text-brand-300">{isLetter ? (lang === "ro" ? "Rastel de litere" : "Letter rack") : (lang === "ro" ? "Bancă de cuvinte" : "Word bank")}</div><div className="mt-0.5 text-xs text-ink-300">{isLetter ? (lang === "ro" ? "Alege o zonă, apoi atinge literele ca să construiești." : "Choose a lane, then tap letters to build.") : (lang === "ro" ? "Alege o zonă, apoi construiește o idee clară." : "Choose a lane, then build a clear thought.")}</div></div>
+            <span className="rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-bold text-brand-100">{canvas.contentLanguage.toUpperCase()} · {pick(puzzle.name, lang)}</span>
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto p-3">{trayContent}</div>
         </aside>
       )}
 
-      {/* Mobile bottom sheet tray */}
+      {/* Mobile keeps the same lower rack as a generous, keyboard-safe sheet. */}
       {isMobile && (
         <div
-          className={`safe-bottom absolute inset-x-0 bottom-0 z-20 flex flex-col rounded-t-3xl border-t border-white/10 bg-ink-900/97 text-white shadow-pop backdrop-blur transition-[height] duration-200 ${sheetOpen ? "h-[46vh]" : "h-[92px]"}`}
+          className="safe-bottom absolute inset-x-0 bottom-0 z-20 flex flex-col rounded-t-3xl border-t border-white/10 bg-ink-900/[.98] text-white shadow-pop backdrop-blur transition-[height] duration-200"
+          style={{ height: `${mobileRackHeight}px` }}
         >
           <button
             className="flex w-full cursor-pointer flex-col items-center pb-1 pt-2"
             onClick={() => setSheetOpen((v) => !v)}
-            aria-label={sheetOpen ? (lang === "ro" ? "Rulează tray-ul" : "Collapse tray") : (lang === "ro" ? "Deschide tray-ul" : "Open tray")}
+            aria-label={sheetOpen ? (lang === "ro" ? "Închide rastelul" : "Collapse rack") : (lang === "ro" ? "Deschide rastelul" : "Open rack")}
           >
             <span className="h-1.5 w-10 rounded-full bg-white/30" />
-            <span className="mt-1.5 text-[11px] font-bold text-ink-300">
-              {lang === "ro" ? "Tray de cărți" : "Tile tray"} · {canvas.contentLanguage.toUpperCase()} {sheetOpen ? "▾" : "▴"}
+            <span className="mt-1.5 text-[11px] font-bold text-ink-200">
+              {isLetter ? (lang === "ro" ? "Rastel de litere" : "Letter rack") : (lang === "ro" ? "Bancă de cuvinte" : "Word bank")} · {selectedLane ? pick(selectedLane.label, lang) : (lang === "ro" ? "zonă liberă" : "free canvas")} {sheetOpen ? "▾" : "▴"}
             </span>
           </button>
-          <div className={`min-h-0 flex-1 overflow-y-auto px-3 pb-2 ${sheetOpen ? "" : "flex items-center"}`}>
+          <div className={`min-h-0 flex-1 overflow-y-auto px-3 pb-3 ${sheetOpen ? "" : "flex items-center"}`}>
             {trayContent}
           </div>
         </div>
       )}
 
       {/* Action toolbar (exports + undo) */}
-      <div className="safe-bottom absolute bottom-4 right-3 z-10 flex flex-col items-center gap-2 sm:bottom-6 sm:right-5">
-        <div className="flex flex-col gap-1.5">
+      <div
+        className={`safe-bottom absolute z-30 flex items-center gap-2 ${isMobile ? "left-2 right-2 justify-center" : "bottom-6 right-5 flex-col"}`}
+        style={isMobile ? { bottom: `${mobileRackHeight + 10}px` } : undefined}
+      >
+        <div className={`flex gap-1.5 ${isMobile ? "flex-row" : "flex-col"}`}>
           <button
             className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-ink-900/95 text-sm text-white shadow-chip backdrop-blur hover:bg-ink-800 disabled:opacity-40"
             onClick={() => store.sendCanvas("undo")}
@@ -828,7 +932,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
             {"{ }"}
           </button>
         </div>
-        <div className="mt-1 flex flex-col gap-1.5">
+        <div className={`flex gap-1.5 ${isMobile ? "flex-row" : "mt-1 flex-col"}`}>
           {zoomBtn(1.25, lang === "ro" ? "Mărește" : "Zoom in")}
           <button
             className="flex h-8 w-10 items-center justify-center rounded-lg border border-white/10 bg-ink-900/95 text-[11px] font-bold text-ink-200 shadow-chip backdrop-blur"
@@ -844,8 +948,13 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
 
       {/* Selected tile actions */}
       {selectedTile && (
-        <div className={`absolute left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-2xl border border-white/10 bg-ink-900/97 p-1.5 text-white shadow-pop backdrop-blur ${isMobile ? (sheetOpen ? "bottom-[calc(46vh+14px)]" : "bottom-[104px]") : "top-16"}`}>
+        <div
+          className={`absolute left-1/2 z-30 flex max-w-[calc(100vw-16px)] -translate-x-1/2 flex-wrap items-center justify-center gap-1.5 rounded-2xl border border-white/10 bg-ink-900/97 p-1.5 text-white shadow-pop backdrop-blur ${isMobile ? "" : "top-16"}`}
+          style={isMobile ? { bottom: `${mobileRackHeight + 62}px` } : undefined}
+        >
           <span className="max-w-[110px] truncate px-1.5 text-sm font-bold text-white">{selectedTile.text}</span>
+          {selectedLane && <button className="rounded-xl bg-brand-500/25 px-2.5 py-1.5 text-xs font-bold text-brand-100 hover:bg-brand-500/35" onClick={() => store.sendCanvas("place", { id: selectedTile.id, laneId: selectedLane.id })} title={lang === "ro" ? `Pune în ${pick(selectedLane.label, lang)}` : `Place in ${pick(selectedLane.label, lang)}`} aria-label={lang === "ro" ? `Pune în ${pick(selectedLane.label, lang)}` : `Place in ${pick(selectedLane.label, lang)}`}>⇥ <span className="hidden sm:inline">{lang === "ro" ? "Pune" : "Place"}</span></button>}
+          {selectedTile.laneId && selectedLane?.id === selectedTile.laneId && <><button className="rounded-xl bg-white/10 px-2 py-1.5 text-xs font-bold text-white hover:bg-white/15" onClick={() => store.sendCanvas("place", { id: selectedTile.id, laneId: selectedTile.laneId, laneIndex: Math.max(0, (selectedTile.laneIndex || 0) - 1) })} title={lang === "ro" ? "Mută mai devreme" : "Move earlier"} aria-label={lang === "ro" ? "Mută mai devreme" : "Move earlier"}>←</button><button className="rounded-xl bg-white/10 px-2 py-1.5 text-xs font-bold text-white hover:bg-white/15" onClick={() => store.sendCanvas("place", { id: selectedTile.id, laneId: selectedTile.laneId, laneIndex: (selectedTile.laneIndex || 0) + 1 })} title={lang === "ro" ? "Mută mai târziu" : "Move later"} aria-label={lang === "ro" ? "Mută mai târziu" : "Move later"}>→</button></>}
           <button
             className="rounded-xl bg-white/10 px-2.5 py-1.5 text-xs font-bold text-white hover:bg-white/15"
             onClick={() => store.sendCanvas("flip", { id: selectedTile.id })}
@@ -887,34 +996,62 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
 }
 
 // ---------------------------------------------------------------------------
+// Semantic lane selector + source banks
+// ---------------------------------------------------------------------------
+
+/** A keyboard/screen-reader equivalent for the visual canvas tiles. */
+function CompositionOutline({ lane, tiles, selectedId, onSelect }: { lane: CanvasLane; tiles: CanvasTile[]; selectedId: number | null; onSelect: (id: number) => void }) {
+  const { lang } = useLang();
+  const items = tiles.filter((tile) => tile.laneId === lane.id).sort((a, b) => (a.laneIndex ?? 0) - (b.laneIndex ?? 0) || a.id - b.id);
+  return (
+    <section className="rounded-xl border border-white/10 bg-black/15 px-2.5 py-2" aria-label={lang === "ro" ? "Conținutul zonei selectate" : "Selected lane contents"}>
+      <div className="flex items-center justify-between gap-2"><span className="truncate text-[10px] font-bold uppercase tracking-[.15em] text-ink-400">{lang === "ro" ? "3. Construiește aici" : "3. Build here"} · {pick(lane.label, lang)}</span><span className="text-[10px] text-ink-500">{items.length} {lang === "ro" ? "cărți" : "tiles"}</span></div>
+      <div className="mt-1.5 flex max-h-[52px] flex-wrap gap-1 overflow-y-auto pr-1">
+        {items.length ? items.map((tile) => <button key={tile.id} type="button" onClick={() => onSelect(tile.id)} aria-pressed={selectedId === tile.id} className={`min-h-7 rounded-md border px-2 text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${selectedId === tile.id ? "border-brand-300 bg-brand-500/35 text-white" : "border-white/15 bg-white/[.07] text-ink-100 hover:bg-white/[.13]"}`} aria-label={lang === "ro" ? `Selectează ${tile.text}, poziția ${(tile.laneIndex || 0) + 1}` : `Select ${tile.text}, position ${(tile.laneIndex || 0) + 1}`}>{tile.text}</button>) : <span className="py-1 text-[11px] text-ink-500">{lang === "ro" ? "Alege o carte din bancă." : "Choose a tile from the bank."}</span>}
+      </div>
+    </section>
+  );
+}
+
+function LanePicker({ lanes, selectedId, onSelect, isLetter }: { lanes: CanvasLane[]; selectedId: string | null; onSelect: (id: string) => void; isLetter: boolean }) {
+  const { lang } = useLang();
+  if (!lanes.length) return <p className="rounded-xl border border-white/10 bg-white/[.035] px-3 py-2 text-[11px] text-ink-300">{lang === "ro" ? "Canvas liber restaurat — mută cărțile oriunde pe tablă." : "Restored free canvas — move tiles anywhere on the board."}</p>;
+  const groups = new Map<string, CanvasLane[]>();
+  for (const lane of lanes) {
+    const key = lane.teamId || "shared";
+    groups.set(key, [...(groups.get(key) || []), lane]);
+  }
+  return (
+    <section aria-label={lang === "ro" ? "Alege zona de compoziție" : "Choose composition lane"}>
+      <div className="mb-1.5 flex items-center justify-between gap-3"><span className="text-[10px] font-bold uppercase tracking-[.18em] text-ink-400">{lang === "ro" ? "1. Alege zona" : "1. Choose a lane"}</span><span className="text-[10px] text-ink-500">{isLetter ? (lang === "ro" ? "litere în ordine" : "letters in order") : (lang === "ro" ? "idee → motiv → pas" : "idea → reason → step")}</span></div>
+      <div className="flex flex-wrap gap-1.5">
+        {[...groups.values()].flat().map((lane) => {
+          const selected = lane.id === selectedId;
+          const accent = lane.teamColor ? TEAM_HEX[lane.teamColor] || "#60a5fa" : "#60a5fa";
+          return <button key={lane.id} type="button" onClick={() => onSelect(lane.id)} aria-pressed={selected} className={`min-h-9 rounded-xl border px-3 py-1.5 text-left text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${selected ? "text-white" : "bg-white/[.035] text-ink-200 hover:bg-white/[.09]"}`} style={selected ? { borderColor: accent, backgroundColor: withAlpha(accent, .26) } : { borderColor: withAlpha(accent, .36) }}><span style={{ color: accent }} aria-hidden>{lane.teamMarker ? `${lane.teamMarker} ` : ""}</span>{lane.teamName ? `${lane.teamName} · ` : ""}{pick(lane.label, lang)}</button>;
+        })}
+      </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Letter tray
 // ---------------------------------------------------------------------------
 
 function LetterTray({ alphabet, remainingOf, onSpawn, disabled }: { alphabet: string; remainingOf: (t: string) => number; onSpawn: (t: string) => void; disabled: boolean }) {
+  const { lang } = useLang();
   const letters = [...alphabet];
   return (
-    <div className="space-y-4">
-      <TraySection label={
-        <span><span className="mr-1">🔡</span><TrayLabel ro="Litere" en="Letters" /></span>
-      }>
-        <div className="grid grid-cols-6 gap-1.5">
-          {letters.map((letter) => (
-            <TrayButton key={letter} label={letter} count={remainingOf(letter)} onClick={() => onSpawn(letter)} disabled={disabled} wide={false} />
-          ))}
-        </div>
-      </TraySection>
-      <TraySection label={<span><span className="mr-1">✨</span><TrayLabel ro="Wildcard" en="Wildcard" /></span>}>
-        <div className="grid grid-cols-6 gap-1.5">
-          <TrayButton label="?" count={remainingOf("?")} onClick={() => onSpawn("?")} disabled={disabled} wildcard />
-        </div>
-      </TraySection>
-      <TraySection label={<span><span className="mr-1">❗</span><TrayLabel ro="Punctuație" en="Punctuation" /></span>}>
-        <div className="grid grid-cols-6 gap-1.5">
-          {LETTER_PUNCT.map((p) => (
-            <TrayButton key={p} label={p} count={remainingOf(p)} onClick={() => onSpawn(p)} disabled={disabled} punct />
-          ))}
-        </div>
-      </TraySection>
+    <div className="space-y-2.5">
+      <div className="flex items-center justify-between"><span className="text-[10px] font-bold uppercase tracking-[.18em] text-ink-400">{lang === "ro" ? "2. Alege litere" : "2. Pick letters"}</span><span className="text-[10px] text-ink-500">{lang === "ro" ? "Atinge pentru a plasa" : "Tap to place"}</span></div>
+      <div className="flex flex-wrap gap-1.5" aria-label={lang === "ro" ? "Rastel de litere" : "Letter rack"}>
+        {letters.map((letter, index) => <TrayButton key={letter} label={letter} count={remainingOf(letter)} onClick={() => onSpawn(letter)} disabled={disabled} tilt={[-2, 1, -1, 2, 0][index % 5]} />)}
+        <span className="mx-0.5 h-9 w-px self-center bg-white/10" aria-hidden />
+        <TrayButton label="?" count={remainingOf("?")} onClick={() => onSpawn("?")} disabled={disabled} wildcard />
+        {LETTER_PUNCT.map((punct, index) => <TrayButton key={`${punct}-${index}`} label={punct} count={remainingOf(punct)} onClick={() => onSpawn(punct)} disabled={disabled} punct />)}
+      </div>
+      <p className="text-[11px] leading-relaxed text-ink-400">{lang === "ro" ? "Schimbă zona oricând; trage o carte pe o zonă sau alege-o și apasă Pune." : "Change lanes any time; drag a tile onto a lane or select it and press Place."}</p>
     </div>
   );
 }
@@ -1040,7 +1177,7 @@ function TrayLabel({ ro, en }: { ro: string; en: string }) {
   return <>{lang === "ro" ? ro : en}</>;
 }
 
-function TrayButton({ label, count, onClick, disabled, wide = false, punct = false, wildcard = false }: { label: string; count: number; onClick: () => void; disabled: boolean; wide?: boolean; punct?: boolean; wildcard?: boolean }) {
+function TrayButton({ label, count, onClick, disabled, wide = false, punct = false, wildcard = false, tilt = 0 }: { label: string; count: number; onClick: () => void; disabled: boolean; wide?: boolean; punct?: boolean; wildcard?: boolean; tilt?: number }) {
   const { lang } = useLang();
   const depleted = count === 0;
   return (
@@ -1055,6 +1192,7 @@ function TrayButton({ label, count, onClick, disabled, wide = false, punct = fal
             : "border-amber-300/35 bg-amber-500/15 text-amber-50 hover:bg-amber-500/25"
       }`}
       title={depleted ? (lang === "ro" ? "Stoc epuizat" : "Out of stock") : undefined}
+      style={tilt ? { transform: `rotate(${tilt}deg)` } : undefined}
       aria-label={`${label} (${count === Infinity ? lang === "ro" ? "nelimitat" : "unlimited" : count})`}
     >
       {label}

@@ -38,7 +38,7 @@ function connect(roomId, playerId) {
 const health = await get("/api/health");
 ok("health exposes operations metrics", health.data.ok && health.data.protocolVersion === 2 && typeof health.data.heapUsedMb === "number");
 const catalog = await get("/api/puzzles");
-ok("catalog keeps the ten supported categories", catalog.data.categories.length === 10 && !catalog.data.categories.some((c) => c.id === "words") && ["letter-canvas", "sentence-canvas", "isometric-worlds", "abstract-geometry", "blueprint-architecture"].every((id) => catalog.data.categories.some((category) => category.id === id)));
+ok("catalog keeps eight reviewed supported categories", catalog.data.categories.length === 8 && !catalog.data.categories.some((c) => ["words", "isometric-worlds", "abstract-geometry"].includes(c.id)) && ["letter-canvas", "sentence-canvas", "blueprint-architecture"].every((id) => catalog.data.categories.some((category) => category.id === id)));
 ok("catalog contains only attributed images", catalog.data.puzzles.every((p) => p.credit && p.license && p.source !== "Web"), `${catalog.data.puzzles.length} entries`);
 ok("trademarked puzzle id was removed", !catalog.data.puzzles.some((p) => /scrabble/i.test(p.id + p.name)));
 

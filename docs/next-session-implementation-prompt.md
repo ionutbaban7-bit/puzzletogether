@@ -1,389 +1,199 @@
-# Copy/paste implementation prompt — PuzzleTogether remediation delivery
+# Copy/paste continuation prompt — PuzzleTogether post-remediation release gate
 
-> **Use this prompt in the next implementation session.** It is intentionally specific so the session can continue even if the prior agent context is unavailable.
+> **Read this before changing code.** The automated remediation is already implemented on the active Arena branch. Your job is to validate it on real devices, complete the remaining quality gates in order, and make only evidence-backed follow-up fixes. Do not restart or replace the completed architecture.
 
-## Role and mission
+## Mission and current truth
 
-You are the implementation owner for the next PuzzleTogether delivery. Raise the product to a premium collaborative-game quality bar, beginning with two verified user blockers:
+PuzzleTogether has completed the original seven-stage delivery plus this remediation:
 
-1. On a physical iPhone, a participant intermittently cannot grab or move jigsaw pieces.
-2. On a physical iPhone, a joining participant cannot reliably find/use Chat or see team conversation.
+- resilient shared Pointer Events lifecycle and prompt claim recovery;
+- participant-visible, keyboard-safe mobile Chat;
+- Canvas v2 lanes, lower source banks, selectable colour teams and semantic ordering;
+- retirement of weak Abstract Geometry and Isometric Worlds content with legacy-room compatibility;
+- catalog image-serving hardening and isolated catalog serving tests.
 
-Then replace the current tray-based Canvas mechanics with purposeful, team-aware Letter Canvas and Sentence Canvas experiences. Add selectable colour teams safely, and remove/delist the weak generated catalog categories until replacements meet a real quality gate.
+The user’s two original P0 reports are **not physically closed**: no real iPhone Safari test was possible in this sandbox. Do not say “fixed on iPhone” without the physical evidence specified below.
 
-Read `docs/product-remediation-review-2026-09-04.md` first. It contains audited evidence, decisions, and the exact non-regression constraints.
+Read `docs/product-remediation-review-2026-09-04.md` first. It is the authoritative status/risk record.
 
-## Mandatory operating rules
+## Non-negotiable operating rules
 
-- Work only on the Arena-provided active branch. Do not switch branches, create a side branch, or push elsewhere.
-- Before changing files, run `git status --short`, fetch the active remote branch, and reconcile only after proving any worktree delta is preserved. **Never use `git reset --hard`, `git clean`, or checkout-overwrite to discard unknown work.**
-- Treat the repository’s current `WORKPLAN.md` and `docs/qa-report.md` as historical evidence. Extend them with the new remediation facts; do not silently rewrite or erase the prior delivery record.
-- Do not claim the iPhone issue is fixed from Chromium emulation, synthetic PointerEvents, Android, or code inspection. A physical iPhone Safari sign-off is mandatory.
-- Do not implement teams as frontend-only local state. Teams, membership, inventory/ownership, permissions, persistence, reconnect, and exports must be server-authoritative.
-- Do not replace weak catalog content with a batch of superficial seed variations. Quality and truthful naming matter as much as valid licenses.
-- Preserve the existing workshop reset endpoint and semantics: `POST /api/rooms/:id/reset` remains the workshop reset.
-- Preserve the Stage 2 jigsaw layout contract: server-authoritative, reconnect-safe, skips locked/held pieces, and never sets `moved=true` merely because a layout ran.
-- Preserve the jigsaw-only reset contract: active timer, stage, players, and workshop state survive `POST /api/rooms/:id/puzzle-reset`.
-- Keep gameplay dark. If Canvas needs a work surface, it is a contained activity surface, not a white gameplay page. Preserve the Coaching Partners marketing identity and short/plain RO/EN copy.
+- Work only on Arena’s active branch. Do not switch branches, create side branches, or push elsewhere.
+- Start with `git status --short`; preserve unknown work. Never use `git reset --hard`, `git clean`, or checkout-overwrite to discard work.
+- Complete stages **0 → 7 in order**. A stage is not green until its stated evidence is recorded; do not quietly start a later stage.
+- Commit logically and push the active branch after every green stage. Keep the pull request truthful about automated versus physical evidence.
+- Do not claim an iPhone result from Chromium emulation, synthetic PointerEvents, Android, source inspection, or a passing Node test.
+- Preserve `POST /api/rooms/:id/reset` workshop-reset semantics.
+- Preserve the server-authoritative jigsaw layout contract: never move locked/held pieces and never set `moved=true` merely because a layout ran.
+- Preserve the jigsaw-only reset contract: timer, stage, players, and workshop state survive `POST /api/rooms/:id/puzzle-reset`.
+- Keep gameplay dark. Marketing uses the Coaching Partners azure/pink/purple/blue-gray/white identity. Keep short/plain correct RO/EN copy; do not invent claims.
+- Do not reintroduce Abstract Geometry or Isometric Worlds merely by renaming/recolouring procedural variants.
 
-## Starting facts you must not rediscover incorrectly
+## Completed architecture — preserve it
 
-- Current remote baseline was `d35f7bb` when this handoff was written. The original Stage 0–7 work and picker-image repair are already pushed.
-- Current protocol version is 2. Existing automated protocol suite passed 132/132 at the baseline.
-- Current server chat behaviour is already participant-capable: `init` includes `room.chat`, live chat broadcasts to every connection, snapshots persist chat, and the client stores it. A fresh two-client probe proved participant live delivery and reconnect history.
-- The reported Chat failure is therefore not evidence that the server deliberately restricts chat to facilitators. The likely problem is mobile chrome/discoverability/keyboard/layout, but verify it on device.
-- Current `Board.tsx`, `CanvasBoard.tsx`, and `RankingActivity.tsx` each have separate Pointer Event implementations. They call `setPointerCapture`, do not handle `lostpointercapture`, and do not share cancellation/release logic.
-- `Board.tsx` calls `setPointerCapture(undefined as number)` on Escape; correct this rather than preserving it.
-- Server claim TTL is configured at eight seconds, but the stale-claim sweep currently runs only on the 30-second heartbeat. Fix the observed expiry semantics.
-- Current Letter Canvas/Sentence Canvas uses a desktop tray or mobile bottom sheet. Clicking/tapping a token spawns it at the viewport centre with jitter. It has no team entity and reconstructs sentence text from coordinates.
-- Current individual `PlayerView.color` is presence colour, not team colour. Do not repurpose it as `teamColor`.
-- Visual review found the complete current Abstract Geometry and Isometric Worlds sets unacceptable: repeated template composition, not meaningful distinct content. Blueprint Architecture and five named Romanian city illustrations also need a quality/truthfulness review.
+### Input and claims
 
-## Ordered work packages
+- `src/puzzle/usePointerLifecycle.ts` is shared by `Board.tsx`, `CanvasBoard.tsx`, and `RankingActivity.tsx`.
+- It stores active pointers before safely attempting capture; on failed/unavailable capture it uses a window fallback for only that pointer.
+- It terminates exactly once on up, cancel, lost capture, blur, visibility change, page hide, resize/visual-viewport interruption, Escape, and unmount.
+- `src/puzzle/pointerTelemetry.ts` is opt-in only. Add `?ptPointerDebug=1` to an iPhone test URL and inspect `window.__ptPointerTrace` in Web Inspector. The trace must remain client-only and must not acquire coordinates, pointer IDs, room/player IDs, names, chat text, or other personal/content data.
+- Server claim sweeping is independent of the heartbeat. Do not restore the old 30-second-only expiry behavior.
+- Cancellation is not a normal drop. It must release/reconcile without snap/score. Canvas preserves a pre-drag origin so cancel/disconnect/expiry/undo do not leave stale lane metadata.
 
-Do not begin a later package until its tests and documented acceptance gate are green. Commit logically after each green package and push the active branch. Keep the pull request updated.
+### Chat and mobile shell
 
-### Package 0 — baseline, safety, and reproducibility
+- `GamePage.tsx` provides labeled always-visible `Chat` below the compact breakpoint, regardless of role. Lower-priority commands are behind `More`.
+- `ChatSheet.tsx` is a dialog with focus handling, history/live message behavior, unread state, return focus, safe areas, and visual viewport/keyboard handling.
+- Server `init` includes chat history for every connection. Live entries broadcast to every participant and sender retries are idempotent by sender-scoped `clientMessageId`.
+- `game-shell`, `useVisualViewport`, and `useMediaQuery` are used to avoid fixed iPhone viewport assumptions. Do not replace them with a one-time `window.innerWidth` branch.
 
-1. Inspect current Git state and preserve any unknown worktree material.
-2. Run the current executable baseline:
+### Canvas v2 and teams
+
+- New Canvas rooms use `canvas.version === 2`; active/restored v1 canvases remain freeform and must not be rearranged.
+- Canvas v2 has server-defined semantic lanes. Letter Canvas uses Word lanes; Sentence Canvas uses Idea → Reason → Next step lanes.
+- `teamMode` is `shared | color-teams`. Colour teams are intentionally a Canvas mechanic only; do not expose a misleading team-bank/lane promise for jigsaw/coaching.
+- Teams are server-authoritative: `TeamView` has `id`, `name`, `color`, `marker`, `order`, `memberIds`; player presence colour remains separate from team colour.
+- Host controls: `{ t: "control", action: "teams", mode, count }` and `{ t: "control", action: "teamAssign", playerId, teamId }`.
+- Participant lobby selection: `{ t: "team", action: "select", teamId }`. Start rejects unassigned active Canvas players in colour-team mode.
+- Canvas operations remain authoritative: `{ t: "canvas", op: "place", id, laneId, laneIndex? }`; spawn, move, duplicate, delete, edit, flip, undo remain supported.
+- Team banks, lane permissions, tile ownership, reconnect snapshots and export are server-side. Never turn these into client-only state.
+- `CompositionOutline` is the semantic/keyboard alternative to visual canvas tiles; selected tiles support Place and earlier/later authoritative reorder actions.
+
+### Catalog and image serving
+
+- Active catalog is 8 categories / 70 puzzles / 74 source records. `data/catalog/retired-stage5.json` retains 20 retired records only for provenance/short-lived legacy room restoration.
+- Retired entries must remain absent from active API, pickers, manifests, public WebPs and active source ledger.
+- A legacy retired room uses `/api/retired-images/:id?room=:roomId`; the route must validate that currently active legacy room. The unscoped route must remain unavailable.
+- `/images` is an explicit closed static route. A missing derivative must be a fast 404, not Vite HTML/proxy timeout or a 500. Vite proxy configuration must require an explicit distinct `VITE_BACKEND_URL`.
+- `npm run test:catalog-serve` owns a clean `DATA_DIR` and port by default. Do not make its room matrix pollute normal `.data/rooms.json` again.
+
+## Stage 0 — establish reproducible release evidence
+
+1. Record active branch/commit, dependency version, deployment URL, and supported oldest iOS policy.
+2. Run:
    ```sh
    npm ci
    npm run typecheck
    npm run build
-   BASE=http://127.0.0.1:3000 npm run test:protocol
-   BASE=http://127.0.0.1:3000 npm run test:catalog-serve
-   BASE=http://127.0.0.1:3000 npm run test:load
+   npm run test:protocol
    npm run test:render-contract
+   npm run catalog:audit
+   npm run test:catalog-serve
+   npm run test:load
    ```
-3. Start the app on `0.0.0.0`; browser-facing paths must remain relative/same-origin so the Arena preview works.
-4. Add a documented device-test protocol and a privacy-safe input telemetry switch before attempting to diagnose the iPhone failure.
-5. Add an explicit test inventory identifying which checks are Node protocol tests, browser-emulation tests, and physical-device tests. Do not merge labels between them.
+3. Run browser suites where Playwright runtimes are available:
+   ```sh
+   npm run test:e2e
+   LOBBY_ONLY=1 node scripts/jigsaw-browser-test.mjs
+   ```
+   The previous sandbox had no Playwright browser binary and `npx playwright install chromium` failed with TLS `ECONNRESET`; record that fact rather than inventing a pass.
+4. Start the app on `0.0.0.0`. Browser-facing client calls must remain relative/same-origin for Arena preview/proxy compatibility.
+5. Create a release evidence record separating Node/protocol, browser-emulation, physical-device, catalog, accessibility, security, and manual visual results.
 
-**Exit gate:** clean baseline or every pre-existing failure recorded with cause; no destructive recovery action; device test plan and telemetry design reviewed.
+**Exit gate:** all executable gates green or an explicitly documented infrastructure failure; no unclassified failure.
 
-### Package 1 — P0 resilient pointer/claim lifecycle
+## Stage 1 — physical iPhone Safari jigsaw P0 validation
 
-#### Desired implementation
+Use a real iPhone and Safari Web Inspector. Test the newest supported iOS plus the oldest supported iOS release. Use `?ptPointerDebug=1` and capture only privacy-safe trace data.
 
-Create a reusable client-side gesture controller/hook, rather than patching only `Board.tsx`. It should serve the jigsaw first and then be adopted by Canvas/ranking where applicable.
+For each device/role, execute and record:
 
-Use an explicit state machine, for example:
+1. At least 100 grab/move/drop cycles across scattered pieces, tray pieces, board edges, and different zoom levels.
+2. Portrait and landscape; compact and expanded Safari chrome; Dynamic Type/text zoom where supported.
+3. Quick tap, long press, second-finger pinch during drag, lost-capture/cancel path, background/foreground, orientation change, host lock/unlock, offline/reconnect.
+4. A second browser/client contesting a held piece and successful recovery after release/expiry.
+5. No stale local interaction, no false snap/score on cancellation, no stuck `heldBy`, and a usable claim-release delay.
 
-```text
-idle
-  -> pressing(pointerId, candidate)
-  -> claiming(pointerId, itemId)
-  -> dragging(pointerId, itemId)
-  -> dropped
-  -> cancelled
-  -> idle
-```
+If a failure occurs, attach the bounded trace and a privacy-safe recording to the issue/PR, identify the first unexpected transition, then fix only the demonstrated path. Keep pointer capture fallback and cancellation semantics intact.
 
-Required behaviour:
+**Exit gate:** explicit pass result from real iPhone Safari. This remains a release blocker until passed.
 
-- Store the active `pointerId`, last valid screen/world location, capture status, candidate item, and whether the movement threshold was crossed.
-- Add pointer state before attempting capture. Wrap `setPointerCapture` in a safe helper; if it fails or is unavailable, use a window-level `pointermove`/`pointerup`/`pointercancel` fallback for the active pointer.
-- Handle all release paths exactly once: `pointerup`, `pointercancel`, `lostpointercapture`, `window.blur`, `visibilitychange`, `pagehide`, component unmount, second-finger transition, and explicit Escape. Use `releasePointerCapture(pointerId)` only when capture exists; never call `setPointerCapture` with an invalid id.
-- Do not treat a cancellation as a normal pointer-up with an invented final coordinate. Release the current claim using the last known valid position, then reconcile from the server.
-- Use a small movement threshold before turning a touch/press into a drag/claim. It must still feel immediate, but an accidental tap must not leave a server claim/moved state.
-- Preserve pinch/pan. A second touch must atomically cancel/release an in-progress piece drag before entering pinch mode.
-- Add scoped CSS/native-event protections only to interactive boards: `touch-action: none`, appropriate `overscroll-behavior`, selection/callout suppression, and a tested non-passive fallback only if Safari evidence shows it is needed. Do not globally prevent scrolling or break forms/chat.
-- Make server claim expiration genuinely prompt. Either sweep claims at a short interval or use expiry timers; also make a deliberate client release idempotent. On disconnect, continue to release all claims immediately.
-- Keep server authority: local motion is optimistic only; piece/tile rejection restores authoritative state and communicates a concise usable message.
-- Keep dirty rendering. Do not introduce a perpetual animation loop to hide state inconsistencies.
+## Stage 2 — physical iPhone participant Chat P0 validation
 
-#### Test requirements
+As a non-host on the same real devices:
 
-Add source/unit/state-machine tests for:
+1. Find the labeled `Chat` button without guessing an icon.
+2. Open it from lobby and play; read initial history and live host/participant messages.
+3. Send a message with the iOS keyboard open; verify it reaches sender and another client exactly once.
+4. Test unread badge, scroll/read position, close/reopen, Escape/hardware keyboard where available, safe areas, portrait/landscape, and resume activity after close.
+5. Test reconnect/retry and a room reset/activity switch according to existing chat policy.
 
-- safe capture failure;
-- `lostpointercapture` after pointer down;
-- cancellation after a partial move;
-- blur/pagehide/unmount;
-- second finger during a drag;
-- duplicate/out-of-order terminal events;
-- server rejection/reconcile;
-- prompt stale claim expiry;
-- existing two-player contested claim and reconnect flows.
+Do not hide the trigger behind host-only state or a visual-only emoji. Do not globally suppress touch scrolling in inputs/chat.
 
-Update protocol tests to assert a cancelled/released claim does not remain held beyond the agreed short deadline. Keep jigsaw layout and reset tests intact.
+**Exit gate:** real iPhone non-host success and no overlap/clipping around keyboard/browser chrome.
 
-#### Physical iPhone gate — mandatory
+## Stage 3 — Canvas v2 usability and accessibility validation
 
-Use a real iPhone, Safari, and Web Inspector/remote debugging. Test the newest supported iOS and the oldest supported iOS release; record exact devices and OS versions. For each device:
+Conduct at least one facilitated desktop and phone session with people unfamiliar with the implementation.
 
-- perform at least 100 grab/move/drop cycles from scattered positions, tray positions, board edges, and different zoom levels;
-- repeat in portrait and landscape, with compact/expanded Safari chrome;
-- test a second-finger pinch while dragging, a quick tap, long press, cancellation/lost-capture test hook, background/foreground, orientation change, host lock/unlock, and offline/reconnect;
-- test a second browser/player trying to claim the same item;
-- confirm no stale local pointer map, no stuck claim, no false snap/drop, and no more than the agreed prompt claim-release delay.
+Validate:
 
-Capture privacy-safe telemetry and a short screen recording. If it fails, include the event trace in the issue/PR; do not declare success.
+- A person can select a lane, pick from the lower letter/word bank, build/revise a first word or Idea→Reason→Next step response, and understand the next action without facilitator explanation.
+- Shared mode remains a common bank/lanes; colour mode exposes written name + marker + colour, team-specific bank/lane, host assignment and participant selection before Start.
+- Tap, drag-to-lane, semantic outline, Place, earlier/later reorder, duplicate/delete/undo, keyboard controls and export create the same ordered server result.
+- iPhone lower rack, expanded rack, selected-tile actions, horizontal tool strip, custom-word keyboard, safe area and narrow layouts have no unreachable/overlapping controls.
+- VoiceOver/keyboard-only users can select source tiles and lane tiles, hear names/order, reorder and delete. Test contrast, reduced motion and text zoom.
+- v1 persisted Canvas room remains visually/functionally freeform after reconnect; do not migrate its live coordinates.
 
-**Exit gate:** all protocol/state-machine tests pass and the physical iPhone evidence explicitly passes.
+If usability evidence identifies a real ambiguity, preserve the v2 server contract and improve labels/layout rather than introducing a parallel local ordering model.
 
-### Package 2 — P0 mobile GameChrome and participant Chat
+**Exit gate:** facilitated usability pass plus accessibility/mobile evidence; no v1 regression.
 
-#### Desired implementation
+## Stage 4 — catalog visual and truthfulness review
 
-Split global room chrome from activity controls. Create a documented layer/layout contract, e.g. `GameChrome`, `MobileCommandBar`, `MobileChatSheet`, and CSS variables for safe top/bottom, keyboard offset, and reserved activity-tool area.
+The two retired categories stay retired. Review remaining Blueprint Architecture and named Romanian city assets manually at picker-thumbnail, 25-, 64-, and 144-piece scales.
 
-On phone widths:
+For every asset that is generic, repetitive, weakly solvable, or inaccurately named:
 
-- Keep a **visible, labelled Chat action** persistently reachable by every participant. It must not require interpreting an emoji or opening an unrelated host menu.
-- Use an unread count for messages received while the sheet is closed. Do not display total historic message count as though it were unread count.
-- Move lower-priority/host-only/new puzzle/share/leave actions into a labelled overflow menu or a separate reachable command surface. Do not make an unwrappable row of icon buttons compete with the HUD.
-- Make z-index layering explicit. Global Chat must not sit below Canvas sheets, ranking panels, board controls, or browser safe areas.
-- Implement the drawer as an accessible bottom sheet/dialog on mobile. It needs a semantic title, close label, focus management, focus return, Escape handling where applicable, and an `aria-live` strategy for new messages.
-- Use dynamic viewport and `window.visualViewport` safely so the message list and composer stay visible above the iOS keyboard. Avoid a fixed `vh` calculation that ignores keyboard/Safari chrome.
-- Auto-scroll only if the user is already near the bottom. Preserve their reading position and show a “new messages” affordance otherwise.
-- Keep chat history/live message access for host, participant, and any explicitly allowed role. Do not introduce a host-only branch.
-- Preserve the current server chat retention cap unless a product decision changes it. If changing it, include snapshot/storage/abuse implications and migration.
+1. retire it with a durable provenance/decision record, or replace it only after complete permitted-license proof;
+2. retain original source/checksum/attribution/alt text and Romanian requirements;
+3. ensure no watermark/logo/embedded text/identifiable-person main subject unless policy explicitly permits it;
+4. show materially distinct subject, composition, focal distribution, palette and puzzle texture;
+5. run duplicate/similarity screening and documented human review;
+6. update source ledger, active puzzle data, manifest, full/thumb derivatives, picker/API and legacy-room policy together;
+7. run `npm run catalog:audit`, `npm run catalog:report`, `npm run test:catalog-serve`, and legacy compatibility tests.
 
-#### Test requirements
+**Exit gate:** live catalog contains only accurately named, licensed, human-reviewed content. Structural audit alone is not visual approval.
 
-Add a committed multi-client chat protocol test covering:
+## Stage 5 — security and operational hardening
 
-- init history for host and participant;
-- participant-to-host and host-to-participant delivery;
-- ordering and duplicate protection;
-- reconnect history;
-- maximum length and empty message handling;
-- persistence/restart behaviour;
-- puzzle change/reset behaviour as decided.
+Do not call this an enterprise release until the following have a threat model and tests:
 
-Add browser tests at narrow desktop/mobile emulation sizes for visible labelled trigger, open/close, unread state, focus return, and no clipping. These tests do not replace iPhone validation.
+- rate/abuse controls for room create/join/upload/chat/WebSocket frames;
+- host/export bearer capability and query-string exposure; session authorization strategy;
+- WebSocket origin policy and production security headers compatible with the deployment/preview;
+- health metrics exposure;
+- room-linked upload lifecycle, abandoned-upload cleanup, ImageMagick resource/decompression-bomb limits;
+- local JSON snapshot single-instance limitation, backup/retention and deployment runbook.
 
-#### Physical iPhone gate — mandatory
+Keep normal workshops usable while adding controls. Do not log chat text or personal names in diagnostic telemetry.
 
-As a non-host participant, prove:
+**Exit gate:** documented threat model, tested controls and operations/rollback plan.
 
-- Chat is visibly named and reachable immediately in the lobby and active play.
-- History and live messages are visible.
-- Sending works with the iOS keyboard open.
-- The composer, close control, and trigger remain reachable at 320×568, 375×667, 390×844, landscape, and a safe-area device.
-- Board/Canvas interaction resumes after Chat closes.
+## Stage 6 — engineering and release QA
 
-**Exit gate:** participant chat device flow and all protocol/browser tests pass.
+- Add/maintain CI for install, typecheck, build, protocol, render contract, catalog audit/serve, lint/format, and browser tests where runners exist.
+- Keep dirty rendering; never add a permanent animation loop to conceal interaction defects.
+- Add controlled error boundary/observability and decompose only where test coverage preserves behavior; `server.js`, `GamePage.tsx`, Board and CanvasBoard are currently large cross-cutting files.
+- Run final full QA matrix plus device/accessibility evidence. Re-run targeted suites after any code change:
+  ```sh
+  npm run test:teams
+  npm run test:catalog-compat
+  npm run test:claim-lifecycle
+  npm run test:chat
+  npm run test:protocol
+  ```
 
-### Package 3 — versioned server-authoritative team and Canvas domain model
+**Exit gate:** all experts/gates pass, or unresolved P0/P1 defects are explicitly release-blocking rather than hidden.
 
-Do this before redesigning UI. Do not bolt colours onto `PlayerView.color`.
+## Stage 7 — rollout and release
 
-#### Recommended model
-
-```ts
-interface TeamView {
-  id: string;
-  name: string;
-  color: TeamColor;       // e.g. red, amber, yellow, green, blue, purple
-  marker: string;         // symbol/pattern label; color is never the sole cue
-  order: number;
-  memberIds: string[];
-}
-
-interface PlayerView {
-  // retain id, name, personal presence color, role
-  teamId?: string | null;
-}
-
-interface RoomView {
-  teamMode: "shared" | "color-teams";
-  teams: TeamView[];
-  canvasVersion?: 1 | 2;
-}
-```
-
-On the server, retain the authoritative maps/relations rather than trusting `memberIds` from the client. Add `teamId` to serialised player/tile/composition state only where needed.
-
-Recommended lobby flow:
-
-1. Host chooses **Shared** or **Color teams** and 2–6 available named colours.
-2. Players choose an open team before start; host can rebalance or assign.
-3. Once play begins, ordinary self-switching is locked. Host reassignment is server-authoritative, auditable, and does not delete a player’s work.
-4. Every team indicator has a name plus a marker/pattern/icon as well as a colour.
-
-Recommended semantics:
-
-- Shared mode is one neutral/shared group; current individual presence colours stay visible.
-- Color-team mode uses team-scoped source banks/inventory and team-aware composition lanes. It is collaborative by default, not an arbitrary competitive leaderboard.
-- If a later activity needs scoring, score only a validated objective and expose team score explicitly. Do not add decorative scoring just because teams exist.
-
-#### Protocol, persistence, and migration
-
-- Add a versioned, validated server message/action for team configuration, participant selection, and host assignment. Reject unknown team, cross-room player, spectator misuse, post-start self-switch, and unauthorised host actions.
-- Include teams/membership in `init`, room broadcasts, snapshot persistence, restore, reset, activity switch, export, and reconnect.
-- Add `canvasVersion`/activity revision. New Canvas rooms use v2. Preserve existing v1 active/snapshot rooms for their short remaining room lifetime with the legacy renderer/model; do not rearrange a live v1 freeform composition.
-- Normalise old snapshots safely: absent teams become shared mode; absent player team is `null`; absent version is v1 when canvas tiles exist. Make the normaliser idempotent.
-- Document how old v1 rooms expire/migrate. Do not silently delete live workshop output.
-- Bump protocol version only if the wire compatibility change truly requires it; otherwise retain backward-compatible optional fields. Document the compatibility decision.
-
-#### Test requirements
-
-Add team protocol tests for lobby selection, host assignment, start lock, reconnect, snapshot restart, reset/puzzle-switch handling, role rejection, export, tile ownership/inventory, and simultaneous moves. Update all existing type/store fixtures.
-
-**Exit gate:** team state survives reconnect/restart, cannot be spoofed by frontend messages, and has a stable migration story.
-
-### Package 4 — Letter Canvas v2: physical, collaborative word building
-
-#### Product outcome
-
-A participant should immediately understand: “These are real letter pieces from our team bank; we can discover them, bring them into a word lane, and see what our group is creating.” The experience should feel playful and tactically collaborative, not like an alphabet toolbar that teleports tokens to the viewport centre.
-
-#### Required design
-
-- Replace tap-to-spawn inventory with actual server-created letter tiles in intentional source-bank regions. A finite mode physically contains the available letters; sandbox may generate from an explicit controlled source action.
-- On desktop, provide a visibly organised but playful bank/rack. On mobile, provide a bottom/board source area with draggable/tappable physical pieces, not a hidden generic tray.
-- Use deterministic server layout for bank tiles so all players see the same pieces. Preserve individual item claims and prompt release.
-- Provide explicit, structured word lanes or word groups. Dropping into a lane should give a clear insertion/ordering preview; do not infer a word only from near-by pixel coordinates.
-- Support a robust alternative to drag: tap/select a tile, then choose an insertion location/action. This is required for mobile resilience and keyboard accessibility.
-- Show team identity on banks, lanes, active pieces, and activity status without relying on colour alone.
-- Explain the scenario/objective in concise RO/EN copy. Examples may be Agile values, team motto, or themed anagrams, but do not promise dictionary validation without a maintained licensed lexicon.
-- Support a shared mode and color-team mode. In team mode, each team bank must be meaningful and server-authoritative; do not allow a member to steal a different team’s bank item unless the facilitator explicitly grants it.
-- Keep purposeful collaboration: visible team activity/presence, clear “draft/review/final” state, host finalisation, undo behaviour that cannot undo another team’s work accidentally, and durable export.
-
-#### Implementation direction
-
-Prefer semantic DOM tiles/buttons with CSS transforms and viewport culling/virtualisation over an opaque all-canvas interaction surface. The inventory size (96/180/260) requires performance design, but not a sacrifice of keyboard/VoiceOver interaction. If canvas remains for any visual layer, provide a fully equivalent semantic interaction layer.
-
-Create a first-class composition model, for example token locations represented as `bank`, `laneId`, and ordered `index`, rather than only free x/y. Retain x/y only if needed for visual animation/layout. The server must own insertion, reordering, inventory, claims, history, and final reconstruction.
-
-#### Tests and acceptance
-
-- Two teams and shared mode; team selection and banking visible on desktop/phone.
-- Concurrent claimed tiles, contested operations, undo, reconnect/restart, host lock/complete/reset, and export.
-- Meaningful output reconstruction from ordered lanes, including Romanian diacritics and punctuation.
-- Keyboard-only selection/insertion/reorder and screen-reader labels.
-- At least one facilitated usability session with participants: every participant can form a first word without facilitator explanation, can identify their team/bank, and can tell what the group should do next.
-
-**Exit gate:** usability evidence plus automated tests; no legacy v1 room regression.
-
-### Package 5 — Sentence Canvas v2: professional collaborative composition
-
-#### Product outcome
-
-Sentence Canvas should behave like a guided collaborative composition activity, not a raw word tray scattered on a blank sheet. A facilitator should be able to frame the situation, teams should construct/review an answer, and export should faithfully represent intentional token order.
-
-#### Required design
-
-- Start with a visible scenario, goal, time/context, and concise instructions.
-- Use structured composition lanes/sections (for example idea, reason/evidence, commitment/next step) appropriate to each puzzle’s scenario. Do not hard-code a generic sentence strip for every activity.
-- Use first-class token sequences and insertion positions. Drag, tap-to-select/place, keyboard controls, and touch all produce the same authoritative operation.
-- Show category/source bank as a supporting tool, not the centre of the experience. Give words meaningful grouping and search/filter only if it helps the scenario.
-- Provide clear draft/review/final state, team/shared lanes, author/presence cues, and explicit facilitator finalisation.
-- Retain custom words but label them clearly. Use soft suggestions only; never present unreliable spellchecking as a correctness judgment.
-- Export exact semantic lane content, metadata, and participant/team context. Stop using spatial proximity as the sole source of sentence reconstruction for v2.
-- Make punctuation and Romanian/English diacritics first-class in insertion and export.
-
-#### Tests and acceptance
-
-- Deterministic ordering, insertion before/between/after, punctuation rules, multiple lanes, team/shared mode, custom word create/edit/delete, undo/reconnect/snapshot, lock/finalise/export.
-- Desktop/mobile usability test: participants can compose, revise, and review a complete response without being told to “drop words near each other.”
-- Accessibility parity with Letter Canvas.
-
-**Exit gate:** professional task flow passes usability, protocol, accessibility, mobile, and export checks.
-
-### Package 6 — catalog quality remediation
-
-#### Immediate content safety action
-
-Delist **all current Abstract Geometry and Isometric Worlds records** from the public picker/API before the next catalog-quality release. Preserve their source/provenance history as `delisted`/`rejected` rather than deleting the audit trail blindly. Ensure active rooms retain the snapshot metadata they need for their limited lifetime.
-
-Review **Blueprint Architecture** and the five named Romanian city assets immediately. The visual audit found repeated template compositions; the generic city images must not be represented as Bucharest/Sibiu/Cluj/Timișoara/Brașov without place-specific, truthful artwork.
-
-#### Replacement quality gate
-
-Do not add a replacement until every asset passes all of these:
-
-1. Full manifest/schema/provenance fields and an explicit permitted license (public domain, CC0, or other approved open license).
-2. Creator/source/changes/checksum/original archive documentation.
-3. No watermark, logo, embedded text, or identifiable person as main subject unless explicitly approved by the product policy.
-4. Truthful title, alt text, and category; a generic skyline cannot be named after a specific city.
-5. Independent visual review at picker thumbnail, medium board, and high-piece puzzle use. Each entry needs a materially different subject, composition, palette, focal distribution, and puzzle-solving texture.
-6. Automated duplicate/perceptual-similarity warning plus a human panel review. Warnings are release-blocking for a small curated collection unless a documented exception is approved.
-7. The catalog audit has zero structural failures and the serving matrix passes after every delist/replacement.
-
-Update picker category logic/tests, catalog source ledger, manifests, full/thumb derivatives, and documentation together. Do not leave orphan files or phantom categories.
-
-**Exit gate:** the live picker contains only categories/art assets that pass provenance, visual differentiation, and truthful naming gates.
-
-### Package 7 — accessibility, resilience, and production quality gate
-
-Do not let Packages 1–6 create another local overlay/one-off code path.
-
-#### Accessibility
-
-- Modal/dialog primitive: named title, focus trap, Escape, focus restore, inert/background strategy.
-- Every icon action has a real accessible name. Emoji is decorative, not the sole label.
-- Team identity uses text/marker/pattern in addition to colour.
-- DOM Canvas v2 interactions have keyboard controls and screen-reader announcements.
-- Test keyboard-only, VoiceOver/iOS, text zoom/Dynamic Type, reduced motion, contrast, and no-color-only information.
-
-#### Resilience and security
-
-- Establish a documented threat model for room links, participant IDs, host capability, exports, uploads, and chat.
-- Add appropriate rate limits/abuse controls for create/join/upload/chat/WebSocket frames; avoid harming a normal workshop.
-- Set explicit production security headers and WebSocket origin policy compatible with the deployed preview/origin model.
-- Revisit client-held host bearer IDs and export query parameters before an enterprise launch; avoid logging or leaking capabilities.
-- Make uploads room-linked or time-limited from creation, add abandoned-upload cleanup, content/size/dimension limits, ImageMagick resource limits, and monitoring.
-- Restrict/secure production health metrics as appropriate.
-- Keep the explicit single-instance limitation until shared persistence/pub-sub is actually implemented; do not imply horizontal scale from a local JSON snapshot.
-
-#### Engineering quality
-
-- Decompose `src/server.js`, `Board.tsx`, `CanvasBoard.tsx`, and `GamePage.tsx` into domain modules/components with focused tests.
-- Bring server domain contracts under type checking or runtime schema validation.
-- Add CI for install/typecheck/build/protocol/catalog/format/lint and test reports.
-- Add a controlled production error boundary and privacy-safe observability for input failures, claim rejections, chat delivery/UI open failures, room errors, and uploads.
-- Keep any test/debug globals gated out of ordinary production use unless a deliberate diagnostic flag enables them.
-
-## Required final QA matrix
-
-Run and report all green before declaring the delivery complete:
-
-```sh
-npm ci
-npm run typecheck
-npm run build
-npm run test:protocol
-npm run test:render-contract
-npm run catalog:audit
-BASE=http://127.0.0.1:3000 npm run test:catalog-serve
-BASE=http://127.0.0.1:3000 npm run test:load
-npm run test:e2e
-```
-
-Add/execute the new targeted suites for pointer lifecycle, chat protocol, teams, Canvas v2, migration, and mobile chrome. If Playwright runtime is unavailable locally, document it truthfully and run it in a supplied CI/browser environment; do not invent a pass.
-
-The physical iPhone report must include:
-
-- device model, iOS/Safari version, date, tester, app URL/build SHA;
-- both host and participant test roles;
-- 100-cycle jigsaw result and cancellation/interruption cases;
-- participant Chat history/live/send/keyboard result;
-- Canvas v2 mobile flow where delivered;
-- defects found, telemetry trace IDs, screen recording/screenshot references, and explicit pass/fail conclusion.
-
-Repeat a visual review at desktop, small Android Chrome, physical iPhone Safari, portrait/landscape, safe area, keyboard open, and text zoom. Validate the dark gameplay shell and correct concise RO/EN copy.
-
-## Release, migration, and rollout plan
-
-1. **Feature/version gate:** ship resilient jigsaw input and Chat independently first if needed. Version Canvas v2 so active v1 rooms remain stable.
-2. **Content gate:** delist weak categories in a separate, reversible catalog release; keep provenance history and allow existing active room snapshots to finish.
-3. **Canary:** enable Canvas v2 for internal/facilitated pilot rooms first. Observe claim cancellation rate, input capture failures, chat-open/send success, team operations, reconnect errors, performance, and accessibility feedback.
-4. **Rollback:** feature flag/version-select Canvas v2; retain v1 renderer for active legacy rooms. Input and Chat releases need a tested rollback strategy that does not lose room state.
-5. **Documentation:** append the new evidence to `WORKPLAN.md` and `docs/qa-report.md`, update README/product copy honestly, document catalog changes/provenance, and add an operations/device-test runbook.
-6. **GitHub:** make logical commits, push the active Arena branch, and update/open the pull request only from that branch. Include test evidence and unresolved risk explicitly in the PR description.
+1. Ship Pointer/Chat fixes with physical device evidence first if Canvas rollout must wait.
+2. Canary Canvas v2 for internal facilitated rooms; observe capture fallback/cancel/rejection, chat-open/send, team operations, reconnect and accessibility feedback without recording content.
+3. Maintain v1 renderer for short-lived v1 room snapshots and room-scoped legacy catalog route for retired rooms.
+4. Document exact build SHA, tests, devices, visual review, remaining risks, rollback actions and support contacts.
+5. Commit/push only the active Arena branch and update/merge its PR only after the stated evidence is accurate.
 
 ## Definition of done
 
-The work is done only when all conditions hold:
-
-- A real iPhone Safari participant can reliably drag jigsaw pieces, recover from interruption, and has no stuck claim/gesture state.
-- A real iPhone non-host can visibly find Chat, view history/live messages, send with the keyboard open, and resume the activity.
-- Teams are server-authoritative, accessible, reconnect-safe, and meaningful to Canvas gameplay.
-- Letter Canvas and Sentence Canvas are structured, intuitive collaborative activities with mobile/keyboard alternatives, not centre-spawn trays.
-- Weak content is not exposed as premium catalog content; all replacement content is visually distinct, truthfully named, licensed, and audited.
-- Existing reset/layout/coaching/privacy behaviour remains intact.
-- Automated, browser, physical-device, performance, catalog, migration, accessibility, and security gates are documented and green—or any limitation is honestly recorded and blocks the affected release rather than being relabelled as a pass.
+The affected release is done only when real iPhone Safari validates jigsaw recovery and participant Chat; Canvas v2 has usable/mobile/accessibility evidence; the catalog is visually/truthfully reviewed; preservation contracts remain green; and automated, browser, physical-device, catalog, security and release records state facts rather than inferred passes.

@@ -262,7 +262,14 @@ if (catalog.stage5ImportedAt) {
     paintings: 5, landscapes: 5, landmarks: 5, nature: 5, cities: 5,
     "isometric-worlds": 10, "abstract-geometry": 10, "blueprint-architecture": 10,
   };
+  const retired = new Set(Object.keys(catalog.retiredCategories || {}));
   for (const [category, expected] of Object.entries(expectedStage5)) {
+    if (retired.has(category)) {
+      if (validCategories.has(category) || entries.some((entry) => entry.category === category)) {
+        err("S12", `retired Stage 5 category is still publicly catalogued: ${category}`);
+      }
+      continue;
+    }
     if (!validCategories.has(category)) err("S12", `missing Stage 5 category: ${category}`);
     const found = entries.filter((entry) => entry.category === category && entry.licenseClass === "cc0" && entry.status === "verified" && entry.generation).length;
     if (found !== expected) err("S12", `expected ${expected} verified CC0 Stage 5 entries in ${category}; found ${found}`);

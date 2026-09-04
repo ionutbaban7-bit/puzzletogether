@@ -13,7 +13,7 @@ async function post<T>(url: string, body: unknown): Promise<T> {
 
 export const api = {
   fetchCatalog(): Promise<CatalogData> { return fetch("/api/puzzles").then((response) => response.json()); },
-  createRoom(puzzleId: string, difficulty: string, name: string, options: { sessionName?: string; role?: "host" | "spectator"; contentLanguage?: "ro" | "en"; mystery?: boolean; customImage?: { url: string; file: string; width: number; height: number; name: string } } = {}) {
+  createRoom(puzzleId: string, difficulty: string, name: string, options: { sessionName?: string; role?: "host" | "spectator"; contentLanguage?: "ro" | "en"; mystery?: boolean; teamMode?: "shared" | "color-teams"; teamCount?: number; customImage?: { url: string; file: string; width: number; height: number; name: string } } = {}) {
     return post<{ room: RoomView; playerId: string }>("/api/rooms", { puzzleId, difficulty, name, ...options });
   },
   async uploadImage(file: File): Promise<{ url: string; file: string; width: number; height: number }> {

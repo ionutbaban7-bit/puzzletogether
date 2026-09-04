@@ -21,10 +21,17 @@ import sentenceVocab from "../shared/sentence-vocabulary.json" with { type: "jso
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
 const publicDir = path.join(rootDir, "server", "public");
-const uploadsDir = path.join(rootDir, ".data", "uploads");
 const distDir = path.join(rootDir, "dist");
-const dataDir = path.join(rootDir, ".data");
+// DATA_DIR is primarily an isolated integration-test/operations hook; the
+// default preserves the existing on-disk room/upload location.
+const dataDir = path.resolve(rootDir, process.env.DATA_DIR || ".data");
+const uploadsDir = path.join(dataDir, "uploads");
 const snapshotFile = path.join(dataDir, "rooms.json");
+const retiredCatalogFile = path.join(rootDir, "data", "catalog", "retired-stage5.json");
+let retiredCatalog = { entries: [], puzzles: [] };
+try { retiredCatalog = JSON.parse(fs.readFileSync(retiredCatalogFile, "utf8")); } catch { /* optional before the retirement ledger exists */ }
+const retiredPuzzleById = new Map((retiredCatalog.puzzles || []).map((puzzle) => [puzzle.id, puzzle]));
+const retiredEntryByPuzzleId = new Map((retiredCatalog.entries || []).map((entry) => [entry.puzzleId, entry]));
 
 const IS_PROD = process.env.NODE_ENV === "production";
 const PORT = Number(process.env.PORT || 3000);
@@ -46,6 +53,78 @@ const CLAIM_SWEEP_MS = Number.isFinite(configuredClaimSweep)
 const CURSOR_RELAY_MS = 33;
 const HEARTBEAT_MS = 30_000;
 const VALID_STAGES = new Set(["lobby", "brief", "play", "reveal", "debrief", "harvest", "closed"]);
+const TEAM_MODE_SHARED = "shared";
+const TEAM_MODE_COLOR = "color-teams";
+const TEAM_TEMPLATES = [
+  { id: "team-red", name: "Red", color: "red", marker: "●" },
+  { id: "team-yellow", name: "Yellow", color: "yellow", marker: "▲" },
+  { id: "team-green", name: "Green", color: "green", marker: "■" },
+  { id: "team-blue", name: "Blue", color: "blue", marker: "◆" },
+  { id: "team-purple", name: "Purple", color: "purple", marker: "✦" },
+  { id: "team-orange", name: "Orange", color: "orange", marker: "●" },
+];
+
+function normalizeTeamMode(value) {
+  return value === TEAM_MODE_COLOR ? TEAM_MODE_COLOR : TEAM_MODE_SHARED;
+}
+
+function normalizeTeamCount(value) {
+  const number = Math.floor(Number(value));
+  return Number.isFinite(number) ? Math.max(2, Math.min(TEAM_TEMPLATES.length, number)) : 2;
+}
+
+function buildTeams(mode, count) {
+  if (normalizeTeamMode(mode) !== TEAM_MODE_COLOR) return [];
+  return TEAM_TEMPLATES.slice(0, normalizeTeamCount(count)).map((team, order) => ({ ...team, order }));
+}
+
+/** Old snapshots did not have a Team domain. Normalize them idempotently. */
+function ensureTeamState(room) {
+  room.teamMode = normalizeTeamMode(room.teamMode);
+  room.teams = Array.isArray(room.teams)
+    ? room.teams.filter((team) => TEAM_TEMPLATES.some((template) => template.id === team?.id)).map((team, order) => {
+      const template = TEAM_TEMPLATES.find((candidate) => candidate.id === team.id);
+      return { ...template, order };
+    })
+    : [];
+  if (room.teamMode === TEAM_MODE_COLOR && room.teams.length < 2) room.teams = buildTeams(TEAM_MODE_COLOR, 2);
+  if (room.teamMode === TEAM_MODE_SHARED) room.teams = [];
+  const allowed = new Set(room.teams.map((team) => team.id));
+  for (const collection of [room.knownPlayers, room.players, room.pending]) {
+    if (!(collection instanceof Map)) continue;
+    for (const [, player] of collection) {
+      if (!player) continue;
+      player.teamId = room.teamMode === TEAM_MODE_COLOR && allowed.has(player.teamId) ? player.teamId : null;
+    }
+  }
+}
+
+function teamViews(room) {
+  ensureTeamState(room);
+  return room.teams.map((team) => ({
+    ...team,
+    memberIds: [...room.knownPlayers.entries()]
+      .filter(([, player]) => player?.teamId === team.id)
+      .map(([playerId]) => playerId),
+  }));
+}
+
+function assignPlayerTeam(room, playerId, teamId) {
+  ensureTeamState(room);
+  const next = room.teamMode === TEAM_MODE_COLOR && room.teams.some((team) => team.id === teamId) ? teamId : null;
+  const known = room.knownPlayers.get(playerId);
+  const active = room.players.get(playerId);
+  const pending = room.pending.get(playerId);
+  if (!known && !active && !pending) return false;
+  if (known) known.teamId = next;
+  if (active) active.teamId = next;
+  if (pending) pending.teamId = next;
+  return true;
+}
+
+function playerTeamId(room, playerId) {
+  return room.players.get(playerId)?.teamId || room.knownPlayers.get(playerId)?.teamId || null;
+}
 
 const PUZZLES = puzzlesData.puzzles;
 const CATEGORIES = puzzlesData.categories;
@@ -185,6 +264,142 @@ function buildSentenceInventory(contentLanguage) {
   return inventory;
 }
 
+function cloneInventory(inventory) {
+  return inventory ? new Map(inventory) : null;
+}
+
+function canvasBaseInventory(canvas) {
+  return canvas.category === "letter-canvas"
+    ? buildLetterInventory(canvas.mode, canvas.contentLanguage)
+    : buildSentenceInventory(canvas.contentLanguage);
+}
+
+/**
+ * Canvas v2 is structured around a few meaningful composition lanes. A lane
+ * retains normal x/y geometry for the canvas renderer, plus a semantic role
+ * used in exports and accessibility/UI labels. Legacy v1 snapshots omit this.
+ */
+function buildCanvasLanes(category, teams = []) {
+  const scopes = teams.length ? teams : [{ id: null, name: "Shared", color: "blue", marker: "●", order: 0 }];
+  const columns = Math.min(3, Math.max(1, scopes.length));
+  const rows = Math.ceil(scopes.length / columns);
+  const outer = 42;
+  const gap = 28;
+  const cellW = (CANVAS_SHEET_W - outer * 2 - gap * (columns - 1)) / columns;
+  const cellH = (CANVAS_SHEET_H - outer * 2 - gap * (rows - 1)) / rows;
+  const templates = category === "letter-canvas"
+    ? [
+      { kind: "word", label: { ro: "Cuvântul 1", en: "Word 1" }, hint: { ro: "Pune literele în ordine.", en: "Put letters in order." } },
+      { kind: "word", label: { ro: "Cuvântul 2", en: "Word 2" }, hint: { ro: "Construiește încă un cuvânt.", en: "Build another word." } },
+      { kind: "word", label: { ro: "Cuvântul 3", en: "Word 3" }, hint: { ro: "Lasă o idee pentru echipă.", en: "Leave an idea for the team." } },
+    ]
+    : [
+      { kind: "idea", label: { ro: "Ideea", en: "Idea" }, hint: { ro: "Ce contează acum?", en: "What matters now?" } },
+      { kind: "reason", label: { ro: "Motivul", en: "Reason" }, hint: { ro: "De ce este important?", en: "Why does it matter?" } },
+      { kind: "commitment", label: { ro: "Următorul pas", en: "Next step" }, hint: { ro: "Ce facem mai departe?", en: "What will we do next?" } },
+    ];
+  return scopes.flatMap((team, scopeIndex) => {
+    const col = scopeIndex % columns;
+    const row = Math.floor(scopeIndex / columns);
+    const x = outer + col * (cellW + gap);
+    const y = outer + row * (cellH + gap);
+    const laneGap = 16;
+    const header = 44;
+    const laneH = Math.max(116, (cellH - header - laneGap * (templates.length - 1)) / templates.length);
+    return templates.map((template, laneIndex) => ({
+      id: `${team.id || "shared"}-${template.kind}-${laneIndex + 1}`,
+      teamId: team.id || null,
+      teamColor: team.id ? team.color : undefined,
+      teamMarker: team.id ? team.marker : undefined,
+      teamName: team.id ? team.name : undefined,
+      kind: template.kind,
+      label: template.label,
+      hint: template.hint,
+      x,
+      y: y + header + laneIndex * (laneH + laneGap),
+      w: cellW,
+      h: laneH,
+    }));
+  });
+}
+
+function applyCanvasTeamModel(room, { resetInventory = false } = {}) {
+  const canvas = room.canvas;
+  if (!canvas) return;
+  ensureTeamState(room);
+  canvas.version = 2;
+  const colourTeams = room.teamMode === TEAM_MODE_COLOR ? room.teams : [];
+  canvas.lanes = buildCanvasLanes(canvas.category, colourTeams);
+  if (!resetInventory) return;
+  const base = canvasBaseInventory(canvas);
+  if (colourTeams.length) {
+    canvas.inventory = null;
+    canvas.teamInventory = new Map(colourTeams.map((team) => [team.id, cloneInventory(base)]));
+  } else {
+    canvas.inventory = base;
+    canvas.teamInventory = null;
+  }
+}
+
+/** Places lane tiles deterministically; freeform v1 tiles retain their x/y. */
+function layoutCanvasLane(canvas, laneId) {
+  if (!canvas.version || canvas.version < 2 || !laneId) return [];
+  const lane = (canvas.lanes || []).find((item) => item.id === laneId);
+  if (!lane) return [];
+  const tiles = [...canvas.tiles.values()]
+    .filter((tile) => tile.laneId === laneId)
+    .sort((a, b) => (a.laneIndex ?? 0) - (b.laneIndex ?? 0) || a.id - b.id);
+  const inset = 18;
+  const gap = canvas.category === "letter-canvas" ? 12 : 16;
+  let x = lane.x + inset;
+  let y = lane.y + inset;
+  let row = 0;
+  for (let index = 0; index < tiles.length; index++) {
+    const tile = tiles[index];
+    if (x + tile.w > lane.x + lane.w - inset && x > lane.x + inset) {
+      row++;
+      x = lane.x + inset;
+      y += tile.h + gap;
+    }
+    // Retain a useful, reachable layout even when a facilitator deliberately
+    // puts more content in a lane than its visual height suggests.
+    tile.x = x;
+    tile.y = Math.min(lane.y + lane.h - tile.h - inset, y);
+    tile.laneIndex = index;
+    x += tile.w + gap;
+    clampCanvasTile(canvas, tile);
+  }
+  return tiles;
+}
+
+function setCanvasTileLane(canvas, tile, laneId, requestedIndex) {
+  if (!canvas.version || canvas.version < 2) return [];
+  const lane = (canvas.lanes || []).find((item) => item.id === laneId);
+  if (!lane) return null;
+  const oldLaneId = tile.laneId;
+  tile.laneId = lane.id;
+  const siblings = [...canvas.tiles.values()]
+    .filter((item) => item.id !== tile.id && item.laneId === lane.id)
+    .sort((a, b) => (a.laneIndex ?? 0) - (b.laneIndex ?? 0) || a.id - b.id);
+  const index = Number.isFinite(Number(requestedIndex)) ? Math.max(0, Math.min(siblings.length, Math.floor(Number(requestedIndex)))) : siblings.length;
+  siblings.splice(index, 0, tile);
+  siblings.forEach((item, laneIndex) => { item.laneIndex = laneIndex; });
+  const changed = [...layoutCanvasLane(canvas, lane.id)];
+  if (oldLaneId && oldLaneId !== lane.id) changed.push(...layoutCanvasLane(canvas, oldLaneId));
+  return changed;
+}
+
+function teamInventoryFor(room, canvas, playerId) {
+  if (room.teamMode !== TEAM_MODE_COLOR) return canvas.inventory;
+  const teamId = playerTeamId(room, playerId);
+  return teamId ? canvas.teamInventory?.get(teamId) || null : undefined;
+}
+
+function canvasTeamInventoryPayload(canvas) {
+  if (!canvas.teamInventory) return null;
+  return Object.fromEntries([...canvas.teamInventory.entries()].map(([teamId, inventory]) => [teamId, inventory ? Object.fromEntries(inventory) : null]));
+}
+
 /** Clamps a tile inside the blank sheet. */
 function clampCanvasTile(canvas, tile) {
   tile.x = Math.max(0, Math.min(canvas.sheetW - tile.w, tile.x));
@@ -229,6 +444,33 @@ function snapSentenceTile(canvas, tile) {
 function reconstructCanvasText(tiles, opts = {}) {
   const { bigGapFactor = 1.8, spaceBeforePunct = false } = opts;
   if (!tiles.length) return "";
+  // v2 lanes are an explicit shared composition order. Use them whenever all
+  // live tiles opted into lanes; legacy/freeform snapshots keep spatial text.
+  if (tiles.every((tile) => tile.laneId)) {
+    const groups = new Map();
+    for (const tile of tiles) {
+      const group = groups.get(tile.laneId) || { x: tile.x, y: tile.y, items: [] };
+      group.x = Math.min(group.x, tile.x);
+      group.y = Math.min(group.y, tile.y);
+      group.items.push(tile);
+      groups.set(tile.laneId, group);
+    }
+    return [...groups.values()]
+      .sort((a, b) => a.y - b.y || a.x - b.x)
+      .map((group) => {
+        const items = group.items.sort((a, b) => (a.laneIndex ?? 0) - (b.laneIndex ?? 0) || a.id - b.id);
+        const letters = items.every((tile) => ["letter", "wildcard", "punctuation"].includes(tile.kind));
+        let line = "";
+        for (let index = 0; index < items.length; index++) {
+          const tile = items[index];
+          if (!letters && index > 0 && tile.kind !== "punctuation") line += " ";
+          line += tile.text;
+        }
+        return line.trim();
+      })
+      .filter(Boolean)
+      .join("\n");
+  }
   const list = [...tiles].sort((a, b) => a.y - b.y || a.x - b.x);
   const rows = [];
   for (const t of list) {
@@ -349,6 +591,10 @@ function roomView(room) {
     difficulty: room.config.difficulty,
     total: room.config.total,
     contentLanguage: room.config.contentLanguage || null,
+    teamMode: room.teamMode || TEAM_MODE_SHARED,
+    teams: teamViews(room),
+    canvasVersion: room.canvas?.version || undefined,
+    retiredCatalog: !!room.retiredCatalog,
     maxPlayers: MAX_PLAYERS,
     createdAt: room.createdAt,
     startedAt: room.startedAt,
@@ -434,8 +680,11 @@ function puzzleView(room) {
       sentencePack: isLetter ? undefined : (sentenceVocab[room.canvas.contentLanguage === "ro" ? "ro" : "en"] || []).map((e) => ({ w: e.w, c: e.c, n: e.n })),
     };
   }
+  const boardImage = room.retiredCatalog
+    ? `/api/retired-images/${encodeURIComponent(room.config.puzzleId)}?room=${encodeURIComponent(room.id)}`
+    : room.puzzle.image;
   return {
-    image: room.puzzle.image,
+    image: boardImage,
     name: room.puzzle.name,
     nameRo: room.puzzle.nameRo,
     category: room.puzzle.category,
@@ -459,7 +708,16 @@ function puzzleView(room) {
 }
 
 function activePlayerList(room) {
-  return [...room.players.values()].map((p) => ({ id: p.id, name: p.name, color: p.color, role: p.role || "player", joinedAt: p.joinedAt, lastSeenAt: p.lastSeenAt }));
+  ensureTeamState(room);
+  return [...room.players.values()].map((p) => ({
+    id: p.id,
+    name: p.name,
+    color: p.color,
+    role: p.role || "player",
+    teamId: p.teamId || null,
+    joinedAt: p.joinedAt,
+    lastSeenAt: p.lastSeenAt,
+  }));
 }
 
 function scoreList(room) {
@@ -593,6 +851,7 @@ function buildCanvasState(puzzle, mode, contentLanguage) {
   const isLetter = puzzle.category === "letter-canvas";
   const inventory = isLetter ? buildLetterInventory(mode, contentLanguage) : buildSentenceInventory(contentLanguage);
   return {
+    version: 2,
     category: puzzle.category,
     mode,
     contentLanguage,
@@ -603,6 +862,8 @@ function buildCanvasState(puzzle, mode, contentLanguage) {
     wordGap: isLetter ? 0 : CANVAS_WORD_GAP,
     tiles: new Map(),
     inventory, // Map<text, remaining> or null (sandbox)
+    teamInventory: null,
+    lanes: buildCanvasLanes(puzzle.category),
     nextId: 1,
     history: new Map(), // playerId -> undo stack
   };
@@ -621,6 +882,9 @@ function serializeCanvasTile(t) {
     heldBy: t.heldBy || null,
     createdBy: t.createdBy || null,
     custom: !!t.custom,
+    laneId: t.laneId || null,
+    laneIndex: Number.isFinite(t.laneIndex) ? t.laneIndex : null,
+    teamId: t.teamId || null,
   };
 }
 
@@ -798,9 +1062,19 @@ function resetWorkshopState(room, { lobby = true } = {}) {
 
 function applyPuzzleToRoom(room, config) {
   const setup = buildPuzzleSetup(config);
+  // Any host-selected activity comes from the reviewed active catalog.
+  room.retiredCatalog = false;
   room.config = setup.config;
   room.coachingActivity = setup.coachingActivity;
   room.canvas = setup.canvas;
+  if (room.canvas) applyCanvasTeamModel(room, { resetInventory: true });
+  else {
+    // Colour lanes/banks are a Canvas collaboration mechanic, not a misleading
+    // jigsaw/coaching start gate. Switching away from Canvas clears it safely.
+    room.teamMode = TEAM_MODE_SHARED;
+    room.teams = [];
+    ensureTeamState(room);
+  }
   room.board = setup.board;
   room.rankingSlots = setup.rankingSlots;
   room.puzzle = setup.puzzleMeta;
@@ -821,9 +1095,7 @@ function resetCanvasState(room) {
   room.canvas.tiles.clear();
   room.canvas.nextId = 1;
   room.canvas.history.clear();
-  room.canvas.inventory = room.canvas.category === "letter-canvas"
-    ? buildLetterInventory(room.canvas.mode, room.canvas.contentLanguage)
-    : buildSentenceInventory(room.canvas.contentLanguage);
+  applyCanvasTeamModel(room, { resetInventory: true });
 }
 
 function createRoom(config, creator = {}) {
@@ -833,6 +1105,8 @@ function createRoom(config, creator = {}) {
     code: generateCode(),
     sessionName: String(creator.sessionName || "").trim().slice(0, 80) || "Team session",
     hostId: null,
+    teamMode: normalizeTeamMode(config.teamMode),
+    teams: buildTeams(config.teamMode, config.teamCount),
     config: null,
     coachingActivity: null,
     canvas: null,
@@ -893,13 +1167,16 @@ function scheduleSnapshot() {
 function persistableRoom(room) {
   return {
     id: room.id, code: room.code, sessionName: room.sessionName, hostId: room.hostId,
+    teamMode: room.teamMode, teams: room.teams,
     config: room.config, pieces: room.pieces.map(serializePiece),
     canvas: room.canvas ? {
+      version: room.canvas.version || 1,
       category: room.canvas.category, mode: room.canvas.mode, contentLanguage: room.canvas.contentLanguage,
       sheetW: room.canvas.sheetW, sheetH: room.canvas.sheetH, tileW: room.canvas.tileW, tileH: room.canvas.tileH,
-      wordGap: room.canvas.wordGap, nextId: room.canvas.nextId,
+      wordGap: room.canvas.wordGap, nextId: room.canvas.nextId, lanes: room.canvas.lanes || [],
       tiles: [...room.canvas.tiles.values()].map(serializeCanvasTile),
       inventory: room.canvas.inventory ? [...room.canvas.inventory] : null,
+      teamInventory: room.canvas.teamInventory ? [...room.canvas.teamInventory.entries()].map(([teamId, inventory]) => [teamId, inventory ? [...inventory] : null]) : null,
     } : null,
     ratings: [...room.ratings], scores: [...room.scores],
     knownPlayers: [...room.knownPlayers], createdAt: room.createdAt, startedAt: room.startedAt,
@@ -924,6 +1201,42 @@ function saveSnapshots() {
   }
 }
 
+/**
+ * Delisted items are never selectable in a new room. Existing short-lived
+ * snapshot rooms instead receive a private archival image route so a session
+ * that was already underway does not turn into a broken board after catalog
+ * cleanup. Its next activity selection naturally uses the reviewed catalog.
+ */
+function applyRetiredSnapshotPuzzle(room, raw, retiredPuzzle) {
+  const entry = retiredEntryByPuzzleId.get(retiredPuzzle.id) || {};
+  const width = Number(entry.width) || 1800;
+  const height = Number(entry.height) || 1200;
+  const total = Number(raw.config?.total) || raw.pieces?.length || 25;
+  const grid = computeGrid(width, height, total);
+  room.config = { ...raw.config, total };
+  room.coachingActivity = null;
+  room.canvas = null;
+  room.board = { width, height, pieceW: grid.pieceW, pieceH: grid.pieceH };
+  room.rankingSlots = [];
+  room.puzzle = {
+    ...retiredPuzzle,
+    image: `/api/retired-images/${encodeURIComponent(retiredPuzzle.id)}`,
+    thumbnail: `/api/retired-images/${encodeURIComponent(retiredPuzzle.id)}`,
+    width,
+    height,
+    cols: grid.cols,
+    rows: grid.rows,
+    pieceW: grid.pieceW,
+    pieceH: grid.pieceH,
+    mystery: !!raw.config?.mystery,
+    scenario: null,
+    canvasMode: null,
+    contentLanguage: null,
+    isCanvas: false,
+  };
+  room.retiredCatalog = true;
+}
+
 function restoreSnapshots() {
   try {
     const saved = JSON.parse(fs.readFileSync(snapshotFile, "utf8"));
@@ -933,17 +1246,34 @@ function restoreSnapshots() {
       try {
         // A custom-upload room whose image file was deleted can no longer be served.
         if (raw.config?.customImage && !fs.existsSync(path.join(uploadsDir, path.basename(String(raw.config.customImage.file || ""))))) continue;
-        const room = createRoom(raw.config, { sessionName: raw.sessionName });
+        const retiredPuzzle = retiredPuzzleById.get(raw.config?.puzzleId);
+        // Bootstrap the generic room machinery with a reviewed item, then
+        // restore the retired item metadata/pieces below without publishing it.
+        const fallbackPuzzle = PUZZLES.find((puzzle) => !isCanvasPuzzle(puzzle)) || PUZZLES[0];
+        const bootstrapConfig = retiredPuzzle
+          ? { ...raw.config, puzzleId: fallbackPuzzle.id, difficulty: raw.config?.difficulty || "easy" }
+          : raw.config;
+        const room = createRoom(bootstrapConfig, { sessionName: raw.sessionName });
+        if (retiredPuzzle) applyRetiredSnapshotPuzzle(room, raw, retiredPuzzle);
         rooms.delete(room.id);
         codeIndex.delete(room.code);
       room.id = raw.id;
       room.code = raw.code;
       room.hostId = raw.hostId;
+      room.teamMode = normalizeTeamMode(raw.teamMode);
+      room.teams = Array.isArray(raw.teams) ? raw.teams : [];
       room.knownPlayers = new Map(raw.knownPlayers || []);
+      ensureTeamState(room);
       room.pieces = (raw.pieces || room.pieces).map((p) => ({ ...p, heldBy: null, heldAt: null, drag: false }));
       if (room.canvas && raw.canvas) {
         room.canvas.tiles = new Map((raw.canvas.tiles || []).map((t) => [t.id, { ...t, heldBy: null, heldAt: null }]));
+        // Explicit v1 migration: do not reshuffle a lived-in legacy blank sheet.
+        room.canvas.version = raw.canvas.version === 2 ? 2 : 1;
+        room.canvas.lanes = room.canvas.version === 2 && Array.isArray(raw.canvas.lanes) ? raw.canvas.lanes : [];
         room.canvas.inventory = raw.canvas.inventory ? new Map(raw.canvas.inventory) : null;
+        room.canvas.teamInventory = raw.canvas.teamInventory
+          ? new Map(raw.canvas.teamInventory.map(([teamId, inventory]) => [teamId, inventory ? new Map(inventory) : null]))
+          : null;
         room.canvas.nextId = raw.canvas.nextId || (room.canvas.tiles.size + 1);
       }
       room.ratings = new Map(raw.ratings || []);
@@ -1018,9 +1348,17 @@ function expireClaims(room, now = Date.now()) {
   if (room.canvas) {
     for (const tile of room.canvas.tiles.values()) {
       if (tile.heldBy && now - Number(tile.heldAt || 0) >= CANVAS_CLAIM_TTL_MS) {
+        const origin = takeCanvasDragOrigin(tile);
+        if (origin) {
+          tile.x = origin.x;
+          tile.y = origin.y;
+          tile.laneId = origin.laneId;
+          tile.laneIndex = origin.laneIndex;
+        }
         tile.heldBy = null;
         tile.heldAt = null;
-        expiredTiles.push(serializeCanvasTile(tile));
+        const restored = origin?.laneId ? layoutCanvasLane(room.canvas, origin.laneId) : [tile];
+        expiredTiles.push(...restored.map(serializeCanvasTile));
       }
     }
     if (expiredTiles.length) broadcast(room, { t: "canvas", list: expiredTiles });
@@ -1044,9 +1382,17 @@ function releaseClaims(room, playerId) {
     const canvasReleased = [];
     for (const tile of room.canvas.tiles.values()) {
       if (tile.heldBy === playerId) {
+        const origin = takeCanvasDragOrigin(tile);
+        if (origin) {
+          tile.x = origin.x;
+          tile.y = origin.y;
+          tile.laneId = origin.laneId;
+          tile.laneIndex = origin.laneIndex;
+        }
         tile.heldBy = null;
         tile.heldAt = null;
-        canvasReleased.push(serializeCanvasTile(tile));
+        const restored = origin?.laneId ? layoutCanvasLane(room.canvas, origin.laneId) : [tile];
+        canvasReleased.push(...restored.map(serializeCanvasTile));
       }
     }
     if (canvasReleased.length) broadcast(room, { t: "canvas", list: canvasReleased });
@@ -1104,11 +1450,86 @@ function setStage(room, stage) {
   return true;
 }
 
+/** Participant-safe team selection. Team membership is mutable only in the
+ * lobby; facilitator reassignment is a separate host-only control action. */
+function applyTeamAction(room, playerId, msg, ws) {
+  if (msg.action !== "select") {
+    send(ws, { t: "error", code: "unknown_team_action", message: "Unknown team action." });
+    return;
+  }
+  ensureTeamState(room);
+  if (!room.canvas) {
+    send(ws, { t: "error", code: "team_mode_unavailable", message: "Colour teams are available for Canvas activities." });
+    return;
+  }
+  const player = room.players.get(playerId);
+  if (!player || player.role === "spectator") {
+    send(ws, { t: "error", code: "team_spectator", message: "Spectators cannot join a colour team." });
+    return;
+  }
+  if (room.teamMode !== TEAM_MODE_COLOR) {
+    send(ws, { t: "error", code: "team_mode_shared", message: "This room uses one shared team." });
+    return;
+  }
+  if (room.stage !== "lobby") {
+    send(ws, { t: "error", code: "team_selection_locked", message: "Team selection is locked after Start." });
+    return;
+  }
+  const teamId = String(msg.teamId || "");
+  if (!room.teams.some((team) => team.id === teamId)) {
+    send(ws, { t: "error", code: "team_missing", message: "That team is not available in this room." });
+    return;
+  }
+  assignPlayerTeam(room, playerId, teamId);
+  touch(room);
+  broadcast(room, { t: "players", list: activePlayerList(room) });
+  broadcastRoom(room);
+  logEvent("team_select", room, { playerId, teamId });
+}
+
 function applyControl(room, playerId, msg, ws) {
   if (!requireHostSocket(room, playerId, ws)) return;
   const now = Date.now();
   switch (msg.action) {
+    case "teams": {
+      if (!room.canvas) {
+        return send(ws, { t: "error", code: "team_mode_unavailable", message: "Colour teams are available for Canvas activities." });
+      }
+      if (room.stage !== "lobby") {
+        return send(ws, { t: "error", code: "team_configuration_locked", message: "Configure teams before Start." });
+      }
+      room.teamMode = normalizeTeamMode(msg.mode);
+      room.teams = buildTeams(room.teamMode, msg.count);
+      ensureTeamState(room);
+      // This control is lobby-only, so rebuilding empty v2 lanes/banks cannot
+      // erase a live composition or silently reassign an in-play tile.
+      if (room.canvas) applyCanvasTeamModel(room, { resetInventory: true });
+      broadcast(room, { t: "players", list: activePlayerList(room) });
+      break;
+    }
+    case "teamAssign": {
+      if (!room.canvas) {
+        return send(ws, { t: "error", code: "team_mode_unavailable", message: "Colour teams are available for Canvas activities." });
+      }
+      const targetId = String(msg.playerId || "");
+      const target = room.players.get(targetId) || room.knownPlayers.get(targetId);
+      if (!target || target.role === "spectator") {
+        return send(ws, { t: "error", code: "team_member_missing", message: "Choose an active participant." });
+      }
+      const teamId = String(msg.teamId || "");
+      if (room.teamMode !== TEAM_MODE_COLOR || !room.teams.some((team) => team.id === teamId)) {
+        return send(ws, { t: "error", code: "team_missing", message: "That team is not available in this room." });
+      }
+      assignPlayerTeam(room, targetId, teamId);
+      broadcast(room, { t: "players", list: activePlayerList(room) });
+      break;
+    }
     case "start":
+      ensureTeamState(room);
+      if (room.teamMode === TEAM_MODE_COLOR) {
+        const unassigned = [...room.players.values()].filter((player) => player.role !== "spectator" && !player.teamId);
+        if (unassigned.length) return send(ws, { t: "error", code: "teams_incomplete", message: "Assign every active participant to a team before Start." });
+      }
       setStage(room, room.coachingActivity ? "brief" : "play");
       if (!room.coachingActivity && !room.startedAt) room.startedAt = now;
       room.pausedAt = null;
@@ -1240,8 +1661,10 @@ function exportPayload(room) {
     ? ranking.reduce((sum, entry) => sum + Math.pow(entry.teamRank - entry.expertRank, 2), 0)
     : null;
   const canvas = room.canvas ? {
+    version: room.canvas.version || 1,
     mode: room.canvas.mode,
     contentLanguage: room.canvas.contentLanguage,
+    lanes: room.canvas.lanes || [],
     text: reconstructCanvasText([...room.canvas.tiles.values()]),
     tiles: [...room.canvas.tiles.values()].map(serializeCanvasTile),
   } : null;
@@ -1249,7 +1672,8 @@ function exportPayload(room) {
     schemaVersion: 1,
     exportedAt: new Date().toISOString(),
     session: { id: room.id, name: room.sessionName, activityId: room.config.puzzleId, stage: room.stage, startedAt: room.startedAt, durationMs: elapsedMs(room) },
-    participants: [...room.knownPlayers.entries()].map(([id, p]) => ({ id, name: p.name, role: p.role || "player" })),
+    teams: { mode: room.teamMode || TEAM_MODE_SHARED, list: teamViews(room) },
+    participants: [...room.knownPlayers.entries()].map(([id, p]) => ({ id, name: p.name, role: p.role || "player", teamId: p.teamId || null })),
     ranking,
     deviationScore,
     canvas,
@@ -1273,6 +1697,10 @@ function canvasGuard(room, playerId, ws) {
   if (room.stage !== "play" || room.boardLocked) { send(ws, { t: "error", code: "board_locked", message: "The board is locked by the facilitator." }); return null; }
   const player = room.players.get(playerId);
   if (!player || player.role === "spectator") { send(ws, { t: "error", code: "spectator", message: "Spectators can't touch the canvas." }); return null; }
+  if (room.teamMode === TEAM_MODE_COLOR && !player.teamId) {
+    send(ws, { t: "error", code: "team_required", message: "Choose a colour team before using the canvas." });
+    return null;
+  }
   return canvas;
 }
 
@@ -1280,22 +1708,60 @@ function canvasBroadcast(room, { list = [], removed = [], inventory = false } = 
   const payload = { t: "canvas" };
   if (list.length) payload.list = list;
   if (removed.length) payload.removed = removed;
-  if (inventory && room.canvas?.inventory) payload.inventory = Object.fromEntries(room.canvas.inventory);
-  if (!list.length && !removed.length && !payload.inventory) return;
+  if (inventory && room.canvas) {
+    payload.inventory = room.canvas.inventory ? Object.fromEntries(room.canvas.inventory) : null;
+    payload.teamInventory = canvasTeamInventoryPayload(room.canvas);
+  }
+  if (!list.length && !removed.length && payload.inventory === undefined && payload.teamInventory === undefined) return;
   broadcast(room, payload);
 }
 
-function takeCanvasInventory(canvas, text) {
-  if (!canvas.inventory) return true; // sandbox = unlimited
-  const left = canvas.inventory.get(text) || 0;
+function takeCanvasInventory(inventory, text) {
+  if (!inventory) return true; // sandbox = unlimited
+  const left = inventory.get(text) || 0;
   if (left <= 0) return false;
-  canvas.inventory.set(text, left - 1);
+  inventory.set(text, left - 1);
   return true;
 }
 
-function returnCanvasInventory(canvas, text) {
-  if (!canvas.inventory) return;
-  canvas.inventory.set(text, (canvas.inventory.get(text) || 0) + 1);
+function returnCanvasInventory(inventory, text) {
+  if (!inventory) return;
+  inventory.set(text, (inventory.get(text) || 0) + 1);
+}
+
+function inventoryForCanvasTile(room, canvas, tile) {
+  if (room.teamMode !== TEAM_MODE_COLOR) return canvas.inventory;
+  return tile.teamId ? canvas.teamInventory?.get(tile.teamId) || null : null;
+}
+
+function canvasTileAllowed(room, playerId, tile, ws) {
+  if (room.teamMode !== TEAM_MODE_COLOR || !tile.teamId || isHost(room, playerId)) return true;
+  if (tile.teamId === playerTeamId(room, playerId)) return true;
+  send(ws, { t: "error", code: "team_tile_locked", message: "This tile belongs to another colour team." });
+  return false;
+}
+
+/** Keep the first position of an active drag so cancel/undo means what a
+ * participant expects even after many throttled drag frames reached the server. */
+function rememberCanvasDragOrigin(tile) {
+  if (!tile.dragOrigin) {
+    tile.dragOrigin = {
+      x: tile.x,
+      y: tile.y,
+      laneId: tile.laneId || null,
+      laneIndex: tile.laneIndex ?? null,
+    };
+  }
+}
+
+function takeCanvasDragOrigin(tile) {
+  const origin = tile.dragOrigin || null;
+  delete tile.dragOrigin;
+  return origin;
+}
+
+function clearCanvasDragOrigin(tile) {
+  delete tile.dragOrigin;
 }
 
 function pushCanvasHistory(canvas, playerId, entry) {
@@ -1321,6 +1787,9 @@ function spawnCanvasTile(canvas, text, kind, opts) {
     heldAt: opts.heldBy ? Date.now() : null,
     createdBy: opts.createdBy || null,
     custom: !!opts.custom,
+    laneId: opts.laneId || null,
+    laneIndex: Number.isFinite(opts.laneIndex) ? opts.laneIndex : null,
+    teamId: opts.teamId || null,
   };
   clampCanvasTile(canvas, tile);
   canvas.tiles.set(id, tile);
@@ -1335,6 +1804,8 @@ function applyCanvasOp(room, playerId, msg, ws) {
   // This mirrors classic-piece semantics and avoids a 30-second dead tile.
   expireClaims(room, now);
   const isLetter = canvas.category === "letter-canvas";
+  const ownTeamId = playerTeamId(room, playerId);
+  const playerInventory = teamInventoryFor(room, canvas, playerId);
   let inventoryChanged = false;
   const list = [];
   const removed = [];
@@ -1364,7 +1835,7 @@ function applyCanvasOp(room, playerId, msg, ws) {
         } else if (CANVAS_PUNCT_SET.includes(raw)) {
           text = raw;
           kind = "punctuation";
-        } else if (canvas.inventory?.has(raw)) {
+        } else if (playerInventory?.has(raw)) {
           text = raw;
           kind = "word";
         } else {
@@ -1373,7 +1844,7 @@ function applyCanvasOp(room, playerId, msg, ws) {
         }
       }
       if (kind !== "custom") {
-        if (!takeCanvasInventory(canvas, text)) {
+        if (!takeCanvasInventory(playerInventory, text)) {
           inventoryChanged = true;
           send(ws, { t: "canvasRejected", reason: "inventory", text });
           return;
@@ -1383,17 +1854,48 @@ function applyCanvasOp(room, playerId, msg, ws) {
       const jitter = ((canvas.nextId * 137) % 90) - 45;
       const baseX = Number.isFinite(Number(msg.x)) ? Number(msg.x) : canvas.sheetW / 2;
       const baseY = Number.isFinite(Number(msg.y)) ? Number(msg.y) : canvas.sheetH / 2;
+      const requestedLaneId = canvas.version >= 2 && typeof msg.laneId === "string" ? msg.laneId : null;
+      const requestedLane = requestedLaneId ? (canvas.lanes || []).find((lane) => lane.id === requestedLaneId) : null;
+      if (requestedLaneId && (!requestedLane || (room.teamMode === TEAM_MODE_COLOR && requestedLane.teamId !== ownTeamId))) {
+        send(ws, { t: "error", code: "lane_unavailable", message: "That composition lane is not available to your team." });
+        if (kind !== "custom") returnCanvasInventory(playerInventory, text);
+        return;
+      }
       const tile = spawnCanvasTile(canvas, text, kind, {
         x: baseX + jitter, y: baseY + jitter,
-        heldBy: playerId, createdBy: playerId, custom: kind === "custom",
+        heldBy: requestedLane ? null : playerId, createdBy: playerId, custom: kind === "custom", teamId: ownTeamId,
       });
       pushCanvasHistory(canvas, playerId, { op: "spawn", id: tile.id, fromInventory: !tile.custom });
-      list.push(serializeCanvasTile(tile));
+      if (requestedLane) {
+        const changed = setCanvasTileLane(canvas, tile, requestedLane.id, msg.laneIndex);
+        list.push(...(changed || []).map(serializeCanvasTile));
+      } else list.push(serializeCanvasTile(tile));
+      break;
+    }
+    case "place": {
+      if (canvas.version < 2) { send(ws, { t: "error", code: "canvas_legacy", message: "This restored canvas uses the legacy freeform layout." }); return; }
+      const tile = canvas.tiles.get(Number(msg.id));
+      if (!tile) { send(ws, { t: "error", code: "tile_missing", message: "Tile not found." }); return; }
+      if (!canvasTileAllowed(room, playerId, tile, ws)) return;
+      if (claimBlocked(tile)) { rejectClaimed(tile); return; }
+      const laneId = String(msg.laneId || "");
+      const lane = (canvas.lanes || []).find((item) => item.id === laneId);
+      if (!lane || (room.teamMode === TEAM_MODE_COLOR && lane.teamId !== ownTeamId)) {
+        send(ws, { t: "error", code: "lane_unavailable", message: "That composition lane is not available to your team." });
+        return;
+      }
+      const previous = takeCanvasDragOrigin(tile) || { laneId: tile.laneId || null, laneIndex: tile.laneIndex ?? null, x: tile.x, y: tile.y };
+      tile.heldBy = null;
+      tile.heldAt = null;
+      const changed = setCanvasTileLane(canvas, tile, laneId, msg.laneIndex) || [];
+      pushCanvasHistory(canvas, playerId, { op: "place", id: tile.id, previous });
+      list.push(...changed.map(serializeCanvasTile));
       break;
     }
     case "move": {
       const tile = canvas.tiles.get(Number(msg.id));
       if (!tile) { send(ws, { t: "error", code: "tile_missing", message: "Tile not found." }); return; }
+      if (!canvasTileAllowed(room, playerId, tile, ws)) return;
       const x = Math.max(-2000, Math.min(canvas.sheetW + 2000, Number(msg.x) || 0));
       const y = Math.max(-2000, Math.min(canvas.sheetH + 2000, Number(msg.y) || 0));
       const cancelling = !msg.drag && msg.cancel === true;
@@ -1404,15 +1906,20 @@ function applyCanvasOp(room, playerId, msg, ws) {
           send(ws, { t: "canvas", list: [serializeCanvasTile(tile)] });
           return;
         }
-        tile.x = x;
-        tile.y = y;
+        const origin = takeCanvasDragOrigin(tile);
+        tile.x = origin?.x ?? x;
+        tile.y = origin?.y ?? y;
+        tile.laneId = origin?.laneId ?? tile.laneId ?? null;
+        tile.laneIndex = origin?.laneIndex ?? tile.laneIndex ?? null;
         tile.heldBy = null;
         tile.heldAt = null;
-        clampCanvasTile(canvas, tile);
+        if (canvas.version === 2 && tile.laneId) list.push(...layoutCanvasLane(canvas, tile.laneId).map(serializeCanvasTile));
+        else clampCanvasTile(canvas, tile);
         // No sentence snapping/history entry on cancellation. A browser loss
-        // must not turn into a facilitator-visible composition decision.
+        // restores the pre-drag state rather than becoming a composition move.
       } else if (msg.drag) {
         if (claimBlocked(tile)) { rejectClaimed(tile); return; }
+        if (tile.heldBy !== playerId) rememberCanvasDragOrigin(tile);
         tile.heldBy = playerId;
         tile.heldAt = now;
         tile.x = x;
@@ -1420,15 +1927,26 @@ function applyCanvasOp(room, playerId, msg, ws) {
         clampCanvasTile(canvas, tile);
       } else {
         if (claimBlocked(tile)) { rejectClaimed(tile); return; }
-        const prevX = tile.x;
-        const prevY = tile.y;
+        const origin = takeCanvasDragOrigin(tile);
+        const prevX = origin?.x ?? tile.x;
+        const prevY = origin?.y ?? tile.y;
+        const prevLaneId = origin?.laneId ?? (tile.laneId || null);
+        const prevLaneIndex = origin?.laneIndex ?? tile.laneIndex ?? null;
         tile.x = x;
         tile.y = y;
         tile.heldBy = null;
         tile.heldAt = null;
         if (!isLetter) snapSentenceTile(canvas, tile);
         else clampCanvasTile(canvas, tile);
-        pushCanvasHistory(canvas, playerId, { op: "move", id: tile.id, prevX, prevY });
+        // A normal freeform drop deliberately leaves a semantic lane. The
+        // client uses `place` for a drop inside a lane, so lane membership is
+        // never inferred from a coordinate on the server.
+        if (canvas.version === 2 && prevLaneId) {
+          tile.laneId = null;
+          tile.laneIndex = null;
+          list.push(...layoutCanvasLane(canvas, prevLaneId).map(serializeCanvasTile));
+        }
+        pushCanvasHistory(canvas, playerId, { op: "move", id: tile.id, prevX, prevY, prevLaneId, prevLaneIndex });
       }
       list.push(serializeCanvasTile(tile));
       break;
@@ -1436,7 +1954,9 @@ function applyCanvasOp(room, playerId, msg, ws) {
     case "flip": {
       const tile = canvas.tiles.get(Number(msg.id));
       if (!tile) return;
+      if (!canvasTileAllowed(room, playerId, tile, ws)) return;
       if (claimBlocked(tile)) { rejectClaimed(tile); return; }
+      clearCanvasDragOrigin(tile);
       tile.flipped = !tile.flipped;
       pushCanvasHistory(canvas, playerId, { op: "flip", id: tile.id, was: !tile.flipped });
       list.push(serializeCanvasTile(tile));
@@ -1445,9 +1965,12 @@ function applyCanvasOp(room, playerId, msg, ws) {
     case "duplicate": {
       const tile = canvas.tiles.get(Number(msg.id));
       if (!tile) return;
+      if (!canvasTileAllowed(room, playerId, tile, ws)) return;
       if (claimBlocked(tile)) { rejectClaimed(tile); return; }
+      clearCanvasDragOrigin(tile);
+      const tileInventory = inventoryForCanvasTile(room, canvas, tile);
       if (!tile.custom) {
-        if (!takeCanvasInventory(canvas, tile.text)) {
+        if (!takeCanvasInventory(tileInventory, tile.text)) {
           send(ws, { t: "canvasRejected", reason: "inventory", text: tile.text });
           return;
         }
@@ -1465,16 +1988,21 @@ function applyCanvasOp(room, playerId, msg, ws) {
         if (c.x >= 0 && c.y >= 0 && c.x + tile.w <= canvas.sheetW && c.y + tile.h <= canvas.sheetH) { pos = c; break; }
       }
       const copy = spawnCanvasTile(canvas, tile.text, tile.kind, {
-        x: pos.x, y: pos.y, heldBy: playerId, createdBy: playerId, custom: tile.custom,
+        x: pos.x, y: pos.y, heldBy: tile.laneId ? null : playerId, createdBy: playerId, custom: tile.custom, teamId: tile.teamId,
       });
       pushCanvasHistory(canvas, playerId, { op: "duplicate", id: copy.id, fromInventory: !copy.custom });
-      list.push(serializeCanvasTile(copy));
+      if (canvas.version === 2 && tile.laneId) {
+        const changed = setCanvasTileLane(canvas, copy, tile.laneId, (tile.laneIndex ?? 0) + 1) || [];
+        list.push(...changed.map(serializeCanvasTile));
+      } else list.push(serializeCanvasTile(copy));
       break;
     }
     case "edit": {
       const tile = canvas.tiles.get(Number(msg.id));
       if (!tile || !tile.custom) { send(ws, { t: "error", code: "not_custom", message: "Only custom word tiles can be edited." }); return; }
+      if (!canvasTileAllowed(room, playerId, tile, ws)) return;
       if (claimBlocked(tile)) { rejectClaimed(tile); return; }
+      clearCanvasDragOrigin(tile);
       const next = nfc(String(msg.text || "")).replace(/\s+/g, " ").trim();
       if (!next || next.length > CANVAS_MAX_CUSTOM_LEN) { send(ws, { t: "error", code: "bad_word", message: "Custom words must be 1–40 characters." }); return; }
       const prevText = tile.text;
@@ -1483,17 +2011,22 @@ function applyCanvasOp(room, playerId, msg, ws) {
       tile.w = canvasWordWidth(next, "custom");
       clampCanvasTile(canvas, tile);
       pushCanvasHistory(canvas, playerId, { op: "edit", id: tile.id, prevText, prevW });
-      list.push(serializeCanvasTile(tile));
+      if (canvas.version === 2 && tile.laneId) list.push(...layoutCanvasLane(canvas, tile.laneId).map(serializeCanvasTile));
+      else list.push(serializeCanvasTile(tile));
       break;
     }
     case "delete": {
       const tile = canvas.tiles.get(Number(msg.id));
       if (!tile) return;
+      if (!canvasTileAllowed(room, playerId, tile, ws)) return;
       const isOwner = tile.createdBy === playerId;
       if (!isOwner && claimBlocked(tile)) { rejectClaimed(tile); return; }
+      clearCanvasDragOrigin(tile);
       const snapshot = serializeCanvasTile(tile);
+      const formerLaneId = tile.laneId || null;
       canvas.tiles.delete(tile.id);
-      if (!tile.custom) { returnCanvasInventory(canvas, tile.text); inventoryChanged = true; }
+      if (!tile.custom) { returnCanvasInventory(inventoryForCanvasTile(room, canvas, tile), tile.text); inventoryChanged = true; }
+      if (canvas.version === 2 && formerLaneId) list.push(...layoutCanvasLane(canvas, formerLaneId).map(serializeCanvasTile));
       removed.push(tile.id);
       pushCanvasHistory(canvas, playerId, { op: "delete", tile: snapshot, fromInventory: !tile.custom });
       break;
@@ -1505,8 +2038,10 @@ function applyCanvasOp(room, playerId, msg, ws) {
       if (entry.op === "spawn" || entry.op === "duplicate") {
         const tile = canvas.tiles.get(entry.id);
         if (tile) {
+          const formerLaneId = tile.laneId || null;
           canvas.tiles.delete(entry.id);
-          if (entry.fromInventory) { returnCanvasInventory(canvas, tile.text); inventoryChanged = true; }
+          if (entry.fromInventory) { returnCanvasInventory(inventoryForCanvasTile(room, canvas, tile), tile.text); inventoryChanged = true; }
+          if (canvas.version === 2 && formerLaneId) list.push(...layoutCanvasLane(canvas, formerLaneId).map(serializeCanvasTile));
           removed.push(entry.id);
         }
       } else if (entry.op === "move") {
@@ -1515,8 +2050,32 @@ function applyCanvasOp(room, playerId, msg, ws) {
           if (claimBlocked(tile)) { canvas.history.set(playerId, [entry, ...stack]); rejectClaimed(tile); return; }
           tile.x = entry.prevX;
           tile.y = entry.prevY;
-          clampCanvasTile(canvas, tile);
-          list.push(serializeCanvasTile(tile));
+          tile.laneId = entry.prevLaneId || null;
+          tile.laneIndex = entry.prevLaneIndex ?? null;
+          if (canvas.version === 2 && tile.laneId) list.push(...layoutCanvasLane(canvas, tile.laneId).map(serializeCanvasTile));
+          else {
+            clampCanvasTile(canvas, tile);
+            list.push(serializeCanvasTile(tile));
+          }
+        }
+      } else if (entry.op === "place") {
+        const tile = canvas.tiles.get(entry.id);
+        if (tile) {
+          if (!canvasTileAllowed(room, playerId, tile, ws) || claimBlocked(tile)) {
+            canvas.history.set(playerId, [entry, ...stack]);
+            if (tile.heldBy && tile.heldBy !== playerId) rejectClaimed(tile);
+            return;
+          }
+          const oldLaneId = tile.laneId;
+          tile.laneId = entry.previous.laneId;
+          tile.laneIndex = entry.previous.laneIndex;
+          tile.x = entry.previous.x;
+          tile.y = entry.previous.y;
+          const changed = oldLaneId ? layoutCanvasLane(canvas, oldLaneId) : [];
+          if (tile.laneId) changed.push(...layoutCanvasLane(canvas, tile.laneId));
+          if (!tile.laneId) clampCanvasTile(canvas, tile);
+          list.push(...changed.map(serializeCanvasTile));
+          if (!changed.some((item) => item.id === tile.id)) list.push(serializeCanvasTile(tile));
         }
       } else if (entry.op === "flip") {
         const tile = canvas.tiles.get(entry.id);
@@ -1531,15 +2090,18 @@ function applyCanvasOp(room, playerId, msg, ws) {
           tile.text = entry.prevText;
           tile.w = entry.prevW;
           clampCanvasTile(canvas, tile);
-          list.push(serializeCanvasTile(tile));
+          if (canvas.version === 2 && tile.laneId) list.push(...layoutCanvasLane(canvas, tile.laneId).map(serializeCanvasTile));
+          else list.push(serializeCanvasTile(tile));
         }
       } else if (entry.op === "delete") {
         const t = entry.tile;
         if (!canvas.tiles.has(t.id)) {
-          if (t.custom || takeCanvasInventory(canvas, t.text)) {
+          if (t.custom || takeCanvasInventory(inventoryForCanvasTile(room, canvas, t), t.text)) {
             if (!t.custom) inventoryChanged = true;
-            canvas.tiles.set(t.id, { ...t, heldBy: null, heldAt: null });
-            list.push(serializeCanvasTile(t));
+            const restored = { ...t, heldBy: null, heldAt: null };
+            canvas.tiles.set(t.id, restored);
+            if (canvas.version === 2 && restored.laneId) list.push(...layoutCanvasLane(canvas, restored.laneId).map(serializeCanvasTile));
+            else list.push(serializeCanvasTile(restored));
           } else {
             send(ws, { t: "canvasRejected", reason: "inventory" });
           }
@@ -1589,7 +2151,7 @@ app.get("/api/puzzles", (_req, res) => res.json({
 app.get("/api/coaching", (_req, res) => res.json(publicCoachingCatalog()));
 
 app.post("/api/rooms", (req, res) => {
-  const { puzzleId, difficulty, name, sessionName, role, contentLanguage, mystery, customImage } = req.body || {};
+  const { puzzleId, difficulty, name, sessionName, role, contentLanguage, mystery, customImage, teamMode, teamCount } = req.body || {};
   if (typeof name !== "string" || !name.trim()) return res.status(400).json({ error: "A display name is required." });
   try {
     const ci = customImage && typeof customImage === "object" ? customImage : null;
@@ -1599,6 +2161,8 @@ app.post("/api/rooms", (req, res) => {
         difficulty,
         contentLanguage,
         mystery: !!mystery,
+        teamMode: normalizeTeamMode(teamMode),
+        teamCount: normalizeTeamCount(teamCount),
         customImage: ci
           ? {
               url: String(ci.url || "").slice(0, 200),
@@ -1613,7 +2177,7 @@ app.post("/api/rooms", (req, res) => {
       { sessionName },
     );
     const playerId = crypto.randomUUID();
-    const info = { name: name.trim().slice(0, 24), color: null, role: role === "spectator" ? "spectator" : "host" };
+    const info = { name: name.trim().slice(0, 24), color: null, role: role === "spectator" ? "spectator" : "host", teamId: null };
     room.hostId = playerId;
     room.knownPlayers.set(playerId, info);
     room.pending.set(playerId, { ...info, expiresAt: Date.now() + PENDING_TTL_MS });
@@ -1643,7 +2207,7 @@ app.post("/api/rooms/:id/join", (req, res) => {
   const cleanName = name.trim().slice(0, 24);
   const activeNames = [...room.players.values(), ...room.pending.values()].map((player) => player.name.toLocaleLowerCase());
   if (activeNames.includes(cleanName.toLocaleLowerCase())) return res.status(409).json({ error: "That display name is already in this room.", code: "duplicate_name" });
-  const info = { name: cleanName, color: null, role: "player" };
+  const info = { name: cleanName, color: null, role: "player", teamId: null };
   room.knownPlayers.set(playerId, info);
   room.pending.set(playerId, { ...info, expiresAt: Date.now() + PENDING_TTL_MS });
   touch(room);
@@ -1678,6 +2242,7 @@ app.post("/api/rooms/:id/takeover", (req, res) => {
 function canvasSnapshot(room) {
   if (!room.canvas) return undefined;
   return {
+    version: room.canvas.version || 1,
     mode: room.canvas.mode,
     contentLanguage: room.canvas.contentLanguage,
     sheetW: room.canvas.sheetW,
@@ -1685,8 +2250,10 @@ function canvasSnapshot(room) {
     tileW: room.canvas.tileW,
     tileH: room.canvas.tileH,
     wordGap: room.canvas.wordGap,
+    lanes: room.canvas.lanes || [],
     tiles: [...room.canvas.tiles.values()].map(serializeCanvasTile),
     inventory: room.canvas.inventory ? Object.fromEntries(room.canvas.inventory) : null,
+    teamInventory: canvasTeamInventoryPayload(room.canvas),
   };
 }
 
@@ -1772,6 +2339,25 @@ app.get("/api/rooms/:id/export", (req, res) => {
   res.type("html").send(`<!doctype html><html><head><meta charset="utf-8"><title>${htmlEscape(room.sessionName)} — PuzzleTogether</title><style>body{font:14px system-ui;max-width:800px;margin:40px auto;color:#172033}h1,h2{color:#27358f}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.card{border:1px solid #ddd;border-radius:12px;padding:14px}@media print{button{display:none}}</style></head><body><button onclick="print()">Print / Save PDF</button><h1>${htmlEscape(room.sessionName)}</h1><p>${htmlEscape(room.config.puzzleId)} · ${new Date(room.startedAt || room.createdAt).toLocaleString()}</p>${ranking}${canvas}<h2>Insights</h2><div class="grid"><div class="card"><b>Observed</b><p>${htmlEscape(room.insights.observed)}</p></div><div class="card"><b>Learned</b><p>${htmlEscape(room.insights.learned)}</p></div><div class="card"><b>Try next</b><p>${htmlEscape(room.insights.tryNext)}</p></div></div><h2>Action items</h2><ul>${actions || "<li>No action items captured.</li>"}</ul></body></html>`);
 });
 
+// Compatibility-only archival image route for a room snapshot created before
+// the 2026-09-04 content retirement. It is intentionally not listed in the
+// catalog, public manifest, or picker.
+app.get("/api/retired-images/:id", (req, res) => {
+  const id = String(req.params.id || "");
+  // Scope the compatibility asset to a currently-restored legacy room. This
+  // prevents the retirement archive becoming a second public catalog URL.
+  const room = findRoom(String(req.query.room || ""));
+  if (!room || !room.retiredCatalog || room.config?.puzzleId !== id) {
+    return res.status(404).json({ error: "Retired image not available." });
+  }
+  const entry = retiredEntryByPuzzleId.get(id);
+  if (!entry) return res.status(404).json({ error: "Retired image not found." });
+  const original = path.join(rootDir, "data", "catalog", "originals", path.basename(String(entry.asset || "")));
+  if (!fs.existsSync(original)) return res.status(404).json({ error: "Retired image archive unavailable." });
+  res.setHeader("Cache-Control", "private, max-age=300");
+  res.type("jpeg").sendFile(original);
+});
+
 // Custom image uploads (room-scoped). The file is stored under .data/uploads
 // (never in the public bundle) and deleted when its room is reaped.
 app.post("/api/uploads", express.raw({ type: "*/*", limit: "10mb" }), (req, res) => {
@@ -1825,6 +2411,10 @@ app.post("/api/uploads", express.raw({ type: "*/*", limit: "10mb" }), (req, res)
 // Serve room uploads (no long cache — they are room-scoped and short-lived).
 app.use("/uploads", express.static(uploadsDir, { maxAge: 0, immutable: false, fallthrough: false }));
 
+// Catalog images are a closed public bundle. A missing derivative must answer
+// promptly with a real 404 rather than falling into Vite's SPA/proxy handling
+// in development (which can turn a missing image into a self-proxy timeout).
+app.use("/images", express.static(path.join(publicDir, "images"), { maxAge: IS_PROD ? "7d" : 0, fallthrough: false }));
 app.use(express.static(publicDir, { maxAge: IS_PROD ? "7d" : 0 }));
 
 // ---------------------------------------------------------------------------
@@ -1852,14 +2442,14 @@ wss.on("connection", (ws) => {
         if (room.conns.has(pid)) { try { room.conns.get(pid).ws.close(); } catch {} room.conns.delete(pid); }
         if (!room.players.has(pid)) {
           const info = room.pending.get(pid) || room.knownPlayers.get(pid) || {};
-          room.players.set(pid, { id: pid, name: info.name || "Player", color: info.color || null, role: info.role || "player", joinedAt: Date.now(), lastSeenAt: Date.now() });
+          room.players.set(pid, { id: pid, name: info.name || "Player", color: info.color || null, role: info.role || "player", teamId: info.teamId || null, joinedAt: Date.now(), lastSeenAt: Date.now() });
           room.pending.delete(pid);
         }
         const player = room.players.get(pid);
         if (!player.color) player.color = pickColor(room, pid);
         player.lastSeenAt = Date.now();
         const known = room.knownPlayers.get(pid);
-        if (known) { known.color = player.color; known.role = player.role; }
+        if (known) { known.color = player.color; known.role = player.role; known.teamId = player.teamId || null; }
         room.conns.set(pid, { ws, playerId: pid, cursor: { x: 0, y: 0, dirty: false } });
         attached = { room, playerId: pid };
         startCursorRelay(room);
@@ -1868,17 +2458,7 @@ wss.on("connection", (ws) => {
           t: "init", protocolVersion: PROTOCOL_VERSION, you: pid, room: roomView(room), puzzle: puzzleView(room), players: activePlayerList(room), pieces: room.pieces.map(serializePiece), ratings: ratingListFor(room, pid), scores: scoreList(room), chat: room.chat,
           facilitator: isHost(room, pid) ? { notes: room.facilitatorNotes } : undefined,
           cursors: [...room.conns.entries()].filter(([id]) => id !== pid).map(([id, c]) => ({ id, x: c.cursor.x, y: c.cursor.y })),
-          canvas: room.canvas ? {
-            mode: room.canvas.mode,
-            contentLanguage: room.canvas.contentLanguage,
-            sheetW: room.canvas.sheetW,
-            sheetH: room.canvas.sheetH,
-            tileW: room.canvas.tileW,
-            tileH: room.canvas.tileH,
-            wordGap: room.canvas.wordGap,
-            tiles: [...room.canvas.tiles.values()].map(serializeCanvasTile),
-            inventory: room.canvas.inventory ? Object.fromEntries(room.canvas.inventory) : null,
-          } : undefined,
+          canvas: canvasSnapshot(room),
         });
         broadcast(room, { t: "players", list: activePlayerList(room) });
         logEvent("join_connected", room, { role: player.role });
@@ -2006,6 +2586,11 @@ wss.on("connection", (ws) => {
         if (done) logEvent("rating_done", room, { playerId });
         break;
       }
+      case "team": {
+        const { room, playerId } = attached;
+        applyTeamAction(room, playerId, msg, ws);
+        break;
+      }
       case "control": {
         const { room, playerId } = attached;
         applyControl(room, playerId, msg, ws);
@@ -2113,7 +2698,10 @@ if (IS_PROD) {
   app.use((req, res, next) => req.path.startsWith("/api") || req.path.startsWith("/ws") ? next() : res.sendFile(path.join(distDir, "index.html")));
 } else {
   const { createServer: createViteServer } = await import("vite");
-  const vite = await createViteServer({ server: { middlewareMode: true, ws: { server: httpServer } }, appType: "custom" });
+  // Do not inherit standalone Vite proxy routes here: this Express server is
+  // already the backend, so a missing /images asset must not proxy back to its
+  // own port. Standalone Vite can still opt into its configured proxy.
+  const vite = await createViteServer({ server: { middlewareMode: true, ws: { server: httpServer }, proxy: {} }, appType: "custom" });
   app.use(vite.middlewares);
   app.use(async (req, res, next) => {
     if (req.path.startsWith("/api") || req.path.startsWith("/ws")) return next();
@@ -2124,7 +2712,14 @@ if (IS_PROD) {
   });
 }
 
-app.use((error, _req, res, _next) => { console.error(error); res.status(500).json({ error: "Internal server error" }); });
+app.use((error, _req, res, _next) => {
+  // express.static reports an absent file with status 404. Preserve that
+  // contract so callers can distinguish a missing asset from an outage.
+  const candidate = Number(error?.status || error?.statusCode);
+  const status = Number.isInteger(candidate) && candidate >= 400 && candidate < 600 ? candidate : 500;
+  if (status >= 500) console.error(error);
+  res.status(status).json({ error: status === 404 ? "Not found." : "Internal server error" });
+});
 httpServer.listen(PORT, HOST, () => {
   console.log(`🧩 PuzzleTogether server running on http://${HOST}:${PORT} (${IS_PROD ? "production" : "development"})`);
   console.log(`   protocol v${PROTOCOL_VERSION} · ${PUZZLES.length} licensed puzzles · ${rooms.size} active rooms`);

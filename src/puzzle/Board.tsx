@@ -254,6 +254,8 @@ export default function Board({
   }, []);
 
   const pointerLifecycle = usePointerLifecycle(canvasRef, pointerSamples, {
+    debugScope: "jigsaw",
+    debugState: () => gestureType.current,
     onMove: handleTrackedPointerMove,
     onTerminate: handlePointerTermination,
   });

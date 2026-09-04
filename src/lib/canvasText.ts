@@ -1,4 +1,4 @@
-import type { CanvasTile } from "../types";
+import type { CanvasLane, CanvasTile } from "../types";
 
 /**
  * Client mirror of the server's reconstructCanvasText() (src/server.js).
@@ -8,6 +8,33 @@ import type { CanvasTile } from "../types";
 export function reconstructCanvasText(tiles: CanvasTile[], opts: { bigGapFactor?: number } = {}): string {
   const { bigGapFactor = 1.8 } = opts;
   if (!tiles.length) return "";
+  // Mirror the server: a fully lane-based v2 composition has an intentional
+  // sequence, so letter tiles become words rather than an arbitrary spatial row.
+  if (tiles.every((tile) => tile.laneId)) {
+    const groups = new Map<string, { x: number; y: number; items: CanvasTile[] }>();
+    for (const tile of tiles) {
+      const group = groups.get(tile.laneId!) || { x: tile.x, y: tile.y, items: [] };
+      group.x = Math.min(group.x, tile.x);
+      group.y = Math.min(group.y, tile.y);
+      group.items.push(tile);
+      groups.set(tile.laneId!, group);
+    }
+    return [...groups.values()]
+      .sort((a, b) => a.y - b.y || a.x - b.x)
+      .map((group) => {
+        const items = group.items.sort((a, b) => (a.laneIndex ?? 0) - (b.laneIndex ?? 0) || a.id - b.id);
+        const letters = items.every((tile) => ["letter", "wildcard", "punctuation"].includes(tile.kind));
+        let line = "";
+        for (let index = 0; index < items.length; index++) {
+          const tile = items[index];
+          if (!letters && index > 0 && tile.kind !== "punctuation") line += " ";
+          line += tile.text;
+        }
+        return line.trim();
+      })
+      .filter(Boolean)
+      .join("\n");
+  }
   const list = [...tiles].sort((a, b) => a.y - b.y || a.x - b.x);
   const rows: { y: number; n: number; items: CanvasTile[] }[] = [];
   for (const t of list) {
@@ -66,6 +93,7 @@ export function exportCanvasPng(opts: {
   sheetW: number;
   sheetH: number;
   tiles: CanvasTile[];
+  lanes?: CanvasLane[];
   isLetter: boolean;
   filename: string;
   drawTile: (ctx: CanvasRenderingContext2D, tile: CanvasTile, x: number, y: number, w: number, h: number) => void;
@@ -77,21 +105,35 @@ export function exportCanvasPng(opts: {
   canvas.height = (opts.sheetH + margin * 2) * scale;
   const ctx = canvas.getContext("2d")!;
   ctx.scale(scale, scale);
-  // Desk + white sheet
-  ctx.fillStyle = "#eef1f6";
+  // Export the same dark game surface rather than a generic white worksheet.
+  ctx.fillStyle = "#080b14";
   ctx.fillRect(0, 0, opts.sheetW + margin * 2, opts.sheetH + margin * 2);
   ctx.save();
-  ctx.shadowColor = "rgba(15,23,42,0.25)";
+  ctx.shadowColor = "rgba(0,0,0,0.4)";
   ctx.shadowBlur = 30;
   ctx.shadowOffsetY = 10;
-  ctx.fillStyle = "#ffffff";
+  ctx.fillStyle = "#12192b";
   roundRectPath(ctx, margin, margin, opts.sheetW, opts.sheetH, 18);
   ctx.fill();
   ctx.restore();
-  ctx.strokeStyle = "rgba(15,23,42,0.08)";
+  ctx.strokeStyle = "rgba(148,163,184,.36)";
   ctx.lineWidth = 2;
   roundRectPath(ctx, margin, margin, opts.sheetW, opts.sheetH, 18);
   ctx.stroke();
+  for (const lane of opts.lanes || []) {
+    const accent: Record<string, string> = { red: "#f87171", yellow: "#facc15", green: "#4ade80", blue: "#60a5fa", purple: "#c084fc", orange: "#fb923c" };
+    const color = accent[lane.teamColor || "blue"] || "#60a5fa";
+    ctx.fillStyle = `${color}20`;
+    roundRectPath(ctx, margin + lane.x, margin + lane.y, lane.w, lane.h, 16);
+    ctx.fill();
+    ctx.strokeStyle = `${color}aa`;
+    ctx.lineWidth = 2;
+    roundRectPath(ctx, margin + lane.x, margin + lane.y, lane.w, lane.h, 16);
+    ctx.stroke();
+    ctx.fillStyle = "#f8fafc";
+    ctx.font = "700 17px Inter, system-ui, sans-serif";
+    ctx.fillText(`${lane.teamMarker ? `${lane.teamMarker} ${lane.teamName || ""} · ` : ""}${lane.label.en}`, margin + lane.x + 16, margin + lane.y + 25);
+  }
   const tiles = [...opts.tiles].sort((a, b) => a.y - b.y || a.x - b.x);
   for (const tile of tiles) {
     opts.drawTile(ctx, tile, margin + tile.x, margin + tile.y, tile.w, tile.h);

@@ -8,6 +8,14 @@ body,
   height: 100%;
 }
 
+.game-shell {
+  /* Dynamic viewport units keep the game and its fixed chrome above iPhone
+     Safari browser chrome/keyboard; the first declaration is the fallback. */
+  height: 100vh;
+  height: 100dvh;
+  min-height: 100svh;
+}
+
 .safe-top {
   padding-top: max(0px, env(safe-area-inset-top));
 }

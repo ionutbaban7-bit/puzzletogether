@@ -284,3 +284,61 @@ See [`product-remediation-review-2026-09-04.md`](product-remediation-review-2026
 for evidence/prioritisation and
 [`next-session-implementation-prompt.md`](next-session-implementation-prompt.md)
 for the required ordered implementation, migration, rollout, and QA plan.
+
+---
+
+## Remediation verification addendum — 2026-09-04
+
+The implementation described as open in the preceding addendum is now present
+on the remediation branch. This addendum supersedes its implementation-status
+statements; it does **not** turn automated evidence into a physical-device
+approval.
+
+### Implemented and covered by automated checks
+
+- The shared pointer lifecycle now uses safe pointer capture, a scoped window
+  fallback, and idempotent termination for cancellation, lost capture, blur,
+  visibility, page-hide, resize/visual-viewport interruption, Escape and
+  unmount. Jigsaw, Canvas and ranking boards use it.
+- Opt-in, local-only pointer trace diagnostics are available through
+  `?ptPointerDebug=1` or `sessionStorage.ptPointerDebug=1`. The bounded trace
+  does not record coordinates, pointer IDs, identities, room IDs, names, chat
+  or tile content and is not transmitted.
+- Participant Chat is available from the responsive game shell and the
+  keyboard-safe chat sheet; server history, broadcasts and sender-scoped retry
+  idempotency remain covered by protocol tests.
+- New Canvas rooms use the server-authoritative v2 semantic lanes and
+  Canvas-only colour teams. Cancellation, expiry, disconnect and undo preserve
+  a tile's pre-drag lane state; persisted v1 Canvas rooms remain freeform.
+- Abstract Geometry and Isometric Worlds have been retired from the active
+  catalog while their narrow active-legacy-room restoration route remains
+  covered by compatibility tests.
+
+### Fresh automated results
+
+Executed against the restarted current development server on 2026-09-04:
+
+| Gate | Result |
+| --- | --- |
+| `npm run typecheck` | PASS |
+| `npm run build` | PASS |
+| `npm run test:protocol` | PASS — 176/176 checks across core, layout, reset, coaching, Canvas, teams, retirement, claim and Chat contracts |
+| `npm run test:render-contract` | PASS — 7/7 |
+| `npm run catalog:audit` | PASS — 74 entries, 0 structural failures (41 documented warnings) |
+| `npm run test:catalog-serve` | PASS — 319/319 GET/API/creation checks in an isolated data directory |
+| `npm run test:load` | PASS — 20 clients, 144 pieces, 800 piece frames and 400 cursors in 884 ms |
+| `npm run test:e2e` | BLOCKED — Playwright has no installed browser executable in this sandbox; prior browser download attempts failed with TLS `ECONNRESET` |
+
+`git diff --check` and `node --check src/server.js` must be rerun after any
+subsequent source or documentation change before release/merge.
+
+### Remaining release blocker
+
+Physical iPhone Safari remains a mandatory P0 approval gate. The required test
+must use real devices and record repeated jigsaw grab/move/drop, interruption
+and reconnection recovery, plus participant-side Chat discovery/history/send
+with the iOS keyboard, safe areas and browser chrome. Browser emulation and
+Node protocol coverage do not substitute for that approval. See
+[`product-remediation-review-2026-09-04.md`](product-remediation-review-2026-09-04.md)
+and [`next-session-implementation-prompt.md`](next-session-implementation-prompt.md)
+for the exact evidence matrix and follow-up order.
