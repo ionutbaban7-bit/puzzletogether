@@ -18,6 +18,22 @@ export const MIN_SCALE = 0.1; // 10% — large puzzles fit fully even on small p
 export const MAX_SCALE = 3;
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
+/**
+ * Device-pixel-ratio cap for the board canvases. Capping on high-density phones
+ * cuts the number of physical pixels the renderer has to fill by a meaningful
+ * amount (a 2x iPhone drops ~44% of its fill area) which is the single cheapest
+ * win for keeping the canvas smooth. Desktop stays at 2x for crispness.
+ * The value is computed once per call so it reflects the current pointer type /
+ * viewport without needing a state subscription.
+ */
+export function canvasRenderScale(): number {
+  if (typeof window === "undefined") return 1;
+  const coarse =
+    (typeof window.matchMedia === "function" && window.matchMedia("(pointer: coarse)").matches) ||
+    window.innerWidth < 768;
+  return Math.min(window.devicePixelRatio || 1, coarse ? 1.5 : 2);
+}
+
 export function useViewport() {
   const [camera, setCameraState] = useState<Camera>({ x: 0, y: 0, scale: 0.55 });
   const cameraRef = useRef(camera);

@@ -109,6 +109,8 @@ export interface CanvasState {
   inventory: Record<string, number> | null;
   /** Team-scoped finite banks in colour-team mode. */
   teamInventory?: Record<string, Record<string, number> | null> | null;
+  /** Per-team joker (surprise letter) draws remaining. Keyed by team id or "shared". */
+  jokers?: Record<string, number> | null;
   lanes?: CanvasLane[];
 }
 

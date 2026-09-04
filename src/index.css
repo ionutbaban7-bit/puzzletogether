@@ -127,3 +127,34 @@ body {
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* Reduced-motion: workshops on phones can render heavy blur/fill each frame.
+   Respect the OS setting by switching decorative animation off and trimming
+   the most expensive blurred-glass surfaces so the board stays smooth. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marketing-orb {
+    display: none;
+  }
+}
+
+/* On small screens, keep the in-room blurred-glass overlays but soften the
+   blur radius — full-screen backdrop-blur-xl is one of the most expensive
+   compositing operations on a phone GPUs. */
+@media (max-width: 767px) {
+  .overlay-card {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .backdrop-blur-xl {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}

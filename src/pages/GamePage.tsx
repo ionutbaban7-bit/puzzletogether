@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import Board from "../puzzle/Board";
 import CanvasBoard from "../puzzle/CanvasBoard";
 import RankingActivity from "../puzzle/RankingActivity";
@@ -16,6 +16,13 @@ import { lockedCountOf } from "../store";
 import ChatSheet from "../components/ChatSheet";
 import { useVisualViewport } from "../lib/useVisualViewport";
 import TeamSetup, { TeamBadge } from "../components/TeamSetup";
+
+// The board canvases are the heaviest part of the room. Wrapping them in memo
+// with stable callback props stops the once-a-second clock tick from
+// reconciling the huge canvas component trees (which read their data from refs
+// and never need to re-render for a timer change).
+const MemoBoard = memo(Board);
+const MemoCanvasBoard = memo(CanvasBoard);
 
 const CATEGORY_ICON: Record<string, string> = {
   "letter-canvas": "✍️",
@@ -221,6 +228,16 @@ export default function GamePage() {
     await api.resetPuzzle(room.id, youId);
   }
 
+  // Stable callbacks so the memoized board does not re-render on the clock tick.
+  const handlePieceDrop = useCallback(() => {}, []);
+  const handleBoardResetRequest = useCallback(() => {
+    if (!room || !youId || !isHost) return;
+    if (window.confirm(lang === "ro" ? "Resetezi puzzle-ul pentru toată echipa?" : "Reset the puzzle for everyone?")) {
+      api.resetRoom(room.id, youId).then(() => setResetSignal((n) => n + 1));
+    }
+  }, [room, youId, isHost, lang]);
+  const handleFacilitatorClose = useCallback(() => setFacilitatorOpen(false), []);
+
   function handleLeave() {
     if (!window.confirm(lang === "ro" ? "Sigur vrei să părăsești sesiunea?" : "Leave this session?")) return;
     store.leaveRoom();
@@ -353,7 +370,7 @@ export default function GamePage() {
           youId={youId}
         />
       ) : isCanvas && canvas ? (
-        <CanvasBoard
+        <MemoCanvasBoard
           key={`${room.puzzleId}:${epoch}`}
           puzzle={puzzle}
           canvas={canvas}
@@ -365,14 +382,14 @@ export default function GamePage() {
           resetSignal={resetSignal + epoch}
         />
       ) : (
-        <Board
+        <MemoBoard
           puzzle={puzzle}
           pieces={pieces}
           cursors={cursors}
           players={players}
           youId={youId}
-          onPieceDrop={() => {}}
-          onResetRequest={() => window.confirm(lang === "ro" ? "Resetezi puzzle-ul pentru toată echipa?" : "Reset the puzzle for everyone?") && handleReset()}
+          onPieceDrop={handlePieceDrop}
+          onResetRequest={handleBoardResetRequest}
           allowReset={!!room.completed && isHost}
           resetSignal={resetSignal + epoch}
           inputEnabled={inputEnabled}
@@ -907,7 +924,7 @@ export default function GamePage() {
       )}
 
       {facilitatorOpen && isHost && youId && (
-        <FacilitatorPanel room={room} players={players} youId={youId} onClose={() => setFacilitatorOpen(false)} onReset={handleReset} />
+        <FacilitatorPanel room={room} players={players} youId={youId} onClose={handleFacilitatorClose} onReset={handleReset} />
       )}
 
       {chatOpen && (
