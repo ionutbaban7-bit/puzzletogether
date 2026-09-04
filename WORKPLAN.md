@@ -104,3 +104,33 @@ sequence and the release evidence for the active branch.
   and every browser script now accepts
   `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` plus optional
   `PLAYWRIGHT_CHROMIUM_ARGS` for a supplied compatible runtime.
+
+## Post-release product remediation — opened 2026-09-04
+
+The seven stages above remain historical delivery evidence, but a real-device
+product review has reopened release gates that were outside their original
+scope. The full evidence and ordered implementation brief are in:
+
+- [`docs/product-remediation-review-2026-09-04.md`](docs/product-remediation-review-2026-09-04.md)
+- [`docs/next-session-implementation-prompt.md`](docs/next-session-implementation-prompt.md)
+
+- [x] Safely reconciled the local checkout with the already-pushed remote
+  `d35f7bb` without overwriting the previously delivered worktree.
+- [x] Re-ran executable baseline checks: TypeScript/build, protocol **132/132**,
+  catalog serving **457/457**, load, renderer contract **7/7**, and a two-client
+  chat transport/reconnect probe.
+- [~] **P0 — physical iPhone Safari jigsaw input reliability:** user-reported
+  intermittent drag failure remains open. Pointer capture/cancellation/claim
+  lifecycle needs shared remediation and real-device evidence; mobile emulation
+  is not a closure gate.
+- [~] **P0 — participant-visible mobile Chat:** server transport/reconnect is
+  confirmed for all players, but the iPhone control/discoverability/keyboard
+  flow remains open until a participant physical-device test passes.
+- [~] **P1 — Canvas v2 + server-authoritative colour teams:** current
+  centre-spawn trays do not meet the word/sentence collaboration brief.
+- [~] **P1 — catalog quality remediation:** delist/review the repeated Abstract
+  Geometry and Isometric Worlds artwork; Blueprint Architecture and named city
+  illustrations need the related visual/truthfulness review.
+- [~] **P1/P2 — accessibility, mobile shell, security, resilience, CI, and
+  observability:** prioritised in the remediation review rather than implied
+  complete by the original structural catalog and protocol passes.

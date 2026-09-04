@@ -245,3 +245,42 @@ server, catalog, source/provenance, canvas/coaching regression, reset/layout,
 rendering-contract, load, responsive-overlay, and Coaching Partners presentation
 criteria. The only outstanding operational limitation is the sandbox’s inability
 to download or host a browser binary for a redundant fresh Playwright rerun.
+
+---
+
+## Post-release addendum — 2026-09-04: quality gates reopened for new evidence
+
+This report records the Stage 6 result for its original, executed scope. It must
+not be read as a physical-iPhone sign-off or as a product-design approval for
+Canvas content/mechanics that were intentionally left unchanged in that delivery.
+
+A subsequent real-device product report and source/visual audit established new
+open work:
+
+- **P0:** intermittent iPhone Safari jigsaw grabbing/moving must be diagnosed
+  and fixed with physical-device evidence. The existing Pointer Event code lacks
+  `lostpointercapture`/interruption recovery and the server’s practical stale
+  claim sweep is slower than its nominal claim TTL. These are credible
+  hypotheses, not a claimed root cause until the device trace exists.
+- **P0:** participant Chat must be visibly discoverable and usable on iPhone.
+  A fresh two-client probe verified that `init` history, broadcast delivery, and
+  reconnect history are already server-available to a participant, so mobile
+  chrome, discoverability, drawer/keyboard behaviour, and device validation are
+  the urgent focus.
+- **P1:** Letter Canvas and Sentence Canvas need the newly requested radical
+  redesign, including physical/team-aware pieces, purposeful composition flows,
+  semantic output, and server-authoritative selectable colour teams.
+- **P1:** the structural catalog audit remains green, but a contact-sheet review
+  found the current Abstract Geometry and Isometric Worlds sets visibly
+  repetitive; Blueprint Architecture and named city illustrations require the
+  related quality/truthfulness review before a premium catalog release.
+
+Fresh baseline commands on the reconciled `d35f7bb` checkout passed again:
+TypeScript, production build, protocol **132/132**, catalog serving **457/457**,
+20-client load, and renderer contract **7/7**. These results do not close the
+new P0 physical-device gates.
+
+See [`product-remediation-review-2026-09-04.md`](product-remediation-review-2026-09-04.md)
+for evidence/prioritisation and
+[`next-session-implementation-prompt.md`](next-session-implementation-prompt.md)
+for the required ordered implementation, migration, rollout, and QA plan.
