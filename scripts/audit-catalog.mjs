@@ -255,8 +255,13 @@ for (const e of entries) {
 }
 
 // Stage 5's strict 55-image expansion is checked only after its importer has
-// declared the set live. This keeps the pre-import audit useful while still
-// making a partial final import a structural failure.
+// declared the set live. The original gate demanded an exact count of CC0
+// procedural entries per category; after the licensed real-photo refresh that
+// exact-count/CC0-only rule no longer matches the reviewed composition, so the
+// surviving guarantee is a healthy floor: each non-retired image category must
+// expose at least `expected` VERIFIED, publicly-licensed, puzzle-linked records.
+// The retired procedural categories must stay entirely out of the public set.
+const PUBLIC_LICENSES = new Set(["pd", "cc0", "cc-by", "cc-by-sa"]);
 if (catalog.stage5ImportedAt) {
   const expectedStage5 = {
     paintings: 5, landscapes: 5, landmarks: 5, nature: 5, cities: 5,
@@ -271,8 +276,14 @@ if (catalog.stage5ImportedAt) {
       continue;
     }
     if (!validCategories.has(category)) err("S12", `missing Stage 5 category: ${category}`);
-    const found = entries.filter((entry) => entry.category === category && entry.licenseClass === "cc0" && entry.status === "verified" && entry.generation).length;
-    if (found !== expected) err("S12", `expected ${expected} verified CC0 Stage 5 entries in ${category}; found ${found}`);
+    const found = entries.filter(
+      (entry) =>
+        entry.category === category &&
+        PUBLIC_LICENSES.has(entry.licenseClass) &&
+        entry.status === "verified" &&
+        entry.puzzleId,
+    ).length;
+    if (found < expected) err("S12", `expected at least ${expected} verified public-license puzzle-linked entries in ${category}; found ${found}`);
   }
 }
 

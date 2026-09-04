@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CanvasLane, CanvasState, CanvasTile, CursorView, PlayerView, PuzzleView } from "../types";
-import { MAX_SCALE, MIN_SCALE, useViewport } from "./useViewport";
+import { canvasRenderScale, MAX_SCALE, MIN_SCALE, useViewport } from "./useViewport";
 import { usePointerLifecycle, type PointerSample, type PointerTerminationReason } from "./usePointerLifecycle";
 import { store } from "../store";
 import { pick, useLang } from "../lib/i18n";
@@ -234,6 +234,9 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
   const availableLanes = lanes.filter((lane) => !lane.teamId || lane.teamId === myTeamId);
   const selectedLane = availableLanes.find((lane) => lane.id === selectedLaneId) || availableLanes[0] || null;
   const inventory = canvas.teamInventory && myTeamId ? canvas.teamInventory[myTeamId] ?? null : canvas.inventory;
+  // Joker bank: colour teams draw from their own key; the shared group uses "shared".
+  const jokerKey = canvas.teamInventory && myTeamId ? myTeamId : "shared";
+  const jokersLeft = canvas.jokers && canvas.jokers[jokerKey] != null ? canvas.jokers[jokerKey] : 0;
 
   useEffect(() => {
     if (selectedLane && selectedLane.id !== selectedLaneId) setSelectedLaneId(selectedLane.id);
@@ -313,7 +316,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
     const canvasEl = canvasRef.current;
     if (!canvasEl) return;
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = canvasRenderScale();
       canvasEl.width = Math.round(canvasEl.clientWidth * dpr);
       canvasEl.height = Math.round(canvasEl.clientHeight * dpr);
       schedule();
@@ -383,7 +386,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
     const el = canvasRef.current;
     const ctx = el?.getContext("2d");
     if (!el || !ctx) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = canvasRenderScale();
     const w = el.clientWidth;
     const h = el.clientHeight;
     if (!w || !h) return;
@@ -730,6 +733,13 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
     store.sendCanvas("spawn", { text: word, x: center.x, y: center.y, custom, ...(selectedLane ? { laneId: selectedLane.id } : {}) });
   };
 
+  // The joker draws a surprise letter that lands large/open on the sheet; the
+  // participant sees it afterwards and decides what to do with it.
+  const drawJoker = () => {
+    if (!inputEnabled || (canvas.teamInventory != null && !myTeamId) || jokersLeft <= 0) return;
+    store.sendCanvas("joker");
+  };
+
   const doExport = (kind: "png" | "txt" | "json") => {
     const tileList = Object.values(tiles);
     const text = reconstructCanvasText(tileList);
@@ -824,6 +834,8 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
           remainingOf={remainingOf}
           onSpawn={spawnLetter}
           disabled={!inputEnabled || (canvas.teamInventory != null && !myTeamId)}
+          onJoker={drawJoker}
+          jokersLeft={jokersLeft}
         />
       ) : (
         <SentenceTray
@@ -1039,19 +1051,39 @@ function LanePicker({ lanes, selectedId, onSelect, isLetter }: { lanes: CanvasLa
 // Letter tray
 // ---------------------------------------------------------------------------
 
-function LetterTray({ alphabet, remainingOf, onSpawn, disabled }: { alphabet: string; remainingOf: (t: string) => number; onSpawn: (t: string) => void; disabled: boolean }) {
+function LetterTray({ alphabet, remainingOf, onSpawn, disabled, onJoker, jokersLeft }: { alphabet: string; remainingOf: (t: string) => number; onSpawn: (t: string) => void; disabled: boolean; onJoker: () => void; jokersLeft: number }) {
   const { lang } = useLang();
   const letters = [...alphabet];
   return (
     <div className="space-y-2.5">
-      <div className="flex items-center justify-between"><span className="text-[10px] font-bold uppercase tracking-[.18em] text-ink-400">{lang === "ro" ? "2. Alege litere" : "2. Pick letters"}</span><span className="text-[10px] text-ink-500">{lang === "ro" ? "Atinge pentru a plasa" : "Tap to place"}</span></div>
+      <div className="flex items-center justify-between"><span className="text-[10px] font-bold uppercase tracking-[.18em] text-ink-400">{lang === "ro" ? "2. Litere — multe, împrăștiate" : "2. Letters — many, scattered"}</span><span className="text-[10px] text-ink-500">{lang === "ro" ? "Atinge pentru a plasa" : "Tap to place"}</span></div>
+      {/* Letters are presented scattered with slight tilts, like puzzle pieces on a
+          table, so the tray reads as a pool to pick from rather than a strict grid. */}
       <div className="flex flex-wrap gap-1.5" aria-label={lang === "ro" ? "Rastel de litere" : "Letter rack"}>
-        {letters.map((letter, index) => <TrayButton key={letter} label={letter} count={remainingOf(letter)} onClick={() => onSpawn(letter)} disabled={disabled} tilt={[-2, 1, -1, 2, 0][index % 5]} />)}
+        {letters.map((letter, index) => <TrayButton key={letter} label={letter} count={remainingOf(letter)} onClick={() => onSpawn(letter)} disabled={disabled} tilt={[-3, 2, -1, 3, -2, 1, -2, 2][index % 8]} />)}
         <span className="mx-0.5 h-9 w-px self-center bg-white/10" aria-hidden />
         <TrayButton label="?" count={remainingOf("?")} onClick={() => onSpawn("?")} disabled={disabled} wildcard />
         {LETTER_PUNCT.map((punct, index) => <TrayButton key={`${punct}-${index}`} label={punct} count={remainingOf(punct)} onClick={() => onSpawn(punct)} disabled={disabled} punct />)}
       </div>
-      <p className="text-[11px] leading-relaxed text-ink-400">{lang === "ro" ? "Schimbă zona oricând; trage o carte pe o zonă sau alege-o și apasă Pune." : "Change lanes any time; drag a tile onto a lane or select it and press Place."}</p>
+      <p className="text-[11px] leading-relaxed text-ink-400">{lang === "ro" ? "Schimbă zona oricând; trage o literă pe o zonă sau alege-o și apasă Pune." : "Change lanes any time; drag a letter onto a lane or select it and press Place."}</p>
+      {/* Joker: a surprise letter you only see after you draw it. */}
+      <div className="rounded-2xl border border-cp-purple-300/35 bg-cp-purple-500/12 p-3">
+        <div className="flex items-center justify-between gap-2">
+          <div>
+            <div className="text-[10px] font-bold uppercase tracking-[.16em] text-cp-purple-100">{lang === "ro" ? "Joker — literă surpriză" : "Joker — surprise letter"}</div>
+            <p className="mt-0.5 text-[11px] text-ink-300">{lang === "ro" ? "Apasă și afli după ce litera ajunge mare pe foaie." : "Press and see which letter lands big on the sheet."}</p>
+          </div>
+          <button
+            onClick={onJoker}
+            disabled={disabled || jokersLeft <= 0}
+            className="btn btn-sm shrink-0 !border-cp-purple-300/50 !bg-cp-purple-500/45 !text-white hover:!bg-cp-purple-500/60"
+            aria-label={lang === "ro" ? `Joker — ${jokersLeft} rămase` : `Joker — ${jokersLeft} left`}
+          >
+            🃏 <span className="hidden sm:inline">{lang === "ro" ? "Joker" : "Joker"}</span>
+            <span className="rounded-full bg-ink-950/60 px-1.5 text-[10px] font-bold">{jokersLeft}</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

@@ -44,8 +44,8 @@
     "h": 1073
   },
   "moraine-lake.webp": {
-    "w": 1920,
-    "h": 1440
+    "w": 2048,
+    "h": 1536
   },
   "santorini.webp": {
     "w": 1920,
@@ -232,28 +232,28 @@
     "h": 848
   },
   "ice-cave.webp": {
-    "w": 1800,
-    "h": 1200
+    "w": 1600,
+    "h": 1067
   },
   "bucharest-calea-victoriei.webp": {
-    "w": 1800,
-    "h": 1200
+    "w": 1920,
+    "h": 1340
   },
   "sibiu-square.webp": {
-    "w": 1800,
-    "h": 1200
+    "w": 1600,
+    "h": 1067
   },
   "cluj-unirii-square.webp": {
-    "w": 1800,
-    "h": 1200
+    "w": 1600,
+    "h": 1067
   },
   "timisoara-union-square.webp": {
-    "w": 1800,
-    "h": 1200
+    "w": 3648,
+    "h": 1740
   },
   "brasov-council-square.webp": {
-    "w": 1800,
-    "h": 1200
+    "w": 1600,
+    "h": 1054
   },
   "blueprint-bran-castle.webp": {
     "w": 1800,
@@ -294,5 +294,17 @@
   "blueprint-courtyard-house.webp": {
     "w": 1800,
     "h": 1200
+  },
+  "antelope-canyon.webp": {
+    "w": 1600,
+    "h": 1067
+  },
+  "victoria-falls.webp": {
+    "w": 1600,
+    "h": 899
+  },
+  "bow-lake.webp": {
+    "w": 1400,
+    "h": 1050
   }
 }

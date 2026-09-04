@@ -185,6 +185,10 @@ const CANVAS_MAX_CUSTOM_LEN = 40;
 const CANVAS_CLAIM_TTL_MS = CLAIM_TTL_MS;
 /** Per-player undo history depth. */
 const CANVAS_UNDO_DEPTH = 60;
+/** Jokers (mystery letters) each team can draw per letter-canvas session. */
+const CANVAS_JOKERS_PER_TEAM = 3;
+/** Map key used for the shared-mode (single-team) joker bank. */
+const JOKER_SHARED_KEY = "shared";
 
 /** Alphabets per content language (NFC-normalized; UI language is separate). */
 const CANVAS_LETTER_SETS = {
@@ -339,6 +343,7 @@ function applyCanvasTeamModel(room, { resetInventory = false } = {}) {
     canvas.inventory = base;
     canvas.teamInventory = null;
   }
+  resetCanvasJokers(room);
 }
 
 /** Places lane tiles deterministically; freeform v1 tiles retain their x/y. */
@@ -398,6 +403,25 @@ function teamInventoryFor(room, canvas, playerId) {
 function canvasTeamInventoryPayload(canvas) {
   if (!canvas.teamInventory) return null;
   return Object.fromEntries([...canvas.teamInventory.entries()].map(([teamId, inventory]) => [teamId, inventory ? Object.fromEntries(inventory) : null]));
+}
+
+/** Rebuilds the per-team joker bank (defaults each team to 3 draws). */
+function resetCanvasJokers(room) {
+  const canvas = room.canvas;
+  if (!canvas) return;
+  const keys = room.teamMode === TEAM_MODE_COLOR ? room.teams.map((team) => team.id) : [JOKER_SHARED_KEY];
+  canvas.jokers = new Map(keys.map((key) => [key, CANVAS_JOKERS_PER_TEAM]));
+}
+
+function canvasJokersPayload(canvas) {
+  if (!canvas || !canvas.jokers) return null;
+  return Object.fromEntries([...canvas.jokers.entries()].map(([key, count]) => [key, count]));
+}
+
+/** Which joker bank a player draws from (their colour team, or the shared one). */
+function canvasJokerKey(room, playerId) {
+  if (room.teamMode === TEAM_MODE_COLOR) return playerTeamId(room, playerId);
+  return JOKER_SHARED_KEY;
 }
 
 /** Clamps a tile inside the blank sheet. */
@@ -863,6 +887,7 @@ function buildCanvasState(puzzle, mode, contentLanguage) {
     tiles: new Map(),
     inventory, // Map<text, remaining> or null (sandbox)
     teamInventory: null,
+    jokers: new Map(), // teamKey -> remaining joker draws (filled per canvas)
     lanes: buildCanvasLanes(puzzle.category),
     nextId: 1,
     history: new Map(), // playerId -> undo stack
@@ -1177,6 +1202,7 @@ function persistableRoom(room) {
       tiles: [...room.canvas.tiles.values()].map(serializeCanvasTile),
       inventory: room.canvas.inventory ? [...room.canvas.inventory] : null,
       teamInventory: room.canvas.teamInventory ? [...room.canvas.teamInventory.entries()].map(([teamId, inventory]) => [teamId, inventory ? [...inventory] : null]) : null,
+      jokers: room.canvas.jokers ? [...room.canvas.jokers.entries()] : null,
     } : null,
     ratings: [...room.ratings], scores: [...room.scores],
     knownPlayers: [...room.knownPlayers], createdAt: room.createdAt, startedAt: room.startedAt,
@@ -1274,6 +1300,8 @@ function restoreSnapshots() {
         room.canvas.teamInventory = raw.canvas.teamInventory
           ? new Map(raw.canvas.teamInventory.map(([teamId, inventory]) => [teamId, inventory ? new Map(inventory) : null]))
           : null;
+        room.canvas.jokers = raw.canvas.jokers ? new Map(raw.canvas.jokers) : null;
+        if (!room.canvas.jokers) resetCanvasJokers(room);
         room.canvas.nextId = raw.canvas.nextId || (room.canvas.tiles.size + 1);
       }
       room.ratings = new Map(raw.ratings || []);
@@ -1711,8 +1739,9 @@ function canvasBroadcast(room, { list = [], removed = [], inventory = false } = 
   if (inventory && room.canvas) {
     payload.inventory = room.canvas.inventory ? Object.fromEntries(room.canvas.inventory) : null;
     payload.teamInventory = canvasTeamInventoryPayload(room.canvas);
+    payload.jokers = canvasJokersPayload(room.canvas);
   }
-  if (!list.length && !removed.length && payload.inventory === undefined && payload.teamInventory === undefined) return;
+  if (!list.length && !removed.length && payload.inventory === undefined && payload.teamInventory === undefined && payload.jokers === undefined) return;
   broadcast(room, payload);
 }
 
@@ -1870,6 +1899,45 @@ function applyCanvasOp(room, playerId, msg, ws) {
         const changed = setCanvasTileLane(canvas, tile, requestedLane.id, msg.laneIndex);
         list.push(...(changed || []).map(serializeCanvasTile));
       } else list.push(serializeCanvasTile(tile));
+      break;
+    }
+    case "joker": {
+      if (!isLetter) { send(ws, { t: "error", code: "joker_letter_only", message: "The joker is a Letter Canvas surprise draw." }); return; }
+      const key = canvasJokerKey(room, playerId);
+      const remaining = key ? (canvas.jokers?.get(key) ?? 0) : 0;
+      if (!key || remaining <= 0) {
+        send(ws, { t: "canvasRejected", reason: "joker_exhausted" });
+        return;
+      }
+      // Pick a genuinely random letter from the content-language alphabet. When
+      // the bank is finite, prefer letters that are still in stock so the draw
+      // is always usable; sandbox mode is unlimited.
+      const alphabet = CANVAS_LETTER_SETS[canvas.contentLanguage] || CANVAS_LETTER_SETS.en;
+      const available = [...alphabet].filter((ch) => {
+        if (!playerInventory) return true; // unlimited sandbox
+        return (playerInventory.get(ch) || 0) > 0;
+      });
+      const pool = available.length ? available : [...alphabet];
+      const text = pool[Math.floor(Math.random() * pool.length)];
+      if (!takeCanvasInventory(playerInventory, text)) {
+        send(ws, { t: "canvasRejected", reason: "inventory", text });
+        return;
+      }
+      inventoryChanged = true;
+      canvas.jokers.set(key, remaining - 1);
+      const jitterX = ((canvas.nextId * 53) % 160) - 80;
+      const jitterY = ((canvas.nextId * 97) % 90) - 45;
+      const tile = spawnCanvasTile(canvas, text, "letter", {
+        // Place it large/open on the sheet (not into a lane) so the surprise
+        // letter lands front and centre for the team to decide what to do with.
+        x: canvas.sheetW / 2 + jitterX,
+        y: canvas.sheetH * 0.4 + jitterY,
+        heldBy: playerId,
+        createdBy: playerId,
+        teamId: ownTeamId,
+      });
+      pushCanvasHistory(canvas, playerId, { op: "spawn", id: tile.id, fromInventory: true });
+      list.push(serializeCanvasTile(tile));
       break;
     }
     case "place": {
@@ -2254,6 +2322,7 @@ function canvasSnapshot(room) {
     tiles: [...room.canvas.tiles.values()].map(serializeCanvasTile),
     inventory: room.canvas.inventory ? Object.fromEntries(room.canvas.inventory) : null,
     teamInventory: canvasTeamInventoryPayload(room.canvas),
+    jokers: canvasJokersPayload(room.canvas),
   };
 }
 

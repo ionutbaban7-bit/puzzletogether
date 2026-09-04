@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Bilingual, Lang } from "../lib/i18n";
 import { pick, useLang } from "../lib/i18n";
 import type { CursorView, Piece, PlayerView, PuzzleView } from "../types";
-import { MAX_SCALE, MIN_SCALE, useViewport } from "./useViewport";
+import { canvasRenderScale, MAX_SCALE, MIN_SCALE, useViewport } from "./useViewport";
 import { usePointerLifecycle, type PointerSample, type PointerTerminationReason } from "./usePointerLifecycle";
 import { buildEdgeMap, buildPiecePath, pieceEdges, spritePad } from "./jigsaw";
 import { isEdgePiece } from "./tray";
@@ -219,7 +219,7 @@ export default function Board({
     const canvas = canvasRef.current;
     if (!canvas) return;
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = canvasRenderScale();
       canvas.width = Math.round(canvas.clientWidth * dpr);
       canvas.height = Math.round(canvas.clientHeight * dpr);
       schedule();
@@ -553,7 +553,7 @@ export default function Board({
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = canvasRenderScale();
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
     if (w === 0 || h === 0) return;

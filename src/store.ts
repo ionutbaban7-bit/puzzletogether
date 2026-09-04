@@ -70,6 +70,7 @@ function canvasFromMessage(msg: Record<string, unknown>): CanvasState | null {
     wordGap: canvas.wordGap,
     inventory: canvas.inventory,
     teamInventory: canvas.teamInventory,
+    jokers: canvas.jokers,
     lanes: canvas.lanes,
   };
 }
@@ -103,11 +104,12 @@ function handleMessage(msg: { t: string; [key: string]: unknown }) {
       for (const tile of list) tiles[tile.id] = tile;
       for (const id of removed) delete tiles[id];
       const patch: Partial<StoreState> = { canvasTiles: tiles };
-      if (msg.inventory !== undefined || msg.teamInventory !== undefined) {
+      if (msg.inventory !== undefined || msg.teamInventory !== undefined || msg.jokers !== undefined) {
         patch.canvas = state.canvas ? {
           ...state.canvas,
           ...(msg.inventory !== undefined ? { inventory: msg.inventory as Record<string, number> | null } : {}),
           ...(msg.teamInventory !== undefined ? { teamInventory: msg.teamInventory as CanvasState["teamInventory"] } : {}),
+          ...(msg.jokers !== undefined ? { jokers: msg.jokers as Record<string, number> | null } : {}),
         } : state.canvas;
       }
       set(patch);
