@@ -3,6 +3,7 @@ import type { Bilingual, Lang } from "../lib/i18n";
 import { pick, useLang } from "../lib/i18n";
 import type { CursorView, Piece, PlayerView, PuzzleView } from "../types";
 import { MAX_SCALE, MIN_SCALE, useViewport } from "./useViewport";
+import { usePointerLifecycle, type PointerSample, type PointerTerminationReason } from "./usePointerLifecycle";
 import { buildEdgeMap, buildPiecePath, pieceEdges, spritePad } from "./jigsaw";
 import { isEdgePiece } from "./tray";
 import { store } from "../store";
@@ -24,6 +25,7 @@ interface BoardProps {
 
 interface Grab {
   id: number;
+  pointerId: number;
   offsetX: number;
   offsetY: number;
   throttle: number;
@@ -31,6 +33,19 @@ interface Grab {
   lastSentY: number;
   first: boolean;
 }
+
+/** A press only becomes a server claim after a small intentional movement. */
+interface PendingGrab {
+  id: number;
+  pointerId: number;
+  offsetX: number;
+  offsetY: number;
+  startX: number;
+  startY: number;
+}
+
+const DRAG_START_MOUSE_PX = 4;
+const DRAG_START_TOUCH_PX = 8;
 
 const SNAP_RING_COLOR = "#34d399";
 const TARGET_RING_COLOR = "rgba(99,102,241,0.9)";
@@ -131,16 +146,18 @@ export default function Board({
     fit(currentPuzzle, boundsForPieces(currentPuzzle, unplaced, true));
   }, [fit]);
 
-  // Gesture state (mutable, never triggers renders)
-  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  // Gesture state is mutable so an active touch never causes a React render.
+  // The lifecycle hook owns capture/fallback/terminal-event hygiene; this board
+  // owns the jigsaw-specific choice between press, pan, pinch and drag.
+  const pointerSamples = useRef(new Map<number, PointerSample>());
   const pinch = useRef<{ dist: number; sx: number; sy: number; scale: number } | null>(null);
   const pan = useRef<{ id: number; sx: number; sy: number; cx: number; cy: number } | null>(null);
+  const pendingGrab = useRef<PendingGrab | null>(null);
   const grab = useRef<Grab | null>(null);
   const raf = useRef(0);
   const cursorScreen = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const lastMoveSent = useRef(0);
-  const gestureType = useRef<"none" | "pan" | "drag" | "pinch" | "minimap">("none");
-  const movedDistance = useRef(0);
+  const gestureType = useRef<"none" | "press" | "pan" | "drag" | "pinch" | "minimap">("none");
 
   const [showReference, setShowReference] = useState(true);
   const [filter, setFilter] = useState<FilterMode>("all");
@@ -236,6 +253,11 @@ export default function Board({
     });
   }, []);
 
+  const pointerLifecycle = usePointerLifecycle(canvasRef, pointerSamples, {
+    onMove: handleTrackedPointerMove,
+    onTerminate: handlePointerTermination,
+  });
+
   // Draw via refs so gestures never re-render React.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const drawRef = useRef<() => void>(() => {});
@@ -320,9 +342,10 @@ export default function Board({
     const onKey = (e: KeyboardEvent) => {
       switch (e.key) {
         case "Escape":
-          if (grab.current) {
-            grab.current = null;
-            canvasRef.current?.setPointerCapture?.(undefined as unknown as number);
+          if (grab.current || pendingGrab.current) {
+            // Do not fabricate a pointer id. The shared lifecycle releases the
+            // actual capture and tells the server this is a cancellation, not a drop.
+            pointerLifecycle.cancelAll("escape");
           } else {
             setShowReference((v) => !v);
           }
@@ -356,7 +379,7 @@ export default function Board({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [zoomBy, cameraRef, schedule]);
+  }, [zoomBy, cameraRef, schedule, pointerLifecycle]);
 
   // ------------------------------------------------------------- geometry
   const screenToWorld = (sx: number, sy: number) => {
@@ -908,23 +931,104 @@ export default function Board({
   }, [pieces, schedule, startGlowAnimation]);
 
   // ------------------------------------------------------------- pointers
-  const posFromEvent = (e: React.PointerEvent) => {
-    const rect = canvasRef.current!.getBoundingClientRect();
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  const posFromSample = (sample: Pick<PointerSample, "clientX" | "clientY">) => {
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return { x: 0, y: 0 };
+    return { x: sample.clientX - rect.left, y: sample.clientY - rect.top };
   };
+
+  const livePoints = () => [...pointerSamples.current.values()].map(posFromSample);
 
   // Server x/y is always the visible position, including untouched pieces.
   function displayPos(p: Piece) {
     return { x: p.x, y: p.y };
   }
 
+  function makePendingGrab(hit: Piece, pointerId: number, point: { x: number; y: number }) {
+    const world = screenToWorld(point.x, point.y);
+    const hp = displayPos(hit);
+    pendingGrab.current = {
+      id: hit.id,
+      pointerId,
+      offsetX: world.x - hp.x,
+      offsetY: world.y - hp.y,
+      startX: point.x,
+      startY: point.y,
+    };
+    gestureType.current = "press";
+  }
+
+  function activateGrab(pending: PendingGrab) {
+    const piece = piecesRef.current[pending.id];
+    if (!piece || (piece.heldBy && piece.heldBy !== youRef.current)) {
+      pendingGrab.current = null;
+      gestureType.current = "none";
+      return null;
+    }
+    const g: Grab = {
+      id: pending.id,
+      pointerId: pending.pointerId,
+      offsetX: pending.offsetX,
+      offsetY: pending.offsetY,
+      throttle: performance.now(),
+      lastSentX: piece.x,
+      lastSentY: piece.y,
+      first: true,
+    };
+    pendingGrab.current = null;
+    grab.current = g;
+    gestureType.current = "drag";
+    // Claim only after an intentional movement threshold. This prevents a
+    // quick tap from turning into moved=true / a stale server claim.
+    piece.drag = true;
+    piece.moved = true;
+    store.sendPiece(piece.id, piece.x, piece.y, true);
+    return g;
+  }
+
+  function cancelGrab(reason: PointerTerminationReason) {
+    const g = grab.current;
+    grab.current = null;
+    pendingGrab.current = null;
+    if (!g) {
+      schedule();
+      return;
+    }
+    const piece = piecesRef.current[g.id];
+    if (piece) {
+      piece.drag = false;
+      // Cancellation is intentionally not a drop. It releases a server claim
+      // at the last valid coordinate and bypasses snapping/scoring.
+      store.sendPiece(piece.id, piece.x, piece.y, false, { cancel: true, reason });
+    }
+    schedule();
+  }
+
   function onPointerDown(e: React.PointerEvent<HTMLCanvasElement>) {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    canvas.setPointerCapture(e.pointerId);
-    const pos = posFromEvent(e);
-    pointers.current.set(e.pointerId, pos);
+    const sample = pointerLifecycle.begin(e.nativeEvent);
+    const pos = posFromSample(sample);
     cursorScreen.current = pos;
+
+    // A second touch always releases an in-flight item before entering pinch.
+    // It cannot leave a claimed piece behind just because Safari changes touch
+    // ownership/capture during the transition.
+    if (sample.pointerType === "touch" && pointerSamples.current.size === 2) {
+      if (grab.current) cancelGrab("cancel");
+      pendingGrab.current = null;
+      const pts = livePoints();
+      pinch.current = {
+        dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y),
+        sx: (pts[0].x + pts[1].x) / 2,
+        sy: (pts[0].y + pts[1].y) / 2,
+        scale: cameraRef.current.scale,
+      };
+      gestureType.current = "pinch";
+      pan.current = null;
+      schedule();
+      return;
+    }
 
     // Minimap navigation takes priority over piece picking / panning.
     const mm = minimapRect.current;
@@ -940,101 +1044,22 @@ export default function Board({
       return;
     }
 
-    if (e.pointerType === "mouse") {
-      // Clicked a piece? (top-most: prefer free pieces over locked)
-      const world = screenToWorld(pos.x, pos.y);
-      const hit = inputEnabled ? pickPiece(world.x, world.y, !!e.shiftKey) : null;
-      if (hit) {
-        gestureType.current = "drag";
-        const hp = displayPos(hit);
-        grab.current = {
-          id: hit.id,
-          offsetX: world.x - hp.x,
-          offsetY: world.y - hp.y,
-          throttle: performance.now(),
-          lastSentX: hit.x,
-          lastSentY: hit.y,
-          first: true,
-        };
-        // Local visual lift immediately; the server confirms the claim and
-        // changes moved=true only after the player actually touches it.
-        const pieces = piecesRef.current;
-        const p = pieces[hit.id];
-        if (p) {
-          p.drag = true;
-          p.moved = true;
-          p.x = hp.x;
-          p.y = hp.y;
-          store.sendPiece(hit.id, p.x, p.y, true);
-          schedule();
-        }
-      } else {
-        gestureType.current = "pan";
-        pan.current = {
-          id: e.pointerId,
-          sx: pos.x,
-          sy: pos.y,
-          cx: cameraRef.current.x,
-          cy: cameraRef.current.y,
-        };
-      }
-    } else if (e.pointerType === "touch") {
-      if (pointers.current.size === 1) {
-        const world = screenToWorld(pos.x, pos.y);
-        const hit = inputEnabled ? pickPiece(world.x, world.y, false, 20) : null;
-        if (hit) {
-          gestureType.current = "drag";
-          const hp = displayPos(hit);
-          grab.current = {
-            id: hit.id,
-            offsetX: world.x - hp.x,
-            offsetY: world.y - hp.y,
-            throttle: performance.now(),
-            lastSentX: hit.x,
-            lastSentY: hit.y,
-            first: true,
-          };
-          const p = piecesRef.current[hit.id];
-          if (p) {
-            p.drag = true;
-            p.moved = true;
-            p.x = hp.x;
-            p.y = hp.y;
-            store.sendPiece(hit.id, p.x, p.y, true);
-            schedule();
-          }
-        } else {
-          gestureType.current = "pan";
-          pan.current = {
-            id: e.pointerId,
-            sx: pos.x,
-            sy: pos.y,
-            cx: cameraRef.current.x,
-            cy: cameraRef.current.y,
-          };
-        }
-      } else if (pointers.current.size === 2) {
-        // Second finger: switch to pinch
-        if (gestureType.current === "drag" && grab.current) {
-          const p = piecesRef.current[grab.current.id];
-          if (p) {
-            p.drag = false;
-            store.sendPiece(grab.current.id, p.x, p.y, false);
-          }
-          grab.current = null;
-        }
-        const pts = [...pointers.current.values()];
-        pinch.current = {
-          dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y),
-          sx: (pts[0].x + pts[1].x) / 2,
-          sy: (pts[0].y + pts[1].y) / 2,
-          scale: cameraRef.current.scale,
-        };
-        gestureType.current = "pinch";
-        pan.current = null;
-      } else {
-        gestureType.current = "pinch";
-      }
+    const world = screenToWorld(pos.x, pos.y);
+    const touch = sample.pointerType === "touch";
+    const hit = inputEnabled
+      ? pickPiece(world.x, world.y, sample.pointerType === "mouse" && e.shiftKey, touch ? 20 : 0)
+      : null;
+    if (hit) {
+      makePendingGrab(hit, sample.pointerId, pos);
+    } else {
+      gestureType.current = "pan";
+      pan.current = {
+        id: sample.pointerId,
+        sx: pos.x,
+        sy: pos.y,
+        cx: cameraRef.current.x,
+        cy: cameraRef.current.y,
+      };
     }
     schedule();
   }
@@ -1063,7 +1088,7 @@ export default function Board({
           bestFree = true;
           best = p;
         } else if (!p.locked && bestFree) {
-          // prefer the most recently moved (top-most visually due to sort)
+          // Prefer the most recently moved (top-most visually due to sort).
           best = p;
         }
       }
@@ -1071,25 +1096,32 @@ export default function Board({
     return best;
   }
 
-  function onPointerMove(e: React.PointerEvent<HTMLCanvasElement>) {
+  function handleTrackedPointerMove(sample: PointerSample) {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const pos = posFromEvent(e);
-    if (!pointers.current.has(e.pointerId)) return;
-    pointers.current.set(e.pointerId, pos);
+    const pos = posFromSample(sample);
     cursorScreen.current = pos;
 
-    if (gestureType.current === "drag" && grab.current) {
+    if (gestureType.current === "press" && pendingGrab.current?.pointerId === sample.pointerId) {
+      const pending = pendingGrab.current;
+      const threshold = sample.pointerType === "touch" ? DRAG_START_TOUCH_PX : DRAG_START_MOUSE_PX;
+      if (Math.hypot(pos.x - pending.startX, pos.y - pending.startY) < threshold) return;
+      if (!activateGrab(pending)) return;
+    }
+
+    if (gestureType.current === "drag" && grab.current?.pointerId === sample.pointerId) {
       const world = screenToWorld(pos.x, pos.y);
-      movedDistance.current += 1;
-      const piece = piecesRef.current[grab.current.id];
+      const currentGrab = grab.current;
+      const piece = piecesRef.current[currentGrab.id];
       if (piece) {
-        piece.x = world.x - grab.current.offsetX;
-        piece.y = world.y - grab.current.offsetY;
+        piece.x = world.x - currentGrab.offsetX;
+        piece.y = world.y - currentGrab.offsetY;
         const now = performance.now();
-        if (now - grab.current.throttle >= 50 || grab.current.first) {
-          grab.current.throttle = now;
-          grab.current.first = false;
+        if (now - currentGrab.throttle >= 50 || currentGrab.first) {
+          currentGrab.throttle = now;
+          currentGrab.first = false;
+          currentGrab.lastSentX = piece.x;
+          currentGrab.lastSentY = piece.y;
           store.sendPiece(piece.id, piece.x, piece.y, true);
         }
       }
@@ -1097,15 +1129,15 @@ export default function Board({
       return;
     }
 
-    if (gestureType.current === "pan" && pan.current && e.pointerId === pan.current.id) {
+    if (gestureType.current === "pan" && pan.current && sample.pointerId === pan.current.id) {
       cameraRef.current.x = pan.current.cx + (pos.x - pan.current.sx);
       cameraRef.current.y = pan.current.cy + (pos.y - pan.current.sy);
       schedule();
       return;
     }
 
-    if (gestureType.current === "pinch" && pinch.current && pointers.current.size >= 2) {
-      const pts = [...pointers.current.values()];
+    if (gestureType.current === "pinch" && pinch.current && pointerSamples.current.size >= 2) {
+      const pts = livePoints();
       const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
       if (pinch.current.dist > 0) {
         const factor = dist / pinch.current.dist;
@@ -1132,7 +1164,7 @@ export default function Board({
       return;
     }
 
-    // No gesture: relay cursor position (throttled)
+    // No gesture: relay cursor position (throttled).
     const now = performance.now();
     if (now - lastMoveSent.current > 40) {
       lastMoveSent.current = now;
@@ -1156,40 +1188,58 @@ export default function Board({
     piece.x = px;
     piece.y = py;
     store.sendPiece(piece.id, px, py, false);
-    if (snapped) {
-      store.applyLocalDrop(piece.id, px, py, true);
-    } else {
-      store.applyLocalDrop(piece.id, px, py, false);
-    }
+    store.applyLocalDrop(piece.id, px, py, snapped);
     onPieceDrop(piece.id, px, py, snapped);
     schedule();
   }
 
-  function onPointerUp(e: React.PointerEvent<HTMLCanvasElement>) {
-    pointers.current.delete(e.pointerId);
-    if (gestureType.current === "drag") {
-      const pos = posFromEvent(e);
+  function handlePointerTermination(sample: PointerSample, reason: PointerTerminationReason) {
+    const pos = posFromSample(sample);
+    const wasDragging = gestureType.current === "drag" && grab.current?.pointerId === sample.pointerId;
+    const wasPressing = gestureType.current === "press" && pendingGrab.current?.pointerId === sample.pointerId;
+
+    if (wasDragging && reason === "up") {
       const world = screenToWorld(pos.x, pos.y);
-      endGrab(world.x - (grab.current?.offsetX ?? 0), world.y - (grab.current?.offsetY ?? 0));
+      const g = grab.current;
+      endGrab(world.x - (g?.offsetX ?? 0), world.y - (g?.offsetY ?? 0));
+    } else if (wasDragging) {
+      cancelGrab(reason);
+    } else if (wasPressing) {
+      // A click/tap below threshold never became a server claim.
+      pendingGrab.current = null;
     }
-    if (gestureType.current === "pan") pan.current = null;
-    if (gestureType.current === "pinch") pinch.current = null;
-    if (gestureType.current === "minimap" && pointers.current.size === 0) {
+
+    if (gestureType.current === "pan" && pan.current?.id === sample.pointerId) pan.current = null;
+    if (gestureType.current === "minimap" && pointerSamples.current.size === 0) gestureType.current = "none";
+    if (gestureType.current === "pinch" && pointerSamples.current.size < 2) pinch.current = null;
+    if (pointerSamples.current.size === 0) {
       gestureType.current = "none";
+      pan.current = null;
+      pinch.current = null;
+      pendingGrab.current = null;
     }
-    if (pointers.current.size === 0) {
-      gestureType.current = "none";
-      movedDistance.current = 0;
-    }
+    schedule();
+  }
+
+  function onPointerMove(e: React.PointerEvent<HTMLCanvasElement>) {
+    pointerLifecycle.move(e.nativeEvent);
+  }
+
+  function onPointerUp(e: React.PointerEvent<HTMLCanvasElement>) {
+    pointerLifecycle.finish(e.nativeEvent, "up");
   }
 
   function onPointerCancel(e: React.PointerEvent<HTMLCanvasElement>) {
-    onPointerUp(e);
+    pointerLifecycle.finish(e.nativeEvent, "cancel");
+  }
+
+  function onLostPointerCapture(e: React.PointerEvent<HTMLCanvasElement>) {
+    pointerLifecycle.finish(e.nativeEvent, "lostcapture");
   }
 
   function onWheel(e: React.WheelEvent<HTMLCanvasElement>) {
     e.preventDefault();
-    const pos = posFromEvent(e as unknown as React.PointerEvent);
+    const pos = posFromSample({ clientX: e.clientX, clientY: e.clientY });
     const factor = Math.exp(-e.deltaY * 0.0016);
     zoomAt(pos.x, pos.y, factor);
   }
@@ -1233,12 +1283,13 @@ export default function Board({
         ref={canvasRef}
         role="img"
         aria-label={`${t(STR.board)}${puzzle.credit ? ` · ${puzzle.credit}` : ""}`}
-        className={`block h-full w-full touch-none ${inputEnabled ? "cursor-grab active:cursor-grabbing" : "cursor-move"}`}
-        style={{ backgroundColor: "#0b0e1a", touchAction: "none" }}
+        className={`board-input block h-full w-full touch-none ${inputEnabled ? "cursor-grab active:cursor-grabbing" : "cursor-move"}`}
+        style={{ backgroundColor: "#0b0e1a", touchAction: "none", overscrollBehavior: "contain" }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerCancel}
+        onLostPointerCapture={onLostPointerCapture}
         onWheel={onWheel}
         onContextMenu={(e) => e.preventDefault()}
       />

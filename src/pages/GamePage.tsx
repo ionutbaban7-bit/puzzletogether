@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Board from "../puzzle/Board";
 import CanvasBoard from "../puzzle/CanvasBoard";
 import RankingActivity from "../puzzle/RankingActivity";
@@ -13,6 +13,8 @@ import FacilitatorPanel from "../components/FacilitatorPanel";
 import HarvestBoard from "../components/HarvestBoard";
 import { LangToggle, pick, useLang, T } from "../lib/i18n";
 import { lockedCountOf } from "../store";
+import ChatSheet from "../components/ChatSheet";
+import { useVisualViewport } from "../lib/useVisualViewport";
 
 const CATEGORY_ICON: Record<string, string> = {
   "letter-canvas": "✍️",
@@ -109,7 +111,8 @@ export default function GamePage() {
   const [shareOpen, setShareOpen] = useState(false);
   const [facilitatorOpen, setFacilitatorOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
-  const [chatText, setChatText] = useState("");
+  const [actionsOpen, setActionsOpen] = useState(false);
+  const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [completionVisible, setCompletionVisible] = useState(true);
   const [pickerOpen, setPickerOpen] = useState(false);
   // HUD starts collapsed on phones so the board gets the whole screen.
@@ -119,6 +122,49 @@ export default function GamePage() {
   const [now, setNow] = useState(Date.now());
   const [resetSignal, setResetSignal] = useState(0);
   const [copied, markCopied] = useCopied();
+  const viewport = useVisualViewport();
+  const compactViewport = viewport.width > 0 && viewport.width < 640;
+  const desktopChatTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const mobileChatTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const chatIdsRef = useRef(new Set<string>());
+  const chatRoomRef = useRef<string | null>(null);
+  const wasChatOpenRef = useRef(false);
+  const compactViewportRef = useRef(compactViewport);
+
+  // The HUD should follow real viewport transitions (orientation, resized
+  // browser chrome), rather than the width it happened to have at first load.
+  useEffect(() => {
+    if (compactViewportRef.current !== compactViewport) {
+      compactViewportRef.current = compactViewport;
+      setHudOpen(!compactViewport);
+      setActionsOpen(false);
+    }
+  }, [compactViewport]);
+
+  // Initial history is not unread. Only entries that arrive after this room's
+  // init count, and opening the sheet explicitly marks them read.
+  useEffect(() => {
+    if (chatRoomRef.current !== room?.id) {
+      chatRoomRef.current = room?.id || null;
+      chatIdsRef.current = new Set(chat.map((entry) => entry.id));
+      setUnreadChatCount(0);
+      return;
+    }
+    const unseen = chat.filter((entry) => !chatIdsRef.current.has(entry.id));
+    chatIdsRef.current = new Set(chat.map((entry) => entry.id));
+    if (unseen.length && !chatOpen) setUnreadChatCount((count) => count + unseen.length);
+  }, [chat, chatOpen, room?.id]);
+
+  useEffect(() => {
+    if (chatOpen) {
+      setUnreadChatCount(0);
+      setActionsOpen(false);
+    }
+    if (wasChatOpenRef.current && !chatOpen) {
+      requestAnimationFrame(() => (compactViewport ? mobileChatTriggerRef : desktopChatTriggerRef).current?.focus());
+    }
+    wasChatOpenRef.current = chatOpen;
+  }, [chatOpen]);
 
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000);
@@ -328,7 +374,7 @@ export default function GamePage() {
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between gap-2 p-2.5 sm:gap-3 sm:p-4" style={{ paddingTop: "max(0.625rem, env(safe-area-inset-top))" }}>
         {/* Game HUD (collapsible) */}
         {hudOpen ? (
-          <div className="overlay-card pointer-events-auto w-[290px] max-w-[calc(100vw-108px)] p-4 sm:w-[300px]">
+          <div className="overlay-card pointer-events-auto w-[290px] max-w-[calc(100vw-152px)] p-4 sm:w-[300px]">
             <div className="flex items-center justify-between gap-2">
               <div className="flex min-w-0 items-center gap-2.5">
                 <LogoMark size={26} />
@@ -451,52 +497,91 @@ export default function GamePage() {
           </button>
         )}
 
-        {/* Actions — icons on mobile, icon + label from sm up */}
-        <div className="pointer-events-auto flex shrink-0 flex-col items-end gap-1.5 sm:flex-row sm:items-center sm:gap-2">
+        {/* Desktop keeps the full command row. On phones, Chat has its own
+            always-visible labelled action; everything lower-priority moves into
+            a labelled overflow menu instead of competing with the HUD. */}
+        <div className="pointer-events-auto hidden shrink-0 items-center gap-2 sm:flex">
           <LangToggle dark />
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            {isHost && (
-              <button
-                className="btn btn-dark btn-sm !px-2.5 sm:!px-4"
-                onClick={() => setPickerOpen(true)}
-                title="New puzzle"
-              >
-                🧩<span className="hidden sm:inline">&nbsp;<T value={{ ro: "Alt puzzle", en: "New puzzle" }} /></span>
-              </button>
-            )}
-            {isHost && isJigsaw && room.stage === "play" && (
-              <button
-                className="btn btn-dark btn-sm !border-rose-400/35 !bg-rose-500/15 !px-2.5 hover:!bg-rose-500/25 sm:!px-4"
-                onClick={() => window.confirm(lang === "ro" ? "Resetezi puzzle-ul pentru toată echipa?" : "Reset the puzzle for everyone?") && handlePuzzleReset()}
-                title={lang === "ro" ? "Resetează puzzle-ul" : "Reset puzzle"}
-                aria-label={lang === "ro" ? "Resetează puzzle-ul" : "Reset puzzle"}
-              >
-                ↺<span className="hidden sm:inline">&nbsp;<T value={{ ro: "Resetează puzzle-ul", en: "Reset puzzle" }} /></span>
-              </button>
-            )}
-            <button
-              className="btn btn-dark btn-sm !px-2.5 sm:!px-4"
-              onClick={() => setShareOpen(true)}
-              title="Share"
-            >
-              🔗<span className="hidden sm:inline">&nbsp;<T value={{ ro: "Partajează", en: "Share" }} /></span>
+          {isHost && (
+            <button className="btn btn-dark btn-sm !px-4" onClick={() => setPickerOpen(true)} title="New puzzle" aria-label={lang === "ro" ? "Alt puzzle" : "New puzzle"}>
+              🧩 <T value={{ ro: "Alt puzzle", en: "New puzzle" }} />
             </button>
-            {isHost && (
-              <button className="btn btn-dark btn-sm !border-emerald-400/30 !px-2.5 sm:!px-4" onClick={() => setFacilitatorOpen(true)} title="Facilitator controls">
-                🎛<span className="hidden sm:inline">&nbsp;<T value={{ ro: "Facilitează", en: "Facilitate" }} /></span>
-              </button>
-            )}
-            <button className="btn btn-dark btn-sm !px-2.5 sm:!px-4" onClick={() => setChatOpen((open) => !open)} title="Team chat">
-              💬<span className="hidden sm:inline">&nbsp;Chat</span>{chat.length > 0 && <span className="rounded-full bg-brand-500 px-1.5 text-[10px]">{chat.length}</span>}
+          )}
+          {isHost && isJigsaw && room.stage === "play" && (
+            <button
+              className="btn btn-dark btn-sm !border-rose-400/35 !bg-rose-500/15 !px-4 hover:!bg-rose-500/25"
+              onClick={() => window.confirm(lang === "ro" ? "Resetezi puzzle-ul pentru toată echipa?" : "Reset the puzzle for everyone?") && handlePuzzleReset()}
+              title={lang === "ro" ? "Resetează puzzle-ul" : "Reset puzzle"}
+              aria-label={lang === "ro" ? "Resetează puzzle-ul" : "Reset puzzle"}
+            >
+              ↺ <T value={{ ro: "Resetează puzzle-ul", en: "Reset puzzle" }} />
+            </button>
+          )}
+          <button className="btn btn-dark btn-sm !px-4" onClick={() => setShareOpen(true)} title={lang === "ro" ? "Partajează" : "Share"} aria-label={lang === "ro" ? "Partajează" : "Share"}>
+            🔗 <T value={{ ro: "Partajează", en: "Share" }} />
+          </button>
+          {isHost && (
+            <button className="btn btn-dark btn-sm !border-emerald-400/30 !px-4" onClick={() => setFacilitatorOpen(true)} title={lang === "ro" ? "Controale facilitator" : "Facilitator controls"} aria-label={lang === "ro" ? "Controale facilitator" : "Facilitator controls"}>
+              🎛 <T value={{ ro: "Facilitează", en: "Facilitate" }} />
+            </button>
+          )}
+          <button
+            ref={desktopChatTriggerRef}
+            className="btn btn-dark btn-sm !border-brand-300/35 !bg-brand-500/20 !px-4 hover:!bg-brand-500/30"
+            onClick={() => setChatOpen(true)}
+            title={lang === "ro" ? "Deschide chatul" : "Open chat"}
+            aria-label={lang === "ro" ? `Chat${unreadChatCount ? `, ${unreadChatCount} mesaje noi` : ""}` : `Chat${unreadChatCount ? `, ${unreadChatCount} new messages` : ""}`}
+            aria-haspopup="dialog"
+            aria-expanded={chatOpen}
+          >
+            💬 <T value={{ ro: "Chat", en: "Chat" }} />
+            {unreadChatCount > 0 && <span aria-hidden className="rounded-full bg-brand-500 px-1.5 text-[10px]">{unreadChatCount > 99 ? "99+" : unreadChatCount}</span>}
+          </button>
+          <button className="btn btn-dark btn-sm !px-4" onClick={handleLeave} title={lang === "ro" ? "Pleacă din cameră" : "Leave room"} aria-label={lang === "ro" ? "Pleacă din cameră" : "Leave room"}>
+            🚪 <T value={{ ro: "Pleacă", en: "Leave" }} />
+          </button>
+        </div>
+
+        <div className="pointer-events-auto sm:hidden">
+          <div className="fixed right-2 z-[55] flex items-center gap-1.5" style={{ top: "max(0.5rem, env(safe-area-inset-top))" }}>
+            <button
+              ref={mobileChatTriggerRef}
+              className="btn btn-dark btn-sm !min-h-11 !border-brand-300/40 !bg-brand-500/25 !px-3 hover:!bg-brand-500/35"
+              onClick={() => setChatOpen(true)}
+              aria-label={lang === "ro" ? `Chat${unreadChatCount ? `, ${unreadChatCount} mesaje noi` : ""}` : `Chat${unreadChatCount ? `, ${unreadChatCount} new messages` : ""}`}
+              aria-haspopup="dialog"
+              aria-expanded={chatOpen}
+            >
+              <span aria-hidden>💬</span>
+              <span>Chat</span>
+              {unreadChatCount > 0 && <span aria-hidden className="rounded-full bg-brand-500 px-1.5 text-[10px]">{unreadChatCount > 99 ? "99+" : unreadChatCount}</span>}
             </button>
             <button
-              className="btn btn-dark btn-sm !px-2.5 sm:!px-4"
-              onClick={handleLeave}
-              title="Leave room"
+              className="btn btn-dark btn-sm !min-h-11 !px-3"
+              onClick={() => setActionsOpen((open) => !open)}
+              aria-expanded={actionsOpen}
+              aria-controls="mobile-room-actions"
+              aria-label={lang === "ro" ? "Mai multe acțiuni" : "More actions"}
             >
-              🚪<span className="hidden sm:inline">&nbsp;<T value={{ ro: "Pleacă", en: "Leave" }} /></span>
+              <span aria-hidden>•••</span><span className="text-xs">{lang === "ro" ? "Mai mult" : "More"}</span>
             </button>
           </div>
+          {actionsOpen && (
+            <div
+              id="mobile-room-actions"
+              className="fixed right-2 z-[54] flex w-60 flex-col gap-1.5 rounded-2xl border border-white/10 bg-ink-900/98 p-2.5 text-white shadow-pop backdrop-blur-xl"
+              style={{ top: "calc(max(0.5rem, env(safe-area-inset-top)) + 3.3rem)" }}
+              role="menu"
+              aria-label={lang === "ro" ? "Acțiuni cameră" : "Room actions"}
+            >
+              <div className="border-b border-white/10 pb-2"><LangToggle dark /></div>
+              {isHost && <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !px-3" onClick={() => { setPickerOpen(true); setActionsOpen(false); }}>🧩 <T value={{ ro: "Alt puzzle", en: "New puzzle" }} /></button>}
+              {isHost && isJigsaw && room.stage === "play" && <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !border-rose-400/35 !bg-rose-500/15 !px-3" onClick={() => { setActionsOpen(false); if (window.confirm(lang === "ro" ? "Resetezi puzzle-ul pentru toată echipa?" : "Reset the puzzle for everyone?")) handlePuzzleReset(); }}>↺ <T value={{ ro: "Resetează puzzle-ul", en: "Reset puzzle" }} /></button>}
+              {isHost && <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !border-emerald-400/30 !px-3" onClick={() => { setFacilitatorOpen(true); setActionsOpen(false); }}>🎛 <T value={{ ro: "Facilitează", en: "Facilitate" }} /></button>}
+              <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !px-3" onClick={() => { setShareOpen(true); setActionsOpen(false); }}>🔗 <T value={{ ro: "Partajează", en: "Share" }} /></button>
+              <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !px-3" onClick={handleLeave}>🚪 <T value={{ ro: "Pleacă", en: "Leave" }} /></button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -811,11 +896,13 @@ export default function GamePage() {
       )}
 
       {chatOpen && (
-        <aside className="safe-bottom fixed bottom-3 right-3 z-40 flex max-h-[60vh] w-[340px] max-w-[calc(100vw-1.5rem)] flex-col overflow-hidden rounded-2xl border border-white/10 bg-ink-900/95 text-white shadow-pop backdrop-blur">
-          <header className="flex items-center justify-between border-b border-white/10 px-4 py-3"><b className="font-display text-sm"><T value={{ ro: "Chat de echipă", en: "Team chat" }} /></b><button onClick={() => setChatOpen(false)}>✕</button></header>
-          <div className="flex-1 space-y-2 overflow-y-auto p-3">{chat.length === 0 ? <p className="py-8 text-center text-xs text-ink-500"><T value={{ ro: "Începe conversația.", en: "Start the conversation." }} /></p> : chat.map((entry) => <div key={entry.id} className="rounded-xl bg-white/5 px-3 py-2 text-sm"><div className="text-[10px] font-bold" style={{ color: entry.color }}>{entry.name}</div><div className="mt-0.5 break-words text-ink-200">{entry.text}</div></div>)}</div>
-          <form className="flex gap-2 border-t border-white/10 p-3" onSubmit={(event) => { event.preventDefault(); if (!chatText.trim()) return; store.sendChat(chatText); setChatText(""); }}><input className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none" value={chatText} maxLength={500} onChange={(event) => setChatText(event.target.value)} placeholder={lang === "ro" ? "Scrie un mesaj…" : "Write a message…"} /><button className="btn-primary btn-sm" type="submit">↑</button></form>
-        </aside>
+        <ChatSheet
+          entries={chat}
+          connected={connected}
+          lang={lang}
+          onClose={() => setChatOpen(false)}
+          onSend={(message) => store.sendChat(message)}
+        />
       )}
 
       {/* --------------------------------------------- puzzle picker (host) */}

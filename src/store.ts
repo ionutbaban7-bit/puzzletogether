@@ -155,7 +155,14 @@ function handleMessage(msg: { t: string; [key: string]: unknown }) {
     case "room": set({ room: msg.room as RoomView }); break;
     case "puzzleMeta": set({ puzzle: msg.puzzle as PuzzleView }); break;
     case "facilitator": set({ facilitatorNotes: String(msg.notes || "") }); break;
-    case "chat": set({ chat: [...state.chat.slice(-49), msg.entry as ChatEntry] }); break;
+    case "chat": {
+      const entry = msg.entry as ChatEntry;
+      // A reconnect/retry can replay the same server entry. Never render it
+      // twice or inflate the participant-visible unread count.
+      if (!entry?.id || state.chat.some((current) => current.id === entry.id)) break;
+      set({ chat: [...state.chat.slice(-49), entry] });
+      break;
+    }
     case "reset": {
       const canvas = canvasFromMessage(msg) || null;
       set({
@@ -200,9 +207,27 @@ export const store = {
     set({ ...initialState, status: "connecting" });
     socket.connect(roomId, playerId);
   },
-  sendPiece(id: number, x: number, y: number, drag: boolean) {
+  /**
+   * Commit a normal piece frame, or explicitly release a claimed piece after
+   * a browser interruption. `cancel` is never treated as a snap/drop by the
+   * server, so an iOS pointercancel cannot accidentally score a piece.
+   */
+  sendPiece(
+    id: number,
+    x: number,
+    y: number,
+    drag: boolean,
+    options: { cancel?: boolean; reason?: string } = {},
+  ) {
     if (!state.connected) return;
-    socket.send({ t: "piece", id, x: Math.round(x), y: Math.round(y), drag });
+    socket.send({
+      t: "piece",
+      id,
+      x: Math.round(x),
+      y: Math.round(y),
+      drag,
+      ...(options.cancel ? { cancel: true, cancelReason: options.reason } : {}),
+    });
   },
   /** Ask the server to rearrange only untouched jigsaw pieces. */
   sendLayout(mode: "scatter" | "tray") {
@@ -219,7 +244,13 @@ export const store = {
   saveInsights(value: WorkshopInsights) { if (state.connected) socket.send({ t: "harvest", kind: "insights", value }); },
   saveDebrief(value: string[]) { if (state.connected) socket.send({ t: "harvest", kind: "debrief", value }); },
   saveActions(value: ActionItem[]) { if (state.connected) socket.send({ t: "harvest", kind: "actions", value }); },
-  sendChat(text: string) { if (state.connected) socket.send({ t: "chat", text }); },
+  sendChat(text: string) {
+    if (!state.connected) return;
+    const clientMessageId = typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    socket.send({ t: "chat", text, clientMessageId });
+  },
   clearError() { set({ protocolError: undefined }); },
   /** Optimistic drop is used only for classic jigsaw pieces; ranking stays server-authoritative. */
   applyLocalDrop(id: number, x: number, y: number, snapped: boolean) {

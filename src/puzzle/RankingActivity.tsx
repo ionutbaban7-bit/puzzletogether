@@ -3,6 +3,7 @@ import { Modal } from "../components/ui";
 import { pick, T, useLang } from "../lib/i18n";
 import { store, useStore } from "../store";
 import { MAX_SCALE, MIN_SCALE, useViewport } from "./useViewport";
+import { usePointerLifecycle, type PointerSample, type PointerTerminationReason } from "./usePointerLifecycle";
 import type { CoachingActivity, Piece, PlayerView, PuzzleView } from "../types";
 
 interface Props { puzzle: PuzzleView; pieces: Record<number, Piece>; players: PlayerView[]; youId: string | null }
@@ -22,14 +23,19 @@ export default function RankingActivity({ puzzle, pieces, players, youId }: Prop
   const { camera, cameraRef, setCamera, zoomAt, zoomBy } = useViewport();
   const [showResults, setShowResults] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  const pointerSamples = useRef(new Map<number, PointerSample>());
   const pan = useRef<{ id: number; sx: number; sy: number; cx: number; cy: number } | null>(null);
   const pinch = useRef<{ dist: number; sx: number; sy: number; scale: number } | null>(null);
-  const drag = useRef<{ id: number; offsetX: number; offsetY: number; throttle: number } | null>(null);
+  const pendingDrag = useRef<{ id: number; pointerId: number; offsetX: number; offsetY: number; startX: number; startY: number } | null>(null);
+  const drag = useRef<{ id: number; pointerId: number; offsetX: number; offsetY: number; throttle: number } | null>(null);
   const dragPosition = useRef<{ x: number; y: number } | null>(null);
-  const gesture = useRef<"none" | "pan" | "drag" | "pinch">("none");
+  const gesture = useRef<"none" | "press" | "pan" | "drag" | "pinch">("none");
   const [, redraw] = useState(0);
   const lastCursorSent = useRef(0);
+  const pointerLifecycle = usePointerLifecycle(containerRef, pointerSamples, {
+    onMove: handleTrackedPointerMove,
+    onTerminate: handlePointerTermination,
+  });
 
   const fit = useCallback(() => {
     const width = window.innerWidth;
@@ -51,65 +57,118 @@ export default function RankingActivity({ puzzle, pieces, players, youId }: Prop
     return () => { delete (window as Window & { __ptCamera?: unknown }).__ptCamera; };
   }, [cameraRef]);
 
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && (drag.current || pendingDrag.current)) pointerLifecycle.cancelAll("escape");
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [pointerLifecycle]);
+
   const screenToWorld = useCallback((sx: number, sy: number) => {
     const camera = cameraRef.current;
     return { x: (sx - camera.x) / camera.scale, y: (sy - camera.y) / camera.scale };
   }, [cameraRef]);
-  const eventPosition = (event: React.PointerEvent) => {
-    const rect = containerRef.current!.getBoundingClientRect();
-    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  const eventPosition = (sample: Pick<PointerSample, "clientX" | "clientY">) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return { x: 0, y: 0 };
+    return { x: sample.clientX - rect.left, y: sample.clientY - rect.top };
   };
+  const livePoints = () => [...pointerSamples.current.values()].map(eventPosition);
 
-  function beginDrag(id: number, point: { x: number; y: number }) {
-    const piece = pieces[id];
-    if (!piece || !canMove || (piece.heldBy && piece.heldBy !== youId)) return false;
-    const world = screenToWorld(point.x, point.y);
-    drag.current = { id, offsetX: world.x - piece.x, offsetY: world.y - piece.y, throttle: 0 };
+  function activateDrag(pending: NonNullable<typeof pendingDrag.current>) {
+    const piece = pieces[pending.id];
+    if (!piece || !canMove || (piece.heldBy && piece.heldBy !== youId)) {
+      pendingDrag.current = null;
+      gesture.current = "none";
+      return false;
+    }
+    drag.current = {
+      id: pending.id,
+      pointerId: pending.pointerId,
+      offsetX: pending.offsetX,
+      offsetY: pending.offsetY,
+      throttle: 0,
+    };
     dragPosition.current = { x: piece.x, y: piece.y };
+    pendingDrag.current = null;
     gesture.current = "drag";
-    store.sendPiece(id, piece.x, piece.y, true);
+    store.sendPiece(pending.id, piece.x, piece.y, true);
     redraw((value) => value + 1);
     return true;
   }
 
+  function cancelRankingDrag(reason: PointerTerminationReason) {
+    const current = drag.current;
+    drag.current = null;
+    pendingDrag.current = null;
+    if (current) {
+      const position = dragPosition.current || pieces[current.id];
+      if (position) store.sendPiece(current.id, position.x, position.y, false, { cancel: true, reason });
+    }
+    dragPosition.current = null;
+    redraw((value) => value + 1);
+  }
+
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
-    containerRef.current?.setPointerCapture(event.pointerId);
-    const point = eventPosition(event);
-    pointers.current.set(event.pointerId, point);
-    const card = (event.target as HTMLElement).closest("[data-ranking-item]") as HTMLElement | null;
-    if (card && beginDrag(Number(card.dataset.rankingItem), point)) return;
-    if (event.pointerType === "touch" && pointers.current.size === 2) {
-      const points = [...pointers.current.values()];
+    const sample = pointerLifecycle.begin(event.nativeEvent);
+    const point = eventPosition(sample);
+    if (sample.pointerType === "touch" && pointerSamples.current.size === 2) {
+      if (drag.current) cancelRankingDrag("cancel");
+      pendingDrag.current = null;
+      const points = livePoints();
       pinch.current = { dist: Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y), sx: (points[0].x + points[1].x) / 2, sy: (points[0].y + points[1].y) / 2, scale: cameraRef.current.scale };
       gesture.current = "pinch";
+      pan.current = null;
+      return;
+    }
+    const card = (event.target as HTMLElement).closest("[data-ranking-item]") as HTMLElement | null;
+    const id = card ? Number(card.dataset.rankingItem) : NaN;
+    const piece = Number.isFinite(id) ? pieces[id] : null;
+    if (piece && canMove && (!piece.heldBy || piece.heldBy === youId)) {
+      const world = screenToWorld(point.x, point.y);
+      pendingDrag.current = {
+        id,
+        pointerId: sample.pointerId,
+        offsetX: world.x - piece.x,
+        offsetY: world.y - piece.y,
+        startX: point.x,
+        startY: point.y,
+      };
+      gesture.current = "press";
       return;
     }
     gesture.current = "pan";
-    pan.current = { id: event.pointerId, sx: point.x, sy: point.y, cx: cameraRef.current.x, cy: cameraRef.current.y };
+    pan.current = { id: sample.pointerId, sx: point.x, sy: point.y, cx: cameraRef.current.x, cy: cameraRef.current.y };
   }
 
-  function onPointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    const point = eventPosition(event);
-    if (!pointers.current.has(event.pointerId)) return;
-    pointers.current.set(event.pointerId, point);
-    if (gesture.current === "drag" && drag.current) {
+  function handleTrackedPointerMove(sample: PointerSample) {
+    const point = eventPosition(sample);
+    if (gesture.current === "press" && pendingDrag.current?.pointerId === sample.pointerId) {
+      const pending = pendingDrag.current;
+      const threshold = sample.pointerType === "touch" ? 8 : 4;
+      if (Math.hypot(point.x - pending.startX, point.y - pending.startY) < threshold) return;
+      if (!activateDrag(pending)) return;
+    }
+    if (gesture.current === "drag" && drag.current?.pointerId === sample.pointerId) {
       const world = screenToWorld(point.x, point.y);
-      const x = world.x - drag.current.offsetX;
-      const y = world.y - drag.current.offsetY;
+      const current = drag.current;
+      const x = world.x - current.offsetX;
+      const y = world.y - current.offsetY;
       dragPosition.current = { x, y };
       const now = performance.now();
-      if (now - drag.current.throttle >= 50) { drag.current.throttle = now; store.sendPiece(drag.current.id, x, y, true); }
+      if (now - current.throttle >= 50) { current.throttle = now; store.sendPiece(current.id, x, y, true); }
       redraw((value) => value + 1);
       return;
     }
-    if (gesture.current === "pan" && pan.current && pan.current.id === event.pointerId) {
+    if (gesture.current === "pan" && pan.current && pan.current.id === sample.pointerId) {
       cameraRef.current.x = pan.current.cx + point.x - pan.current.sx;
       cameraRef.current.y = pan.current.cy + point.y - pan.current.sy;
       setCamera({ ...cameraRef.current });
       return;
     }
-    if (gesture.current === "pinch" && pinch.current && pointers.current.size >= 2) {
-      const points = [...pointers.current.values()];
+    if (gesture.current === "pinch" && pinch.current && pointerSamples.current.size >= 2) {
+      const points = livePoints();
       const distance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
       const scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, pinch.current.scale * distance / Math.max(1, pinch.current.dist)));
       const previous = cameraRef.current.scale;
@@ -124,20 +183,48 @@ export default function RankingActivity({ puzzle, pieces, players, youId }: Prop
     }
   }
 
-  function onPointerUp(event: React.PointerEvent<HTMLDivElement>) {
-    pointers.current.delete(event.pointerId);
-    if (gesture.current === "drag" && drag.current) {
+  function handlePointerTermination(sample: PointerSample, reason: PointerTerminationReason) {
+    const wasDragging = gesture.current === "drag" && drag.current?.pointerId === sample.pointerId;
+    const wasPressing = gesture.current === "press" && pendingDrag.current?.pointerId === sample.pointerId;
+    if (wasDragging) {
       const current = drag.current;
-      const point = eventPosition(event);
+      const point = eventPosition(sample);
       const world = screenToWorld(point.x, point.y);
-      store.sendPiece(current.id, world.x - current.offsetX, world.y - current.offsetY, false);
+      const position = current ? { x: world.x - current.offsetX, y: world.y - current.offsetY } : dragPosition.current;
       drag.current = null;
       dragPosition.current = null;
+      if (current && position) {
+        if (reason === "up") store.sendPiece(current.id, position.x, position.y, false);
+        else store.sendPiece(current.id, position.x, position.y, false, { cancel: true, reason });
+      }
+    } else if (wasPressing) {
+      pendingDrag.current = null;
     }
-    if (gesture.current === "pan") pan.current = null;
-    if (gesture.current === "pinch") pinch.current = null;
-    if (!pointers.current.size) gesture.current = "none";
+    if (gesture.current === "pan" && pan.current?.id === sample.pointerId) pan.current = null;
+    if (gesture.current === "pinch" && pointerSamples.current.size < 2) pinch.current = null;
+    if (!pointerSamples.current.size) {
+      gesture.current = "none";
+      pan.current = null;
+      pinch.current = null;
+      pendingDrag.current = null;
+    }
     redraw((value) => value + 1);
+  }
+
+  function onPointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    pointerLifecycle.move(event.nativeEvent);
+  }
+
+  function onPointerUp(event: React.PointerEvent<HTMLDivElement>) {
+    pointerLifecycle.finish(event.nativeEvent, "up");
+  }
+
+  function onPointerCancel(event: React.PointerEvent<HTMLDivElement>) {
+    pointerLifecycle.finish(event.nativeEvent, "cancel");
+  }
+
+  function onLostPointerCapture(event: React.PointerEvent<HTMLDivElement>) {
+    pointerLifecycle.finish(event.nativeEvent, "lostcapture");
   }
 
   const teamRanks = useMemo(() => new Map(Object.values(pieces).filter((piece) => piece.placedOnSlot != null).map((piece) => [piece.id, piece.placedOnSlot!])), [pieces]);
@@ -150,7 +237,7 @@ export default function RankingActivity({ puzzle, pieces, players, youId }: Prop
 
   return (
     <div className={`relative h-full w-full overflow-hidden bg-ink-950 ${!connected ? "pointer-events-none" : ""}`} style={{ touchAction: "none" }}>
-      <div ref={containerRef} className="absolute inset-0" onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp} onWheel={(event) => { event.preventDefault(); const point = eventPosition(event as unknown as React.PointerEvent); zoomAt(point.x, point.y, Math.exp(-event.deltaY * 0.0016)); }}>
+      <div ref={containerRef} className="board-input absolute inset-0" style={{ touchAction: "none", overscrollBehavior: "contain" }} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerCancel} onLostPointerCapture={onLostPointerCapture} onWheel={(event) => { event.preventDefault(); const point = eventPosition({ clientX: event.clientX, clientY: event.clientY }); zoomAt(point.x, point.y, Math.exp(-event.deltaY * 0.0016)); }}>
         <div className="absolute left-0 top-0 origin-top-left" style={{ width: boardW, height: boardH + 850, transform: `translate(${camera.x}px,${camera.y}px) scale(${camera.scale})` }}>
           <div className="absolute inset-x-0 top-0 rounded-[32px] border-2 border-dashed border-white/15 bg-white/[0.025]" style={{ height: boardH }} />
           {slots.map((slot) => <div key={slot.rank} className="absolute flex items-center rounded-2xl border-2 border-dashed border-white/15 bg-white/[0.03]" style={{ left: slot.x, top: slot.y, width: layout.slotW, height: layout.slotH }}><span className="ml-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 font-display text-lg font-extrabold text-white/50">{slot.rank}</span></div>)}

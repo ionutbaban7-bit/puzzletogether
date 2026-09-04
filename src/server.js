@@ -34,7 +34,15 @@ const MAX_PLAYERS = 20;
 const ROOM_TTL_MS = 24 * 60 * 60 * 1000;
 const EMPTY_ROOM_TTL_MS = 30 * 60 * 1000;
 const PENDING_TTL_MS = 60 * 1000;
-const CLAIM_TTL_MS = 8_000;
+// Claims must be short-lived in practice, not merely in documentation. The
+// values are configurable for integration tests/operations but bounded so a
+// typo cannot create an endless held piece.
+const configuredClaimTtl = Number(process.env.CLAIM_TTL_MS || 8_000);
+const CLAIM_TTL_MS = Number.isFinite(configuredClaimTtl) ? Math.max(250, Math.min(60_000, configuredClaimTtl)) : 8_000;
+const configuredClaimSweep = Number(process.env.CLAIM_SWEEP_MS || 1_000);
+const CLAIM_SWEEP_MS = Number.isFinite(configuredClaimSweep)
+  ? Math.max(100, Math.min(CLAIM_TTL_MS, configuredClaimSweep))
+  : Math.min(1_000, CLAIM_TTL_MS);
 const CURSOR_RELAY_MS = 33;
 const HEARTBEAT_MS = 30_000;
 const VALID_STAGES = new Set(["lobby", "brief", "play", "reveal", "debrief", "harvest", "closed"]);
@@ -989,6 +997,38 @@ function stopCursorRelay(room) {
   room.cursorTimer = null;
 }
 
+/**
+ * Expire claims independently from the 30s WebSocket heartbeat. A held item
+ * must become usable soon after its TTL even when a browser vanished without a
+ * close frame (a common mobile backgrounding path).
+ */
+function expireClaims(room, now = Date.now()) {
+  const expiredPieces = [];
+  for (const piece of room.pieces) {
+    if (piece.heldBy && now - Number(piece.heldAt || 0) >= CLAIM_TTL_MS) {
+      piece.heldBy = null;
+      piece.heldAt = null;
+      piece.drag = false;
+      expiredPieces.push(serializePiece(piece));
+    }
+  }
+  if (expiredPieces.length) broadcast(room, { t: "pieces", list: expiredPieces });
+
+  const expiredTiles = [];
+  if (room.canvas) {
+    for (const tile of room.canvas.tiles.values()) {
+      if (tile.heldBy && now - Number(tile.heldAt || 0) >= CANVAS_CLAIM_TTL_MS) {
+        tile.heldBy = null;
+        tile.heldAt = null;
+        expiredTiles.push(serializeCanvasTile(tile));
+      }
+    }
+    if (expiredTiles.length) broadcast(room, { t: "canvas", list: expiredTiles });
+  }
+  if (expiredPieces.length || expiredTiles.length) scheduleSnapshot();
+  return { expiredPieces, expiredTiles };
+}
+
 function releaseClaims(room, playerId) {
   const released = [];
   for (const piece of room.pieces) {
@@ -1291,6 +1331,9 @@ function applyCanvasOp(room, playerId, msg, ws) {
   const canvas = canvasGuard(room, playerId, ws);
   if (!canvas) return;
   const now = Date.now();
+  // Resolve a stale Canvas claim before evaluating the next client operation.
+  // This mirrors classic-piece semantics and avoids a 30-second dead tile.
+  expireClaims(room, now);
   const isLetter = canvas.category === "letter-canvas";
   let inventoryChanged = false;
   const list = [];
@@ -1353,7 +1396,22 @@ function applyCanvasOp(room, playerId, msg, ws) {
       if (!tile) { send(ws, { t: "error", code: "tile_missing", message: "Tile not found." }); return; }
       const x = Math.max(-2000, Math.min(canvas.sheetW + 2000, Number(msg.x) || 0));
       const y = Math.max(-2000, Math.min(canvas.sheetH + 2000, Number(msg.y) || 0));
-      if (msg.drag) {
+      const cancelling = !msg.drag && msg.cancel === true;
+      if (cancelling) {
+        if (tile.heldBy !== playerId) {
+          // A terminal browser event can race the initial claim frame. Do not
+          // accept an unclaimed cancellation; send authoritative state back.
+          send(ws, { t: "canvas", list: [serializeCanvasTile(tile)] });
+          return;
+        }
+        tile.x = x;
+        tile.y = y;
+        tile.heldBy = null;
+        tile.heldAt = null;
+        clampCanvasTile(canvas, tile);
+        // No sentence snapping/history entry on cancellation. A browser loss
+        // must not turn into a facilitator-visible composition decision.
+      } else if (msg.drag) {
         if (claimBlocked(tile)) { rejectClaimed(tile); return; }
         tile.heldBy = playerId;
         tile.heldAt = now;
@@ -1840,9 +1898,31 @@ wss.on("connection", (ws) => {
         const x = Math.max(-200000, Math.min(200000, Number(msg.x) || 0));
         const y = Math.max(-200000, Math.min(200000, Number(msg.y) || 0));
         const dragging = !!msg.drag;
-        if (piece.heldBy && piece.heldBy !== playerId && Date.now() - piece.heldAt < CLAIM_TTL_MS) {
+        const cancelling = !dragging && msg.cancel === true;
+        // A claim is checked lazily too, so an item is never held until the
+        // next sweep just because a frame arrived on the TTL boundary.
+        expireClaims(room);
+        if (piece.heldBy && piece.heldBy !== playerId) {
           send(ws, { t: "pieceRejected", reason: "held", ownerId: piece.heldBy, piece: serializePiece(piece) });
           return;
+        }
+        if (cancelling) {
+          if (piece.heldBy !== playerId) {
+            // The initial claim may have been lost while a page was hidden.
+            // Reconcile the client instead of accepting an unclaimed cancel.
+            send(ws, { t: "pieces", list: [serializePiece(piece)] });
+            return;
+          }
+          piece.x = x;
+          piece.y = y;
+          piece.drag = false;
+          piece.heldBy = null;
+          piece.heldAt = null;
+          // Cancellation intentionally never snaps, scores or locks. It is a
+          // release/reconcile operation, not an invented pointerup/drop.
+          touch(room);
+          broadcast(room, { t: "pieces", list: [serializePiece(piece)] });
+          break;
         }
         if (dragging) {
           piece.heldBy = playerId;
@@ -1940,8 +2020,27 @@ wss.on("connection", (ws) => {
         const { room, playerId } = attached;
         const text = String(msg.text || "").trim().slice(0, 500);
         if (!text) break;
+        const rawClientMessageId = String(msg.clientMessageId || "").trim();
+        const clientMessageId = /^[A-Za-z0-9_-]{8,96}$/.test(rawClientMessageId) ? rawClientMessageId : null;
+        // WebSocket ordering is reliable, but a client can retry after a
+        // reconnect race. The sender-scoped id makes that retry idempotent.
+        if (clientMessageId) {
+          const existing = room.chat.find((entry) => entry.playerId === playerId && entry.clientMessageId === clientMessageId);
+          if (existing) {
+            send(ws, { t: "chat", entry: existing });
+            break;
+          }
+        }
         const player = room.players.get(playerId);
-        const entry = { id: crypto.randomUUID(), playerId, name: player?.name || "Player", color: player?.color || "#94a3b8", text, at: Date.now() };
+        const entry = {
+          id: crypto.randomUUID(),
+          playerId,
+          name: player?.name || "Player",
+          color: player?.color || "#94a3b8",
+          text,
+          at: Date.now(),
+          ...(clientMessageId ? { clientMessageId } : {}),
+        };
         room.chat = [...room.chat.slice(-49), entry];
         touch(room);
         broadcast(room, { t: "chat", entry });
@@ -1977,6 +2076,11 @@ function reapRoom(room) {
   scheduleSnapshot();
 }
 
+// Claim expiration must not wait for the liveness heartbeat (30 seconds).
+setInterval(() => {
+  for (const room of rooms.values()) expireClaims(room);
+}, CLAIM_SWEEP_MS).unref();
+
 setInterval(() => {
   const now = Date.now();
   for (const room of rooms.values()) {
@@ -1985,18 +2089,6 @@ setInterval(() => {
       else { conn.ws.alive = false; try { conn.ws.ping(); } catch {} }
     }
     for (const [pid, pending] of [...room.pending]) if (pending.expiresAt < now) room.pending.delete(pid);
-    const expiredClaims = [];
-    for (const piece of room.pieces) if (piece.heldBy && now - piece.heldAt > CLAIM_TTL_MS) {
-      piece.heldBy = null; piece.heldAt = null; piece.drag = false; expiredClaims.push(serializePiece(piece));
-    }
-    if (expiredClaims.length) broadcast(room, { t: "pieces", list: expiredClaims });
-    if (room.canvas) {
-      const expiredTiles = [];
-      for (const tile of room.canvas.tiles.values()) if (tile.heldBy && now - (tile.heldAt || 0) > CANVAS_CLAIM_TTL_MS) {
-        tile.heldBy = null; tile.heldAt = null; expiredTiles.push(serializeCanvasTile(tile));
-      }
-      if (expiredTiles.length) broadcast(room, { t: "canvas", list: expiredTiles });
-    }
     if (room.conns.size) broadcast(room, { t: "players", list: activePlayerList(room) });
     if (!room.players.size && !room.conns.size && now - room.lastActivityAt > EMPTY_ROOM_TTL_MS) {
       reapRoom(room); logEvent("room_empty_reaped", room);

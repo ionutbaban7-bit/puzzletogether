@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CanvasState, CanvasTile, CursorView, PlayerView, PuzzleView } from "../types";
 import { MAX_SCALE, MIN_SCALE, useViewport } from "./useViewport";
+import { usePointerLifecycle, type PointerSample, type PointerTerminationReason } from "./usePointerLifecycle";
 import { store } from "../store";
 import { pick, useLang } from "../lib/i18n";
 import { downloadJsonFile, downloadTextFile, exportCanvasPng, reconstructCanvasText, roundRectPath } from "../lib/canvasText";
@@ -161,12 +162,13 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
   const [trayCategory, setTrayCategory] = useState("all");
   const [customWord, setCustomWord] = useState("");
 
-  // Gesture state
-  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  // The shared lifecycle owns capture, fallback and terminal event hygiene.
+  const pointerSamples = useRef(new Map<number, PointerSample>());
   const pinch = useRef<{ dist: number; sx: number; sy: number; scale: number } | null>(null);
   const pan = useRef<{ id: number; sx: number; sy: number; cx: number; cy: number } | null>(null);
-  const grab = useRef<{ id: number; dx: number; dy: number; throttle: number; moved: number } | null>(null);
-  const gestureType = useRef<"none" | "pan" | "drag" | "pinch">("none");
+  const pendingGrab = useRef<{ id: number; pointerId: number; dx: number; dy: number; startX: number; startY: number } | null>(null);
+  const grab = useRef<{ id: number; pointerId: number; dx: number; dy: number; throttle: number; moved: number } | null>(null);
+  const gestureType = useRef<"none" | "press" | "pan" | "drag" | "pinch">("none");
   const raf = useRef(0);
   const lastTap = useRef<{ id: number | null; at: number }>({ id: null, at: 0 });
   const lastMoveSent = useRef(0);
@@ -227,6 +229,11 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
       draw();
     });
   }, []);
+
+  const pointerLifecycle = usePointerLifecycle(canvasRef, pointerSamples, {
+    onMove: handleTrackedPointerMove,
+    onTerminate: handlePointerTermination,
+  });
   const drawRef = useRef<() => void>(() => {});
   drawRef.current = () => draw();
 
@@ -290,7 +297,8 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
           setSelectedId(null);
         }
       } else if (e.key === "Escape") {
-        setSelectedId(null);
+        if (grab.current || pendingGrab.current) pointerLifecycle.cancelAll("escape");
+        else setSelectedId(null);
       } else if (e.key === "+" || e.key === "=") {
         zoomBy(1.25);
       } else if (e.key === "-" || e.key === "_") {
@@ -300,7 +308,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTile, zoomBy, schedule]);
+  }, [selectedTile, zoomBy, schedule, pointerLifecycle]);
 
   // ------------------------------------------------------------- draw
   function draw() {
@@ -420,24 +428,49 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
     return best;
   }
 
-  const posFromEvent = (e: React.PointerEvent) => {
-    const rect = canvasRef.current!.getBoundingClientRect();
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  const posFromSample = (sample: Pick<PointerSample, "clientX" | "clientY">) => {
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return { x: 0, y: 0 };
+    return { x: sample.clientX - rect.left, y: sample.clientY - rect.top };
   };
+  const livePoints = () => [...pointerSamples.current.values()].map(posFromSample);
+
+  function noteTileTap(tile: CanvasTile) {
+    setSelectedId(tile.id);
+    const now = performance.now();
+    if (lastTap.current.id === tile.id && now - lastTap.current.at < 340) {
+      store.sendCanvas("flip", { id: tile.id });
+      lastTap.current = { id: null, at: 0 };
+    } else {
+      lastTap.current = { id: tile.id, at: now };
+    }
+  }
+
+  function cancelCanvasGrab(reason: PointerTerminationReason) {
+    const current = grab.current;
+    grab.current = null;
+    pendingGrab.current = null;
+    if (!current) {
+      schedule();
+      return;
+    }
+    const tile = tilesRef.current[current.id];
+    if (tile) {
+      store.sendCanvas("move", { id: tile.id, x: tile.x, y: tile.y, drag: false, cancel: true, cancelReason: reason });
+    }
+    schedule();
+  }
 
   function onPointerDown(e: React.PointerEvent<HTMLCanvasElement>) {
     const el = canvasRef.current;
     if (!el) return;
-    el.setPointerCapture(e.pointerId);
-    const pos = posFromEvent(e);
-    pointers.current.set(e.pointerId, pos);
-    if (e.pointerType === "touch" && pointers.current.size === 2) {
-      if (grab.current) {
-        const t = tilesRef.current[grab.current.id];
-        if (t) store.sendCanvas("move", { id: t.id, x: t.x, y: t.y, drag: false });
-        grab.current = null;
-      }
-      const pts = [...pointers.current.values()];
+    const sample = pointerLifecycle.begin(e.nativeEvent);
+    const pos = posFromSample(sample);
+    if (sample.pointerType === "touch" && pointerSamples.current.size === 2) {
+      // A second finger is a camera gesture, never an accidental canvas drop.
+      if (grab.current) cancelCanvasGrab("cancel");
+      pendingGrab.current = null;
+      const pts = livePoints();
       pinch.current = { dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y), sx: (pts[0].x + pts[1].x) / 2, sy: (pts[0].y + pts[1].y) / 2, scale: cameraRef.current.scale };
       gestureType.current = "pinch";
       pan.current = null;
@@ -445,50 +478,68 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
       return;
     }
     const world = screenToWorld(pos.x, pos.y);
-    const hit = inputRef.current ? pickTile(world.x, world.y, e.pointerType === "touch" ? 12 : 0) : null;
+    const hit = inputRef.current ? pickTile(world.x, world.y, sample.pointerType === "touch" ? 12 : 0) : null;
     if (hit) {
-      gestureType.current = "drag";
-      grab.current = { id: hit.id, dx: world.x - hit.x, dy: world.y - hit.y, throttle: performance.now(), moved: 0 };
-      setSelectedId(hit.id);
-      store.sendCanvas("move", { id: hit.id, x: hit.x, y: hit.y, drag: true });
+      pendingGrab.current = {
+        id: hit.id,
+        pointerId: sample.pointerId,
+        dx: world.x - hit.x,
+        dy: world.y - hit.y,
+        startX: pos.x,
+        startY: pos.y,
+      };
+      gestureType.current = "press";
     } else {
       gestureType.current = "pan";
-      pan.current = { id: e.pointerId, sx: pos.x, sy: pos.y, cx: cameraRef.current.x, cy: cameraRef.current.y };
+      pan.current = { id: sample.pointerId, sx: pos.x, sy: pos.y, cx: cameraRef.current.x, cy: cameraRef.current.y };
       setSelectedId(null);
     }
     schedule();
   }
 
-  function onPointerMove(e: React.PointerEvent<HTMLCanvasElement>) {
-    if (!pointers.current.has(e.pointerId)) return;
-    const pos = posFromEvent(e);
-    pointers.current.set(e.pointerId, pos);
-
-    if (gestureType.current === "drag" && grab.current) {
+  function handleTrackedPointerMove(sample: PointerSample) {
+    const pos = posFromSample(sample);
+    if (gestureType.current === "press" && pendingGrab.current?.pointerId === sample.pointerId) {
+      const pending = pendingGrab.current;
+      const threshold = sample.pointerType === "touch" ? 8 : 4;
+      if (Math.hypot(pos.x - pending.startX, pos.y - pending.startY) < threshold) return;
+      const tile = tilesRef.current[pending.id];
+      if (!tile || (tile.heldBy && tile.heldBy !== youRef.current)) {
+        pendingGrab.current = null;
+        gestureType.current = "none";
+        return;
+      }
+      grab.current = { id: pending.id, pointerId: pending.pointerId, dx: pending.dx, dy: pending.dy, throttle: performance.now(), moved: 0 };
+      pendingGrab.current = null;
+      gestureType.current = "drag";
+      store.sendCanvas("move", { id: tile.id, x: tile.x, y: tile.y, drag: true });
+    }
+    if (gestureType.current === "drag" && grab.current?.pointerId === sample.pointerId) {
       const world = screenToWorld(pos.x, pos.y);
-      const tile = tilesRef.current[grab.current.id];
+      const current = grab.current;
+      const tile = tilesRef.current[current.id];
       if (tile) {
-        tile.x = world.x - grab.current.dx;
-        tile.y = world.y - grab.current.dy;
-        grab.current.moved += 1;
+        tile.x = world.x - current.dx;
+        tile.y = world.y - current.dy;
+        current.moved += 1;
         const now = performance.now();
-        if (now - grab.current.throttle >= 50) {
-          grab.current.throttle = now;
+        if (now - current.throttle >= 50) {
+          current.throttle = now;
           store.sendCanvas("move", { id: tile.id, x: tile.x, y: tile.y, drag: true });
         }
       }
       schedule();
       return;
     }
-    if (gestureType.current === "pan" && pan.current && e.pointerId === pan.current.id) {
+    if (gestureType.current === "pan" && pan.current && sample.pointerId === pan.current.id) {
       cameraRef.current.x = pan.current.cx + (pos.x - pan.current.sx);
       cameraRef.current.y = pan.current.cy + (pos.y - pan.current.sy);
       setCamera({ ...cameraRef.current });
       schedule();
       return;
     }
-    if (gestureType.current === "pinch" && pinch.current && pointers.current.size >= 2) {
-      const pts = [...pointers.current.values()];
+    if (gestureType.current === "pinch" && pinch.current && pointerSamples.current.size >= 2) {
+      const pts = livePoints();
       const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
       if (pinch.current.dist > 0) {
         const scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, pinch.current.scale * (dist / pinch.current.dist)));
@@ -509,33 +560,58 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
     }
   }
 
-  function onPointerUp(e: React.PointerEvent<HTMLCanvasElement>) {
-    pointers.current.delete(e.pointerId);
-    if (gestureType.current === "drag" && grab.current) {
-      const tile = tilesRef.current[grab.current.id];
-      const moved = grab.current.moved;
+  function handlePointerTermination(sample: PointerSample, reason: PointerTerminationReason) {
+    const wasDragging = gestureType.current === "drag" && grab.current?.pointerId === sample.pointerId;
+    const wasPressing = gestureType.current === "press" && pendingGrab.current?.pointerId === sample.pointerId;
+    if (wasDragging) {
+      const current = grab.current;
+      const tile = current ? tilesRef.current[current.id] : null;
       grab.current = null;
       if (tile) {
-        store.sendCanvas("move", { id: tile.id, x: tile.x, y: tile.y, drag: false });
-        // Double-tap (two quick taps on the same tile) flips it.
-        const now = performance.now();
-        if (moved < 6 && lastTap.current.id === tile.id && now - lastTap.current.at < 340) {
-          store.sendCanvas("flip", { id: tile.id });
-          lastTap.current = { id: null, at: 0 };
+        if (reason === "up") {
+          store.sendCanvas("move", { id: tile.id, x: tile.x, y: tile.y, drag: false });
         } else {
-          lastTap.current = { id: tile.id, at: now };
+          store.sendCanvas("move", { id: tile.id, x: tile.x, y: tile.y, drag: false, cancel: true, cancelReason: reason });
         }
       }
+    } else if (wasPressing) {
+      const pending = pendingGrab.current;
+      pendingGrab.current = null;
+      if (reason === "up" && pending) {
+        const tile = tilesRef.current[pending.id];
+        if (tile) noteTileTap(tile);
+      }
     }
-    if (gestureType.current === "pan") pan.current = null;
-    if (gestureType.current === "pinch") pinch.current = null;
-    if (pointers.current.size === 0) gestureType.current = "none";
+    if (gestureType.current === "pan" && pan.current?.id === sample.pointerId) pan.current = null;
+    if (gestureType.current === "pinch" && pointerSamples.current.size < 2) pinch.current = null;
+    if (pointerSamples.current.size === 0) {
+      gestureType.current = "none";
+      pan.current = null;
+      pinch.current = null;
+      pendingGrab.current = null;
+    }
     schedule();
+  }
+
+  function onPointerMove(e: React.PointerEvent<HTMLCanvasElement>) {
+    pointerLifecycle.move(e.nativeEvent);
+  }
+
+  function onPointerUp(e: React.PointerEvent<HTMLCanvasElement>) {
+    pointerLifecycle.finish(e.nativeEvent, "up");
+  }
+
+  function onPointerCancel(e: React.PointerEvent<HTMLCanvasElement>) {
+    pointerLifecycle.finish(e.nativeEvent, "cancel");
+  }
+
+  function onLostPointerCapture(e: React.PointerEvent<HTMLCanvasElement>) {
+    pointerLifecycle.finish(e.nativeEvent, "lostcapture");
   }
 
   function onWheel(e: React.WheelEvent<HTMLCanvasElement>) {
     e.preventDefault();
-    const pos = posFromEvent(e as unknown as React.PointerEvent);
+    const pos = posFromSample({ clientX: e.clientX, clientY: e.clientY });
     zoomAt(pos.x, pos.y, Math.exp(-e.deltaY * 0.0016));
   }
 
@@ -665,12 +741,13 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
     <div className="relative h-full w-full overflow-hidden" style={{ backgroundColor: DESK_BG }}>
       <canvas
         ref={canvasRef}
-        className="block h-full w-full touch-none"
-        style={{ touchAction: "none" }}
+        className="board-input block h-full w-full touch-none"
+        style={{ touchAction: "none", overscrollBehavior: "contain" }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
+        onPointerCancel={onPointerCancel}
+        onLostPointerCapture={onLostPointerCapture}
         onWheel={onWheel}
         onContextMenu={(e) => e.preventDefault()}
         aria-label={lang === "ro" ? "Foaie de lucru — canvas de litere" : "Work sheet — letter canvas"}

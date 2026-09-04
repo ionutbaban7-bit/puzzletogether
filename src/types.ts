@@ -235,7 +235,7 @@ export interface RatingView {
 }
 
 export interface CursorView { x: number; y: number; at: number }
-export interface ChatEntry { id: string; playerId: string; name: string; color: string; text: string; at: number }
+export interface ChatEntry { id: string; playerId: string; name: string; color: string; text: string; at: number; /** Client id used for idempotent reconnect-safe sends. */ clientMessageId?: string }
 export interface Category { id: string; name: string; icon: string }
 export interface Difficulty { id: string; name: string; pieces: number }
 export interface PuzzleInfo {
