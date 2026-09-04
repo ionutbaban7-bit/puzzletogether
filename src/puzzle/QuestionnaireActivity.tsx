@@ -1,8 +1,7 @@
-import { useMemo, useState } from "react";
-import { Spinner } from "../components/ui";
+import { useEffect, useMemo, useState } from "react";
 import { pick, T, useLang } from "../lib/i18n";
 import { store, useStore } from "../store";
-import type { CoachingActivity, Dimension, PlayerView, ProfileType, PuzzleView } from "../types";
+import type { CoachingActivity, PlayerView, PuzzleView } from "../types";
 
 interface Props {
   puzzle: PuzzleView;
@@ -18,16 +17,21 @@ export default function QuestionnaireActivity({ puzzle, players, youId }: Props)
   const questions = activity.questions || [];
   const dims = activity.dimensions || [];
   const types = activity.types || {};
+  const isSpectator = players.find((player) => player.id === youId)?.role === "spectator";
 
   const ratings = useStore((s) => s.ratings);
+  const roomStage = useStore((s) => s.room?.stage);
   const mine = youId ? ratings[youId] : undefined;
 
   const [phase, setPhase] = useState<Phase>(mine?.done ? "results" : "intro");
   const [qIndex, setQIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, "A" | "B">>(() => (mine?.answers as Record<string, "A" | "B">) || {});
-  const [busyReset, setBusyReset] = useState(false);
+  const [answers, setAnswers] = useState<Record<string, "A" | "B">>(() => mine?.answers || {});
 
   const answeredCount = Object.keys(answers).length;
+
+  useEffect(() => {
+    if (roomStage === "play" && phase === "intro" && !mine?.done && !isSpectator) setPhase("questions");
+  }, [roomStage, phase, mine?.done, isSpectator]);
 
   function answer(pole: "A" | "B") {
     const q = questions[qIndex];
@@ -47,14 +51,13 @@ export default function QuestionnaireActivity({ puzzle, players, youId }: Props)
     setQIndex((i) => Math.max(0, i - 1));
   }
 
-  async function restart() {
-    setBusyReset(true);
-    setAnswers({});
-    setQIndex(0);
-    store.sendRating({}, false);
-    setPhase("intro");
-    setBusyReset(false);
-  }
+  const profileDistribution = useMemo(() => {
+    const counts = new Map<string, number>();
+    Object.values(ratings).forEach((rating) => {
+      if (rating.done && rating.profileCode) counts.set(rating.profileCode, (counts.get(rating.profileCode) || 0) + 1);
+    });
+    return [...counts.entries()].sort((a, b) => b[1] - a[1]);
+  }, [ratings]);
 
   const profile = useMemo(() => {
     if (Object.keys(answers).length < questions.length) return null;
@@ -86,7 +89,7 @@ export default function QuestionnaireActivity({ puzzle, players, youId }: Props)
   if (phase === "intro") {
     return (
       <Center>
-        <div className="overlay-card w-[560px] max-w-[92vw] p-8">
+        <div className="overlay-card max-h-[calc(100dvh-1.5rem)] w-[560px] max-w-[92vw] overflow-y-auto p-8">
           <div className="text-4xl">🧭</div>
           <h1 className="font-display mt-3 text-2xl font-bold text-white">
             <T value={activity.name} />
@@ -112,9 +115,15 @@ export default function QuestionnaireActivity({ puzzle, players, youId }: Props)
             <li>· {lang === "ro" ? "Fiecare răspunde individual; la final îți vezi profilul personal" : "Everyone answers individually; you see your own profile at the end"}</li>
             <li>· {lang === "ro" ? "Echipa vede un sumar al profilurilor tuturor" : "The team sees a summary of everyone's profiles"}</li>
           </ul>
-          <button className="btn-primary mt-6 w-full" onClick={() => setPhase("questions")}>
-            {lang === "ro" ? "Începe chestionarul" : "Start the questionnaire"} →
-          </button>
+          {isSpectator ? (
+            <div className="mt-6 rounded-xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-center text-sm text-emerald-200">
+              {lang === "ro" ? "Ești facilitator-spectator. Urmărește progresul echipei din dashboard." : "You are facilitating as a spectator. Follow team progress from the dashboard."}
+            </div>
+          ) : (
+            <button className="btn-primary mt-6 w-full" onClick={() => setPhase("questions")}>
+              {lang === "ro" ? "Începe chestionarul" : "Start the questionnaire"} →
+            </button>
+          )}
         </div>
       </Center>
     );
@@ -122,17 +131,16 @@ export default function QuestionnaireActivity({ puzzle, players, youId }: Props)
 
   if (phase === "questions") {
     const q = questions[qIndex];
-    const dim = dims.find((d) => d.key === q.dim)!;
-    const agreePole = q.pole === "A" ? dim.poleA : dim.poleB;
-    const disagreePole = q.pole === "A" ? dim.poleB : dim.poleA;
+    // Keep the measured dimension and poles hidden while answering to avoid
+    // coaching participants toward a particular profile.
     return (
       <Center>
-        <div className="overlay-card w-[640px] max-w-[92vw] p-8">
+        <div className="overlay-card max-h-[calc(100dvh-1.5rem)] w-[640px] max-w-[92vw] overflow-y-auto p-8">
           {/* progress */}
           <div className="flex items-center justify-between text-[11px] font-semibold text-ink-400">
             <span>{lang === "ro" ? "Întrebarea" : "Question"} {qIndex + 1} / {questions.length}</span>
-            <span className="rounded-full bg-white/10 px-2.5 py-0.5 font-bold text-brand-300 uppercase tracking-wider">
-              {dim.key} · <T value={dim.name} />
+            <span className="rounded-full bg-white/10 px-2.5 py-0.5 font-bold uppercase tracking-wider text-brand-300">
+              {lang === "ro" ? "Răspuns privat" : "Private answer"}
             </span>
           </div>
           <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
@@ -152,7 +160,7 @@ export default function QuestionnaireActivity({ puzzle, players, youId }: Props)
                 {lang === "ro" ? "De acord" : "Agree"}
               </div>
               <div className="mt-0.5 text-[12px] text-ink-300">
-                {pick(agreePole.name, lang)} — {pick(agreePole.desc, lang)}
+                {lang === "ro" ? "Afirmația mă reprezintă în general" : "This statement generally describes me"}
               </div>
             </button>
             <button
@@ -163,7 +171,7 @@ export default function QuestionnaireActivity({ puzzle, players, youId }: Props)
                 {lang === "ro" ? "Mai puțin de acord" : "Disagree"}
               </div>
               <div className="mt-0.5 text-[12px] text-ink-400">
-                {pick(disagreePole.name, lang)} — {pick(disagreePole.desc, lang)}
+                {lang === "ro" ? "Afirmația mă reprezintă mai puțin" : "This statement describes me less often"}
               </div>
             </button>
           </div>
@@ -181,7 +189,7 @@ export default function QuestionnaireActivity({ puzzle, players, youId }: Props)
   // results
   return (
     <Center>
-      <div className="overlay-card max-h-[88vh] w-[640px] max-w-[92vw] overflow-y-auto p-8">
+      <div className="overlay-card max-h-[calc(100dvh-1.5rem)] w-[640px] max-w-[92vw] overflow-y-auto p-8">
         {profile ? (
           <>
             <div className="text-center">
@@ -264,10 +272,21 @@ export default function QuestionnaireActivity({ puzzle, players, youId }: Props)
           <div className="text-[11px] font-bold uppercase tracking-wider text-ink-400">
             👥 {lang === "ro" ? "Sumarul echipei" : "Team summary"}
           </div>
+          {profileDistribution.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {profileDistribution.map(([code, count]) => (
+                <span key={code} className="rounded-full border border-brand-400/20 bg-brand-500/10 px-2.5 py-1 text-[11px] font-bold text-brand-200">
+                  {code} × {count}
+                </span>
+              ))}
+            </div>
+          )}
           <div className="mt-3 space-y-2">
             {players.map((p) => {
               const r = ratings[p.id];
-              const otherProfile = computeProfile(p.id, r, questions, dims, types);
+              const otherProfile = r?.done && r.profileCode
+                ? { code: r.profileCode, type: types[r.profileCode] || null }
+                : null;
               return (
                 <div key={p.id} className="flex items-center gap-2.5 text-[13px]">
                   <span className="h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-white/20" style={{ backgroundColor: p.color }} />
@@ -295,48 +314,12 @@ export default function QuestionnaireActivity({ puzzle, players, youId }: Props)
           </div>
         </div>
 
-        <div className="mt-6 flex gap-2">
-          <button className="btn-primary btn-sm flex-1" onClick={restart} disabled={busyReset}>
-            {busyReset ? <Spinner className="h-3.5 w-3.5" /> : lang === "ro" ? "↺ Reia chestionarul" : "↺ Restart questionnaire"}
-          </button>
+        <div className="mt-6 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center text-xs text-ink-400">
+          {lang === "ro" ? "Facilitatorul controlează trecerea la debrief sau reluarea chestionarului pentru toată echipa." : "The facilitator controls the team debrief or a synchronized questionnaire restart."}
         </div>
       </div>
     </Center>
   );
-}
-
-function computeProfile(
-  playerId: string,
-  rating: { answers: Record<string, "A" | "B">; done: boolean } | undefined,
-  questions: NonNullable<CoachingActivity["questions"]>,
-  dims: NonNullable<CoachingActivity["dimensions"]>,
-  types: Record<string, ProfileType>,
-): { code: string; type: ProfileType | null } | null {
-  if (!rating?.done) return null;
-  const answers = rating.answers || {};
-  if (Object.keys(answers).length < questions.length) return null;
-  const letters: string[] = [];
-  for (const dim of dims) {
-    const counts = new Map<string, number>();
-    for (const q of questions.filter((x) => x.dim === dim.key)) {
-      const agree = answers[q.id] === "A";
-      const letter = agree
-        ? q.pole === "A" ? dim.poleA.letter : dim.poleB.letter
-        : q.pole === "A" ? dim.poleB.letter : dim.poleA.letter;
-      counts.set(letter, (counts.get(letter) || 0) + 1);
-    }
-    let best = dim.poleA.letter;
-    let bestN = -1;
-    for (const [letter, n] of counts) {
-      if (n > bestN) {
-        bestN = n;
-        best = letter;
-      }
-    }
-    letters.push(best);
-  }
-  const code = letters.join("");
-  return { code, type: types[code] || null };
 }
 
 function InfoCol({

@@ -7,6 +7,13 @@ export interface Camera {
   scale: number;
 }
 
+export interface WorldBounds {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+}
+
 export const MIN_SCALE = 0.1; // 10% — large puzzles fit fully even on small phone screens
 export const MAX_SCALE = 3;
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
@@ -43,23 +50,25 @@ export function useViewport() {
     [zoomAt],
   );
 
-  /** Fit the puzzle rect + the scattered-piece area into view. */
+  /** Fit the target plus caller-supplied authoritative piece bounds. */
   const fit = useCallback(
-    (puzzle: PuzzleView | null) => {
+    (puzzle: PuzzleView | null, bounds?: WorldBounds) => {
       if (!puzzle) return;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const padX = 260;
-      const padTop = 90;
-      const padBottom = 880;
-      const bw = puzzle.width + padX * 2;
-      const bh = puzzle.height + padTop + padBottom;
-      const scale = clamp(Math.min(vw / bw, vh / bh), MIN_SCALE, 1.05);
-      const boundsX = -padX;
-      const boundsY = -padTop;
+      const mobile = vw < 640;
+      const b = bounds || { x0: 0, y0: 0, x1: puzzle.width, y1: puzzle.height };
+      const padX = mobile ? 64 : 140;
+      const padY = mobile ? 64 : 110;
+      const bw = Math.max(1, b.x1 - b.x0) + padX * 2;
+      const bh = Math.max(1, b.y1 - b.y0) + padY * 2;
+      const readableMinimum = mobile ? 0.22 : 0.26;
+      const scale = clamp(Math.max(readableMinimum, Math.min(vw / bw, vh / bh)), MIN_SCALE, 1.05);
+      const cx = (b.x0 + b.x1) / 2;
+      const cy = (b.y0 + b.y1) / 2;
       setCamera({
-        x: (vw - bw * scale) / 2 - boundsX * scale,
-        y: (vh - bh * scale) / 2 - boundsY * scale,
+        x: vw / 2 - cx * scale,
+        y: vh / 2 - cy * scale,
         scale,
       });
     },

@@ -1,144 +1,100 @@
-/* Simulates coaching rooms (ranking + questionnaire). Run: node scripts/coaching-test.mjs */
+/* Coaching protocol: free ranking, gated reveal and private questionnaire answers. */
 import WebSocket from "ws";
-
 const BASE = process.env.BASE || "http://127.0.0.1:3000";
-const WS_URL = BASE.replace("http", "ws") + "/ws";
-const results = [];
-const ok = (name, cond, extra = "") => {
-  results.push({ name, pass: !!cond });
-  console.log(`${cond ? "✅" : "❌"} ${name}${extra ? " — " + extra : ""}`);
-};
-
+const WS_URL = BASE.replace(/^http/, "ws") + "/ws";
+const checks = [];
+function ok(name, condition, extra = "") { checks.push(!!condition); console.log(`${condition ? "✅" : "❌"} ${name}${extra ? ` — ${extra}` : ""}`); }
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+async function request(method, path, body) { const response = await fetch(BASE + path, { method, headers: { "Content-Type": "application/json" }, ...(body ? { body: JSON.stringify(body) } : {}) }); return { status: response.status, data: await response.json().catch(() => ({})) }; }
+const post = (path, body) => request("POST", path, body);
+const get = (path) => request("GET", path);
 function connect(roomId, playerId) {
   return new Promise((resolve, reject) => {
-    const ws = new WebSocket(WS_URL);
-    const queue = [];
-    const matches = [];
-    let init = null;
-    ws.on("open", () => ws.send(JSON.stringify({ t: "hello", roomId, playerId })));
-    ws.on("message", (raw) => {
-      const msg = JSON.parse(raw.toString());
-      if (msg.t === "init") init = msg;
-      const mi = matches.findIndex((m) => m.type === msg.t && (!m.predicate || m.predicate(msg)));
-      if (mi >= 0) {
-        const m = matches.splice(mi, 1)[0];
-        clearTimeout(m.timer);
-        return m.resolve(msg);
-      }
-      queue.push(msg);
-    });
+    const ws = new WebSocket(WS_URL); const queue = []; const waiters = [];
+    ws.on("open", () => ws.send(JSON.stringify({ t: "hello", v: 2, roomId, playerId })));
+    ws.on("message", (raw) => { const message = JSON.parse(raw.toString()); const i = waiters.findIndex((w) => w.type === message.t && w.predicate(message)); if (i >= 0) { const w = waiters.splice(i, 1)[0]; clearTimeout(w.timer); w.resolve(message); } else queue.push(message); });
     ws.on("error", reject);
-    ws.waitFor = (type, predicate, timeout = 4000) =>
-      new Promise((res, rej) => {
-        const idx = queue.findIndex((m) => m.t === type && (!predicate || predicate(m)));
-        if (idx >= 0) return res(queue.splice(idx, 1)[0]);
-        const timer = setTimeout(() => rej(new Error(`timeout waiting ${type}`)), timeout);
-        matches.push({ type, predicate, resolve: res, timer });
-      });
-    ws.waitInit = () =>
-      new Promise((res, rej) => {
-        if (init) return res(init);
-        const timer = setTimeout(() => rej(new Error("timeout waiting init")), 3000);
-        matches.push({ type: "init", predicate: null, resolve: (m) => { clearTimeout(timer); res(m); }, timer });
-      });
+    ws.waitFor = (type, predicate = () => true, timeout = 4000) => new Promise((res, rej) => { const i = queue.findIndex((m) => m.t === type && predicate(m)); if (i >= 0) return res(queue.splice(i, 1)[0]); const timer = setTimeout(() => rej(new Error(`timeout ${type}`)), timeout); waiters.push({ type, predicate, resolve: res, timer }); });
     resolve(ws);
   });
 }
 
-const api = {
-  async get(path) {
-    const r = await fetch(BASE + path);
-    return { status: r.status, data: await r.json().catch(() => ({})) };
-  },
-  async post(path, body) {
-    const r = await fetch(BASE + path, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    return { status: r.status, data: await r.json().catch(() => ({})) };
-  },
-};
+const catalog = await get("/api/puzzles");
+ok("catalog has four bilingual coaching activities", catalog.data.coaching.activities.length === 4 && catalog.data.coaching.activities.every((a) => a.name.ro && a.name.en));
+const catalogRank = catalog.data.coaching.activities.find((a) => a.mode === "ranking");
+ok("public catalog never leaks expert answers", catalogRank.items.every((item) => item.expertRank === undefined && item.rationale === undefined) && catalogRank.debrief === undefined);
 
-// 0. catalog includes coaching
-const catalog = await api.get("/api/puzzles");
-ok("catalog has coaching category", catalog.data.coaching?.category?.id === "coaching");
-ok("coaching has 4 activities", catalog.data.coaching?.activities?.length === 4, `${catalog.data.coaching?.activities?.length}`);
-ok("all activities bilingual", catalog.data.coaching.activities.every((a) => a.name?.ro && a.name?.en));
-const coach = await api.get("/api/coaching");
-ok("/api/coaching endpoint works", coach.data.activities?.length === 4);
+const created = await post("/api/rooms", { puzzleId: "himalaya-expedition", difficulty: "easy", name: "Ana", sessionName: "Himalaya workshop", role: "spectator" });
+const roomId = created.data.room.id; const hostId = created.data.playerId; const code = created.data.room.code;
+const joined = await post(`/api/rooms/${roomId}/join`, { name: "Maria", code });
+const host = await connect(roomId, hostId); const participant = await connect(roomId, joined.data.playerId);
+const initHost = await host.waitFor("init"); const initParticipant = await participant.waitFor("init");
+ok("ranking starts with 12 free cards and 12 destinations", initHost.pieces.length === 12 && initHost.puzzle.rankingSlots.length === 12);
+ok("expert rank is hidden from both host and participant", initHost.puzzle.activity.items.every((item) => item.expertRank === undefined) && initParticipant.puzzle.activity.items.every((item) => item.expertRank === undefined));
+ok("facilitator can be a non-playing spectator", initHost.players.find((p) => p.id === hostId).role === "spectator");
 
-// 1. ranking room
-const rankRoom = await api.post("/api/rooms", { puzzleId: "himalaya-expedition", difficulty: "easy", name: "Ionut" });
-ok("create ranking room", rankRoom.status === 200, JSON.stringify(rankRoom.data?.room?.total));
-ok("ranking room total = 12 items", rankRoom.data.room?.total === 12);
+host.send(JSON.stringify({ t: "control", action: "start" }));
+const brief = await participant.waitFor("room", (m) => m.room.stage === "brief");
+ok("coaching Start synchronizes a brief stage", brief.room.boardLocked === true && brief.room.startedAt === null);
+host.send(JSON.stringify({ t: "control", action: "stage", stage: "play" }));
+await participant.waitFor("room", (m) => m.room.stage === "play");
 
-const a = await connect(rankRoom.data.room.id, rankRoom.data.playerId);
-const initA = await a.waitInit();
-ok("ranking init has 12 pieces", initA.pieces?.length === 12);
-ok("ranking init carries activity content", initA.puzzle?.isCoaching === true && initA.puzzle?.mode === "ranking" && !!initA.puzzle?.activity?.items?.length);
-ok("activity items have bilingual labels", initA.puzzle.activity.items.every((i) => i.label?.ro && i.label?.en));
-ok("layout slots match piece count", initA.puzzle.activity.items.length === 12);
+const slot5 = initHost.puzzle.rankingSlots.find((slot) => slot.rank === 5);
+participant.send(JSON.stringify({ t: "piece", id: 0, x: slot5.x, y: slot5.y, drag: false }));
+const rank5 = await host.waitFor("pieces", (m) => m.list?.some((p) => p.id === 0 && p.placedOnSlot === 5));
+ok("item 0 can be ranked freely at slot 5", rank5.list[0].placedOnSlot === 5 && rank5.list[0].locked);
 
-// 2. join second player + move sync
-const join2 = await api.post(`/api/rooms/${rankRoom.data.room.id}/join`, { name: "Maria", code: rankRoom.data.room.code });
-const b = await connect(rankRoom.data.room.id, join2.data.playerId);
-await b.waitInit();
-const piece0 = initA.pieces[0];
-a.send(JSON.stringify({ t: "piece", id: 0, x: 500, y: 500, drag: true }));
-const moveMsg = await b.waitFor("pieces", (m) => m.list?.some((p) => p.id === 0 && p.x === 500));
-ok("ranking item move syncs between clients", !!moveMsg);
+const slot2 = initHost.puzzle.rankingSlots.find((slot) => slot.rank === 2);
+participant.send(JSON.stringify({ t: "piece", id: 0, x: slot5.x, y: slot5.y, drag: true }));
+await host.waitFor("pieces", (m) => m.list?.some((p) => p.id === 0 && p.placedOnSlot === null));
+participant.send(JSON.stringify({ t: "piece", id: 0, x: slot2.x, y: slot2.y, drag: false }));
+const reordered = await host.waitFor("pieces", (m) => m.list?.some((p) => p.id === 0 && p.placedOnSlot === 2));
+ok("placed ranking cards remain reorderable before facilitator lock", reordered.list[0].placedOnSlot === 2);
 
-// 3. snap/lock an item to its slot
-a.send(JSON.stringify({ t: "piece", id: 0, x: piece0.correctX, y: piece0.correctY, drag: false }));
-const snap = await b.waitFor("pieces", (m) => m.list?.some((p) => p.id === 0 && p.locked === true));
-ok("ranking item snaps & locks", snap.list.find((p) => p.id === 0)?.locked === true);
+participant.send(JSON.stringify({ t: "control", action: "reveal" }));
+const deniedReveal = await participant.waitFor("error", (m) => m.code === "not_host");
+ok("participants cannot reveal expert answers", deniedReveal.code === "not_host");
+host.send(JSON.stringify({ t: "control", action: "reveal" }));
+const incomplete = await host.waitFor("error", (m) => m.code === "ranking_incomplete");
+ok("facilitator cannot reveal an incomplete ranking", incomplete.code === "ranking_incomplete");
 
-// 4. lock all → no puzzle-completion broadcast for coaching rooms
-let gotCompletion = false;
-const completionWatch = b.waitFor("completion", null, 1500).catch(() => null);
-for (const p of initA.pieces) {
-  if (p.id === 0) continue;
-  a.send(JSON.stringify({ t: "piece", id: p.id, x: p.correctX, y: p.correctY, drag: false }));
-  await new Promise((r) => setTimeout(r, 12));
+const availableRanks = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+for (let id = 1; id < 12; id++) {
+  const slot = initHost.puzzle.rankingSlots.find((candidate) => candidate.rank === availableRanks[id - 1]);
+  participant.send(JSON.stringify({ t: "piece", id, x: slot.x, y: slot.y, drag: false }));
+  await host.waitFor("pieces", (m) => m.list?.some((p) => p.id === id && p.placedOnSlot === slot.rank));
 }
-const comp = await completionWatch;
-ok("coaching ranking does NOT fire puzzle completion", !comp);
-const roomState = await api.get(`/api/rooms/${rankRoom.data.room.id}`);
-ok("GET room shows 12 locked pieces", roomState.data.room?.completed === false);
+host.send(JSON.stringify({ t: "control", action: "reveal" }));
+const revealedPuzzle = await participant.waitFor("puzzleMeta", (m) => m.puzzle.activity.items.every((item) => Number.isInteger(item.expertRank)));
+const revealedRoom = await participant.waitFor("room", (m) => m.room.revealed);
+ok("expert ranking arrives only after facilitator reveal", revealedPuzzle.puzzle.activity.items[0].rationale && revealedRoom.room.stage === "reveal" && revealedRoom.room.boardLocked);
 
-// 5. questionnaire room
-const qRoom = await api.post("/api/rooms", { puzzleId: "team-compass", difficulty: "easy", name: "Alex" });
-ok("create questionnaire room", qRoom.status === 200);
-const c = await connect(qRoom.data.room.id, qRoom.data.playerId);
-const initC = await c.waitInit();
-ok("questionnaire init has no pieces", initC.pieces?.length === 0);
-ok("questionnaire init has activity", initC.puzzle?.mode === "questionnaire" && initC.puzzle?.activity?.questions?.length === 20);
-ok("questionnaire has 4 dimensions", initC.puzzle.activity.dimensions?.length === 4);
-ok("questionnaire has 16 types", Object.keys(initC.puzzle.activity.types || {}).length === 16);
+const exported = await get(`/api/rooms/${roomId}/export?pid=${hostId}`);
+ok("export computes team rank from destination slot", exported.data.ranking.find((entry) => entry.teamRank === 2)?.item != null);
+ok("export contains insights, actions and no raw questionnaire answers", exported.data.insights && Array.isArray(exported.data.actions) && !JSON.stringify(exported.data).includes('"answers"'));
 
-// 6. rating flow
-const joinQ2 = await api.post(`/api/rooms/${qRoom.data.room.id}/join`, { name: "Dana", code: qRoom.data.room.code });
-const d = await connect(qRoom.data.room.id, joinQ2.data.playerId);
-await d.waitInit();
+// Questionnaire privacy.
+const qCreated = await post("/api/rooms", { puzzleId: "team-compass", difficulty: "easy", name: "Coach" });
+const qJoin = await post(`/api/rooms/${qCreated.data.room.id}/join`, { name: "Dana", code: qCreated.data.room.code });
+const coach = await connect(qCreated.data.room.id, qCreated.data.playerId); const dana = await connect(qCreated.data.room.id, qJoin.data.playerId);
+const qInit = await coach.waitFor("init"); await dana.waitFor("init");
+ok("questionnaire has 20 prompts, 4 dimensions and no board pieces", qInit.pieces.length === 0 && qInit.puzzle.activity.questions.length === 20 && qInit.puzzle.activity.dimensions.length === 4);
+coach.send(JSON.stringify({ t: "control", action: "start" })); await dana.waitFor("room", (m) => m.room.stage === "brief"); coach.send(JSON.stringify({ t: "control", action: "stage", stage: "play" })); await dana.waitFor("room", (m) => m.room.stage === "play");
+const answers = Object.fromEntries(qInit.puzzle.activity.questions.map((q) => [q.id, "A"]));
+dana.send(JSON.stringify({ t: "rating", answers, done: true }));
+const publicRating = await coach.waitFor("ratings", (m) => m.list?.some((r) => r.playerId === qJoin.data.playerId && r.done));
+const privateRating = await dana.waitFor("ratings", (m) => m.list?.some((r) => r.playerId === qJoin.data.playerId && r.done));
+const seenByCoach = publicRating.list.find((r) => r.playerId === qJoin.data.playerId);
+const seenByDana = privateRating.list.find((r) => r.playerId === qJoin.data.playerId);
+ok("other players receive profile code but never raw answers", seenByCoach.profileCode?.length === 4 && seenByCoach.answers === undefined);
+ok("answer owner can recover their own answers", Object.keys(seenByDana.answers || {}).length === 20);
+const badReset = await post(`/api/rooms/${qCreated.data.room.id}/reset`, { pid: qJoin.data.playerId });
+const goodReset = await post(`/api/rooms/${qCreated.data.room.id}/reset`, { pid: qCreated.data.playerId });
+ok("questionnaire reset is synchronized and host-only", badReset.status === 403 && goodReset.status === 200);
+await coach.waitFor("reset");
 
-const answers = {};
-initC.puzzle.activity.questions.forEach((q) => (answers[q.id] = "A"));
-c.send(JSON.stringify({ t: "rating", answers: { 0: "A" }, done: false }));
-const ratingMsg = await d.waitFor("ratings", (m) => m.list?.some((r) => r.playerId === qRoom.data.playerId));
-ok("rating syncs to other players", ratingMsg.list.some((r) => r.playerId === qRoom.data.playerId && r.answers["0"] === "A"));
-
-c.send(JSON.stringify({ t: "rating", answers, done: true }));
-const doneMsg = await d.waitFor("ratings", (m) => m.list?.some((r) => r.playerId === qRoom.data.playerId && r.done === true));
-ok("questionnaire completion syncs (done=true)", !!doneMsg);
-
-// 7. reset clears ratings
-await api.post(`/api/rooms/${qRoom.data.room.id}/reset`, {});
-const resetMsg = await c.waitFor("reset");
-ok("reset clears ratings", Array.isArray(resetMsg.ratings) && resetMsg.ratings.length === 0);
-
-a.close(); b.close(); c.close(); d.close();
-
-const failed = results.filter((r) => !r.pass);
-console.log(`\n${results.length - failed.length}/${results.length} coaching checks passed`);
-process.exit(failed.length ? 1 : 0);
+host.close(); participant.close(); coach.close(); dana.close();
+await delay(20);
+const failures = checks.filter((value) => !value).length;
+console.log(`\n${checks.length - failures}/${checks.length} checks passed`);
+process.exit(failures ? 1 : 0);

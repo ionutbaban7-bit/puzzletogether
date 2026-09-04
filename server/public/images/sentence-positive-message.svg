@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs><linearGradient id="pbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fb7185"/><stop offset="1" stop-color="#e879f9"/></linearGradient></defs>
+  <rect width="800" height="600" fill="url(#pbg)"/>
+  <path d="M400 210 C 340 130 210 150 210 250 C 210 340 330 400 400 450 C 470 400 590 340 590 250 C 590 150 460 130 400 210 Z" fill="#fff" opacity=".95"/>
+  <path d="M400 240 C 370 196 296 206 296 262 C 296 316 366 356 400 384 C 434 356 504 316 504 262 C 504 206 430 196 400 240 Z" fill="#fb7185" opacity=".35"/>
+  <g fill="#fff" opacity=".9">
+    <circle cx="150" cy="120" r="6"/><circle cx="680" cy="150" r="8"/><circle cx="620" cy="470" r="5"/>
+    <circle cx="180" cy="480" r="7"/><circle cx="720" cy="330" r="4"/><circle cx="90" cy="330" r="4"/>
+  </g>
+  <text x="400" y="550" font-family="Georgia, serif" font-size="44" font-weight="bold" fill="#fff" text-anchor="middle">Positive Message</text>
+</svg>

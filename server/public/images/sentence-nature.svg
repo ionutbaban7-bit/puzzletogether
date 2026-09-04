@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs><linearGradient id="nbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a7f3d0"/><stop offset="1" stop-color="#10b981"/></linearGradient></defs>
+  <rect width="800" height="600" fill="url(#nbg)"/>
+  <circle cx="650" cy="110" r="42" fill="#fef9c3"/>
+  <path d="M0 480 L140 300 L260 430 L420 240 L580 440 L700 330 L800 420 L800 600 L0 600 Z" fill="#047857" opacity=".7"/>
+  <g fill="#065f46">
+    <path d="M180 470 l0 -120 l-34 44 l-20 -30 l-30 44 l-22 -26 l-30 60 z" opacity=".9"/>
+    <path d="M560 500 l0 -150 l-40 52 l-24 -36 l-34 52 l-26 -30 l-36 70 z" opacity=".9"/>
+  </g>
+  <path d="M0 520 q200 -40 400 0 t400 0 L800 600 L0 600 Z" fill="#064e3b" opacity=".65"/>
+  <text x="400" y="560" font-family="Georgia, serif" font-size="44" font-weight="bold" fill="#ecfdf5" text-anchor="middle">Nature</text>
+</svg>

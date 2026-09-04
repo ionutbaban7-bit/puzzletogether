@@ -1,0 +1,2937 @@
+{
+  "$schema": "./sources.schema.json",
+  "version": 1,
+  "notes": "Catalog metadata for every asset served from server/public/images. Statuses: verified = source page confirmed via Wikimedia Commons API in this session (2026-09-03); unverified = provenance could not be established (no EXIF, no reverse-image search available in sandbox); flagged = concrete compliance violation found. downloadedAt is the first repository commit date (2026-09-03) — the original download date is unknown for all assets.",
+  "entries": [
+    {
+      "asset": "/images/mona-lisa.jpg",
+      "category": "paintings",
+      "activityId": null,
+      "name": {
+        "ro": "Mona Lisa",
+        "en": "Mona Lisa"
+      },
+      "alt": {
+        "ro": "Portretul Mona Lisa de Leonardo da Vinci, pictură din sec. al XVI-lea",
+        "en": "Mona Lisa portrait by Leonardo da Vinci, 16th-century painting"
+      },
+      "creator": "Leonardo da Vinci",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Leonardo da Vinci (1452–1519), public domain",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Mona Lisa, by Leonardo da Vinci, from C2RMF retouched.jpg",
+      "focalPoint": [
+        0.5,
+        0.42
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1920,
+      "height": 2861,
+      "checksum": "sha256:276868845c54914913c965b208eec75db55c1675489e563852f155c5db58b536",
+      "fullImage": "/images/full/mona-lisa.webp",
+      "thumbnail": "/images/thumbs/mona-lisa.webp",
+      "puzzleId": "mona-lisa"
+    },
+    {
+      "asset": "/images/starry-night.jpg",
+      "category": "paintings",
+      "activityId": null,
+      "name": {
+        "ro": "Noaptea înstelată",
+        "en": "The Starry Night"
+      },
+      "alt": {
+        "ro": "Noaptea înstelată, pictură de Vincent van Gogh (1889)",
+        "en": "The Starry Night, painting by Vincent van Gogh (1889)"
+      },
+      "creator": "Vincent van Gogh",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Vincent van Gogh (1853–1890), public domain",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Van Gogh - Starry Night - Google Art Project.jpg",
+      "focalPoint": [
+        0.5,
+        0.45
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1920,
+      "height": 1520,
+      "checksum": "sha256:dbca2f16b195f6e83feb98d44c0d98eb0b39f560314efbedfedab9e45caa8a2f",
+      "fullImage": "/images/full/starry-night.webp",
+      "thumbnail": "/images/thumbs/starry-night.webp",
+      "puzzleId": "starry-night"
+    },
+    {
+      "asset": "/images/great-wave.jpg",
+      "category": "paintings",
+      "activityId": null,
+      "name": {
+        "ro": "Marea undă de la Kanagawa",
+        "en": "The Great Wave off Kanagawa"
+      },
+      "alt": {
+        "ro": "Xilogravura japoneză „Marea undă de la Kanagawa” de Katsushika Hokusai",
+        "en": "Japanese woodblock print The Great Wave off Kanagawa by Katsushika Hokusai"
+      },
+      "creator": "Katsushika Hokusai",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tsunami_by_hokusai_19th_century.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Katsushika Hokusai (1760–1849), public domain",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Tsunami by hokusai 19th century.jpg",
+      "focalPoint": [
+        0.35,
+        0.55
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1920,
+      "height": 1324,
+      "checksum": "sha256:1fe333e332097e42cb3b92223997d065432ed46f35ba4191b1adba069f9354cf",
+      "fullImage": "/images/full/great-wave.webp",
+      "thumbnail": "/images/thumbs/great-wave.webp",
+      "puzzleId": "great-wave"
+    },
+    {
+      "asset": "/images/girl-pearl-earring.jpg",
+      "category": "paintings",
+      "activityId": null,
+      "name": {
+        "ro": "Fata cu perla",
+        "en": "Girl with a Pearl Earring"
+      },
+      "alt": {
+        "ro": "„Fata cu perla”, pictură de Johannes Vermeer (cca. 1665)",
+        "en": "Girl with a Pearl Earring, painting by Johannes Vermeer (c. 1665)"
+      },
+      "creator": "Johannes Vermeer",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Girl_with_a_Pearl_Earring.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Johannes Vermeer (1632–1675), public domain",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Girl with a Pearl Earring.jpg",
+      "focalPoint": [
+        0.5,
+        0.38
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1920,
+      "height": 2248,
+      "checksum": "sha256:c77be6fcb16c70a8913d55199e7ac736f9da0d62105ca5605380370eadd5535d",
+      "fullImage": "/images/full/girl-pearl-earring.webp",
+      "thumbnail": "/images/thumbs/girl-pearl-earring.webp",
+      "puzzleId": "girl-pearl-earring"
+    },
+    {
+      "asset": "/images/sunrise.jpg",
+      "category": "paintings",
+      "activityId": null,
+      "name": {
+        "ro": "Impresie, răsărit",
+        "en": "Impression, Sunrise"
+      },
+      "alt": {
+        "ro": "„Impresie, răsărit” de Claude Monet (1872), pictură impresionistă",
+        "en": "Impression, Sunrise by Claude Monet (1872), impressionist painting"
+      },
+      "creator": "Claude Monet",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Monet_-_Impression,_Sunrise.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Claude Monet (1840–1926), public domain",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Monet - Impression, Sunrise.jpg",
+      "focalPoint": [
+        0.55,
+        0.55
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1600,
+      "height": 1245,
+      "checksum": "sha256:4ddfd849ed38c27eb8ccb47ecdfd3a329b5d41607ebc13fdb5fb721afb8df1a3",
+      "fullImage": "/images/full/sunrise.webp",
+      "thumbnail": "/images/thumbs/sunrise.webp",
+      "puzzleId": "sunrise"
+    },
+    {
+      "asset": "/images/the-kiss.jpg",
+      "category": "paintings",
+      "activityId": null,
+      "name": {
+        "ro": "Sărutul",
+        "en": "The Kiss"
+      },
+      "alt": {
+        "ro": "„Sărutul” de Gustav Klimt (1907–1908), pictură cu foiță de aur",
+        "en": "The Kiss by Gustav Klimt (1907–1908), oil and gold leaf painting"
+      },
+      "creator": "Gustav Klimt",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Gustav Klimt (1862–1918), public domain",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "The Kiss - Gustav Klimt - Google Cultural Institute.jpg",
+      "focalPoint": [
+        0.5,
+        0.4
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1400,
+      "height": 1403,
+      "checksum": "sha256:fc990e1da72cebba75883e8f6516ce7c97337e28ef372d5eee97990ccce4787e",
+      "fullImage": "/images/full/the-kiss.webp",
+      "thumbnail": "/images/thumbs/the-kiss.webp",
+      "puzzleId": "the-kiss"
+    },
+    {
+      "asset": "/images/the-scream.jpg",
+      "category": "paintings",
+      "activityId": null,
+      "name": {
+        "ro": "Strigătul",
+        "en": "The Scream"
+      },
+      "alt": {
+        "ro": "„Strigătul” de Edvard Munch (versiunea pastel, 1910)",
+        "en": "The Scream by Edvard Munch (pastel version, 1910)"
+      },
+      "creator": "Edvard Munch",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Edvard_Munch_-_The_Scream_-_Google_Art_Project.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Edvard Munch (1863–1944), public domain",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Edvard Munch - The Scream - Google Art Project.jpg",
+      "focalPoint": [
+        0.5,
+        0.45
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1400,
+      "height": 1739,
+      "checksum": "sha256:e9e881a6f9f1af4e506d722d1012fe8e78c1b25f9680a4010c4f1c78a48b9fe9",
+      "fullImage": "/images/full/the-scream.webp",
+      "thumbnail": "/images/thumbs/the-scream.webp",
+      "puzzleId": "the-scream"
+    },
+    {
+      "asset": "/images/water-lilies.jpg",
+      "category": "paintings",
+      "activityId": null,
+      "name": {
+        "ro": "Nufăruri",
+        "en": "Water Lilies"
+      },
+      "alt": {
+        "ro": "„Nufăruri” (Nymphéas) de Claude Monet, serie de picturi impresționiste",
+        "en": "Water Lilies (Nymphéas) by Claude Monet, impressionist painting series"
+      },
+      "creator": "Claude Monet",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Monet,_Claude_-_Water_Lilies_(Nymph%C3%A9as)_-_Google_Art_Project.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Claude Monet (1840–1926), public domain",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Monet, Claude - Water Lilies (Nymphéas) - Google Art Project.jpg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1500,
+      "height": 1168,
+      "checksum": "sha256:9577a337bedd678cf031fe31001d1346a7a659fffe38675ceed4dbe3f9ddae76",
+      "fullImage": "/images/full/water-lilies.webp",
+      "thumbnail": "/images/thumbs/water-lilies.webp",
+      "puzzleId": "water-lilies"
+    },
+    {
+      "asset": "/images/cafe-terrace.jpg",
+      "category": "paintings",
+      "activityId": null,
+      "name": {
+        "ro": "Terrasa cafenelei noaptea",
+        "en": "Café Terrace at Night"
+      },
+      "alt": {
+        "ro": "„Terrasa cafenelei pe Piața Forum noaptea, Arles” de Vincent van Gogh (1888)",
+        "en": "Café Terrace at Night (Place du Forum, Arles) by Vincent van Gogh (1888)"
+      },
+      "creator": "Vincent van Gogh",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vincent_Willem_van_Gogh_-_Cafe_Terrace_at_Night_(Yorck).jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Vincent van Gogh (1853–1890), public domain",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Vincent Willem van Gogh - Cafe Terrace at Night (Yorck).jpg",
+      "focalPoint": [
+        0.5,
+        0.55
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1558,
+      "height": 1920,
+      "checksum": "sha256:7d0dc475ce1d9b2d7d381f66a873742c1078deb96133db2ad93ebae7ffe22d7b",
+      "fullImage": "/images/full/cafe-terrace.webp",
+      "thumbnail": "/images/thumbs/cafe-terrace.webp",
+      "puzzleId": "cafe-terrace"
+    },
+    {
+      "asset": "/images/the-milkmaid.jpg",
+      "category": "paintings",
+      "activityId": null,
+      "name": {
+        "ro": "Fata cu cana de lapte",
+        "en": "The Milkmaid"
+      },
+      "alt": {
+        "ro": "„Fata cu cana de lapte” (Het Melkmeisje) de Johannes Vermeer (cca. 1658–1661), Rijksmuseum",
+        "en": "The Milkmaid (Het Melkmeisje) by Johannes Vermeer (c. 1658–1661), Rijksmuseum"
+      },
+      "creator": "Johannes Vermeer",
+      "sourceName": "Wikimedia Commons (Rijksmuseum)",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Johannes Vermeer (1632–1675), public domain",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Johannes Vermeer - Het melkmeisje - Google Art Project.jpg",
+      "focalPoint": [
+        0.5,
+        0.42
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1100,
+      "height": 1217,
+      "checksum": "sha256:216380d75254bc89f73cc1365fdf3fefc6ca7006504baf2902cd43a71ae63e06",
+      "fullImage": "/images/full/the-milkmaid.webp",
+      "thumbnail": "/images/thumbs/the-milkmaid.webp",
+      "puzzleId": "the-milkmaid"
+    },
+    {
+      "asset": "/images/matterhorn.jpg",
+      "category": "landscapes",
+      "activityId": null,
+      "name": {
+        "ro": "Matterhorn",
+        "en": "The Matterhorn"
+      },
+      "alt": {
+        "ro": "Vârfurile Matterhorn și Dent d'Hérens văzute de pe Domhütte, Valais",
+        "en": "Matterhorn and Dent d'Hérens seen from the Domhütte, Valais"
+      },
+      "creator": "chil (Camptocamp.org) · edited by Zander",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Matterhorn_from_Domh%C3%BCtte_-_2.jpg",
+      "license": "CC BY-SA 3.0",
+      "licenseClass": "cc-by-sa",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "attribution": "Photo: chil (Camptocamp.org) · derivative work Zander, CC BY-SA 3.0",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression; derivative of the original photo",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Matterhorn from Domhütte - 2.jpg",
+      "focalPoint": [
+        0.5,
+        0.45
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1610,
+      "height": 1073,
+      "checksum": "sha256:fa1b598f3d4b302de07f48d94dc9966060aa3ebd5468d85270a6a06961affc9a",
+      "fullImage": "/images/full/matterhorn.webp",
+      "thumbnail": "/images/thumbs/matterhorn.webp",
+      "puzzleId": "matterhorn"
+    },
+    {
+      "asset": "/images/moraine-lake.jpg",
+      "category": "landscapes",
+      "activityId": null,
+      "name": {
+        "ro": "Lacul Moraine",
+        "en": "Moraine Lake"
+      },
+      "alt": {
+        "ro": "Lacul Moraine și Valea celor Zece Vârfuri, Parkul Național Banff, Canada",
+        "en": "Moraine Lake and the Valley of the Ten Peaks, Banff National Park, Canada"
+      },
+      "creator": "Gorgo",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Moraine_Lake_17092005.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Gorgo (Wikimedia Commons)",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Moraine Lake 17092005.jpg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [
+        "license-inherited-from-legacy-catalog-not-reverified"
+      ],
+      "width": 1920,
+      "height": 1440,
+      "checksum": "sha256:bf6597c73b10c16329ae01e470d855d489b405ecd88daf45a6bf30311edc1f1c",
+      "fullImage": "/images/full/moraine-lake.webp",
+      "thumbnail": "/images/thumbs/moraine-lake.webp",
+      "puzzleId": "moraine-lake"
+    },
+    {
+      "asset": "/images/santorini.jpg",
+      "category": "landscapes",
+      "activityId": null,
+      "name": {
+        "ro": "Oia, Santorini",
+        "en": "Oia, Santorini"
+      },
+      "alt": {
+        "ro": "Vedere asupra satului Oia, insula Santorini, Grecia",
+        "en": "View over the village of Oia, Santorini island, Greece"
+      },
+      "creator": "Danbu14",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Santorini_Oia.jpg",
+      "license": "CC BY-SA 3.0",
+      "licenseClass": "cc-by-sa",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "attribution": "Danbu14, CC BY-SA 3.0",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Santorini Oia.jpg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1920,
+      "height": 1444,
+      "checksum": "sha256:53bb7cf0802013d8c6799314a8f2a57146beb3aca913128f865e9f591840fec1",
+      "fullImage": "/images/full/santorini.webp",
+      "thumbnail": "/images/thumbs/santorini.webp",
+      "puzzleId": "santorini"
+    },
+    {
+      "asset": "/images/eiffel-tower.jpg",
+      "category": "landmarks",
+      "activityId": null,
+      "name": {
+        "ro": "Turnul Eiffel",
+        "en": "Eiffel Tower"
+      },
+      "alt": {
+        "ro": "Turnul Eiffel văzut de la nord-est, Paris, Franța",
+        "en": "The Eiffel Tower seen from the north-east, Paris, France"
+      },
+      "creator": "Benh LIEU SONG",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tour_Eiffel_Wikimedia_Commons.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Benh LIEU SONG (Wikimedia Commons)",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Tour Eiffel Wikimedia Commons.jpg",
+      "focalPoint": [
+        0.5,
+        0.4
+      ],
+      "status": "verified",
+      "issues": [
+        "license-inherited-from-legacy-catalog-not-reverified"
+      ],
+      "width": 1920,
+      "height": 3553,
+      "checksum": "sha256:5511b3d01068956af15fae8d173fdd3ea1b054b651c4866e9e3c9a1c81e93c3b",
+      "fullImage": "/images/full/eiffel-tower.webp",
+      "thumbnail": "/images/thumbs/eiffel-tower.webp",
+      "puzzleId": "eiffel-tower"
+    },
+    {
+      "asset": "/images/machu-picchu.jpg",
+      "category": "landmarks",
+      "activityId": null,
+      "name": {
+        "ro": "Machu Picchu",
+        "en": "Machu Picchu"
+      },
+      "alt": {
+        "ro": "Situl arheologic incaș Machu Picchu, Peru",
+        "en": "Machu Picchu Inca archaeological site, Peru"
+      },
+      "creator": "Martin St-Amant",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:99_-_Machu_Picchu_-_Juin_2009.edit3.jpg",
+      "license": "CC BY-SA 3.0",
+      "licenseClass": "cc-by-sa",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "attribution": "Martin St-Amant, CC BY-SA 3.0",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression; derivative of the original photo",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "99 - Machu Picchu - Juin 2009.edit3.jpg",
+      "focalPoint": [
+        0.5,
+        0.55
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1920,
+      "height": 1874,
+      "checksum": "sha256:1574dab26d407dddf1b7e52cde228041b14e8bd484ef573b8fcb865d42012a8d",
+      "fullImage": "/images/full/machu-picchu.webp",
+      "thumbnail": "/images/thumbs/machu-picchu.webp",
+      "puzzleId": "machu-picchu"
+    },
+    {
+      "asset": "/images/taj-mahal.jpg",
+      "category": "landmarks",
+      "activityId": null,
+      "name": {
+        "ro": "Taj Mahal",
+        "en": "Taj Mahal"
+      },
+      "alt": {
+        "ro": "Mauzoleul Taj Mahal din Agra, India",
+        "en": "Taj Mahal mausoleum, Agra, India"
+      },
+      "creator": "Yann",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Taj_Mahal,_Agra,_India_edit2.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseClass": "cc-by-sa",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "attribution": "Yann, CC BY-SA 4.0",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression; edited version of the original photo",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Taj Mahal, Agra, India edit2.jpg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1920,
+      "height": 1262,
+      "checksum": "sha256:0cad4c3a711575b76e72480f1d6de358ee3e2f940a2201baaa02725ab1574e13",
+      "fullImage": "/images/full/taj-mahal.webp",
+      "thumbnail": "/images/thumbs/taj-mahal.webp",
+      "puzzleId": "taj-mahal"
+    },
+    {
+      "asset": "/images/colosseum.jpg",
+      "category": "landmarks",
+      "activityId": null,
+      "name": {
+        "ro": "Coloseul",
+        "en": "The Colosseum"
+      },
+      "alt": {
+        "ro": "Amfiteatrul Flavian (Coloseul), Roma, Italia",
+        "en": "The Flavian Amphitheatre (Colosseum), Rome, Italy"
+      },
+      "creator": "FeaturedPics",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Colosseo_2020.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseClass": "cc-by-sa",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "attribution": "FeaturedPics, CC BY-SA 4.0",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Colosseo 2020.jpg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1920,
+      "height": 1345,
+      "checksum": "sha256:e2556474b9eaf380ecb969d5117423e9eed2db01a207f39092a6692b58ec2f77",
+      "fullImage": "/images/full/colosseum.webp",
+      "thumbnail": "/images/thumbs/colosseum.webp",
+      "puzzleId": "colosseum"
+    },
+    {
+      "asset": "/images/statue-of-liberty.jpg",
+      "category": "landmarks",
+      "activityId": null,
+      "name": {
+        "ro": "Statuia Libertății",
+        "en": "Statue of Liberty"
+      },
+      "alt": {
+        "ro": "Statuia Libertății de pe insula Liberty, New York, SUA",
+        "en": "Statue of Liberty on Liberty Island, New York, USA"
+      },
+      "creator": "Elcobbola",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Statue_of_Liberty_7.jpg",
+      "license": "CC BY-SA 3.0",
+      "licenseClass": "cc-by-sa",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "attribution": "Elcobbola, CC BY-SA 3.0",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Statue of Liberty 7.jpg",
+      "focalPoint": [
+        0.5,
+        0.35
+      ],
+      "status": "verified",
+      "issues": [
+        "license-corrected-from-legacy-catalog:was-PD-is-CC-BY-SA-3.0"
+      ],
+      "width": 1464,
+      "height": 2022,
+      "checksum": "sha256:e0d1094223b034694172b7b727d2ba8923f2cd7d1196e2438d4a63ed9c06360e",
+      "fullImage": "/images/full/statue-of-liberty.webp",
+      "thumbnail": "/images/thumbs/statue-of-liberty.webp",
+      "puzzleId": "statue-of-liberty"
+    },
+    {
+      "asset": "/images/vatican.jpg",
+      "category": "landmarks",
+      "activityId": null,
+      "name": {
+        "ro": "Piazza San Pietro",
+        "en": "St. Peter's Square"
+      },
+      "alt": {
+        "ro": "Piazza San Pietro, Vatican, Roma, Italia",
+        "en": "St. Peter's Square, Vatican City, Rome, Italy"
+      },
+      "creator": "Diliff",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:St_Peter%27s_Square,_Vatican_City_-_April_2007.jpg",
+      "license": "CC BY-SA 3.0",
+      "licenseClass": "cc-by-sa",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "attribution": "Diliff, CC BY-SA 3.0",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "St Peter's Square, Vatican City - April 2007.jpg",
+      "focalPoint": [
+        0.5,
+        0.45
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1920,
+      "height": 1078,
+      "checksum": "sha256:54286c6400d8cd03548ca41a7d881d3918120bc80828002065f4ccefcf51833d",
+      "fullImage": "/images/full/vatican.webp",
+      "thumbnail": "/images/thumbs/vatican.webp",
+      "puzzleId": "vatican"
+    },
+    {
+      "asset": "/images/aurora.jpg",
+      "category": "nature",
+      "activityId": null,
+      "name": {
+        "ro": "Aurorele polare",
+        "en": "Aurora Borealis"
+      },
+      "alt": {
+        "ro": "Aurorele boreale deasupra Bear Lake, Alaska, SUA",
+        "en": "Aurora borealis above Bear Lake, Alaska, USA"
+      },
+      "creator": "U.S. Air Force (Senior Airman Joshua Strang)",
+      "sourceName": "Wikimedia Commons (USAF photo, 18 January 2005)",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Aurora_Borealis_Alaska.jpg",
+      "license": "Public domain (U.S. federal government work)",
+      "licenseClass": "pd",
+      "licenseUrl": "https://en.wikipedia.org/wiki/United_states_federal_government_copyright",
+      "attribution": "U.S. Air Force photo by Senior Airman Joshua Strang, public domain",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Aurora Borealis Alaska.jpg",
+      "focalPoint": [
+        0.5,
+        0.4
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1920,
+      "height": 1251,
+      "checksum": "sha256:919e09dd35d15842a97798237004e15c933816ea540e0aabe4b224b45ed310b9",
+      "fullImage": "/images/full/aurora.webp",
+      "thumbnail": "/images/thumbs/aurora.webp",
+      "puzzleId": "aurora"
+    },
+    {
+      "asset": "/images/flower.jpg",
+      "category": "nature",
+      "activityId": null,
+      "name": {
+        "ro": "Lalea înflorită",
+        "en": "Tulip in Bloom"
+      },
+      "alt": {
+        "ro": "Lalea Tulipa clusiana „Lady Jane” înflorită, grădina Chanticleer",
+        "en": "Tulip Tulipa clusiana 'Lady Jane' in bloom, Chanticleer Garden"
+      },
+      "creator": "Derek Ramsey (Ram-Man) · co-attribution: Chanticleer Garden",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tulip_Tulipa_clusiana_%27Lady_Jane%27_Rock_Ledge_Flower_Edit_2000px.jpg",
+      "license": "CC BY-SA 3.0",
+      "licenseClass": "cc-by-sa",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "attribution": "Photo by and (c)2007 Derek Ramsey (Ram-Man); co-attribution to Chanticleer Garden required, CC BY-SA 3.0",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Tulip Tulipa clusiana 'Lady Jane' Rock Ledge Flower Edit 2000px.jpg",
+      "focalPoint": [
+        0.5,
+        0.4
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1920,
+      "height": 1920,
+      "checksum": "sha256:516313c1fd00c2e0270b17684addddc1e338f0e96eef987b1b193868093ec52e",
+      "fullImage": "/images/full/flower.webp",
+      "thumbnail": "/images/thumbs/flower.webp",
+      "puzzleId": "flower"
+    },
+    {
+      "asset": "/images/waterfall.jpg",
+      "category": "nature",
+      "activityId": null,
+      "name": {
+        "ro": "Cascada Beauchamp",
+        "en": "Beauchamp Falls"
+      },
+      "alt": {
+        "ro": "Cascada Beauchamp, pădure de fag, Parkul Național Great Otway, Victoria, Australia",
+        "en": "Beauchamp Falls in a beech forest, Great Otway National Park, Victoria, Australia"
+      },
+      "creator": "Dietmar Rabich",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Beech_Forest_(AU),_Great_Otway_National_Park,_Beauchamp_Falls_--_2019_--_1271.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseClass": "cc-by-sa",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "attribution": "Dietmar Rabich, CC BY-SA 4.0",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Beech Forest (AU), Great Otway National Park, Beauchamp Falls -- 2019 -- 1271.jpg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1920,
+      "height": 1280,
+      "checksum": "sha256:99681905dd160bc7bda29c1615c2703add79cb5177a4b2768889a23332571ce7",
+      "fullImage": "/images/full/waterfall.webp",
+      "thumbnail": "/images/thumbs/waterfall.webp",
+      "puzzleId": "waterfall"
+    },
+    {
+      "asset": "/images/golden-gate.jpg",
+      "category": "cities",
+      "activityId": null,
+      "name": {
+        "ro": "Podul Golden Gate",
+        "en": "Golden Gate Bridge"
+      },
+      "alt": {
+        "ro": "Podul Golden Gate văzut de pe plaja Marshall, San Francisco, California",
+        "en": "Golden Gate Bridge seen from Marshall's Beach, San Francisco, California"
+      },
+      "creator": "Frank Schulenburg",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Golden_Gate_Bridge_as_seen_from_Marshall%E2%80%99s_Beach,_March_2018.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseClass": "cc-by-sa",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "attribution": "Frank Schulenburg, CC BY-SA 4.0",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Golden Gate Bridge as seen from Marshall's Beach, March 2018.jpg",
+      "focalPoint": [
+        0.5,
+        0.45
+      ],
+      "status": "verified",
+      "issues": [],
+      "width": 1920,
+      "height": 1200,
+      "checksum": "sha256:f4fdbbc52a751e2a459f1612f0d9fb39ae660ff40eadfe53b5ae3ce7922e24c1",
+      "fullImage": "/images/full/golden-gate.webp",
+      "thumbnail": "/images/thumbs/golden-gate.webp",
+      "puzzleId": "golden-gate"
+    },
+    {
+      "asset": "/images/paris-louvre.jpg",
+      "category": "cities",
+      "activityId": null,
+      "name": {
+        "ro": "Muzeul Luvru, Paris",
+        "en": "The Louvre, Paris"
+      },
+      "alt": {
+        "ro": "Curtea Muzeului Luvru cu piramida sa de sticlă, Paris, Franța",
+        "en": "Courtyard of the Louvre Museum with its glass pyramid, Paris, France"
+      },
+      "creator": "Benh LIEU SONG",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Louvre_Museum_Wikimedia_Commons.jpg",
+      "license": "CC BY-SA 3.0",
+      "licenseClass": "cc-by-sa",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "attribution": "Benh LIEU SONG, CC BY-SA 3.0",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Louvre Museum Wikimedia Commons.jpg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [
+        "license-inherited-from-legacy-catalog-not-reverified"
+      ],
+      "width": 1920,
+      "height": 807,
+      "checksum": "sha256:7f02eafdd46cb51d9d547aee180fab6bb502b11fd09a1ec1867e9b3785033db3",
+      "fullImage": "/images/full/paris-louvre.webp",
+      "thumbnail": "/images/thumbs/paris-louvre.webp",
+      "puzzleId": "paris-louvre"
+    },
+    {
+      "asset": "/images/venice.jpg",
+      "category": "cities",
+      "activityId": null,
+      "name": {
+        "ro": "Veneția în zori",
+        "en": "Venice at Dawn"
+      },
+      "alt": {
+        "ro": "Piața San Marco în zori, Veneția, Italia",
+        "en": "Piazza San Marco at dawn, Venice, Italy"
+      },
+      "creator": "Benh LIEU SONG",
+      "sourceName": "Wikimedia Commons (Flickr transfer)",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Piazza_San_Marco_at_Dawn,_Venice_(21358879396).jpg",
+      "license": "CC BY-SA 2.0",
+      "licenseClass": "cc-by-sa",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+      "attribution": "Benh LIEU SONG (Flickr 75729488@N03), CC BY-SA 2.0",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Piazza San Marco at Dawn, Venice (21358879396).jpg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [
+        "license-corrected-from-legacy-catalog:was-CC-BY-SA-4.0-is-CC-BY-SA-2.0"
+      ],
+      "width": 1920,
+      "height": 2880,
+      "checksum": "sha256:03a9d441e08f3b479138c26d59a7c6b8a2cfea14a6813bfa4d1f235ae46aa8b2",
+      "fullImage": "/images/full/venice.webp",
+      "thumbnail": "/images/thumbs/venice.webp",
+      "puzzleId": "venice"
+    },
+    {
+      "asset": "/images/tokyo.jpg",
+      "category": "cities",
+      "activityId": null,
+      "name": {
+        "ro": "Turnurile din Tokyo",
+        "en": "Tokyo Skyscrapers"
+      },
+      "alt": {
+        "ro": "Turnurile din Shinjuku, Tokyo, Japonia (ianuarie 2009)",
+        "en": "Shinjuku skyscrapers, Tokyo, Japan (January 2009)"
+      },
+      "creator": "Morio",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Skyscrapers_of_Shinjuku_2009_January.jpg",
+      "license": "CC BY-SA 3.0",
+      "licenseClass": "cc-by-sa",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "attribution": "Morio, CC BY-SA 3.0",
+      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "Skyscrapers of Shinjuku 2009 January.jpg",
+      "focalPoint": [
+        0.5,
+        0.55
+      ],
+      "status": "verified",
+      "issues": [
+        "license-inherited-from-legacy-catalog-not-reverified"
+      ],
+      "width": 1920,
+      "height": 1023,
+      "checksum": "sha256:6da68518f374f6700461a925730ccfbbacf27e9da89b55970495d9272e2c8831",
+      "fullImage": "/images/full/tokyo.webp",
+      "thumbnail": "/images/thumbs/tokyo.webp",
+      "puzzleId": "tokyo"
+    },
+    {
+      "asset": "/images/words-agile.svg",
+      "category": "letter-canvas",
+      "activityId": null,
+      "name": {
+        "ro": "Foaie de litere — Valori Agile",
+        "en": "Letter Canvas — Agile Values"
+      },
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de litere „Valori Agile”",
+        "en": "Original SVG cover for the Agile Values letter canvas"
+      },
+      "creator": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "All rights reserved — in-house work",
+      "licenseClass": "in-house",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "attribution": "PuzzleTogether B2B Studio",
+      "changesMade": "none",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "words-agile.svg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "checksum": "sha256:247bcecd17bae9303f84f7b630bc24463428acbf953973d2cde5e849bdec8f4e",
+      "thumbnail": "/images/words-agile.svg",
+      "fullImage": "/images/words-agile.svg",
+      "puzzleId": "agile-words",
+      "width": 1200,
+      "height": 800
+    },
+    {
+      "asset": "/images/words-innovation.svg",
+      "category": "letter-canvas",
+      "activityId": null,
+      "name": {
+        "ro": "Foaie de litere — Inovație",
+        "en": "Letter Canvas — Innovation"
+      },
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de litere „Inovație”",
+        "en": "Original SVG cover for the Innovation letter canvas"
+      },
+      "creator": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "All rights reserved — in-house work",
+      "licenseClass": "in-house",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "attribution": "PuzzleTogether B2B Studio",
+      "changesMade": "none",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "words-innovation.svg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "checksum": "sha256:aa68d4f60e4e5dbff3113883d781b7fdf5c906591b188ce2bc5f2513f25ecba2",
+      "thumbnail": "/images/words-innovation.svg",
+      "fullImage": "/images/words-innovation.svg",
+      "puzzleId": "innovation-grid",
+      "width": 1200,
+      "height": 800
+    },
+    {
+      "asset": "/images/words-scrabble.svg",
+      "category": "letter-canvas",
+      "activityId": null,
+      "name": {
+        "ro": "Foaie de litere — Multicolor",
+        "en": "Letter Canvas — Multicolor"
+      },
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de litere „Multicolor”",
+        "en": "Original SVG cover for the Multicolor letter canvas"
+      },
+      "creator": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "All rights reserved — in-house work",
+      "licenseClass": "in-house",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "attribution": "PuzzleTogether B2B Studio",
+      "changesMade": "none",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "words-scrabble.svg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "checksum": "sha256:b35c5360bf3bb0637f58c40fd6f8c64c32a9b9c6ba25bf6bee6350ee39f04966",
+      "thumbnail": "/images/words-scrabble.svg",
+      "fullImage": "/images/words-scrabble.svg",
+      "puzzleId": "letter-anagrams",
+      "width": 1200,
+      "height": 800
+    },
+    {
+      "asset": "/images/words-motto.svg",
+      "category": "letter-canvas",
+      "activityId": null,
+      "name": {
+        "ro": "Foaie de litere — Deviza Echipii",
+        "en": "Letter Canvas — Team Values"
+      },
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de litere „Deviza Echipii”",
+        "en": "Original SVG cover for the Team Values letter canvas"
+      },
+      "creator": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "All rights reserved — in-house work",
+      "licenseClass": "in-house",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "attribution": "PuzzleTogether B2B Studio",
+      "changesMade": "none",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "words-motto.svg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "checksum": "sha256:211a466b04dc7cac0fbf239643ddf11f66cae0fb3ad5c8958148ea8af5863f89",
+      "thumbnail": "/images/words-motto.svg",
+      "fullImage": "/images/words-motto.svg",
+      "puzzleId": "team-motto",
+      "width": 1200,
+      "height": 800
+    },
+    {
+      "asset": "/images/sentence-funny-story.svg",
+      "category": "sentence-canvas",
+      "activityId": null,
+      "name": {
+        "ro": "Foaie de propoziții — Povestea amuzantă",
+        "en": "Sentence Canvas — Funny Story"
+      },
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de propoziții „Povestea amuzantă”",
+        "en": "Original SVG cover for the Funny Story sentence canvas"
+      },
+      "creator": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "All rights reserved — in-house work",
+      "licenseClass": "in-house",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "attribution": "PuzzleTogether B2B Studio",
+      "changesMade": "none",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "sentence-funny-story.svg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "checksum": "sha256:5dc26ca6cd10bd81a1998b5e8bb1d84180466454ea408fcf2cecf1f56326e9ce",
+      "thumbnail": "/images/sentence-funny-story.svg",
+      "fullImage": "/images/sentence-funny-story.svg",
+      "puzzleId": "sentence-funny-story",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "asset": "/images/sentence-travel.svg",
+      "category": "sentence-canvas",
+      "activityId": null,
+      "name": {
+        "ro": "Foaie de propoziții — Călătorie",
+        "en": "Sentence Canvas — Travel"
+      },
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de propoziții „Călătorie”",
+        "en": "Original SVG cover for the Travel sentence canvas"
+      },
+      "creator": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "All rights reserved — in-house work",
+      "licenseClass": "in-house",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "attribution": "PuzzleTogether B2B Studio",
+      "changesMade": "none",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "sentence-travel.svg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "checksum": "sha256:bdf2a77b629a5c54b6555e0b008b6998fe72f4279ad5b2ac28be2e913e4aae9b",
+      "thumbnail": "/images/sentence-travel.svg",
+      "fullImage": "/images/sentence-travel.svg",
+      "puzzleId": "sentence-travel",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "asset": "/images/sentence-nature.svg",
+      "category": "sentence-canvas",
+      "activityId": null,
+      "name": {
+        "ro": "Foaie de propoziții — Natura",
+        "en": "Sentence Canvas — Nature"
+      },
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de propoziții „Natura”",
+        "en": "Original SVG cover for the Nature sentence canvas"
+      },
+      "creator": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "All rights reserved — in-house work",
+      "licenseClass": "in-house",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "attribution": "PuzzleTogether B2B Studio",
+      "changesMade": "none",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "sentence-nature.svg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "checksum": "sha256:9e3b1532bcc4568222fb1cfa68203ec3376210662cc8ff0e49c594ed266c958c",
+      "thumbnail": "/images/sentence-nature.svg",
+      "fullImage": "/images/sentence-nature.svg",
+      "puzzleId": "sentence-nature",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "asset": "/images/sentence-future.svg",
+      "category": "sentence-canvas",
+      "activityId": null,
+      "name": {
+        "ro": "Foaie de propoziții — Viitorul",
+        "en": "Sentence Canvas — Future"
+      },
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de propoziții „Viitorul”",
+        "en": "Original SVG cover for the Future sentence canvas"
+      },
+      "creator": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "All rights reserved — in-house work",
+      "licenseClass": "in-house",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "attribution": "PuzzleTogether B2B Studio",
+      "changesMade": "none",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "sentence-future.svg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "checksum": "sha256:eda907af65acdad5cdc7b53872eecc5d929e9bdfa49d7943a5f883b7d2fbb165",
+      "thumbnail": "/images/sentence-future.svg",
+      "fullImage": "/images/sentence-future.svg",
+      "puzzleId": "sentence-future",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "asset": "/images/sentence-positive-message.svg",
+      "category": "sentence-canvas",
+      "activityId": null,
+      "name": {
+        "ro": "Foaie de propoziții — Mesaj pozitiv",
+        "en": "Sentence Canvas — Positive Message"
+      },
+      "alt": {
+        "ro": "Copertă SVG originală pentru canvasul de propoziții „Mesaj pozitiv”",
+        "en": "Original SVG cover for the Positive Message sentence canvas"
+      },
+      "creator": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "All rights reserved — in-house work",
+      "licenseClass": "in-house",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "attribution": "PuzzleTogether B2B Studio",
+      "changesMade": "none",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "sentence-positive-message.svg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "checksum": "sha256:5c567e98ab2bea0b79cc9253c3195108d4de83be050f36cf1074ff80ecb21c24",
+      "thumbnail": "/images/sentence-positive-message.svg",
+      "fullImage": "/images/sentence-positive-message.svg",
+      "puzzleId": "sentence-positive-message",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "asset": "/images/coaching/himalaya.svg",
+      "category": "coaching",
+      "activityId": "himalaya-expedition",
+      "name": {
+        "ro": "Expediția Himalayană",
+        "en": "The Himalayan Expedition"
+      },
+      "alt": {
+        "ro": "Copertă SVG originală pentru exercițiul de coaching „Expediția Himalayană”",
+        "en": "Original SVG cover for the The Himalayan Expedition coaching activity"
+      },
+      "creator": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "All rights reserved — in-house work",
+      "licenseClass": "in-house",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "attribution": "PuzzleTogether B2B Studio",
+      "changesMade": "none",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "himalaya.svg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "checksum": "sha256:6f5aba290d980308bf798a6d66c635fae1c1d1be09b6728c23ebecfe2da8929d",
+      "thumbnail": "/images/coaching/himalaya.svg",
+      "fullImage": "/images/coaching/himalaya.svg",
+      "puzzleId": null,
+      "width": 800,
+      "height": 600
+    },
+    {
+      "asset": "/images/coaching/ocean.svg",
+      "category": "coaching",
+      "activityId": "ocean-survival",
+      "name": {
+        "ro": "Naufragiu în Pacific",
+        "en": "Lost in the Pacific"
+      },
+      "alt": {
+        "ro": "Copertă SVG originală pentru exercițiul de coaching „Naufragiu în Pacific”",
+        "en": "Original SVG cover for the Lost in the Pacific coaching activity"
+      },
+      "creator": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "All rights reserved — in-house work",
+      "licenseClass": "in-house",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "attribution": "PuzzleTogether B2B Studio",
+      "changesMade": "none",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "ocean.svg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "checksum": "sha256:1eec552ed837bd20658d8b46d3e9410f93cabc559ec94cf6f3c4d731ce37d6b3",
+      "thumbnail": "/images/coaching/ocean.svg",
+      "fullImage": "/images/coaching/ocean.svg",
+      "puzzleId": null,
+      "width": 800,
+      "height": 600
+    },
+    {
+      "asset": "/images/coaching/moon.svg",
+      "category": "coaching",
+      "activityId": "moon-mission",
+      "name": {
+        "ro": "Misiunea pe Lună",
+        "en": "The Moon Mission"
+      },
+      "alt": {
+        "ro": "Copertă SVG originală pentru exercițiul de coaching „Misiunea pe Lună”",
+        "en": "Original SVG cover for the The Moon Mission coaching activity"
+      },
+      "creator": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "All rights reserved — in-house work",
+      "licenseClass": "in-house",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "attribution": "PuzzleTogether B2B Studio",
+      "changesMade": "none",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "moon.svg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "checksum": "sha256:18bcf1c48ab85d9845a1c72c57a3a494652d99138d94bdb9d3eedf0fa34467de",
+      "thumbnail": "/images/coaching/moon.svg",
+      "fullImage": "/images/coaching/moon.svg",
+      "puzzleId": null,
+      "width": 800,
+      "height": 600
+    },
+    {
+      "asset": "/images/coaching/compass.svg",
+      "category": "coaching",
+      "activityId": "team-compass",
+      "name": {
+        "ro": "Busola Echipei",
+        "en": "The Team Compass"
+      },
+      "alt": {
+        "ro": "Copertă SVG originală pentru exercițiul de coaching „Busola Echipei”",
+        "en": "Original SVG cover for the The Team Compass coaching activity"
+      },
+      "creator": "PuzzleTogether B2B Studio",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "All rights reserved — in-house work",
+      "licenseClass": "in-house",
+      "licenseUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "attribution": "PuzzleTogether B2B Studio",
+      "changesMade": "none",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "compass.svg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "checksum": "sha256:6e2da778f15a926c1b5ce105ea5f40f82aa8f774e964937aa6ed1a5bac9a0851",
+      "thumbnail": "/images/coaching/compass.svg",
+      "fullImage": "/images/coaching/compass.svg",
+      "puzzleId": null,
+      "width": 800,
+      "height": 600
+    },
+    {
+      "asset": "/images/aurora-abstraction.jpg",
+      "category": "paintings",
+      "activityId": null,
+      "puzzleId": "aurora-abstraction",
+      "name": {
+        "ro": "Abstracție aurorală",
+        "en": "Aurora Abstraction"
+      },
+      "alt": {
+        "ro": "Pictură abstractă cu panglici de lumină în albastru, roz și violet.",
+        "en": "Abstract painting with ribbons of blue, pink, and purple light."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "aurora-abstraction.png (original source; archived as aurora-abstraction.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:12e7d0d0c9f61a29ba9eb5c95f232fc134abf04445fa005be805305aa166dcd9",
+        "originalInputFilename": "aurora-abstraction.png",
+        "prompt": "Original high-detail contemporary aurora oil painting, azure hot pink purple ribbon texture, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/aurora-abstraction.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:cfb9ec4c6f529cf9bf4ca62aa81ee546f52916b386cb4c019237be1bd61e1034",
+      "fullImage": "/images/full/aurora-abstraction.webp",
+      "thumbnail": "/images/thumbs/aurora-abstraction.webp"
+    },
+    {
+      "asset": "/images/carpathian-folk-painting.jpg",
+      "category": "paintings",
+      "activityId": null,
+      "puzzleId": "carpathian-folk-painting",
+      "name": {
+        "ro": "Coline carpatine",
+        "en": "Carpathian Hills"
+      },
+      "alt": {
+        "ro": "Pictură cu coline, câmpuri și munți carpatini.",
+        "en": "Painting of Carpathian hills, fields, and mountains."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "carpathian-folk-painting.png (original source; archived as carpathian-folk-painting.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:5903a431b5492c56281f7aadf8d95a0f3731b81bf64aea6dbaf78c123cf20eb4",
+        "originalInputFilename": "carpathian-folk-painting.png",
+        "prompt": "Original high-detail Carpathian folk-art landscape painting, patchwork hills and wildflowers, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/carpathian-folk-painting.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:b025217aec634291f081dc299d34fd70e2aeb3f700745296ec3e54b96892d679",
+      "fullImage": "/images/full/carpathian-folk-painting.webp",
+      "thumbnail": "/images/thumbs/carpathian-folk-painting.webp"
+    },
+    {
+      "asset": "/images/botanical-mosaic-painting.jpg",
+      "category": "paintings",
+      "activityId": null,
+      "puzzleId": "botanical-mosaic-painting",
+      "name": {
+        "ro": "Mozaic botanic",
+        "en": "Botanical Mosaic"
+      },
+      "alt": {
+        "ro": "Pictură densă cu frunze, flori și forme botanice.",
+        "en": "Dense painting of leaves, flowers, and botanical forms."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "botanical-mosaic-painting.png (original source; archived as botanical-mosaic-painting.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:f796953c8b682becbbfb45b5e557643f615acbbea5fd0b8a40ed29e500422a1c",
+        "originalInputFilename": "botanical-mosaic-painting.png",
+        "prompt": "Original high-detail lush botanical mosaic painting with detailed leaves and flowers, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/botanical-mosaic-painting.jpg (quality-95 archival derivative)"
+      },
+      "width": 1376,
+      "height": 768,
+      "checksum": "sha256:093225e20881cb0d06ff4d0ed8fd68078a8935dddc64e16d79fdb4652d26b17c",
+      "fullImage": "/images/full/botanical-mosaic-painting.webp",
+      "thumbnail": "/images/thumbs/botanical-mosaic-painting.webp"
+    },
+    {
+      "asset": "/images/coastal-color-study.jpg",
+      "category": "paintings",
+      "activityId": null,
+      "puzzleId": "coastal-color-study",
+      "name": {
+        "ro": "Studiu de coastă",
+        "en": "Coastal Colour Study"
+      },
+      "alt": {
+        "ro": "Pictură impresionistă cu mare, stânci și apus.",
+        "en": "Impressionist painting of sea, rocks, and sunset."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "coastal-color-study.png (original source; archived as coastal-color-study.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:639592140e5b1128487318b345feee8d4e8351691081ea35312a3bfb4d4fb3a9",
+        "originalInputFilename": "coastal-color-study.png",
+        "prompt": "Original high-detail impressionist rocky coast at sunset, turquoise and violet brushwork, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/coastal-color-study.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:efa804bd24c0274757249ac67581f8adb74461d3ebda003ff5533e1d84b770d3",
+      "fullImage": "/images/full/coastal-color-study.webp",
+      "thumbnail": "/images/thumbs/coastal-color-study.webp"
+    },
+    {
+      "asset": "/images/night-garden-painting.jpg",
+      "category": "paintings",
+      "activityId": null,
+      "puzzleId": "night-garden-painting",
+      "name": {
+        "ro": "Grădină de noapte",
+        "en": "Night Garden"
+      },
+      "alt": {
+        "ro": "Pictură nocturnă cu flori luminoase și frunziș indigo.",
+        "en": "Night painting with luminous flowers and indigo foliage."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "night-garden-painting.png (original source; archived as night-garden-painting.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:4badb9e50486c4151db2a2f74dd2700227754156d6fcec07cda0f2a030390228",
+        "originalInputFilename": "night-garden-painting.png",
+        "prompt": "Original high-detail luminous moonlit garden painting, indigo foliage and bright flowers, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/night-garden-painting.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:62c2669ef470a7571b1ee21f39618f6e3a28bf92ea15d7750be4ac5b9c92af07",
+      "fullImage": "/images/full/night-garden-painting.webp",
+      "thumbnail": "/images/thumbs/night-garden-painting.webp"
+    },
+    {
+      "asset": "/images/fagaras-sunrise.jpg",
+      "category": "landscapes",
+      "activityId": null,
+      "puzzleId": "fagaras-sunrise",
+      "name": {
+        "ro": "Răsărit în Făgăraș",
+        "en": "Făgăraș Sunrise"
+      },
+      "alt": {
+        "ro": "Răsărit peste Munții Făgăraș, România.",
+        "en": "Sunrise over the Făgăraș Mountains, Romania."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "fagaras-sunrise.png (original source; archived as fagaras-sunrise.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:1da35ef4ac9f881f8c55a4cb12328c11f287be2d1aa1e30d2d8d15c1b0de43ed",
+        "originalInputFilename": "fagaras-sunrise.png",
+        "prompt": "Original high-detail Făgăraș Mountains sunrise, alpine river and wildflower meadow, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/fagaras-sunrise.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:ecbaefbf12317bb6dd7b68953c8089c9d5ac9a549f30a05fce737081447d7222",
+      "fullImage": "/images/full/fagaras-sunrise.webp",
+      "thumbnail": "/images/thumbs/fagaras-sunrise.webp"
+    },
+    {
+      "asset": "/images/danube-delta-mist.jpg",
+      "category": "landscapes",
+      "activityId": null,
+      "puzzleId": "danube-delta-mist",
+      "name": {
+        "ro": "Ceață în Delta Dunării",
+        "en": "Danube Delta Mist"
+      },
+      "alt": {
+        "ro": "Canale și stuf în Delta Dunării, România, la răsărit.",
+        "en": "Channels and reeds in Romania's Danube Delta at dawn."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "danube-delta-mist.png (original source; archived as danube-delta-mist.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:87961313461d1db3f7fd30dbbc89ea2c65df811bc28cbd281b3a0c307282cc6f",
+        "originalInputFilename": "danube-delta-mist.png",
+        "prompt": "Original high-detail Danube Delta dawn mist, reeds and reflective channels, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/danube-delta-mist.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:9653384eec76ac5ddbe79998c93daca2d5f1aa50f3322ab465bc0ea0d7fbeb40",
+      "fullImage": "/images/full/danube-delta-mist.webp",
+      "thumbnail": "/images/thumbs/danube-delta-mist.webp"
+    },
+    {
+      "asset": "/images/apuseni-karst.jpg",
+      "category": "landscapes",
+      "activityId": null,
+      "puzzleId": "apuseni-karst",
+      "name": {
+        "ro": "Carst în Apuseni",
+        "en": "Apuseni Karst"
+      },
+      "alt": {
+        "ro": "Stânci calcaroase și pădure în Munții Apuseni, România.",
+        "en": "Limestone cliffs and forest in Romania's Apuseni Mountains."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "apuseni-karst.png (original source; archived as apuseni-karst.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:b776d314b1d963ac9a4fd50bb805ee1c1ba26ca85c6f4d06f94ed5481cb596e1",
+        "originalInputFilename": "apuseni-karst.png",
+        "prompt": "Original high-detail Apuseni Mountains karst cliffs, beech forest, clear stream, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/apuseni-karst.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:8fbe68b6b00023b316179f5d5e148fba28fc8ab72094ae079ecc53a70e1b61aa",
+      "fullImage": "/images/full/apuseni-karst.webp",
+      "thumbnail": "/images/thumbs/apuseni-karst.webp"
+    },
+    {
+      "asset": "/images/transfagarasan-autumn.jpg",
+      "category": "landscapes",
+      "activityId": null,
+      "puzzleId": "transfagarasan-autumn",
+      "name": {
+        "ro": "Transfăgărășan de toamnă",
+        "en": "Transfăgărășan in Autumn"
+      },
+      "alt": {
+        "ro": "Drum montan prin pădure de toamnă, România.",
+        "en": "Mountain road through autumn forest, Romania."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "transfagarasan-autumn.png (original source; archived as transfagarasan-autumn.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:49159f3dc008fd77f0a3d4f170f8649e172d82ba1908c78aa3846cdf7d3ef453",
+        "originalInputFilename": "transfagarasan-autumn.png",
+        "prompt": "Original high-detail Transfăgărășan winding road, autumn forest and alpine lake, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/transfagarasan-autumn.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:8797fe2836d1597fbeb0cd53796a61bca978cb7fcb5acf3f1574df0d67906954",
+      "fullImage": "/images/full/transfagarasan-autumn.webp",
+      "thumbnail": "/images/thumbs/transfagarasan-autumn.webp"
+    },
+    {
+      "asset": "/images/rila-lake.jpg",
+      "category": "landscapes",
+      "activityId": null,
+      "puzzleId": "rila-lake",
+      "name": {
+        "ro": "Lac în Rila",
+        "en": "Rila Mountain Lake"
+      },
+      "alt": {
+        "ro": "Lac alpin și vârfuri de granit în Munții Rila.",
+        "en": "Alpine lake and granite peaks in the Rila Mountains."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "rila-lake.png (original source; archived as rila-lake.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:a5c866541dc5d59128b601c4e31a6a83d1692fa635855b4a0e0415728aff5ca8",
+        "originalInputFilename": "rila-lake.png",
+        "prompt": "Original high-detail Rila Mountains alpine lake, granite reflection and clouds, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/rila-lake.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:c8551edca74c4301ffb900d5112d3ab8cb05cbb1ab318a1e1e41434bc9aaf2a8",
+      "fullImage": "/images/full/rila-lake.webp",
+      "thumbnail": "/images/thumbs/rila-lake.webp"
+    },
+    {
+      "asset": "/images/bran-castle-dawn.jpg",
+      "category": "landmarks",
+      "activityId": null,
+      "puzzleId": "bran-castle-dawn",
+      "name": {
+        "ro": "Castelul Bran la răsărit",
+        "en": "Bran Castle at Dawn"
+      },
+      "alt": {
+        "ro": "Castelul Bran pe o culme împădurită, România.",
+        "en": "Bran Castle on a wooded ridge, Romania."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "bran-castle-dawn.png (original source; archived as bran-castle-dawn.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:c96a5674a3aa6522e4e7db7ac62c68eb91a02ff61f37f13236f146140375e87c",
+        "originalInputFilename": "bran-castle-dawn.png",
+        "prompt": "Original high-detail Bran Castle dawn, Carpathian mist, intricate stone towers, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/bran-castle-dawn.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:b8ffb6140c3fd8109601a7b9590750e1fd3d13c45ac9b30f2b0786504471f3c0",
+      "fullImage": "/images/full/bran-castle-dawn.webp",
+      "thumbnail": "/images/thumbs/bran-castle-dawn.webp"
+    },
+    {
+      "asset": "/images/palace-parliament-dusk.jpg",
+      "category": "landmarks",
+      "activityId": null,
+      "puzzleId": "palace-parliament-dusk",
+      "name": {
+        "ro": "Palatul Parlamentului",
+        "en": "Palace of Parliament"
+      },
+      "alt": {
+        "ro": "Fațada Palatului Parlamentului din București, la ceas albastru.",
+        "en": "Palace of Parliament facade in Bucharest at blue hour."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "palace-parliament-dusk.png (original source; archived as palace-parliament-dusk.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:94039456c35826ff5e6b42de49c8e8c744552f7be38de0a8a61ee102e3721bfd",
+        "originalInputFilename": "palace-parliament-dusk.png",
+        "prompt": "Original high-detail Palace of Parliament Bucharest at blue hour, detailed architecture, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/palace-parliament-dusk.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:323449bb1cc0f5b2ec754507ac10fa78ee606a3b396f6968b9c6a24ef33dd1de",
+      "fullImage": "/images/full/palace-parliament-dusk.webp",
+      "thumbnail": "/images/thumbs/palace-parliament-dusk.webp"
+    },
+    {
+      "asset": "/images/corvin-castle.jpg",
+      "category": "landmarks",
+      "activityId": null,
+      "puzzleId": "corvin-castle",
+      "name": {
+        "ro": "Castelul Corvinilor",
+        "en": "Corvin Castle"
+      },
+      "alt": {
+        "ro": "Castelul Corvinilor și podul său de lemn, Hunedoara.",
+        "en": "Corvin Castle and its timber bridge, Hunedoara."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "corvin-castle.png (original source; archived as corvin-castle.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:d03095eefa2c89ac15f0bfb6c9a98d68988737528e6d37135cedfa3917044b5a",
+        "originalInputFilename": "corvin-castle.png",
+        "prompt": "Original high-detail Corvin Castle, gothic towers, timber bridge and autumn trees, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/corvin-castle.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:60763f1c5d03737ae95c153ccca082e470ed84d487e2cf7ec926e1ca575da3a2",
+      "fullImage": "/images/full/corvin-castle.webp",
+      "thumbnail": "/images/thumbs/corvin-castle.webp"
+    },
+    {
+      "asset": "/images/sighisoara-clock-tower.jpg",
+      "category": "landmarks",
+      "activityId": null,
+      "puzzleId": "sighisoara-clock-tower",
+      "name": {
+        "ro": "Turnul cu ceas din Sighișoara",
+        "en": "Sighișoara Clock Tower"
+      },
+      "alt": {
+        "ro": "Turnul cu ceas și acoperișuri istorice din Sighișoara.",
+        "en": "Clock Tower and historic roofs in Sighișoara."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "sighisoara-clock-tower.png (original source; archived as sighisoara-clock-tower.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:e933c293fc6dcbcb16ddad25192725db11a296e5db141287da0c1a417d5b8901",
+        "originalInputFilename": "sighisoara-clock-tower.png",
+        "prompt": "Original high-detail Sighișoara Clock Tower, colorful historic roofs and cobbled square, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/sighisoara-clock-tower.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:2999bfac04fc6d06cfab867ef00c9574c592afb9c4cced595fc5c39aa6e1ce4e",
+      "fullImage": "/images/full/sighisoara-clock-tower.webp",
+      "thumbnail": "/images/thumbs/sighisoara-clock-tower.webp"
+    },
+    {
+      "asset": "/images/maramures-wooden-church.jpg",
+      "category": "landmarks",
+      "activityId": null,
+      "puzzleId": "maramures-wooden-church",
+      "name": {
+        "ro": "Biserică din lemn în Maramureș",
+        "en": "Maramureș Wooden Church"
+      },
+      "alt": {
+        "ro": "Biserică tradițională din lemn în Maramureș, România.",
+        "en": "Traditional wooden church in Maramureș, Romania."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "maramures-wooden-church.png (original source; archived as maramures-wooden-church.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:c23860899884269f5f3c3a2c1e256c540ba53a88a881ccf6509e15537f75fcac",
+        "originalInputFilename": "maramures-wooden-church.png",
+        "prompt": "Original high-detail Maramureș wooden church, tall timber spire, meadow and mountains, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/maramures-wooden-church.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:ec70457bf60a0cdc84e68156c422a0a387f0fd1569101efba2e3eaf99a40268a",
+      "fullImage": "/images/full/maramures-wooden-church.webp",
+      "thumbnail": "/images/thumbs/maramures-wooden-church.webp"
+    },
+    {
+      "asset": "/images/carpathian-beech-forest.jpg",
+      "category": "nature",
+      "activityId": null,
+      "puzzleId": "carpathian-beech-forest",
+      "name": {
+        "ro": "Pădure de fag carpatină",
+        "en": "Carpathian Beech Forest"
+      },
+      "alt": {
+        "ro": "Pădure de fag cu lumină filtrată în Carpați.",
+        "en": "Beech forest with filtered light in the Carpathians."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "carpathian-beech-forest.png (original source; archived as carpathian-beech-forest.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:f86b8a93914b606524f85d8aaac860595f6d0b8c188459cbdf80971b71378ed8",
+        "originalInputFilename": "carpathian-beech-forest.png",
+        "prompt": "Original high-detail Carpathian ancient beech forest, shafts of sunlight, rich natural detail, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/carpathian-beech-forest.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:6a8186cbd6ced1209fb896523ffed7e7f3d74ea0af2dddf97641a3ff9ec92e81",
+      "fullImage": "/images/full/carpathian-beech-forest.webp",
+      "thumbnail": "/images/thumbs/carpathian-beech-forest.webp"
+    },
+    {
+      "asset": "/images/danube-pelicans.jpg",
+      "category": "nature",
+      "activityId": null,
+      "puzzleId": "danube-pelicans",
+      "name": {
+        "ro": "Pelicani în Deltă",
+        "en": "Pelicans in the Delta"
+      },
+      "alt": {
+        "ro": "Pelicani deasupra apelor din Delta Dunării.",
+        "en": "Pelicans above the waters of the Danube Delta."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "danube-pelicans.png (original source; archived as danube-pelicans.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:54d493a68fd2a5be20c3b3faaae744642321a6c781916f81f2e4ed5c71ca248f",
+        "originalInputFilename": "danube-pelicans.png",
+        "prompt": "Original high-detail Danube Delta pelicans, calm water, reeds and morning light, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/danube-pelicans.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:38d5fa912ba06431998fbba78f8266e7a0e84cb4456e66cbafb8d5bbd794d7b4",
+      "fullImage": "/images/full/danube-pelicans.webp",
+      "thumbnail": "/images/thumbs/danube-pelicans.webp"
+    },
+    {
+      "asset": "/images/red-deer-meadow.jpg",
+      "category": "nature",
+      "activityId": null,
+      "puzzleId": "red-deer-meadow",
+      "name": {
+        "ro": "Cerb în poiană",
+        "en": "Red Deer Meadow"
+      },
+      "alt": {
+        "ro": "Cerb într-o poiană de munte la amurg.",
+        "en": "Red deer in a mountain meadow at dusk."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "red-deer-meadow.png (original source; archived as red-deer-meadow.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:dd3df2a0707f97d3afb93e3e706d0dbe82b2e0b373750fa15959b8cecc1cdece",
+        "originalInputFilename": "red-deer-meadow.png",
+        "prompt": "Original high-detail red deer small in a Carpathian meadow at dusk, landscape is main subject, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/red-deer-meadow.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:a3815e663e7abcffeb7bf96f780083912771ef22aefe4512f958826d28bb74d1",
+      "fullImage": "/images/full/red-deer-meadow.webp",
+      "thumbnail": "/images/thumbs/red-deer-meadow.webp"
+    },
+    {
+      "asset": "/images/poppy-meadow.jpg",
+      "category": "nature",
+      "activityId": null,
+      "puzzleId": "poppy-meadow",
+      "name": {
+        "ro": "Poiană cu maci",
+        "en": "Poppy Meadow"
+      },
+      "alt": {
+        "ro": "Poiană cu maci roșii, iarbă și nori de vară.",
+        "en": "Meadow of red poppies, grass, and summer clouds."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "poppy-meadow.png (original source; archived as poppy-meadow.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:9ed36d956fb0e4a95ec47e86d4724fcd6605a434f33515be1e6c039938fc4a10",
+        "originalInputFilename": "poppy-meadow.png",
+        "prompt": "Original high-detail wild red poppy meadow, rolling grass and summer clouds, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "archive": "data/catalog/originals/poppy-meadow.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:3ddfc2e5f04cf6cb63dffb5d99043ad9f9c77c9b25486f0e9d0e18683520b4e4",
+      "fullImage": "/images/full/poppy-meadow.webp",
+      "thumbnail": "/images/thumbs/poppy-meadow.webp"
+    },
+    {
+      "asset": "/images/ice-cave.jpg",
+      "category": "nature",
+      "activityId": null,
+      "puzzleId": "ice-cave",
+      "name": {
+        "ro": "Peșteră de gheață",
+        "en": "Ice Cave"
+      },
+      "alt": {
+        "ro": "Formațiuni de gheață albastre într-o peșteră.",
+        "en": "Blue ice formations inside a cave."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "ice-cave.jpg (original source; archived as ice-cave.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail blue ice cave, crystalline formations and reflected light, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:5d2ebeac4538b42db508f36fd53ec8fc077547683fb623bacb42965b3b5c25a6",
+        "archive": "data/catalog/originals/ice-cave.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:5d2ebeac4538b42db508f36fd53ec8fc077547683fb623bacb42965b3b5c25a6",
+      "fullImage": "/images/full/ice-cave.webp",
+      "thumbnail": "/images/thumbs/ice-cave.webp"
+    },
+    {
+      "asset": "/images/bucharest-calea-victoriei.jpg",
+      "category": "cities",
+      "activityId": null,
+      "puzzleId": "bucharest-calea-victoriei",
+      "name": {
+        "ro": "Calea Victoriei, București",
+        "en": "Calea Victoriei, Bucharest"
+      },
+      "alt": {
+        "ro": "Clădiri istorice pe Calea Victoriei, București, fără oameni în prim-plan.",
+        "en": "Historic buildings on Calea Victoriei, Bucharest, with no foreground people."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "bucharest-calea-victoriei.jpg (original source; archived as bucharest-calea-victoriei.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail Bucharest Calea Victoriei architectural streetscape, early morning, no people, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:5ca38cced5b57be834019e1c1c45d39a179fc521c228bdf1426196a017ead7a0",
+        "archive": "data/catalog/originals/bucharest-calea-victoriei.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:5ca38cced5b57be834019e1c1c45d39a179fc521c228bdf1426196a017ead7a0",
+      "fullImage": "/images/full/bucharest-calea-victoriei.webp",
+      "thumbnail": "/images/thumbs/bucharest-calea-victoriei.webp"
+    },
+    {
+      "asset": "/images/sibiu-square.jpg",
+      "category": "cities",
+      "activityId": null,
+      "puzzleId": "sibiu-square",
+      "name": {
+        "ro": "Piața Mare, Sibiu",
+        "en": "Grand Square, Sibiu"
+      },
+      "alt": {
+        "ro": "Piața Mare din Sibiu, cu clădiri colorate.",
+        "en": "Sibiu's Grand Square with colorful historic buildings."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "sibiu-square.jpg (original source; archived as sibiu-square.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail Sibiu Grand Square, colorful historic facades, no people, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:4b5ccd4b3ca3ae2e1f963ad28f6985688e29358c8c5ed34c0954c5f298e7ca08",
+        "archive": "data/catalog/originals/sibiu-square.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:4b5ccd4b3ca3ae2e1f963ad28f6985688e29358c8c5ed34c0954c5f298e7ca08",
+      "fullImage": "/images/full/sibiu-square.webp",
+      "thumbnail": "/images/thumbs/sibiu-square.webp"
+    },
+    {
+      "asset": "/images/cluj-unirii-square.jpg",
+      "category": "cities",
+      "activityId": null,
+      "puzzleId": "cluj-unirii-square",
+      "name": {
+        "ro": "Piața Unirii, Cluj",
+        "en": "Unirii Square, Cluj"
+      },
+      "alt": {
+        "ro": "Piața Unirii din Cluj, cu arhitectură istorică.",
+        "en": "Unirii Square in Cluj with historic architecture."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "cluj-unirii-square.jpg (original source; archived as cluj-unirii-square.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail Cluj Unirii Square architectural panorama, no people, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:dc7f2e71b29d52333acbbbaa5df0c1ebb8f58b17fc9c8631dcd07d158081de7c",
+        "archive": "data/catalog/originals/cluj-unirii-square.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:dc7f2e71b29d52333acbbbaa5df0c1ebb8f58b17fc9c8631dcd07d158081de7c",
+      "fullImage": "/images/full/cluj-unirii-square.webp",
+      "thumbnail": "/images/thumbs/cluj-unirii-square.webp"
+    },
+    {
+      "asset": "/images/timisoara-union-square.jpg",
+      "category": "cities",
+      "activityId": null,
+      "puzzleId": "timisoara-union-square",
+      "name": {
+        "ro": "Piața Unirii, Timișoara",
+        "en": "Union Square, Timișoara"
+      },
+      "alt": {
+        "ro": "Piața Unirii din Timișoara, cu fațade baroce.",
+        "en": "Timișoara's Union Square with baroque facades."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "timisoara-union-square.jpg (original source; archived as timisoara-union-square.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail Timișoara Union Square colorful baroque facades, no people, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:27faff7178648316588c190a87bfa798afb316962d7a5ec1dfaca54b14a74d30",
+        "archive": "data/catalog/originals/timisoara-union-square.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:27faff7178648316588c190a87bfa798afb316962d7a5ec1dfaca54b14a74d30",
+      "fullImage": "/images/full/timisoara-union-square.webp",
+      "thumbnail": "/images/thumbs/timisoara-union-square.webp"
+    },
+    {
+      "asset": "/images/brasov-council-square.jpg",
+      "category": "cities",
+      "activityId": null,
+      "puzzleId": "brasov-council-square",
+      "name": {
+        "ro": "Piața Sfatului, Brașov",
+        "en": "Council Square, Brașov"
+      },
+      "alt": {
+        "ro": "Piața Sfatului din Brașov, cu munți în fundal.",
+        "en": "Brașov's Council Square with mountains behind it."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "brasov-council-square.jpg (original source; archived as brasov-council-square.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail Brașov Council Square, historic facades and mountains, no people, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:ad657d8b02f1b263b4b7885e5c48a5ffcd33642b9a86618c733dbc714450fae1",
+        "archive": "data/catalog/originals/brasov-council-square.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:ad657d8b02f1b263b4b7885e5c48a5ffcd33642b9a86618c733dbc714450fae1",
+      "fullImage": "/images/full/brasov-council-square.webp",
+      "thumbnail": "/images/thumbs/brasov-council-square.webp"
+    },
+    {
+      "asset": "/images/blueprint-bran-castle.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-bran-castle",
+      "name": {
+        "ro": "Plan Castelul Bran",
+        "en": "Bran Castle Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural stilizat al Castelului Bran.",
+        "en": "Stylized architectural plan of Bran Castle."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-bran-castle.jpg (original source; archived as blueprint-bran-castle.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail architectural blueprint of Bran Castle, axonometric cutaway, lines only, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:0315fb7529b13d45454fd44d0dcae5c60de2a6cb20bf59cb2b572d446399cb6d",
+        "archive": "data/catalog/originals/blueprint-bran-castle.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:0315fb7529b13d45454fd44d0dcae5c60de2a6cb20bf59cb2b572d446399cb6d",
+      "fullImage": "/images/full/blueprint-bran-castle.webp",
+      "thumbnail": "/images/thumbs/blueprint-bran-castle.webp"
+    },
+    {
+      "asset": "/images/blueprint-modern-pavilion.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-modern-pavilion",
+      "name": {
+        "ro": "Plan pavilion modern",
+        "en": "Modern Pavilion Blueprint"
+      },
+      "alt": {
+        "ro": "Plan detaliat al unui pavilion contemporan.",
+        "en": "Detailed plan of a contemporary pavilion."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-modern-pavilion.jpg (original source; archived as blueprint-modern-pavilion.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail modern pavilion architectural blueprint, axonometric sections and technical lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:cc2a283710d850f03982936d5a5bc96a7a260590c297f415a34e35f2efee4056",
+        "archive": "data/catalog/originals/blueprint-modern-pavilion.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:cc2a283710d850f03982936d5a5bc96a7a260590c297f415a34e35f2efee4056",
+      "fullImage": "/images/full/blueprint-modern-pavilion.webp",
+      "thumbnail": "/images/thumbs/blueprint-modern-pavilion.webp"
+    },
+    {
+      "asset": "/images/blueprint-observatory.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-observatory",
+      "name": {
+        "ro": "Plan observator",
+        "en": "Observatory Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unui observator cu dom.",
+        "en": "Architectural plan of a domed observatory."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-observatory.jpg (original source; archived as blueprint-observatory.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail domed observatory blueprint, sectional axonometric design, precise lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:7272e28df7d43340c509b6603af50271d571d5ffcf617843b6d23d4581c81e26",
+        "archive": "data/catalog/originals/blueprint-observatory.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:7272e28df7d43340c509b6603af50271d571d5ffcf617843b6d23d4581c81e26",
+      "fullImage": "/images/full/blueprint-observatory.webp",
+      "thumbnail": "/images/thumbs/blueprint-observatory.webp"
+    },
+    {
+      "asset": "/images/blueprint-bridge.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-bridge",
+      "name": {
+        "ro": "Plan pod suspendat",
+        "en": "Suspension Bridge Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unui pod suspendat.",
+        "en": "Architectural plan of a suspension bridge."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-bridge.jpg (original source; archived as blueprint-bridge.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail suspension bridge blueprint, multiple technical perspectives and line details, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:4ce3148ad8c84cdef09e99d7f8c993124d5ddac28b43eb6af6c2429e06d9d0aa",
+        "archive": "data/catalog/originals/blueprint-bridge.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:4ce3148ad8c84cdef09e99d7f8c993124d5ddac28b43eb6af6c2429e06d9d0aa",
+      "fullImage": "/images/full/blueprint-bridge.webp",
+      "thumbnail": "/images/thumbs/blueprint-bridge.webp"
+    },
+    {
+      "asset": "/images/blueprint-greenhouse.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-greenhouse",
+      "name": {
+        "ro": "Plan seră",
+        "en": "Greenhouse Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unei sere modulare.",
+        "en": "Architectural plan of a modular greenhouse."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-greenhouse.jpg (original source; archived as blueprint-greenhouse.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail modular greenhouse blueprint, glass structure axonometric cutaway and lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:488f5459055b44798132572edce682ad49de2706115b15f6933f32d0f0380a46",
+        "archive": "data/catalog/originals/blueprint-greenhouse.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:488f5459055b44798132572edce682ad49de2706115b15f6933f32d0f0380a46",
+      "fullImage": "/images/full/blueprint-greenhouse.webp",
+      "thumbnail": "/images/thumbs/blueprint-greenhouse.webp"
+    },
+    {
+      "asset": "/images/blueprint-train-station.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-train-station",
+      "name": {
+        "ro": "Plan gară",
+        "en": "Train Station Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unei gări contemporane.",
+        "en": "Architectural plan of a contemporary train station."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-train-station.jpg (original source; archived as blueprint-train-station.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail contemporary train station blueprint, roof trusses, platforms, axonometric lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:655043578a39bc8803c0d3503b3112551312caca651b6e26226c97ead1b743d3",
+        "archive": "data/catalog/originals/blueprint-train-station.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:655043578a39bc8803c0d3503b3112551312caca651b6e26226c97ead1b743d3",
+      "fullImage": "/images/full/blueprint-train-station.webp",
+      "thumbnail": "/images/thumbs/blueprint-train-station.webp"
+    },
+    {
+      "asset": "/images/blueprint-library.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-library",
+      "name": {
+        "ro": "Plan bibliotecă",
+        "en": "Library Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unei biblioteci luminoase.",
+        "en": "Architectural plan of a bright library."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-library.jpg (original source; archived as blueprint-library.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail library blueprint, reading rooms and shelves as axonometric technical drawing, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:0000b7cd5fa390cc4d2713c1e3ed1a7a5e593f91300915a3acf43577bda9cf44",
+        "archive": "data/catalog/originals/blueprint-library.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:0000b7cd5fa390cc4d2713c1e3ed1a7a5e593f91300915a3acf43577bda9cf44",
+      "fullImage": "/images/full/blueprint-library.webp",
+      "thumbnail": "/images/thumbs/blueprint-library.webp"
+    },
+    {
+      "asset": "/images/blueprint-amphitheater.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-amphitheater",
+      "name": {
+        "ro": "Plan amfiteatru",
+        "en": "Amphitheater Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unui amfiteatru în aer liber.",
+        "en": "Architectural plan of an outdoor amphitheater."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-amphitheater.jpg (original source; archived as blueprint-amphitheater.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail outdoor amphitheater blueprint, seating rings, stage and site plan, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:00ab254f69c9b97f2ce938a1de76a4734a89d946698f96964167ed99bc306bcb",
+        "archive": "data/catalog/originals/blueprint-amphitheater.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:00ab254f69c9b97f2ce938a1de76a4734a89d946698f96964167ed99bc306bcb",
+      "fullImage": "/images/full/blueprint-amphitheater.webp",
+      "thumbnail": "/images/thumbs/blueprint-amphitheater.webp"
+    },
+    {
+      "asset": "/images/blueprint-lighthouse.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-lighthouse",
+      "name": {
+        "ro": "Plan far",
+        "en": "Lighthouse Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unui far de coastă.",
+        "en": "Architectural plan of a coastal lighthouse."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-lighthouse.jpg (original source; archived as blueprint-lighthouse.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail coastal lighthouse blueprint, vertical section, stair and foundation lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:8508e1cf7fede4c5f5d7af3f3611ee3d7747714db9843f96258b2a6c32ffaa9b",
+        "archive": "data/catalog/originals/blueprint-lighthouse.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:8508e1cf7fede4c5f5d7af3f3611ee3d7747714db9843f96258b2a6c32ffaa9b",
+      "fullImage": "/images/full/blueprint-lighthouse.webp",
+      "thumbnail": "/images/thumbs/blueprint-lighthouse.webp"
+    },
+    {
+      "asset": "/images/blueprint-courtyard-house.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-courtyard-house",
+      "name": {
+        "ro": "Plan casă cu curte",
+        "en": "Courtyard House Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unei case cu curte interioară.",
+        "en": "Architectural plan of a courtyard house."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-courtyard-house.jpg (original source; archived as blueprint-courtyard-house.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail courtyard house blueprint, floor plan and axonometric cutaway, precise lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:70078b67be3739c063e2342930234bf37f129c0e000727010783bd16855f0ea2",
+        "archive": "data/catalog/originals/blueprint-courtyard-house.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:70078b67be3739c063e2342930234bf37f129c0e000727010783bd16855f0ea2",
+      "fullImage": "/images/full/blueprint-courtyard-house.webp",
+      "thumbnail": "/images/thumbs/blueprint-courtyard-house.webp"
+    }
+  ],
+  "stage5ImportedAt": "2026-09-03",
+  "retiredCategories": {
+    "isometric-worlds": {
+      "retiredAt": "2026-09-04",
+      "archive": "data/catalog/retired-stage5.json",
+      "reason": "Repeated shared grid/starfield/block recipe across nominally distinct worlds."
+    },
+    "abstract-geometry": {
+      "retiredAt": "2026-09-04",
+      "archive": "data/catalog/retired-stage5.json",
+      "reason": "Repeated shared loops/polygons/grid/arch recipe across nominally distinct abstracts."
+    }
+  }
+}

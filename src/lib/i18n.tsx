@@ -12,8 +12,28 @@ const LangContext = createContext<{ lang: Lang; setLang: (l: Lang) => void }>({
   setLang: () => {},
 });
 
+const LANG_KEY = "pt.lang";
+
+function initialLanguage(): Lang {
+  if (typeof window === "undefined") return "en";
+  let selected: Lang = navigator.language.toLowerCase().startsWith("ro") ? "ro" : "en";
+  try {
+    const saved = localStorage.getItem(LANG_KEY);
+    if (saved === "ro" || saved === "en") selected = saved;
+  } catch {
+    // Storage can be unavailable in strict private mode.
+  }
+  document.documentElement.lang = selected;
+  return selected;
+}
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>("en");
+  const [lang, setLanguage] = useState<Lang>(initialLanguage);
+  const setLang = (next: Lang) => {
+    setLanguage(next);
+    document.documentElement.lang = next;
+    try { localStorage.setItem(LANG_KEY, next); } catch { /* private mode */ }
+  };
   const value = useMemo(() => ({ lang, setLang }), [lang]);
   return <LangContext.Provider value={value}>{children}</LangContext.Provider>;
 }

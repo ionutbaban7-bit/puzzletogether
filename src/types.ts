@@ -1,3 +1,18 @@
+export type RoomStage = "lobby" | "brief" | "play" | "reveal" | "debrief" | "harvest" | "closed";
+export type PlayerRole = "host" | "player" | "spectator";
+export type TeamMode = "shared" | "color-teams";
+export type TeamColor = "red" | "yellow" | "green" | "blue" | "purple" | "orange";
+
+/** Colour is paired with a marker/name so team identity never relies on hue alone. */
+export interface TeamView {
+  id: string;
+  name: string;
+  color: TeamColor;
+  marker: string;
+  order: number;
+  memberIds: string[];
+}
+
 export interface Piece {
   id: number;
   x: number;
@@ -8,32 +23,141 @@ export interface Piece {
   drag: boolean;
   moved: boolean;
   locked: boolean;
+  heldBy?: string | null;
+  /** Ranking destination, 1-based. Unlike expertRank, this is the team's choice. */
+  placedOnSlot?: number | null;
+  letter?: string;
+  letterPoints?: number;
+  letterColor?: string;
 }
 
 export interface PlayerView {
   id: string;
   name: string;
   color: string;
+  role: PlayerRole;
+  /** Server-authoritative selected team. Personal `color` stays a presence cue. */
+  teamId?: string | null;
+  joinedAt?: number;
+  lastSeenAt?: number;
+}
+
+export interface WorkshopInsights {
+  observed: string;
+  learned: string;
+  tryNext: string;
+}
+
+export interface ActionItem {
+  id: string;
+  text: string;
+  ownerId: string;
+  due: string;
+  done: boolean;
+}
+
+/**
+ * A freely placeable canvas tile (Letter / Sentence Canvas).
+ * Deliberately NOT a jigsaw piece: no correctX/correctY, no grid, no lock.
+ * The only state that matters is free position, flip and claims.
+ */
+export interface CanvasTile {
+  id: number;
+  text: string;
+  kind: "letter" | "wildcard" | "punctuation" | "word" | "custom";
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  flipped: boolean;
+  heldBy?: string | null;
+  createdBy?: string | null;
+  custom?: boolean;
+  /** v2 semantic composition location; x/y remain only for visual placement. */
+  laneId?: string | null;
+  laneIndex?: number | null;
+  /** Owning colour team in team mode; absent in shared rooms/legacy v1. */
+  teamId?: string | null;
+}
+
+export interface CanvasLane {
+  id: string;
+  teamId?: string | null;
+  teamColor?: TeamColor;
+  teamMarker?: string;
+  teamName?: string;
+  kind: "word" | "idea" | "reason" | "commitment";
+  label: Bilingual;
+  hint: Bilingual;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+export interface CanvasState {
+  /** v1 remains available for active/restored legacy rooms; new rooms use v2. */
+  version?: 1 | 2;
+  mode: "quick" | "standard" | "extended" | "sandbox" | string;
+  contentLanguage: "ro" | "en";
+  sheetW: number;
+  sheetH: number;
+  tileW: number;
+  tileH: number;
+  wordGap: number;
+  /** Finite inventory (text -> remaining). null = unlimited sandbox. */
+  inventory: Record<string, number> | null;
+  /** Team-scoped finite banks in colour-team mode. */
+  teamInventory?: Record<string, Record<string, number> | null> | null;
+  lanes?: CanvasLane[];
 }
 
 export interface RoomView {
   id: string;
-  /** Access code — only present once you've joined (never leaked via the link). */
   code?: string;
+  sessionName: string;
   hostId?: string | null;
   puzzleId: string;
   difficulty: string;
   total: number;
+  /** Canvas rooms only: the content language (independent of the UI language). */
+  contentLanguage?: "ro" | "en" | null;
+  teamMode?: TeamMode;
+  teams?: TeamView[];
+  canvasVersion?: 1 | 2;
+  /** A short-lived legacy room whose delisted image is served from archive. */
+  retiredCatalog?: boolean;
   maxPlayers: number;
   createdAt: number;
+  startedAt: number | null;
+  pausedAt: number | null;
+  pausedDurationMs: number;
+  stage: RoomStage;
+  boardLocked: boolean;
+  /** Layout of untouched jigsaw pieces; their x/y positions remain authoritative. */
+  jigsawLayout?: "scatter" | "tray";
+  revealed: boolean;
+  timerEndsAt: number | null;
+  timerDurationMs: number | null;
   completed: boolean;
   completedAt: number | null;
   completedInMs: number | null;
+  completionPlayers: string[];
+  celebrationMode: "team" | "individual";
+  insights: WorkshopInsights;
+  debriefNotes: string[];
+  actions: ActionItem[];
 }
 
 export interface Bilingual {
   ro: string;
   en: string;
+}
+
+export interface RankingSlot {
+  rank: number;
+  x: number;
+  y: number;
 }
 
 export interface PuzzleView {
@@ -55,13 +179,36 @@ export interface PuzzleView {
   mode?: "ranking" | "questionnaire";
   activityId?: string;
   activity?: CoachingActivity;
+  rankingSlots?: RankingSlot[];
+  wordModeNotice?: boolean;
+  /** Letter / Sentence Canvas rooms. */
+  isCanvas?: boolean;
+  canvasMode?: string;
+  contentLanguage?: "ro" | "en";
+  scenario?: { title: Bilingual; situation: Bilingual } | null;
+  sheetW?: number;
+  sheetH?: number;
+  tileW?: number;
+  tileH?: number;
+  wordGap?: number;
+  sentencePack?: { w: string; c: string; n: number }[];
+  /** Jigsaw mystery mode: reference + ghost hidden until 50% of pieces are locked. */
+  mystery?: boolean;
+  /** Catalog metadata (visible attribution). */
+  nameRo?: string;
+  alt?: Bilingual;
+  attribution?: string;
+  sourceName?: string;
+  sourceUrl?: string;
+  licenseUrl?: string;
 }
 
 export interface RankingItem {
   id: number;
   label: Bilingual;
-  expertRank: number;
-  rationale: Bilingual;
+  /** Hidden by the server until the facilitator reveals the expert answer. */
+  expertRank?: number;
+  rationale?: Bilingual;
 }
 
 export interface DimensionPole {
@@ -101,10 +248,7 @@ export interface CoachingActivity {
   description: Bilingual;
   duration: string;
   cover: string;
-  scenario?: {
-    title: Bilingual;
-    situation: Bilingual;
-  };
+  scenario?: { title: Bilingual; situation: Bilingual };
   instructions?: Bilingual;
   items?: RankingItem[];
   debrief?: Bilingual[];
@@ -128,44 +272,39 @@ export interface ScoreView {
 
 export interface RatingView {
   playerId: string;
-  answers: Record<string, "A" | "B">;
+  /** Only sent to the player who owns these answers. */
+  answers?: Record<string, "A" | "B">;
   done: boolean;
+  profileCode?: string | null;
 }
 
-export interface CursorView {
-  x: number;
-  y: number;
-  at: number;
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  icon: string;
-}
-
-export interface Difficulty {
-  id: string;
-  name: string;
-  pieces: number;
-}
-
+export interface CursorView { x: number; y: number; at: number }
+export interface ChatEntry { id: string; playerId: string; name: string; color: string; text: string; at: number; /** Client id used for idempotent reconnect-safe sends. */ clientMessageId?: string }
+export interface Category { id: string; name: string; icon: string }
+export interface Difficulty { id: string; name: string; pieces: number }
 export interface PuzzleInfo {
   id: string;
   category: string;
   name: string;
+  /** Optimized full-size source used by the active jigsaw board. */
   image: string;
+  /** Lightweight 4:3 derivative used by catalog/selector cards. */
+  thumbnail?: string;
   credit: string;
   license: string;
   source: string;
+  scenario?: { title: Bilingual; situation: Bilingual };
 }
-
+export interface CanvasMode { id: string; name: string; tiles: number }
+export interface SentencePackEntry { w: string; c: string; n: number }
 export interface CatalogData {
   categories: Category[];
   difficulties: Difficulty[];
   puzzles: PuzzleInfo[];
+  canvasModes?: CanvasMode[];
+  letterSets?: Record<string, string>;
+  sentencePacks?: Record<string, SentencePackEntry[]>;
   coaching: CoachingCatalog;
   maxPlayers: number;
 }
-
 export type JoinStatus = "idle" | "connecting" | "joined" | "denied" | "closed";

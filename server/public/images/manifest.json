@@ -1,166 +1,298 @@
 {
-  "aurora.jpg": {
-    "w": 1920,
-    "h": 1251
-  },
-  "colosseum.jpg": {
-    "w": 1920,
-    "h": 1345
-  },
-  "eiffel-tower.jpg": {
-    "w": 1920,
-    "h": 3553
-  },
-  "flower.jpg": {
-    "w": 1920,
-    "h": 1920
-  },
-  "girl-pearl-earring.jpg": {
-    "w": 1920,
-    "h": 2248
-  },
-  "golden-gate.jpg": {
-    "w": 1920,
-    "h": 1200
-  },
-  "great-wave.jpg": {
-    "w": 1920,
-    "h": 1324
-  },
-  "machu-picchu.jpg": {
-    "w": 1920,
-    "h": 1874
-  },
-  "matterhorn.jpg": {
-    "w": 1610,
-    "h": 1073
-  },
-  "mona-lisa.jpg": {
+  "mona-lisa.webp": {
     "w": 1920,
     "h": 2861
   },
-  "moraine-lake.jpg": {
-    "w": 1920,
-    "h": 1440
-  },
-  "paris-louvre.jpg": {
-    "w": 1920,
-    "h": 807
-  },
-  "santorini.jpg": {
-    "w": 1920,
-    "h": 1444
-  },
-  "starry-night.jpg": {
+  "starry-night.webp": {
     "w": 1920,
     "h": 1520
   },
-  "statue-of-liberty.jpg": {
-    "w": 1464,
-    "h": 2022
+  "great-wave.webp": {
+    "w": 1920,
+    "h": 1324
   },
-  "sunrise.jpg": {
+  "girl-pearl-earring.webp": {
+    "w": 1920,
+    "h": 2248
+  },
+  "sunrise.webp": {
     "w": 1600,
     "h": 1245
   },
-  "taj-mahal.jpg": {
-    "w": 1920,
-    "h": 1262
-  },
-  "tokyo.jpg": {
-    "w": 1920,
-    "h": 1023
-  },
-  "vatican.jpg": {
-    "w": 1920,
-    "h": 1078
-  },
-  "venice.jpg": {
-    "w": 1920,
-    "h": 2880
-  },
-  "waterfall.jpg": {
-    "w": 1920,
-    "h": 1280
-  },
-  "the-kiss.jpg": {
+  "the-kiss.webp": {
     "w": 1400,
     "h": 1403
   },
-  "the-scream.jpg": {
+  "the-scream.webp": {
     "w": 1400,
     "h": 1739
   },
-  "water-lilies.jpg": {
+  "water-lilies.webp": {
     "w": 1500,
     "h": 1168
   },
-  "cafe-terrace.jpg": {
+  "cafe-terrace.webp": {
     "w": 1558,
     "h": 1920
   },
-  "the-milkmaid.jpg": {
+  "the-milkmaid.webp": {
     "w": 1100,
     "h": 1217
   },
-  "grand-canyon.jpg": {
-    "w": 1920,
-    "h": 1080
+  "matterhorn.webp": {
+    "w": 1610,
+    "h": 1073
   },
-  "mount-fuji.jpg": {
+  "moraine-lake.webp": {
     "w": 1920,
-    "h": 1274
+    "h": 1440
   },
-  "plitvice-lakes.jpg": {
-    "w": 1200,
+  "santorini.webp": {
+    "w": 1920,
+    "h": 1444
+  },
+  "eiffel-tower.webp": {
+    "w": 1920,
+    "h": 3553
+  },
+  "machu-picchu.webp": {
+    "w": 1920,
+    "h": 1874
+  },
+  "taj-mahal.webp": {
+    "w": 1920,
+    "h": 1262
+  },
+  "colosseum.webp": {
+    "w": 1920,
+    "h": 1345
+  },
+  "statue-of-liberty.webp": {
+    "w": 1464,
+    "h": 2022
+  },
+  "vatican.webp": {
+    "w": 1920,
+    "h": 1078
+  },
+  "aurora.webp": {
+    "w": 1920,
+    "h": 1251
+  },
+  "flower.webp": {
+    "w": 1920,
+    "h": 1920
+  },
+  "waterfall.webp": {
+    "w": 1920,
+    "h": 1280
+  },
+  "golden-gate.webp": {
+    "w": 1920,
     "h": 1200
   },
-  "big-ben.jpg": {
-    "w": 1280,
-    "h": 720
+  "paris-louvre.webp": {
+    "w": 1920,
+    "h": 807
   },
-  "pyramids-giza.jpg": {
+  "venice.webp": {
+    "w": 1920,
+    "h": 2880
+  },
+  "tokyo.webp": {
+    "w": 1920,
+    "h": 1023
+  },
+  "words-agile.svg": {
     "w": 1200,
-    "h": 856
+    "h": 800
   },
-  "neuschwanstein.jpg": {
-    "w": 1000,
-    "h": 750
+  "words-innovation.svg": {
+    "w": 1200,
+    "h": 800
   },
-  "cherry-blossom.jpg": {
-    "w": 1920,
-    "h": 1080
+  "words-scrabble.svg": {
+    "w": 1200,
+    "h": 800
   },
-  "lavender-field.jpg": {
-    "w": 1920,
-    "h": 1283
+  "words-motto.svg": {
+    "w": 1200,
+    "h": 800
   },
-  "new-york.jpg": {
-    "w": 1920,
-    "h": 1080
+  "sentence-funny-story.svg": {
+    "w": 800,
+    "h": 600
   },
-  "prague.jpg": {
-    "w": 1024,
-    "h": 601
+  "sentence-travel.svg": {
+    "w": 800,
+    "h": 600
   },
-  "unicorn-magic.jpg": {
-    "w": 1536,
-    "h": 1024
+  "sentence-nature.svg": {
+    "w": 800,
+    "h": 600
   },
-  "dragon-castle.jpg": {
-    "w": 1122,
-    "h": 1402
+  "sentence-future.svg": {
+    "w": 800,
+    "h": 600
   },
-  "space-adventure.jpg": {
-    "w": 1536,
-    "h": 1024
+  "sentence-positive-message.svg": {
+    "w": 800,
+    "h": 600
   },
-  "ocean-kingdom.jpg": {
-    "w": 1536,
-    "h": 1024
+  "himalaya.svg": {
+    "w": 800,
+    "h": 600
   },
-  "cute-kittens.jpg": {
-    "w": 1536,
-    "h": 1024
+  "ocean.svg": {
+    "w": 800,
+    "h": 600
+  },
+  "moon.svg": {
+    "w": 800,
+    "h": 600
+  },
+  "compass.svg": {
+    "w": 800,
+    "h": 600
+  },
+  "aurora-abstraction.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "carpathian-folk-painting.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "botanical-mosaic-painting.webp": {
+    "w": 1376,
+    "h": 768
+  },
+  "coastal-color-study.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "night-garden-painting.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "fagaras-sunrise.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "danube-delta-mist.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "apuseni-karst.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "transfagarasan-autumn.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "rila-lake.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "bran-castle-dawn.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "palace-parliament-dusk.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "corvin-castle.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "sighisoara-clock-tower.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "maramures-wooden-church.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "carpathian-beech-forest.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "danube-pelicans.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "red-deer-meadow.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "poppy-meadow.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "ice-cave.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "bucharest-calea-victoriei.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "sibiu-square.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "cluj-unirii-square.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "timisoara-union-square.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "brasov-council-square.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-bran-castle.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-modern-pavilion.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-observatory.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-bridge.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-greenhouse.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-train-station.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-library.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-amphitheater.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-lighthouse.webp": {
+    "w": 1800,
+    "h": 1200
+  },
+  "blueprint-courtyard-house.webp": {
+    "w": 1800,
+    "h": 1200
   }
 }

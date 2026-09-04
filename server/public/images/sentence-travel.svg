@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0ea5e9"/><stop offset="1" stop-color="#7dd3fc"/></linearGradient></defs>
+  <rect width="800" height="600" fill="url(#sky)"/>
+  <path d="M0 420 L180 260 L320 380 L470 220 L640 400 L800 300 L800 600 L0 600 Z" fill="#0369a1" opacity=".55"/>
+  <path d="M0 470 L160 360 L340 460 L520 330 L700 470 L800 420 L800 600 L0 600 Z" fill="#075985" opacity=".8"/>
+  <g>
+    <circle cx="640" cy="120" r="46" fill="#fde68a"/>
+    <path d="M120 150 q30 -26 60 0 q30 -26 60 0" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <g transform="translate(330 110) rotate(12)">
+      <ellipse cx="0" cy="0" rx="90" ry="26" fill="#fff"/>
+      <circle cx="70" cy="-14" r="24" fill="#fff"/>
+      <path d="M-90 0 L-150 -34 L-138 0 L-150 34 Z" fill="#fff"/>
+      <rect x="-40" y="22" width="70" height="10" rx="5" fill="#e2e8f0"/>
+    </g>
+    <text x="400" y="545" font-family="Georgia, serif" font-size="44" font-weight="bold" fill="#fff" text-anchor="middle">Travel</text>
+  </g>
+</svg>

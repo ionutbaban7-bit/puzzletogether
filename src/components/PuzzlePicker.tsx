@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { api } from "../lib/api";
-import { Modal, Spinner } from "./ui";
-import { T } from "../lib/i18n";
+import { CategoryGlyph, Modal, Spinner } from "./ui";
+import { T, useLang } from "../lib/i18n";
 import type { CatalogData, RoomView } from "../types";
 
 const CATEGORY_EMOJI: Record<string, string> = {
-  "kids-magic": "🪄",
+  "letter-canvas": "✍️",
+  "sentence-canvas": "💬",
   paintings: "🎨",
   landscapes: "🏔️",
   landmarks: "🗼",
@@ -13,6 +14,7 @@ const CATEGORY_EMOJI: Record<string, string> = {
   cities: "🏙️",
   coaching: "🧭",
 };
+const CANVAS_CATEGORIES = new Set(["letter-canvas", "sentence-canvas"]);
 
 /**
  * In-room puzzle picker: lets the host start a different puzzle/activity in
@@ -27,10 +29,12 @@ export default function PuzzlePicker({
   youId: string | null;
   onClose: () => void;
 }) {
+  const { lang } = useLang();
   const [catalog, setCatalog] = useState<CatalogData | null>(null);
   const [category, setCategory] = useState<string>("");
   const [puzzleId, setPuzzleId] = useState<string | null>(null);
   const [difficulty, setDifficulty] = useState<string>(room.difficulty || "medium");
+  const [contentLanguage, setContentLanguage] = useState<"ro" | "en">(room.contentLanguage === "en" ? "en" : "ro");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -49,10 +53,11 @@ export default function PuzzlePicker({
 
   async function handleStart() {
     if (!canStart || !youId || busy) return;
+    if (!window.confirm(lang === "ro" ? "Progresul activității curente se va pierde. Pregătești următoarea activitate?" : "Current activity progress will be lost. Prepare the next activity?")) return;
     setBusy(true);
     setError("");
     try {
-      await api.changePuzzle(room.id, puzzleId!, difficulty, youId);
+      await api.changePuzzle(room.id, puzzleId!, difficulty, youId, selectedPuzzle && CANVAS_CATEGORIES.has(selectedPuzzle.category) ? contentLanguage : undefined);
       onClose(); // everyone (including us) switches via the websocket broadcast
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not change the puzzle.");
@@ -62,7 +67,7 @@ export default function PuzzlePicker({
 
   return (
     <Modal onClose={busy ? undefined : onClose}>
-      <div className="overlay-card flex max-h-[85vh] w-[680px] max-w-[94vw] flex-col p-6">
+      <div className="overlay-card flex max-h-[calc(100dvh-1.5rem)] overflow-y-auto w-[680px] max-w-[94vw] flex-col p-6">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h2 className="font-display text-xl font-bold text-white">
@@ -102,6 +107,7 @@ export default function PuzzlePicker({
                   onClick={() => {
                     setCategory(c.id);
                     setPuzzleId(null);
+                    setDifficulty(CANVAS_CATEGORIES.has(c.id) ? "quick" : "medium");
                   }}
                   className={`rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition ${
                     category === c.id
@@ -109,7 +115,7 @@ export default function PuzzlePicker({
                       : "border-white/15 bg-white/5 text-ink-200 hover:bg-white/10"
                   }`}
                 >
-                  <span className="mr-1.5">{CATEGORY_EMOJI[c.id] || c.icon}</span>
+                  <span className="mr-1.5"><CategoryGlyph id={c.id} fallback={CATEGORY_EMOJI[c.id] || c.icon} /></span>
                   {c.name}
                 </button>
               ))}
@@ -146,9 +152,17 @@ export default function PuzzlePicker({
                   >
                     <div className="aspect-[4/3] overflow-hidden bg-ink-900">
                       <img
-                        src={p.image}
+                        src={p.thumbnail || p.image}
                         alt={p.name}
                         loading="lazy"
+                        decoding="async"
+                        onError={(event) => {
+                          // If a thumbnail cache entry is unavailable, make a
+                          // single graceful retry with the board's full image.
+                          if (!p.thumbnail || event.currentTarget.dataset.fullFallback === "true") return;
+                          event.currentTarget.dataset.fullFallback = "true";
+                          event.currentTarget.src = p.image;
+                        }}
                         className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.04]"
                       />
                     </div>
@@ -203,10 +217,10 @@ export default function PuzzlePicker({
             {category && !isCoaching && (
               <div>
                 <div className="text-[11px] font-bold uppercase tracking-wider text-ink-400">
-                  <T value={{ ro: "Dificultate", en: "Difficulty" }} />
+                  {CANVAS_CATEGORIES.has(category) ? <T value={{ ro: "Modul foii", en: "Sheet mode" }} /> : <T value={{ ro: "Dificultate", en: "Difficulty" }} />}
                 </div>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {catalog.difficulties.map((d) => (
+                  {((CANVAS_CATEGORIES.has(category) ? catalog.canvasModes || [] : catalog.difficulties) as { id: string; name: string; pieces: number; tiles?: number }[]).map((d) => (
                     <button
                       key={d.id}
                       onClick={() => setDifficulty(d.id)}
@@ -217,10 +231,33 @@ export default function PuzzlePicker({
                       }`}
                     >
                       <span className="text-[13px] font-bold">{d.name}</span>
-                      <span className="ml-1.5 text-[11px] text-ink-300">{d.pieces}p</span>
+                      <span className="ml-1.5 text-[11px] text-ink-300">{CANVAS_CATEGORIES.has(category) ? (d.tiles === 0 ? "∞" : d.tiles) : d.pieces}p</span>
                     </button>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {CANVAS_CATEGORIES.has(category) && (
+              <div>
+                <div className="text-[11px] font-bold uppercase tracking-wider text-ink-400">
+                  <T value={{ ro: "Limba conținutului", en: "Content language" }} />
+                </div>
+                <div className="mt-2 flex gap-2">
+                  {(["ro", "en"] as const).map((l) => (
+                    <button
+                      key={l}
+                      onClick={() => setContentLanguage(l)}
+                      className={`rounded-xl border px-4 py-2 text-left transition ${contentLanguage === l ? "border-brand-500 bg-brand-600/20 text-white" : "border-white/10 bg-white/5 text-ink-200 hover:bg-white/10"}`}
+                    >
+                      <span className="text-[13px] font-bold">{l.toUpperCase()}</span>
+                      <span className="ml-1.5 text-[11px] text-ink-300">{l === "ro" ? "Ă Â Î Ș Ț" : "A–Z"}</span>
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-1.5 text-[11px] text-ink-400">
+                  <T value={{ ro: "Limba cărților — separată de limba interfeței.", en: "The tiles' language — separate from the interface language." }} />
+                </p>
               </div>
             )}
 
@@ -247,7 +284,7 @@ export default function PuzzlePicker({
             <T value={{ ro: "Anulează", en: "Cancel" }} />
           </button>
           <button className="btn-primary btn-sm" disabled={!canStart || busy} onClick={handleStart}>
-            {busy ? <Spinner /> : <>▶ <T value={{ ro: "Începe pentru toți", en: "Start for everyone" }} /></>}
+            {busy ? <Spinner /> : <>→ <T value={{ ro: "Pregătește lobby-ul", en: "Prepare lobby" }} /></>}
           </button>
         </div>
       </div>

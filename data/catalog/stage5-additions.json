@@ -1,0 +1,1345 @@
+{
+  "version": 1,
+  "licensePolicy": "Each original is dedicated by PuzzleTogether to CC0 1.0 after visual review. The prompt and resulting archived original are source documentation; no third-party source image was supplied.",
+  "entries": [
+    {
+      "id": "aurora-abstraction",
+      "category": "paintings",
+      "name": {
+        "ro": "Abstracție aurorală",
+        "en": "Aurora Abstraction"
+      },
+      "alt": {
+        "ro": "Pictură abstractă cu panglici de lumină în albastru, roz și violet.",
+        "en": "Abstract painting with ribbons of blue, pink, and purple light."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail contemporary aurora oil painting, azure hot pink purple ribbon texture, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:12e7d0d0c9f61a29ba9eb5c95f232fc134abf04445fa005be805305aa166dcd9",
+        "originalInputFilename": "aurora-abstraction.png"
+      }
+    },
+    {
+      "id": "carpathian-folk-painting",
+      "category": "paintings",
+      "name": {
+        "ro": "Coline carpatine",
+        "en": "Carpathian Hills"
+      },
+      "alt": {
+        "ro": "Pictură cu coline, câmpuri și munți carpatini.",
+        "en": "Painting of Carpathian hills, fields, and mountains."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Carpathian folk-art landscape painting, patchwork hills and wildflowers, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:5903a431b5492c56281f7aadf8d95a0f3731b81bf64aea6dbaf78c123cf20eb4",
+        "originalInputFilename": "carpathian-folk-painting.png"
+      }
+    },
+    {
+      "id": "botanical-mosaic-painting",
+      "category": "paintings",
+      "name": {
+        "ro": "Mozaic botanic",
+        "en": "Botanical Mosaic"
+      },
+      "alt": {
+        "ro": "Pictură densă cu frunze, flori și forme botanice.",
+        "en": "Dense painting of leaves, flowers, and botanical forms."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail lush botanical mosaic painting with detailed leaves and flowers, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:f796953c8b682becbbfb45b5e557643f615acbbea5fd0b8a40ed29e500422a1c",
+        "originalInputFilename": "botanical-mosaic-painting.png"
+      }
+    },
+    {
+      "id": "coastal-color-study",
+      "category": "paintings",
+      "name": {
+        "ro": "Studiu de coastă",
+        "en": "Coastal Colour Study"
+      },
+      "alt": {
+        "ro": "Pictură impresionistă cu mare, stânci și apus.",
+        "en": "Impressionist painting of sea, rocks, and sunset."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail impressionist rocky coast at sunset, turquoise and violet brushwork, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:639592140e5b1128487318b345feee8d4e8351691081ea35312a3bfb4d4fb3a9",
+        "originalInputFilename": "coastal-color-study.png"
+      }
+    },
+    {
+      "id": "night-garden-painting",
+      "category": "paintings",
+      "name": {
+        "ro": "Grădină de noapte",
+        "en": "Night Garden"
+      },
+      "alt": {
+        "ro": "Pictură nocturnă cu flori luminoase și frunziș indigo.",
+        "en": "Night painting with luminous flowers and indigo foliage."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail luminous moonlit garden painting, indigo foliage and bright flowers, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:4badb9e50486c4151db2a2f74dd2700227754156d6fcec07cda0f2a030390228",
+        "originalInputFilename": "night-garden-painting.png"
+      }
+    },
+    {
+      "id": "fagaras-sunrise",
+      "category": "landscapes",
+      "name": {
+        "ro": "Răsărit în Făgăraș",
+        "en": "Făgăraș Sunrise"
+      },
+      "alt": {
+        "ro": "Răsărit peste Munții Făgăraș, România.",
+        "en": "Sunrise over the Făgăraș Mountains, Romania."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Făgăraș Mountains sunrise, alpine river and wildflower meadow, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:1da35ef4ac9f881f8c55a4cb12328c11f287be2d1aa1e30d2d8d15c1b0de43ed",
+        "originalInputFilename": "fagaras-sunrise.png"
+      }
+    },
+    {
+      "id": "danube-delta-mist",
+      "category": "landscapes",
+      "name": {
+        "ro": "Ceață în Delta Dunării",
+        "en": "Danube Delta Mist"
+      },
+      "alt": {
+        "ro": "Canale și stuf în Delta Dunării, România, la răsărit.",
+        "en": "Channels and reeds in Romania's Danube Delta at dawn."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Danube Delta dawn mist, reeds and reflective channels, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:87961313461d1db3f7fd30dbbc89ea2c65df811bc28cbd281b3a0c307282cc6f",
+        "originalInputFilename": "danube-delta-mist.png"
+      }
+    },
+    {
+      "id": "apuseni-karst",
+      "category": "landscapes",
+      "name": {
+        "ro": "Carst în Apuseni",
+        "en": "Apuseni Karst"
+      },
+      "alt": {
+        "ro": "Stânci calcaroase și pădure în Munții Apuseni, România.",
+        "en": "Limestone cliffs and forest in Romania's Apuseni Mountains."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Apuseni Mountains karst cliffs, beech forest, clear stream, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:b776d314b1d963ac9a4fd50bb805ee1c1ba26ca85c6f4d06f94ed5481cb596e1",
+        "originalInputFilename": "apuseni-karst.png"
+      }
+    },
+    {
+      "id": "transfagarasan-autumn",
+      "category": "landscapes",
+      "name": {
+        "ro": "Transfăgărășan de toamnă",
+        "en": "Transfăgărășan in Autumn"
+      },
+      "alt": {
+        "ro": "Drum montan prin pădure de toamnă, România.",
+        "en": "Mountain road through autumn forest, Romania."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Transfăgărășan winding road, autumn forest and alpine lake, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:49159f3dc008fd77f0a3d4f170f8649e172d82ba1908c78aa3846cdf7d3ef453",
+        "originalInputFilename": "transfagarasan-autumn.png"
+      }
+    },
+    {
+      "id": "rila-lake",
+      "category": "landscapes",
+      "name": {
+        "ro": "Lac în Rila",
+        "en": "Rila Mountain Lake"
+      },
+      "alt": {
+        "ro": "Lac alpin și vârfuri de granit în Munții Rila.",
+        "en": "Alpine lake and granite peaks in the Rila Mountains."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Rila Mountains alpine lake, granite reflection and clouds, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:a5c866541dc5d59128b601c4e31a6a83d1692fa635855b4a0e0415728aff5ca8",
+        "originalInputFilename": "rila-lake.png"
+      }
+    },
+    {
+      "id": "bran-castle-dawn",
+      "category": "landmarks",
+      "name": {
+        "ro": "Castelul Bran la răsărit",
+        "en": "Bran Castle at Dawn"
+      },
+      "alt": {
+        "ro": "Castelul Bran pe o culme împădurită, România.",
+        "en": "Bran Castle on a wooded ridge, Romania."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Bran Castle dawn, Carpathian mist, intricate stone towers, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:c96a5674a3aa6522e4e7db7ac62c68eb91a02ff61f37f13236f146140375e87c",
+        "originalInputFilename": "bran-castle-dawn.png"
+      }
+    },
+    {
+      "id": "palace-parliament-dusk",
+      "category": "landmarks",
+      "name": {
+        "ro": "Palatul Parlamentului",
+        "en": "Palace of Parliament"
+      },
+      "alt": {
+        "ro": "Fațada Palatului Parlamentului din București, la ceas albastru.",
+        "en": "Palace of Parliament facade in Bucharest at blue hour."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Palace of Parliament Bucharest at blue hour, detailed architecture, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:94039456c35826ff5e6b42de49c8e8c744552f7be38de0a8a61ee102e3721bfd",
+        "originalInputFilename": "palace-parliament-dusk.png"
+      }
+    },
+    {
+      "id": "corvin-castle",
+      "category": "landmarks",
+      "name": {
+        "ro": "Castelul Corvinilor",
+        "en": "Corvin Castle"
+      },
+      "alt": {
+        "ro": "Castelul Corvinilor și podul său de lemn, Hunedoara.",
+        "en": "Corvin Castle and its timber bridge, Hunedoara."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Corvin Castle, gothic towers, timber bridge and autumn trees, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:d03095eefa2c89ac15f0bfb6c9a98d68988737528e6d37135cedfa3917044b5a",
+        "originalInputFilename": "corvin-castle.png"
+      }
+    },
+    {
+      "id": "sighisoara-clock-tower",
+      "category": "landmarks",
+      "name": {
+        "ro": "Turnul cu ceas din Sighișoara",
+        "en": "Sighișoara Clock Tower"
+      },
+      "alt": {
+        "ro": "Turnul cu ceas și acoperișuri istorice din Sighișoara.",
+        "en": "Clock Tower and historic roofs in Sighișoara."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Sighișoara Clock Tower, colorful historic roofs and cobbled square, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:e933c293fc6dcbcb16ddad25192725db11a296e5db141287da0c1a417d5b8901",
+        "originalInputFilename": "sighisoara-clock-tower.png"
+      }
+    },
+    {
+      "id": "maramures-wooden-church",
+      "category": "landmarks",
+      "name": {
+        "ro": "Biserică din lemn în Maramureș",
+        "en": "Maramureș Wooden Church"
+      },
+      "alt": {
+        "ro": "Biserică tradițională din lemn în Maramureș, România.",
+        "en": "Traditional wooden church in Maramureș, Romania."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Maramureș wooden church, tall timber spire, meadow and mountains, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:c23860899884269f5f3c3a2c1e256c540ba53a88a881ccf6509e15537f75fcac",
+        "originalInputFilename": "maramures-wooden-church.png"
+      }
+    },
+    {
+      "id": "carpathian-beech-forest",
+      "category": "nature",
+      "name": {
+        "ro": "Pădure de fag carpatină",
+        "en": "Carpathian Beech Forest"
+      },
+      "alt": {
+        "ro": "Pădure de fag cu lumină filtrată în Carpați.",
+        "en": "Beech forest with filtered light in the Carpathians."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Carpathian ancient beech forest, shafts of sunlight, rich natural detail, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:f86b8a93914b606524f85d8aaac860595f6d0b8c188459cbdf80971b71378ed8",
+        "originalInputFilename": "carpathian-beech-forest.png"
+      }
+    },
+    {
+      "id": "danube-pelicans",
+      "category": "nature",
+      "name": {
+        "ro": "Pelicani în Deltă",
+        "en": "Pelicans in the Delta"
+      },
+      "alt": {
+        "ro": "Pelicani deasupra apelor din Delta Dunării.",
+        "en": "Pelicans above the waters of the Danube Delta."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Danube Delta pelicans, calm water, reeds and morning light, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:54d493a68fd2a5be20c3b3faaae744642321a6c781916f81f2e4ed5c71ca248f",
+        "originalInputFilename": "danube-pelicans.png"
+      }
+    },
+    {
+      "id": "red-deer-meadow",
+      "category": "nature",
+      "name": {
+        "ro": "Cerb în poiană",
+        "en": "Red Deer Meadow"
+      },
+      "alt": {
+        "ro": "Cerb într-o poiană de munte la amurg.",
+        "en": "Red deer in a mountain meadow at dusk."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail red deer small in a Carpathian meadow at dusk, landscape is main subject, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:dd3df2a0707f97d3afb93e3e706d0dbe82b2e0b373750fa15959b8cecc1cdece",
+        "originalInputFilename": "red-deer-meadow.png"
+      }
+    },
+    {
+      "id": "poppy-meadow",
+      "category": "nature",
+      "name": {
+        "ro": "Poiană cu maci",
+        "en": "Poppy Meadow"
+      },
+      "alt": {
+        "ro": "Poiană cu maci roșii, iarbă și nori de vară.",
+        "en": "Meadow of red poppies, grass, and summer clouds."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail wild red poppy meadow, rolling grass and summer clouds, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-03",
+        "visualReview": "passed: 2026-09-03 manual visual review — detailed; no text, logo, watermark, superimposed puzzle pattern, or identifiable person as main subject.",
+        "rawInputChecksum": "sha256:9ed36d956fb0e4a95ec47e86d4724fcd6605a434f33515be1e6c039938fc4a10",
+        "originalInputFilename": "poppy-meadow.png"
+      }
+    },
+    {
+      "id": "ice-cave",
+      "category": "nature",
+      "name": {
+        "ro": "Peșteră de gheață",
+        "en": "Ice Cave"
+      },
+      "alt": {
+        "ro": "Formațiuni de gheață albastre într-o peșteră.",
+        "en": "Blue ice formations inside a cave."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail blue ice cave, crystalline formations and reflected light, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "bucharest-calea-victoriei",
+      "category": "cities",
+      "name": {
+        "ro": "Calea Victoriei, București",
+        "en": "Calea Victoriei, Bucharest"
+      },
+      "alt": {
+        "ro": "Clădiri istorice pe Calea Victoriei, București, fără oameni în prim-plan.",
+        "en": "Historic buildings on Calea Victoriei, Bucharest, with no foreground people."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Bucharest Calea Victoriei architectural streetscape, early morning, no people, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "sibiu-square",
+      "category": "cities",
+      "name": {
+        "ro": "Piața Mare, Sibiu",
+        "en": "Grand Square, Sibiu"
+      },
+      "alt": {
+        "ro": "Piața Mare din Sibiu, cu clădiri colorate.",
+        "en": "Sibiu's Grand Square with colorful historic buildings."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Sibiu Grand Square, colorful historic facades, no people, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "cluj-unirii-square",
+      "category": "cities",
+      "name": {
+        "ro": "Piața Unirii, Cluj",
+        "en": "Unirii Square, Cluj"
+      },
+      "alt": {
+        "ro": "Piața Unirii din Cluj, cu arhitectură istorică.",
+        "en": "Unirii Square in Cluj with historic architecture."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Cluj Unirii Square architectural panorama, no people, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "timisoara-union-square",
+      "category": "cities",
+      "name": {
+        "ro": "Piața Unirii, Timișoara",
+        "en": "Union Square, Timișoara"
+      },
+      "alt": {
+        "ro": "Piața Unirii din Timișoara, cu fațade baroce.",
+        "en": "Timișoara's Union Square with baroque facades."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Timișoara Union Square colorful baroque facades, no people, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "brasov-council-square",
+      "category": "cities",
+      "name": {
+        "ro": "Piața Sfatului, Brașov",
+        "en": "Council Square, Brașov"
+      },
+      "alt": {
+        "ro": "Piața Sfatului din Brașov, cu munți în fundal.",
+        "en": "Brașov's Council Square with mountains behind it."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail Brașov Council Square, historic facades and mountains, no people, suitable for a rich jigsaw with no superimposed puzzle grid or puzzle-piece outlines, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "iso-floating-garden",
+      "category": "isometric-worlds",
+      "name": {
+        "ro": "Grădină plutitoare",
+        "en": "Floating Garden"
+      },
+      "alt": {
+        "ro": "Insule de grădină plutind deasupra norilor.",
+        "en": "Garden islands floating above clouds."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail floating garden islands with waterfalls and miniature glass greenhouse, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "iso-harbor-village",
+      "category": "isometric-worlds",
+      "name": {
+        "ro": "Sat-port izometric",
+        "en": "Isometric Harbour Village"
+      },
+      "alt": {
+        "ro": "Sat-port miniatural cu cheiuri și bărci goale.",
+        "en": "Miniature harbour village with quays and empty boats."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail coastal harbour village with quays, empty boats, tiled roofs, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "iso-solar-observatory",
+      "category": "isometric-worlds",
+      "name": {
+        "ro": "Observator solar",
+        "en": "Solar Observatory"
+      },
+      "alt": {
+        "ro": "Observator miniatural pe o insulă stâncoasă.",
+        "en": "Miniature observatory on a rocky island."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail mountain solar observatory with domes, panels and paths, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "iso-mountain-railway",
+      "category": "isometric-worlds",
+      "name": {
+        "ro": "Cale ferată montană",
+        "en": "Mountain Railway"
+      },
+      "alt": {
+        "ro": "Cale ferată miniaturală prin munți și viaducte.",
+        "en": "Miniature railway through mountains and viaducts."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail mountain railway diorama, viaduct, tunnels and alpine trees, no train text, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "iso-desert-oasis",
+      "category": "isometric-worlds",
+      "name": {
+        "ro": "Oază în deșert",
+        "en": "Desert Oasis"
+      },
+      "alt": {
+        "ro": "Oază miniaturală cu palmieri și canale.",
+        "en": "Miniature oasis with palms and canals."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail desert oasis diorama with palms, canals, stone terraces, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "iso-coastal-lighthouse",
+      "category": "isometric-worlds",
+      "name": {
+        "ro": "Far izometric",
+        "en": "Isometric Lighthouse"
+      },
+      "alt": {
+        "ro": "Far pe o stâncă, cu valuri și grădini terasate.",
+        "en": "Lighthouse on a cliff with waves and terrace gardens."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail coastal lighthouse diorama, rocky cliffs, waves and terrace gardens, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "iso-forest-workshop",
+      "category": "isometric-worlds",
+      "name": {
+        "ro": "Atelier în pădure",
+        "en": "Forest Workshop"
+      },
+      "alt": {
+        "ro": "Atelier miniatural din lemn într-o pădure.",
+        "en": "Miniature timber workshop in a forest."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail forest workshop diorama, timber cabin, tools without text, paths, trees, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "iso-arctic-research",
+      "category": "isometric-worlds",
+      "name": {
+        "ro": "Stație arctică",
+        "en": "Arctic Research Station"
+      },
+      "alt": {
+        "ro": "Stație de cercetare miniaturală între ghețari.",
+        "en": "Miniature research station between icebergs."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail arctic research station diorama, icebergs, aurora and equipment, no people, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "iso-river-market",
+      "category": "isometric-worlds",
+      "name": {
+        "ro": "Piață pe râu",
+        "en": "River Market"
+      },
+      "alt": {
+        "ro": "Piață miniaturală cu tarabe goale pe malul râului.",
+        "en": "Miniature market with empty stalls by a river."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail river market diorama, empty colorful stalls, bridges and boats, no people, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "iso-sky-islands",
+      "category": "isometric-worlds",
+      "name": {
+        "ro": "Insule cerești",
+        "en": "Sky Islands"
+      },
+      "alt": {
+        "ro": "Insule miniaturale unite prin poduri deasupra norilor.",
+        "en": "Miniature islands linked by bridges above clouds."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail sky islands diorama, bridges, windmills with no text, waterfalls, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "abstract-azure-arches",
+      "category": "abstract-geometry",
+      "name": {
+        "ro": "Arce azurii",
+        "en": "Azure Arches"
+      },
+      "alt": {
+        "ro": "Arce geometrice azurii pe fundal întunecat.",
+        "en": "Azure geometric arches on a dark ground."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail layered azure arches, deep navy ground, fine grain and reflections, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "abstract-pink-orbit",
+      "category": "abstract-geometry",
+      "name": {
+        "ro": "Orbită roz",
+        "en": "Pink Orbit"
+      },
+      "alt": {
+        "ro": "Inele roz și mov în mișcare circulară.",
+        "en": "Pink and purple rings in circular motion."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail hot pink and violet orbital rings, dark field, fine particles, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "abstract-violet-lattice",
+      "category": "abstract-geometry",
+      "name": {
+        "ro": "Rețea violetă",
+        "en": "Violet Lattice"
+      },
+      "alt": {
+        "ro": "Rețea geometrică violetă cu lumini albastre.",
+        "en": "Violet geometric lattice with blue lights."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail intricate violet lattice, azure nodes, dimensional paper layers, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "abstract-crystalline",
+      "category": "abstract-geometry",
+      "name": {
+        "ro": "Cristalin",
+        "en": "Crystalline"
+      },
+      "alt": {
+        "ro": "Fațete colorate ca niște cristale.",
+        "en": "Colorful facets like crystals."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail translucent crystalline facets, blue pink violet light, precise geometry, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "abstract-tessellation",
+      "category": "abstract-geometry",
+      "name": {
+        "ro": "Teselare",
+        "en": "Tessellation"
+      },
+      "alt": {
+        "ro": "Mozaic dens de forme geometrice.",
+        "en": "Dense mosaic of geometric shapes."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail complex seamless tessellation, azure pink purple and gold, tactile relief, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "abstract-fluid-topography",
+      "category": "abstract-geometry",
+      "name": {
+        "ro": "Topografie fluidă",
+        "en": "Fluid Topography"
+      },
+      "alt": {
+        "ro": "Linii topografice fluide și culori stratificate.",
+        "en": "Fluid contour lines and layered colors."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail fluid topographic contour layers, rich blue magenta purple gradients, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "abstract-paper-folds",
+      "category": "abstract-geometry",
+      "name": {
+        "ro": "Pliuri de hârtie",
+        "en": "Paper Folds"
+      },
+      "alt": {
+        "ro": "Pliuri geometrice luminoase, ca origami.",
+        "en": "Luminous geometric folds like origami."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail detailed paper folds, origami geometry, azure pink purple shadows, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "abstract-solar-rings",
+      "category": "abstract-geometry",
+      "name": {
+        "ro": "Inele solare",
+        "en": "Solar Rings"
+      },
+      "alt": {
+        "ro": "Inele concentrice luminoase cu texturi fine.",
+        "en": "Luminous concentric rings with fine texture."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail concentric solar rings, glowing coral pink, azure and midnight blue, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "abstract-kinetic-grid",
+      "category": "abstract-geometry",
+      "name": {
+        "ro": "Grilă cinetică",
+        "en": "Kinetic Grid"
+      },
+      "alt": {
+        "ro": "Grilă din linii și puncte în mișcare.",
+        "en": "Grid of moving lines and dots."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail kinetic geometric grid, shifting azure and purple planes, fine detail, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "abstract-night-mosaic",
+      "category": "abstract-geometry",
+      "name": {
+        "ro": "Mozaic nocturn",
+        "en": "Night Mosaic"
+      },
+      "alt": {
+        "ro": "Mozaic abstract în albastru, violet și roz.",
+        "en": "Abstract mosaic in blue, purple, and pink."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail night mosaic of irregular tiles, dark blue pink purple luminous texture, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "blueprint-bran-castle",
+      "category": "blueprint-architecture",
+      "name": {
+        "ro": "Plan Castelul Bran",
+        "en": "Bran Castle Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural stilizat al Castelului Bran.",
+        "en": "Stylized architectural plan of Bran Castle."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail architectural blueprint of Bran Castle, axonometric cutaway, lines only, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "blueprint-modern-pavilion",
+      "category": "blueprint-architecture",
+      "name": {
+        "ro": "Plan pavilion modern",
+        "en": "Modern Pavilion Blueprint"
+      },
+      "alt": {
+        "ro": "Plan detaliat al unui pavilion contemporan.",
+        "en": "Detailed plan of a contemporary pavilion."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail modern pavilion architectural blueprint, axonometric sections and technical lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "blueprint-observatory",
+      "category": "blueprint-architecture",
+      "name": {
+        "ro": "Plan observator",
+        "en": "Observatory Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unui observator cu dom.",
+        "en": "Architectural plan of a domed observatory."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail domed observatory blueprint, sectional axonometric design, precise lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "blueprint-bridge",
+      "category": "blueprint-architecture",
+      "name": {
+        "ro": "Plan pod suspendat",
+        "en": "Suspension Bridge Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unui pod suspendat.",
+        "en": "Architectural plan of a suspension bridge."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail suspension bridge blueprint, multiple technical perspectives and line details, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "blueprint-greenhouse",
+      "category": "blueprint-architecture",
+      "name": {
+        "ro": "Plan seră",
+        "en": "Greenhouse Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unei sere modulare.",
+        "en": "Architectural plan of a modular greenhouse."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail modular greenhouse blueprint, glass structure axonometric cutaway and lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "blueprint-train-station",
+      "category": "blueprint-architecture",
+      "name": {
+        "ro": "Plan gară",
+        "en": "Train Station Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unei gări contemporane.",
+        "en": "Architectural plan of a contemporary train station."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail contemporary train station blueprint, roof trusses, platforms, axonometric lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "blueprint-library",
+      "category": "blueprint-architecture",
+      "name": {
+        "ro": "Plan bibliotecă",
+        "en": "Library Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unei biblioteci luminoase.",
+        "en": "Architectural plan of a bright library."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail library blueprint, reading rooms and shelves as axonometric technical drawing, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "blueprint-amphitheater",
+      "category": "blueprint-architecture",
+      "name": {
+        "ro": "Plan amfiteatru",
+        "en": "Amphitheater Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unui amfiteatru în aer liber.",
+        "en": "Architectural plan of an outdoor amphitheater."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail outdoor amphitheater blueprint, seating rings, stage and site plan, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "blueprint-lighthouse",
+      "category": "blueprint-architecture",
+      "name": {
+        "ro": "Plan far",
+        "en": "Lighthouse Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unui far de coastă.",
+        "en": "Architectural plan of a coastal lighthouse."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail coastal lighthouse blueprint, vertical section, stair and foundation lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    },
+    {
+      "id": "blueprint-courtyard-house",
+      "category": "blueprint-architecture",
+      "name": {
+        "ro": "Plan casă cu curte",
+        "en": "Courtyard House Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unei case cu curte interioară.",
+        "en": "Architectural plan of a courtyard house."
+      },
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "prompt": "Original high-detail courtyard house blueprint, floor plan and axonometric cutaway, precise lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+      "origin": "original-generated",
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject."
+      }
+    }
+  ]
+}
