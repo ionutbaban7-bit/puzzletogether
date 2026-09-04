@@ -2255,32 +2255,32 @@
       "activityId": null,
       "puzzleId": "bucharest-calea-victoriei",
       "name": {
-        "ro": "Big Ben, Londra",
-        "en": "Big Ben, London"
+        "ro": "Calea Victoriei, București",
+        "en": "Calea Victoriei, Bucharest"
       },
       "alt": {
-        "ro": "Big Ben și Palatul Westminster de-a lungul Tamisei, Londra, Regatul Unit",
-        "en": "Big Ben and the Palace of Westminster along the Thames, London, UK"
+        "ro": "Vedere urbană de-a lungul Căii Victoriei, București.",
+        "en": "Urban view along Calea Victoriei, Bucharest."
       },
-      "creator": "london.com.ua / London & Partners",
-      "sourceName": "london.com.ua",
-      "sourceUrl": "https://london.com.ua/big-ben-houses-of-parliament",
-      "license": "CC BY 4.0",
-      "licenseClass": "cc-by",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "attribution": "Big Ben & Houses of Parliament, London — CC BY 4.0",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "creator": "Stefan Jurca",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bucharest_Day_3_-_Victoriei_(9338461638).jpg",
+      "license": "CC BY-SA 2.0",
+      "licenseClass": "cc-by-sa",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+      "attribution": "Stefan Jurca — Bucharest Day 3 - Victoriei (9338461638), CC BY-SA 2.0, via Wikimedia Commons",
+      "changesMade": "resized from the Wikimedia Commons original; WebP full derivative and focal-point thumbnail generated for the puzzle catalog.",
       "downloadedAt": "2026-09-04",
-      "originalFilename": "big-ben-houses-of-parliament.jpg",
+      "originalFilename": "Bucharest Day 3 - Victoriei (9338461638).jpg",
       "focalPoint": [
-        0.5,
+        0.55,
         0.5
       ],
       "status": "verified",
       "issues": [],
-      "width": 1920,
-      "height": 1340,
-      "checksum": "sha256:37145a762132ce2d571e7227ce50551682956efd4fdf139449b17da9a406b43d",
+      "width": 4608,
+      "height": 3456,
+      "checksum": "sha256:45861baa016bb81ae1b73f0b064f9f4cd3edbb1a1ee52ad3cb668e73ecccec8f",
       "fullImage": "/images/full/bucharest-calea-victoriei.webp",
       "thumbnail": "/images/thumbs/bucharest-calea-victoriei.webp"
     },
@@ -2874,28 +2874,28 @@
         "en": "Antelope Canyon"
       },
       "alt": {
-        "ro": "Canionul Antelope, Arizona, SUA — formațiuni de gresie și raze de lumină",
-        "en": "Antelope Canyon, Arizona, USA — sandstone formations and light beams"
+        "ro": "Formațiuni ondulate din gresie în interiorul canionului Upper Antelope, Arizona, SUA.",
+        "en": "Wavy sandstone formations inside Upper Antelope Canyon, Arizona, USA."
       },
-      "creator": "arizona-leisure.com",
-      "sourceName": "arizona-leisure.com",
-      "sourceUrl": "https://www.arizona-leisure.com/antelope-canyon.html",
-      "license": "CC BY 4.0",
-      "licenseClass": "cc-by",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "attribution": "Antelope Canyon — CC BY 4.0",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
+      "creator": "Luca Galuzzi",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:USA_10150_Antelope_Canyon_Luca_Galuzzi_2007.jpg",
+      "license": "CC BY-SA 2.5",
+      "licenseClass": "cc-by-sa",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5/",
+      "attribution": "Luca Galuzzi — USA 10150 Antelope Canyon, CC BY-SA 2.5, via Wikimedia Commons",
+      "changesMade": "resized from the Wikimedia Commons original; WebP full derivative and focal-point thumbnail generated for the puzzle catalog.",
       "downloadedAt": "2026-09-04",
-      "originalFilename": "antelope-canyon.jpg",
+      "originalFilename": "USA 10150 Antelope Canyon Luca Galuzzi 2007.jpg",
       "focalPoint": [
         0.5,
         0.5
       ],
       "status": "verified",
       "issues": [],
-      "width": 1600,
-      "height": 1067,
-      "checksum": "sha256:f81bb03f5080a39a6acbfebd1b6637d9cd04116f117acf6e841dc9a744ff148e",
+      "width": 2000,
+      "height": 1333,
+      "checksum": "sha256:4c8c2f26a817f71e47bda5e1689bd7efafcce02e94e12963d17415afa951557e",
       "fullImage": "/images/full/antelope-canyon.webp",
       "thumbnail": "/images/thumbs/antelope-canyon.webp"
     },

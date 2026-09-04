@@ -12,7 +12,7 @@ The Stage 5 import is recorded on **2026-09-03**: 29 active reviewed CC0 origina
 - Entries linked to a served puzzle: **73**
 - Archived prompt-directed originals: **29**
 - Orphan catalog records: **0**
-- Latest audit: **0 fatal**, **40 warning** (generated 2026-09-04T19:15:03.808Z)
+- Latest audit: **0 fatal**, **40 warning** (generated 2026-09-04T19:57:21.005Z)
 
 The audit enforces source and license URLs, bilingual metadata, focal points,
 source checksums, source/full/thumbnail files, dimensions, exact and perceptual
@@ -38,8 +38,8 @@ absence of any declared retired category from the public catalog.
 
 | Class | Entries |
 | --- | --- |
-| cc-by | 6 |
-| cc-by-sa | 15 |
+| cc-by | 4 |
+| cc-by-sa | 17 |
 | cc0 | 29 |
 | in-house | 13 |
 | pd | 14 |
@@ -66,7 +66,7 @@ derivative. Delisted historical records are retained separately in
 | `/images/blueprint-observatory.jpg` | Observatory Blueprint | blueprint-architecture | CC0 1.0 Universal | verified | blueprint-observatory | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/blueprint-train-station.jpg` | Train Station Blueprint | blueprint-architecture | CC0 1.0 Universal | verified | blueprint-train-station | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |
 | `/images/brasov-council-square.jpg` | Marina Bay, Singapore | cities | CC BY 4.0 | verified | brasov-council-square | gettyimages.com | [source](https://www.gettyimages.com/photos/singapore-skyline) |
-| `/images/bucharest-calea-victoriei.jpg` | Big Ben, London | cities | CC BY 4.0 | verified | bucharest-calea-victoriei | london.com.ua | [source](https://london.com.ua/big-ben-houses-of-parliament) |
+| `/images/bucharest-calea-victoriei.jpg` | Calea Victoriei, Bucharest | cities | CC BY-SA 2.0 | verified | bucharest-calea-victoriei | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Bucharest_Day_3_-_Victoriei_(9338461638).jpg) |
 | `/images/cluj-unirii-square.jpg` | Burj Khalifa, Dubai | cities | CC BY 4.0 | verified | cluj-unirii-square | gettyimages.com | [source](https://www.gettyimages.co.uk/photos/dubai-skyline-night) |
 | `/images/golden-gate.jpg` | Golden Gate Bridge | cities | CC BY-SA 4.0 | verified | golden-gate | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Golden_Gate_Bridge_as_seen_from_Marshall%E2%80%99s_Beach,_March_2018.jpg) |
 | `/images/paris-louvre.jpg` | The Louvre, Paris | cities | CC BY-SA 3.0 | verified | paris-louvre | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:Louvre_Museum_Wikimedia_Commons.jpg) |
@@ -100,7 +100,7 @@ derivative. Delisted historical records are retained separately in
 | `/images/words-innovation.svg` | Letter Canvas — Innovation | letter-canvas | All rights reserved — in-house work | verified | innovation-grid | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
 | `/images/words-motto.svg` | Letter Canvas — Team Values | letter-canvas | All rights reserved — in-house work | verified | team-motto | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
 | `/images/words-scrabble.svg` | Letter Canvas — Multicolor | letter-canvas | All rights reserved — in-house work | verified | letter-anagrams | PuzzleTogether (in-house) | [source](https://github.com/ionutbaban7-bit/puzzletogether) |
-| `/images/antelope-canyon.jpg` | Antelope Canyon | nature | CC BY 4.0 | verified | antelope-canyon | arizona-leisure.com | [source](https://www.arizona-leisure.com/antelope-canyon.html) |
+| `/images/antelope-canyon.jpg` | Antelope Canyon | nature | CC BY-SA 2.5 | verified | antelope-canyon | Wikimedia Commons | [source](https://commons.wikimedia.org/wiki/File:USA_10150_Antelope_Canyon_Luca_Galuzzi_2007.jpg) |
 | `/images/aurora.jpg` | Aurora Borealis | nature | Public domain (U.S. federal government work) | verified | aurora | Wikimedia Commons (USAF photo, 18 January 2005) | [source](https://commons.wikimedia.org/wiki/File:Aurora_Borealis_Alaska.jpg) |
 | `/images/bow-lake.jpg` | Bow Lake, Banff | nature | CC0 / Public Domain | verified | bow-lake | goodfreephotos.com (PD Photo.org / Wikimedia Commons) | [source](https://www.goodfreephotos.com/canada/alberta/banff-national-park/sunset-and-dusk-landscape-near-bow-lake-at-banff-national-park-alberta-canada.jpg.php) |
 | `/images/carpathian-beech-forest.jpg` | Carpathian Beech Forest | nature | CC0 1.0 Universal | verified | carpathian-beech-forest | PuzzleTogether original catalog | [source](https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals) |

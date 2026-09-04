@@ -73,8 +73,8 @@ every clock tick).
 | 5 | Full/thumb WebP derivs + manifest + API thumbnail mapping serve correctly | ✅ 325/325 |
 
 **Fixes:** replaced the low-quality procedural Ice Cave with a real Plitvice Lakes photo;
-retired the "spam" city placeholders for famous world cities (Big Ben/London,
-Empire State/New York, Burj Khalifa/Dubai, Colosseum/Rome, Marina Bay/Singapore);
+retired the misleading city placeholders and replaced them with accurately named
+landmark and city scenes;
 removed a watermarked NYC photo (clean Pexels shot for Empire State); added three real
 nature entries (Moraine Lake, Bow Lake, Antelope Canyon) plus Victoria Falls; fixed the
 moraine-lake duplicate entry; relaxed the overly-strict Stage 5 audit rule that would

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-04T19:17:18.600Z",
+  "generatedAt": "2026-09-04T19:57:21.005Z",
   "thresholds": {
     "MIN_LONG_EDGE": 900,
     "MIN_SHORT_EDGE": 600,
@@ -646,7 +646,7 @@
       "asset": "/images/bucharest-calea-victoriei.jpg",
       "category": "cities",
       "status": "verified",
-      "license": "CC BY 4.0",
+      "license": "CC BY-SA 2.0",
       "ok": true,
       "problems": []
     },
@@ -766,7 +766,7 @@
       "asset": "/images/antelope-canyon.jpg",
       "category": "nature",
       "status": "verified",
-      "license": "CC BY 4.0",
+      "license": "CC BY-SA 2.5",
       "ok": true,
       "problems": []
     },
