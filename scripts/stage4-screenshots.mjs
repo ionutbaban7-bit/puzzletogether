@@ -21,7 +21,7 @@ try {
   let context = await browser.newContext({ viewport: { width: 1440, height: 960 }, locale: "en-US" });
   let page = await context.newPage();
   await page.goto(BASE, { waitUntil: "networkidle" });
-  await page.getByRole("heading", { name: /Play\. Talk\. Decide\./i }).waitFor();
+  await page.getByRole("heading", { name: /Play\. Talk\. (Decide|Choose)\./i }).waitFor();
   await page.screenshot({ path: `${OUT}landing-desktop.png`, fullPage: true });
 
   await page.getByRole("button", { name: /Create session/i }).click();

@@ -17,7 +17,9 @@ try {
   await page.getByRole("button", { name: /Create session|Creează sesiune/i }).click();
   await page.getByRole("button", { name: /Team coaching/i }).click();
   await page.getByRole("button", { name: /The Himalayan Expedition/i }).click();
-  ok("coaching picker describes free ranking and gated reveal", await page.getByText(/Free ranking/).isVisible());
+  // The coaching catalog now offers multiple ranking exercises, so the
+  // descriptor appears on each card; any visible one satisfies the check.
+  ok("coaching picker describes free ranking and gated reveal", await page.getByText(/Free ranking/).first().isVisible());
   ok("coaching picker hides jigsaw difficulty", await page.getByText("Difficulty", { exact: true }).count() === 0);
   await page.getByRole("button", { name: /Continue/i }).click();
   await page.locator("#session-name").fill("Himalaya alignment");
@@ -48,7 +50,10 @@ try {
   });
   await page.waitForFunction(() => Object.values(window.__ptStore?.getState().pieces || {}).every((piece) => piece.placedOnSlot != null));
   ok("team can choose a non-expert permutation", (await page.evaluate(() => window.__ptStore.getState().pieces[0].placedOnSlot)) === 5);
-  await page.getByRole("button", { name: /Facilitate/i }).click();
+  // The desktop command row labels the host control with aria-label
+  // ("Facilitator controls"/"Controale facilitator"); the visible text is
+  // "Facilitate"/"Facilitează". Match any of the current accessible names.
+  await page.getByRole("button", { name: /Facilitate|Facilitator controls|Controale facilitator|Facilitează/i }).click();
   await page.getByText("Facilitator mode").waitFor();
   ok("facilitator dashboard exposes lock, timer, people and export", await page.getByText("Timer").isVisible() && await page.getByText("People").isVisible() && await page.getByText("Session recap").isVisible());
   await page.getByRole("button", { name: /Reveal/i }).last().click();

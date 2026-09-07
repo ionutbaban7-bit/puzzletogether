@@ -9,13 +9,32 @@ const checks = [];
 const ok = (name, value) => { checks.push(!!value); console.log(`${value ? "✅" : "❌"} ${name}`); };
 const browser = await chromium.launch(chromiumLaunchOptions());
 const errors = [];
-const watch = (page, label) => { page.on("pageerror", (error) => errors.push(`[${label}] ${error.message}`)); page.on("console", (message) => { if (message.type() === "error") errors.push(`[${label}] ${message.text()}`); }); };
+// A reconnect attempt that fails while the context is deliberately offline is
+// an expected outcome of the offline check, not an application error.
+const isExpectedOfflineError = (text) => /ERR_INTERNET_DISCONNECTED|ERR_NETWORK_CHANGED|ERR_INTERNET_DISCONNECTED/.test(text);
+const watch = (page, label) => { page.on("pageerror", (error) => errors.push(`[${label}] ${error.message}`)); page.on("console", (message) => { if (message.type() === "error" && !isExpectedOfflineError(message.text())) errors.push(`[${label}] ${message.text()}`); }); };
 try {
   const hostContext = await browser.newContext({ viewport: { width: 1280, height: 820 }, locale: "en-US" });
   const host = await hostContext.newPage(); watch(host, "host");
   await host.goto(BASE);
-  await host.getByRole("heading", { name: /Play\. Talk\. Decide\.|Jucați\. Vorbiți\. Decideți\./i }).waitFor();
+  await host.getByRole("heading", { name: /Play\. Talk\. (Decide|Choose)\.|Jucați\. Vorbiți\. (Decideți|Alegeți)\./i }).waitFor();
   ok("honest workshop landing renders", true);
+  // The external coaching companion must navigate in THIS tab (no target=_blank);
+  // its own in-app Back / browser Back return the user here.
+  const clarityTarget = await host.locator("a[href*='coaching-hub']").first().getAttribute("target");
+  ok("Clarity Express CTA keeps the same tab (no target=_blank)", clarityTarget === null);
+  // Showcase mosaic: real thumbnails decode (no broken-image icons), eager loading.
+  const showcase = await host.evaluate(() =>
+    Array.from(document.querySelectorAll("img[src*='/images/thumbs/']")).map((img) => ({
+      src: img.getAttribute("src"),
+      loaded: img.complete && img.naturalWidth > 0,
+      lazy: img.getAttribute("loading") === "lazy",
+    })),
+  );
+  ok(
+    `landing showcase images decode (${showcase.filter((s) => s.loaded).length}/${showcase.length})`,
+    showcase.length >= 5 && showcase.every((s) => s.loaded && !s.lazy),
+  );
   await host.screenshot({ path: `${ARTIFACTS}01-landing.png`, fullPage: true });
   await host.getByRole("button", { name: /Create session|Creează sesiune/i }).click();
   await host.getByRole("button", { name: /Paintings/i }).click();
@@ -32,6 +51,19 @@ try {
   ok("lobby shows access code and honest zero clock", await host.getByText(/Workshop lobby|Lobby de workshop/i).isVisible() && /^[A-HJ-NP-Z2-9]{6}$/.test(initial.room.code));
 
   const guestContext = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: "en-US" });
+  // Chromium's offline emulation does not tear down an established WebSocket.
+  // Instrument the constructor so the test can drop the live room socket from
+  // the page; the client then walks the same onclose → banner → freeze →
+  // reconnect → resync path a real network drop produces.
+  await guestContext.addInitScript(() => {
+    const OriginalWebSocket = window.WebSocket;
+    window.WebSocket = class extends OriginalWebSocket {
+      constructor(...args) {
+        super(...args);
+        window.__ptLastWs = this;
+      }
+    };
+  });
   const guest = await guestContext.newPage(); watch(guest, "guest");
   await guest.goto(host.url());
   await guest.getByText("Enter the room").waitFor();
@@ -50,6 +82,9 @@ try {
   ok("piece movement syncs across browsers", true);
 
   await guestContext.setOffline(true);
+  // See the addInitScript note: drop the live socket so onclose fires even in
+  // engines whose offline emulation leaves established sockets alive.
+  await guest.evaluate(() => window.__ptLastWs?.close());
   await guest.waitForSelector("text=Reconnecting", { timeout: 5000 });
   ok("offline state shows reconnect banner and freezes board", true);
   await guestContext.setOffline(false);

@@ -60,7 +60,7 @@ ok("non-Canvas team assignment is rejected by the server", nonCanvasTeamError.co
 nonCanvasHost.close();
 
 const created = await post("/api/rooms", {
-  puzzleId: "agile-words", difficulty: "quick", name: "Ana", sessionName: "Colour team contract", contentLanguage: "en", teamMode: "color-teams", teamCount: 2,
+  puzzleId: "letter-anagrams", difficulty: "quick", name: "Ana", sessionName: "Colour team contract", contentLanguage: "en", teamMode: "color-teams", teamCount: 2,
 });
 const { room, playerId: hostId } = created.data;
 ok("colour-team room is created with two named marker teams", created.status === 200 && room.teamMode === "color-teams" && room.teams?.length === 2 && room.teams.every((team) => team.marker && team.color));

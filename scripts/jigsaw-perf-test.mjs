@@ -39,7 +39,7 @@ async function openPlayRoom(difficultyLabel, report) {
   const page = await context.newPage();
   page.on("pageerror", (e) => errors.push(`[${difficultyLabel}] ${e.message}`));
   await page.goto(BASE);
-  await page.getByRole("heading", { name: /Play\. Talk\. Decide\.|Jucați\. Vorbiți\. Decideți\./i }).waitFor();
+  await page.getByRole("heading", { name: /Play\. Talk\. (Decide|Choose)\.|Jucați\. Vorbiți\. (Decideți|Alegeți)\./i }).waitFor();
   await page.getByRole("button", { name: /Create session|Creează sesiune/i }).click();
   await page.getByRole("button", { name: /Paintings/i }).click();
   await page.getByRole("button", { name: /Starry Night/i }).click();
@@ -58,9 +58,9 @@ async function openPlayRoom(difficultyLabel, report) {
 }
 
 async function measureIdle(page, difficultyLabel) {
-  const before = await page.evaluate(() => window.__ptDraws.count);
+  const before = await page.evaluate(() => window.__ptDraws.current.count);
   await sleep(2500);
-  const after = await page.evaluate(() => window.__ptDraws.count);
+  const after = await page.evaluate(() => window.__ptDraws.current.count);
   const delta = after - before;
   ok(`idle: no continuous redraw at ${difficultyLabel}`, delta <= 2, `${delta} draws in 2.5s (budget ≤ 2)`);
   return delta;
