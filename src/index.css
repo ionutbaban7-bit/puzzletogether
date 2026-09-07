@@ -87,6 +87,16 @@ body {
   }
 }
 
+/* The live board and the home page intentionally use the same deep navy
+   foundation. Other marketing screens keep their lighter surfaces. */
+.landing-page {
+  background-color: #0b0e1a;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
 @keyframes confetti-fall {
   0% {
     transform: translate3d(0, -10vh, 0) rotate(0deg);
