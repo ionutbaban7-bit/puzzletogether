@@ -103,39 +103,11 @@
     "w": 1920,
     "h": 1023
   },
-  "words-agile.svg": {
-    "w": 1200,
-    "h": 800
-  },
-  "words-innovation.svg": {
-    "w": 1200,
-    "h": 800
-  },
   "words-scrabble.svg": {
     "w": 1200,
     "h": 800
   },
-  "words-motto.svg": {
-    "w": 1200,
-    "h": 800
-  },
   "sentence-funny-story.svg": {
-    "w": 800,
-    "h": 600
-  },
-  "sentence-travel.svg": {
-    "w": 800,
-    "h": 600
-  },
-  "sentence-nature.svg": {
-    "w": 800,
-    "h": 600
-  },
-  "sentence-future.svg": {
-    "w": 800,
-    "h": 600
-  },
-  "sentence-positive-message.svg": {
     "w": 800,
     "h": 600
   },
@@ -255,46 +227,6 @@
     "w": 1600,
     "h": 1054
   },
-  "blueprint-bran-castle.webp": {
-    "w": 1800,
-    "h": 1200
-  },
-  "blueprint-modern-pavilion.webp": {
-    "w": 1800,
-    "h": 1200
-  },
-  "blueprint-observatory.webp": {
-    "w": 1800,
-    "h": 1200
-  },
-  "blueprint-bridge.webp": {
-    "w": 1800,
-    "h": 1200
-  },
-  "blueprint-greenhouse.webp": {
-    "w": 1800,
-    "h": 1200
-  },
-  "blueprint-train-station.webp": {
-    "w": 1800,
-    "h": 1200
-  },
-  "blueprint-library.webp": {
-    "w": 1800,
-    "h": 1200
-  },
-  "blueprint-amphitheater.webp": {
-    "w": 1800,
-    "h": 1200
-  },
-  "blueprint-lighthouse.webp": {
-    "w": 1800,
-    "h": 1200
-  },
-  "blueprint-courtyard-house.webp": {
-    "w": 1800,
-    "h": 1200
-  },
   "antelope-canyon.webp": {
     "w": 2000,
     "h": 1333
@@ -306,5 +238,25 @@
   "bow-lake.webp": {
     "w": 1400,
     "h": 1050
+  },
+  "inspiration-marcus-aurelius.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "inspiration-julius-caesar.webp": {
+    "w": 848,
+    "h": 1264
+  },
+  "inspiration-napoleon.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "inspiration-rumi.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "inspiration-alexander.webp": {
+    "w": 1264,
+    "h": 848
   }
 }

@@ -31,16 +31,19 @@ const camera = (page) => page.evaluate(() => {
 });
 const screenPos = async (page, tile) => {
   const c = await camera(page);
-  return { x: tile.x * c.scale + c.x, y: tile.y * c.scale + c.y };
+  // Screen-space centre of the tile (tile.w/h are world units).
+  return { x: (tile.x + tile.w / 2) * c.scale + c.x, y: (tile.y + tile.h / 2) * c.scale + c.y };
 };
 
 // ------------------------------------------------------------------ helpers
-async function createLobby(page, { categoryLabel, puzzleLabel, modeLabel, sessionName, name, contentLanguage = "ro", ro = false }) {
+async function createLobby(page, { categoryLabel, puzzleLabel, modeLabel = null, sessionName, name, contentLanguage = "ro", ro = false }) {
   await page.goto(BASE);
   await page.getByRole("button", { name: ro ? /Creează sesiune|Create session/i : /Create session/i }).click();
   await page.getByRole("button", { name: categoryLabel }).click();
   await page.getByRole("button", { name: puzzleLabel }).click();
-  await page.getByRole("button", { name: new RegExp(`^${modeLabel}`) }).click();
+  // The canvas v2 flow always creates the unlimited blank sheet; mode buttons
+  // no longer exist for canvas categories (only jigsaw shows difficulties).
+  if (modeLabel) await page.getByRole("button", { name: new RegExp(`^${modeLabel}`) }).click();
   if (contentLanguage) await page.getByRole("button", { name: new RegExp(contentLanguage === "ro" ? "RO · Română" : "EN · English") }).click();
   await page.getByRole("button", { name: /Continue|Continuă/i }).click();
   await page.locator("#session-name").fill(sessionName);
@@ -61,13 +64,17 @@ const desktop = await browser.newContext({ viewport: { width: 1280, height: 820 
 const page = await desktop.newPage();
 watch(page, "desktop");
 
-await createLobby(page, { categoryLabel: "Letter Canvas", puzzleLabel: "Agile Values Letter Canvas", modeLabel: "Quick", sessionName: "Canvas browser test", name: "Ionut" });
+await createLobby(page, { categoryLabel: "Letter Canvas", puzzleLabel: "Blank Letter Canvas", sessionName: "Canvas browser test", name: "Ionut" });
 const state0 = await store(page);
 ok("desktop: lobby boots the letter canvas (blank sheet, RO content)", state0.room.stage === "lobby" && state0.room.contentLanguage === "ro" && state0.puzzle.isCanvas === true && Object.keys(state0.canvasTiles).length === 0);
 ok("desktop: lobby explains the collaborative lane workflow", await page.getByText("Choose composition lanes, build together, then the facilitator completes it.").isVisible().catch(() => false));
 await page.screenshot({ path: `${ARTIFACTS}canvas-01-lobby.png` });
 
 await startAndWait(page);
+// The desktop HUD card overlaps the sheet's top-left lane area; a real user
+// collapses it while building. (fitSheet also keeps the sheet inside the safe
+// area, but the first lane slot still peeks under the panel corner.)
+await page.getByRole("button", { name: "Hide panel" }).click();
 ok("desktop: lower letter rack renders on desktop", await page.getByText("Letter rack").isVisible());
 ok("desktop: tray lists RO diacritics + wildcards + punctuation", (await page.getByRole("button", { name: /^Ă \(/ }).count()) > 0 && (await page.getByRole("button", { name: /^\? \(/ }).count()) > 0);
 
@@ -82,9 +89,9 @@ await page.screenshot({ path: `${ARTIFACTS}canvas-02-spawned.png` });
 // drag the tile
 const start = { x: tile.x, y: tile.y };
 const before = await screenPos(page, tile);
-await page.mouse.move(before.x + tile.w / 2, before.y + tile.h / 2);
+await page.mouse.move(before.x, before.y);
 await page.mouse.down();
-await page.mouse.move(before.x + tile.w / 2 + 160, before.y + tile.h / 2 + 90, { steps: 8 });
+await page.mouse.move(before.x + 160, before.y + 90, { steps: 8 });
 await page.mouse.up();
 await page.waitForFunction(({ id, sx }) => {
   const t = window.__ptStore.getState().canvasTiles[id];
@@ -98,15 +105,15 @@ ok("desktop: drag commits a server-confirmed move or semantic lane placement", (
 
 // double-click flip
 const tPos = await screenPos(page, tile);
-await page.mouse.dblclick(tPos.x + tile.w / 2, tPos.y + tile.h / 2);
+await page.mouse.dblclick(tPos.x, tPos.y);
 await page.waitForFunction((id) => window.__ptStore.getState().canvasTiles[id]?.flipped === true, tile.id, { timeout: 4000 }).catch(() => {});
 ok("desktop: double-click flips the tile", (await store(page)).canvasTiles[tile.id]?.flipped === true);
-await page.mouse.dblclick(tPos.x + tile.w / 2, tPos.y + tile.h / 2);
+await page.mouse.dblclick(tPos.x, tPos.y);
 await page.waitForFunction((id) => window.__ptStore.getState().canvasTiles[id]?.flipped === false, tile.id, { timeout: 4000 }).catch(() => {});
 
 // selection bar: duplicate + delete + undo
 const pos2 = await screenPos(page, tile);
-await page.mouse.click(pos2.x + tile.w / 2, pos2.y + tile.h / 2);
+await page.mouse.click(pos2.x, pos2.y);
 await page.waitForTimeout(150);
 ok("desktop: selection bar appears", await page.getByRole("button", { name: "Duplicate tile" }).isVisible());
 await page.getByRole("button", { name: "Duplicate tile" }).click();
@@ -163,7 +170,7 @@ const phone = await browser.newContext({
 });
 const mPage = await phone.newPage();
 watch(mPage, "mobile");
-await createLobby(mPage, { categoryLabel: "Letter Canvas", puzzleLabel: "Team Values Letter Canvas", modeLabel: "Quick", sessionName: "Mobile canvas", name: "Ana" });
+await createLobby(mPage, { categoryLabel: "Letter Canvas", puzzleLabel: "Blank Letter Canvas", sessionName: "Mobile canvas", name: "Ana" });
 await startAndWait(mPage);
 ok("mobile: bottom sheet tray renders (collapsed)", await mPage.getByRole("button", { name: /Open rack/i }).isVisible());
 
@@ -212,7 +219,7 @@ const phone2 = await browser.newContext({
 });
 const sPage = await phone2.newPage();
 watch(sPage, "sentence-mobile");
-await createLobby(sPage, { categoryLabel: "Foaie de propoziții", puzzleLabel: "Funny Story Canvas", modeLabel: "Quick", sessionName: "Mobile sentence", name: "Mihai", ro: true });
+await createLobby(sPage, { categoryLabel: "Foaie de propoziții", puzzleLabel: "Blank Sentence Canvas", sessionName: "Mobile sentence", name: "Mihai", ro: true });
 await startAndWait(sPage);
 await sPage.getByRole("button", { name: /Deschide rastelul/i }).click();
 await sPage.waitForTimeout(300);

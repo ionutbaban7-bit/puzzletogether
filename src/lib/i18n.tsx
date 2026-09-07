@@ -58,19 +58,23 @@ export function LangToggle({ dark = false }: { dark?: boolean }) {
   const { lang, setLang } = useLang();
   return (
     <div
-      className={`inline-flex items-center overflow-hidden rounded-full border text-[11px] font-bold ${
+      role="group"
+      aria-label="Language"
+      className={`inline-flex items-center overflow-hidden rounded-full border p-0.5 text-[11px] font-bold ${
         dark ? "border-white/15 bg-white/5 text-white" : "border-ink-200 bg-white text-ink-600"
       }`}
     >
       {(["en", "ro"] as Lang[]).map((l) => (
         <button
           key={l}
+          type="button"
+          aria-pressed={lang === l}
           onClick={() => setLang(l)}
-          className={`px-2.5 py-1 uppercase transition ${
+          className={`rounded-full px-2.5 py-1 uppercase transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300 ${
             lang === l
               ? dark
-                ? "bg-white/20 text-white"
-                : "bg-ink-900 text-white"
+                ? "bg-white/20 text-white shadow-sm"
+                : "bg-ink-900 text-white shadow-sm"
               : "opacity-60 hover:opacity-100"
           }`}
         >

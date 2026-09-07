@@ -37,33 +37,42 @@ const ok = (name, value, extra = "") => {
 function piecePoint(page, id) {
   return page.evaluate(
     (pieceId) => {
-      const { pieces } = window.__ptStore.getState();
+      const { pieces, puzzle } = window.__ptStore.getState();
       const piece = pieces[pieceId];
       const cam = window.__ptCamera.current;
       const rect = document.querySelector("canvas").getBoundingClientRect();
-      return { x: rect.left + piece.x * cam.scale + cam.x, y: rect.top + piece.y * cam.scale + cam.y };
+      // Aim at the piece centre: the top-left corner can sit on a seam, under
+      // the header bar, or off-screen after a tray fit on narrow viewports.
+      return {
+        x: rect.left + (piece.x + puzzle.pieceW / 2) * cam.scale + cam.x,
+        y: rect.top + (piece.y + puzzle.pieceH / 2) * cam.scale + cam.y,
+      };
     },
     id,
   );
 }
 
 const FAMILY_FLOW = {
+  // Category/puzzle labels match in either UI language; the desktop and mobile
+  // sections run in Romanian (ro-RO), the lobby gate in English (en-US).
   jigsaw: {
-    category: /Paintings/i,
-    puzzle: /Starry Night/i,
+    category: /Paintings|Picturi/i,
+    puzzle: /Starry Night|Noaptea înstelată/i,
     difficulty: "Medium",
     expectedStage: "play",
   },
+  // The canvas catalog now ships a single blank-sheet puzzle per family and
+  // the unlimited sandbox has no mode buttons; difficulty is skipped for them.
   "letter-canvas": {
-    category: /Letter Canvas/i,
-    puzzle: /Agile Values Letter Canvas/i,
-    difficulty: "Quick",
+    category: /Letter Canvas|Foaie de litere/i,
+    puzzle: /Blank Letter Canvas|Foaie albă — Litere/i,
+    difficulty: null,
     expectedStage: "play",
   },
   "sentence-canvas": {
-    category: /Sentence Canvas/i,
-    puzzle: /Funny Story Canvas/i,
-    difficulty: "Quick",
+    category: /Sentence Canvas|Foaie de propoziții/i,
+    puzzle: /Blank Sentence Canvas|Foaie albă — Propoziții/i,
+    difficulty: null,
     expectedStage: "play",
   },
   coaching: {
@@ -76,8 +85,8 @@ const FAMILY_FLOW = {
 async function createRoomViaUi(page, { difficulty = "Medium", mystery = false, upload = false, family = "jigsaw" } = {}) {
   const flow = FAMILY_FLOW[family];
   await page.goto(BASE);
-    await page.getByRole("heading", { name: /Play\. Talk\. Decide\.|Jucați\. Vorbiți\. Decideți\./i }).waitFor();
-  await page.getByRole("button", { name: /Create session/i }).click();
+    await page.getByRole("heading", { name: /Play\. Talk\. (Decide|Choose)\.|Jucați\. Vorbiți\. (Decideți|Alegeți)\./i }).waitFor();
+  await page.getByRole("button", { name: /Create session|Creează sesiune/i }).click();
   await page.getByRole("button", { name: flow.category }).click();
   if (upload) {
     if (family !== "jigsaw") throw new Error("Only jigsaw rooms support custom image uploads.");
@@ -87,7 +96,9 @@ async function createRoomViaUi(page, { difficulty = "Medium", mystery = false, u
     await page.getByRole("button", { name: flow.puzzle }).click();
   }
   if (family !== "coaching") {
-    await page.getByRole("button", { name: new RegExp(`^${difficulty || flow.difficulty}`) }).click();
+    // Canvas families have no mode buttons (always the unlimited sheet).
+    const difficultyLabel = difficulty || flow.difficulty;
+    if (difficultyLabel) await page.getByRole("button", { name: new RegExp(`^${difficultyLabel}`) }).click();
   }
   if (mystery) await page.getByLabel(/Mod mister|Mystery mode/i).check();
   await page.getByRole("button", { name: /Continue|Continuă/i }).click();
@@ -104,11 +115,13 @@ async function startPlay(page) {
   await sleep(900);
 }
 
+// PT_ENGINES=chromium (or chromium,firefox) restricts the run to installed
+// engines; without it all three are attempted as before.
 const ENGINES = [
   ["chromium", chromium],
   ["firefox", firefox],
   ["webkit", webkit],
-];
+].filter(([name]) => (process.env.PT_ENGINES ? process.env.PT_ENGINES.split(",").map((v) => v.trim()).includes(name) : true));
 
 
 // Stage 0 regression gate: a facilitator must be able to reach Start without
@@ -180,7 +193,7 @@ for (const [engineName, engine] of ENGINES) {
 
   try {
     // ------------------------------------------------ desktop 1440x900
-    let context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: "en-US" });
+    let context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: "ro-RO" });
     let page = await context.newPage();
     page.on("pageerror", (e) => errors.push(`[desktop] ${e.message}`));
     page.on("console", (m) => { if (m.type() === "error") errors.push(`[desktop] ${m.text()}`); });
@@ -237,11 +250,20 @@ for (const [engineName, engine] of ENGINES) {
     await page.getByRole("button", { name: /Ajutor \(casetă\)|Help \(tray\)/i }).click();
     await page.waitForFunction(() => window.__ptStore.getState().room.jigsawLayout === "tray");
     await page.getByRole("button", { name: /Aduce piesele neplasate|Bring unplaced/i }).click();
+    // The intentional-move threshold (see Board logic) must NOT let a quick tap
+    // claim a tray piece; only an actual drag moves it.
     let point = await piecePoint(page, 3);
     await page.mouse.click(point.x, point.y);
     await sleep(1000);
+    const tapMoved3 = await page.evaluate(() => window.__ptStore.getState().pieces[3]?.moved === true);
+    ok(`${engineName} desktop: a quick tap does not claim a tray piece`, tapMoved3 === false);
+    await page.mouse.move(point.x, point.y);
+    await page.mouse.down();
+    await page.mouse.move(point.x + 60, point.y + 45, { steps: 6 });
+    await page.mouse.up();
+    await sleep(1000);
     const moved3 = await page.evaluate(() => window.__ptStore.getState().pieces[3]?.moved === true);
-    ok(`${engineName} desktop: tap a tray piece moves it`, moved3);
+    ok(`${engineName} desktop: dragging a tray piece moves it`, moved3);
 
     // Pan with a drag on an empty area
     const canvasBox = await page.locator("canvas").boundingBox();
@@ -267,7 +289,7 @@ for (const [engineName, engine] of ENGINES) {
 
     // ------------------------------------------------ mobile viewports
     for (const [deviceName, viewport] of [["iphone", { width: 390, height: 844 }], ["android", { width: 360, height: 800 }]]) {
-      context = await browser.newContext({ viewport, hasTouch: true, isMobile: true, locale: "en-US" });
+      context = await browser.newContext({ viewport, hasTouch: true, isMobile: true, locale: "ro-RO" });
       page = await context.newPage();
       page.on("pageerror", (e) => errors.push(`[${deviceName}] ${e.message}`));
       page.on("console", (m) => { if (m.type() === "error") errors.push(`[${deviceName}] ${m.text()}`); });
@@ -281,10 +303,18 @@ for (const [engineName, engine] of ENGINES) {
       await sleep(500);
       const pieceId = deviceName === "iphone" ? 5 : 7;
       const tap = await piecePoint(page, pieceId);
+      // Quick tap must not claim (intentional-move threshold); drag must move.
       await page.touchscreen.tap(tap.x, tap.y);
       await sleep(1100);
+      const tapMoved = await page.evaluate((id) => window.__ptStore.getState().pieces[id]?.moved === true, pieceId);
+      ok(`${engineName} ${deviceName}: quick tap does not claim a tray piece`, tapMoved === false);
+      await page.mouse.move(tap.x, tap.y);
+      await page.mouse.down();
+      await page.mouse.move(tap.x + 55, tap.y + 40, { steps: 6 });
+      await page.mouse.up();
+      await sleep(1100);
       const moved = await page.evaluate((id) => window.__ptStore.getState().pieces[id]?.moved === true, pieceId);
-      ok(`${engineName} ${deviceName}: touch-tap places a tray piece`, moved);
+      ok(`${engineName} ${deviceName}: touch drag moves a tray piece`, moved);
 
       // Pan with a touch drag on an empty area (left edge).
       const box = await page.locator("canvas").boundingBox();

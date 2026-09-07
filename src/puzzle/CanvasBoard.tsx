@@ -236,7 +236,8 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
   const inventory = canvas.teamInventory && myTeamId ? canvas.teamInventory[myTeamId] ?? null : canvas.inventory;
   // Joker bank: colour teams draw from their own key; the shared group uses "shared".
   const jokerKey = canvas.teamInventory && myTeamId ? myTeamId : "shared";
-  const jokersLeft = canvas.jokers && canvas.jokers[jokerKey] != null ? canvas.jokers[jokerKey] : 0;
+  const isUnlimited = !canvas.inventory && !canvas.teamInventory;
+  const jokersLeft = isUnlimited ? Infinity : canvas.jokers && canvas.jokers[jokerKey] != null ? canvas.jokers[jokerKey] : 0;
 
   useEffect(() => {
     if (selectedLane && selectedLane.id !== selectedLaneId) setSelectedLaneId(selectedLane.id);
@@ -252,10 +253,17 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
     const padRight = mobile ? 16 : 84;
     const padTop = mobile ? 84 : 90;
     // Reserve room for both the lower source bank and its compact action strip.
+    // The paddings are screen pixels, so they must be subtracted from the
+    // viewport BEFORE dividing by the sheet's world size. (The previous
+    // `vw / (sheetW + pads)` form treated pixels as world units and rendered
+    // the sheet ~40% larger than the safe area, pushing lane 1 under the HUD
+    // and behind the bottom rack.)
     const padBottom = mobile ? mobileRackHeight + 66 : 278;
-    const scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, Math.min(vw / (c.sheetW + padLeft + padRight), vh / (c.sheetH + padTop + padBottom))));
-    const targetX = padLeft + (vw - padLeft - padRight - c.sheetW * scale) / 2;
-    const targetY = padTop + (vh - padTop - padBottom - c.sheetH * scale) / 2;
+    const availW = Math.max(1, vw - padLeft - padRight);
+    const availH = Math.max(1, vh - padTop - padBottom);
+    const scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, Math.min(availW / c.sheetW, availH / c.sheetH)));
+    const targetX = padLeft + Math.max(0, (availW - c.sheetW * scale) / 2);
+    const targetY = padTop + Math.max(0, (availH - c.sheetH * scale) / 2);
     setCamera({ x: targetX, y: targetY, scale });
   }, [setCamera, mobileRackHeight, visualViewport.height, visualViewport.width]);
 
@@ -736,7 +744,8 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
   // The joker draws a surprise letter that lands large/open on the sheet; the
   // participant sees it afterwards and decides what to do with it.
   const drawJoker = () => {
-    if (!inputEnabled || (canvas.teamInventory != null && !myTeamId) || jokersLeft <= 0) return;
+    if (!inputEnabled || (canvas.teamInventory != null && !myTeamId)) return;
+    if (Number.isFinite(jokersLeft) && jokersLeft <= 0) return;
     store.sendCanvas("joker");
   };
 
@@ -849,6 +858,8 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
           setCustomWord={setCustomWord}
           suggestions={suggestions}
           inPack={!!inPack}
+          onJoker={drawJoker}
+          jokersLeft={jokersLeft}
         />
       )}
     </div>
@@ -876,7 +887,7 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
       {!isMobile && (
         <aside className="absolute bottom-4 left-1/2 z-20 flex max-h-[232px] w-[min(940px,calc(100vw-132px))] -translate-x-1/2 flex-col overflow-hidden rounded-3xl border border-white/15 bg-ink-900/96 text-white shadow-pop backdrop-blur">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 px-4 py-2.5">
-            <div><div className="text-[10px] font-bold uppercase tracking-[.2em] text-brand-300">{isLetter ? (lang === "ro" ? "Rastel de litere" : "Letter rack") : (lang === "ro" ? "Bancă de cuvinte" : "Word bank")}</div><div className="mt-0.5 text-xs text-ink-300">{isLetter ? (lang === "ro" ? "Alege o zonă, apoi atinge literele ca să construiești." : "Choose a lane, then tap letters to build.") : (lang === "ro" ? "Alege o zonă, apoi construiește o idee clară." : "Choose a lane, then build a clear thought.")}</div></div>
+            <div><div className="text-[10px] font-bold uppercase tracking-[.2em] text-brand-300">{isLetter ? (lang === "ro" ? "Rastel de litere" : "Letter rack") : (lang === "ro" ? "Bancă de cuvinte" : "Word bank")}</div><div className="mt-0.5 text-xs text-ink-300">{isLetter ? (lang === "ro" ? "Atinge o literă — apare jos, trage pe foaie." : "Tap a letter — it appears below, drag onto the sheet.") : (lang === "ro" ? "Atinge un cuvânt — apare jos, construiește liber." : "Tap a word — it appears below, build freely.")}</div></div>
             <span className="rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-bold text-brand-100">{canvas.contentLanguage.toUpperCase()} · {pick(puzzle.name, lang)}</span>
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto p-3">{trayContent}</div>
@@ -1056,7 +1067,7 @@ function LetterTray({ alphabet, remainingOf, onSpawn, disabled, onJoker, jokersL
   const letters = [...alphabet];
   return (
     <div className="space-y-2.5">
-      <div className="flex items-center justify-between"><span className="text-[10px] font-bold uppercase tracking-[.18em] text-ink-400">{lang === "ro" ? "2. Litere — multe, împrăștiate" : "2. Letters — many, scattered"}</span><span className="text-[10px] text-ink-500">{lang === "ro" ? "Atinge pentru a plasa" : "Tap to place"}</span></div>
+      <div className="flex items-center justify-between"><span className="text-[10px] font-bold uppercase tracking-[.18em] text-ink-400">{lang === "ro" ? "Litere — nelimitat" : "Letters — unlimited"}</span><span className="text-[10px] text-ink-500">{lang === "ro" ? "Atinge pentru a crea" : "Tap to create"}</span></div>
       {/* Letters are presented scattered with slight tilts, like puzzle pieces on a
           table, so the tray reads as a pool to pick from rather than a strict grid. */}
       <div className="flex flex-wrap gap-1.5" aria-label={lang === "ro" ? "Rastel de litere" : "Letter rack"}>
@@ -1065,7 +1076,7 @@ function LetterTray({ alphabet, remainingOf, onSpawn, disabled, onJoker, jokersL
         <TrayButton label="?" count={remainingOf("?")} onClick={() => onSpawn("?")} disabled={disabled} wildcard />
         {LETTER_PUNCT.map((punct, index) => <TrayButton key={`${punct}-${index}`} label={punct} count={remainingOf(punct)} onClick={() => onSpawn(punct)} disabled={disabled} punct />)}
       </div>
-      <p className="text-[11px] leading-relaxed text-ink-400">{lang === "ro" ? "Schimbă zona oricând; trage o literă pe o zonă sau alege-o și apasă Pune." : "Change lanes any time; drag a letter onto a lane or select it and press Place."}</p>
+      <p className="text-[11px] leading-relaxed text-ink-400">{lang === "ro" ? "Toate literele sunt jos în afara foii. Trage pe foaia închisă la culoare ce îți vine în minte." : "All letters are below outside the sheet. Drag onto the dark sheet whatever comes to mind."}</p>
       {/* Joker: a surprise letter you only see after you draw it. */}
       <div className="rounded-2xl border border-cp-purple-300/35 bg-cp-purple-500/12 p-3">
         <div className="flex items-center justify-between gap-2">
@@ -1103,6 +1114,8 @@ function SentenceTray({
   setCustomWord,
   suggestions,
   inPack,
+  onJoker,
+  jokersLeft,
 }: {
   categories: Map<string, { w: string; c: string; n: number }[]>;
   selected: string;
@@ -1114,6 +1127,8 @@ function SentenceTray({
   setCustomWord: (v: string) => void;
   suggestions: string[];
   inPack: boolean;
+  onJoker: () => void;
+  jokersLeft: number;
 }) {
   const { lang } = useLang();
   const shown: [string, { w: string; c: string; n: number }[]][] = selected === "all"

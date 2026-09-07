@@ -12,6 +12,7 @@ const CATEGORY_EMOJI: Record<string, string> = {
   landmarks: "🗼",
   nature: "🌿",
   cities: "🏙️",
+  inspiration: "✨",
   coaching: "🧭",
 };
 const CANVAS_CATEGORIES = new Set(["letter-canvas", "sentence-canvas"]);
@@ -107,7 +108,7 @@ export default function PuzzlePicker({
                   onClick={() => {
                     setCategory(c.id);
                     setPuzzleId(null);
-                    setDifficulty(CANVAS_CATEGORIES.has(c.id) ? "quick" : "medium");
+                    setDifficulty(CANVAS_CATEGORIES.has(c.id) ? "sandbox" : "medium");
                   }}
                   className={`rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition ${
                     category === c.id
@@ -213,14 +214,14 @@ export default function PuzzlePicker({
               </div>
             )}
 
-            {/* Difficulty (image puzzles only) */}
-            {category && !isCoaching && (
+            {/* Difficulty (jigsaw only — canvas is unlimited blank) */}
+            {category && !isCoaching && !CANVAS_CATEGORIES.has(category) && (
               <div>
                 <div className="text-[11px] font-bold uppercase tracking-wider text-ink-400">
-                  {CANVAS_CATEGORIES.has(category) ? <T value={{ ro: "Modul foii", en: "Sheet mode" }} /> : <T value={{ ro: "Dificultate", en: "Difficulty" }} />}
+                  <T value={{ ro: "Dificultate", en: "Difficulty" }} />
                 </div>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {((CANVAS_CATEGORIES.has(category) ? catalog.canvasModes || [] : catalog.difficulties) as { id: string; name: string; pieces: number; tiles?: number }[]).map((d) => (
+                  {(catalog.difficulties as { id: string; name: string; pieces: number }[]).map((d) => (
                     <button
                       key={d.id}
                       onClick={() => setDifficulty(d.id)}
@@ -231,11 +232,14 @@ export default function PuzzlePicker({
                       }`}
                     >
                       <span className="text-[13px] font-bold">{d.name}</span>
-                      <span className="ml-1.5 text-[11px] text-ink-300">{CANVAS_CATEGORIES.has(category) ? (d.tiles === 0 ? "∞" : d.tiles) : d.pieces}p</span>
+                      <span className="ml-1.5 text-[11px] text-ink-300">{d.pieces}p</span>
                     </button>
                   ))}
                 </div>
               </div>
+            )}
+            {category && CANVAS_CATEGORIES.has(category) && (
+              <div className="rounded-xl border border-emerald-400/20 bg-emerald-500/10 px-3 py-2 text-xs leading-relaxed text-emerald-100"><b><T value={{ ro: "Foaie albă — nelimitat", en: "Blank sheet — unlimited" }} /></b> <T value={{ ro: "Apasă o literă/cuvânt și apare jos, trage pe foaie. Joker nelimitat.", en: "Tap a letter/word and it appears below, drag onto sheet. Unlimited joker." }} /></div>
             )}
 
             {CANVAS_CATEGORIES.has(category) && (

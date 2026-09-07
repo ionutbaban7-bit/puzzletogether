@@ -51,11 +51,11 @@ export default function JoinRoom() {
   }
 
   return (
-    <div className="marketing-page flex items-center justify-center px-4 py-8">
-      <div aria-hidden className="marketing-orb -left-20 top-16 h-56 w-56 bg-cp-pink-300/35" />
-      <div aria-hidden className="marketing-orb -right-20 bottom-12 h-64 w-64 bg-cp-purple-300/35" />
+    <div className="marketing-page setup-page flex items-center justify-center px-4 py-8">
+      <div aria-hidden className="marketing-orb -left-20 top-16 h-56 w-56 bg-brand-500/15" />
+      <div aria-hidden className="marketing-orb -right-20 bottom-12 h-64 w-64 bg-cp-purple-500/15" />
       <div className="relative w-full max-w-md">
-        <div className="mb-6 flex items-center justify-between"><button onClick={() => navigate("/")}><Logo size={38} /></button><LangToggle /></div>
+        <div className="mb-6 flex items-center justify-between"><button onClick={() => navigate("/")}><Logo dark size={38} /></button><LangToggle dark /></div>
         <div className="card p-6 animate-fade-up sm:p-8">
           <h1 className="font-display text-2xl font-bold text-ink-900"><T value={{ ro: "Intră într-o sesiune", en: "Join a session" }} /></h1>
           <p className="mt-2 text-sm leading-relaxed text-ink-600"><T value={{ ro: "Introdu linkul sau codul. Fără cont.", en: "Enter the link or code. No account." }} /></p>

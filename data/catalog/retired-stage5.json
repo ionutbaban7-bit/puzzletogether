@@ -884,6 +884,446 @@
       "checksum": "sha256:0234df928b10445fb7966cdca2a881003a12ba81497e06e1b8e04b74dd95901d",
       "fullImage": "/images/full/abstract-night-mosaic.webp",
       "thumbnail": "/images/thumbs/abstract-night-mosaic.webp"
+    },
+    {
+      "asset": "/images/blueprint-bran-castle.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-bran-castle",
+      "name": {
+        "ro": "Plan Castelul Bran",
+        "en": "Bran Castle Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural stilizat al Castelului Bran.",
+        "en": "Stylized architectural plan of Bran Castle."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-bran-castle.jpg (original source; archived as blueprint-bran-castle.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail architectural blueprint of Bran Castle, axonometric cutaway, lines only, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:0315fb7529b13d45454fd44d0dcae5c60de2a6cb20bf59cb2b572d446399cb6d",
+        "archive": "data/catalog/originals/blueprint-bran-castle.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:0315fb7529b13d45454fd44d0dcae5c60de2a6cb20bf59cb2b572d446399cb6d",
+      "fullImage": "/images/full/blueprint-bran-castle.webp",
+      "thumbnail": "/images/thumbs/blueprint-bran-castle.webp"
+    },
+    {
+      "asset": "/images/blueprint-modern-pavilion.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-modern-pavilion",
+      "name": {
+        "ro": "Plan pavilion modern",
+        "en": "Modern Pavilion Blueprint"
+      },
+      "alt": {
+        "ro": "Plan detaliat al unui pavilion contemporan.",
+        "en": "Detailed plan of a contemporary pavilion."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-modern-pavilion.jpg (original source; archived as blueprint-modern-pavilion.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail modern pavilion architectural blueprint, axonometric sections and technical lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:cc2a283710d850f03982936d5a5bc96a7a260590c297f415a34e35f2efee4056",
+        "archive": "data/catalog/originals/blueprint-modern-pavilion.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:cc2a283710d850f03982936d5a5bc96a7a260590c297f415a34e35f2efee4056",
+      "fullImage": "/images/full/blueprint-modern-pavilion.webp",
+      "thumbnail": "/images/thumbs/blueprint-modern-pavilion.webp"
+    },
+    {
+      "asset": "/images/blueprint-observatory.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-observatory",
+      "name": {
+        "ro": "Plan observator",
+        "en": "Observatory Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unui observator cu dom.",
+        "en": "Architectural plan of a domed observatory."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-observatory.jpg (original source; archived as blueprint-observatory.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail domed observatory blueprint, sectional axonometric design, precise lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:7272e28df7d43340c509b6603af50271d571d5ffcf617843b6d23d4581c81e26",
+        "archive": "data/catalog/originals/blueprint-observatory.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:7272e28df7d43340c509b6603af50271d571d5ffcf617843b6d23d4581c81e26",
+      "fullImage": "/images/full/blueprint-observatory.webp",
+      "thumbnail": "/images/thumbs/blueprint-observatory.webp"
+    },
+    {
+      "asset": "/images/blueprint-bridge.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-bridge",
+      "name": {
+        "ro": "Plan pod suspendat",
+        "en": "Suspension Bridge Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unui pod suspendat.",
+        "en": "Architectural plan of a suspension bridge."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-bridge.jpg (original source; archived as blueprint-bridge.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail suspension bridge blueprint, multiple technical perspectives and line details, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:4ce3148ad8c84cdef09e99d7f8c993124d5ddac28b43eb6af6c2429e06d9d0aa",
+        "archive": "data/catalog/originals/blueprint-bridge.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:4ce3148ad8c84cdef09e99d7f8c993124d5ddac28b43eb6af6c2429e06d9d0aa",
+      "fullImage": "/images/full/blueprint-bridge.webp",
+      "thumbnail": "/images/thumbs/blueprint-bridge.webp"
+    },
+    {
+      "asset": "/images/blueprint-greenhouse.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-greenhouse",
+      "name": {
+        "ro": "Plan seră",
+        "en": "Greenhouse Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unei sere modulare.",
+        "en": "Architectural plan of a modular greenhouse."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-greenhouse.jpg (original source; archived as blueprint-greenhouse.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail modular greenhouse blueprint, glass structure axonometric cutaway and lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:488f5459055b44798132572edce682ad49de2706115b15f6933f32d0f0380a46",
+        "archive": "data/catalog/originals/blueprint-greenhouse.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:488f5459055b44798132572edce682ad49de2706115b15f6933f32d0f0380a46",
+      "fullImage": "/images/full/blueprint-greenhouse.webp",
+      "thumbnail": "/images/thumbs/blueprint-greenhouse.webp"
+    },
+    {
+      "asset": "/images/blueprint-train-station.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-train-station",
+      "name": {
+        "ro": "Plan gară",
+        "en": "Train Station Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unei gări contemporane.",
+        "en": "Architectural plan of a contemporary train station."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-train-station.jpg (original source; archived as blueprint-train-station.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail contemporary train station blueprint, roof trusses, platforms, axonometric lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:655043578a39bc8803c0d3503b3112551312caca651b6e26226c97ead1b743d3",
+        "archive": "data/catalog/originals/blueprint-train-station.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:655043578a39bc8803c0d3503b3112551312caca651b6e26226c97ead1b743d3",
+      "fullImage": "/images/full/blueprint-train-station.webp",
+      "thumbnail": "/images/thumbs/blueprint-train-station.webp"
+    },
+    {
+      "asset": "/images/blueprint-library.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-library",
+      "name": {
+        "ro": "Plan bibliotecă",
+        "en": "Library Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unei biblioteci luminoase.",
+        "en": "Architectural plan of a bright library."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-library.jpg (original source; archived as blueprint-library.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail library blueprint, reading rooms and shelves as axonometric technical drawing, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:0000b7cd5fa390cc4d2713c1e3ed1a7a5e593f91300915a3acf43577bda9cf44",
+        "archive": "data/catalog/originals/blueprint-library.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:0000b7cd5fa390cc4d2713c1e3ed1a7a5e593f91300915a3acf43577bda9cf44",
+      "fullImage": "/images/full/blueprint-library.webp",
+      "thumbnail": "/images/thumbs/blueprint-library.webp"
+    },
+    {
+      "asset": "/images/blueprint-amphitheater.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-amphitheater",
+      "name": {
+        "ro": "Plan amfiteatru",
+        "en": "Amphitheater Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unui amfiteatru în aer liber.",
+        "en": "Architectural plan of an outdoor amphitheater."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-amphitheater.jpg (original source; archived as blueprint-amphitheater.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail outdoor amphitheater blueprint, seating rings, stage and site plan, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:00ab254f69c9b97f2ce938a1de76a4734a89d946698f96964167ed99bc306bcb",
+        "archive": "data/catalog/originals/blueprint-amphitheater.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:00ab254f69c9b97f2ce938a1de76a4734a89d946698f96964167ed99bc306bcb",
+      "fullImage": "/images/full/blueprint-amphitheater.webp",
+      "thumbnail": "/images/thumbs/blueprint-amphitheater.webp"
+    },
+    {
+      "asset": "/images/blueprint-lighthouse.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-lighthouse",
+      "name": {
+        "ro": "Plan far",
+        "en": "Lighthouse Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unui far de coastă.",
+        "en": "Architectural plan of a coastal lighthouse."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-lighthouse.jpg (original source; archived as blueprint-lighthouse.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail coastal lighthouse blueprint, vertical section, stair and foundation lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:8508e1cf7fede4c5f5d7af3f3611ee3d7747714db9843f96258b2a6c32ffaa9b",
+        "archive": "data/catalog/originals/blueprint-lighthouse.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:8508e1cf7fede4c5f5d7af3f3611ee3d7747714db9843f96258b2a6c32ffaa9b",
+      "fullImage": "/images/full/blueprint-lighthouse.webp",
+      "thumbnail": "/images/thumbs/blueprint-lighthouse.webp"
+    },
+    {
+      "asset": "/images/blueprint-courtyard-house.jpg",
+      "category": "blueprint-architecture",
+      "activityId": null,
+      "puzzleId": "blueprint-courtyard-house",
+      "name": {
+        "ro": "Plan casă cu curte",
+        "en": "Courtyard House Blueprint"
+      },
+      "alt": {
+        "ro": "Plan arhitectural al unei case cu curte interioară.",
+        "en": "Architectural plan of a courtyard house."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "downloadedAt": "2026-09-03",
+      "originalFilename": "blueprint-courtyard-house.jpg (original source; archived as blueprint-courtyard-house.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "PuzzleTogether deterministic procedural artwork",
+        "generatedAt": "2026-09-03",
+        "sourceCode": "scripts/generate-stage5-procedural-originals.mjs",
+        "visualReview": "passed: 2026-09-03 manual visual review — original detailed artwork; no text, logo, watermark, or identifiable person as main subject.",
+        "prompt": "Original high-detail courtyard house blueprint, floor plan and axonometric cutaway, precise lines, designed as a rich jigsaw puzzle image, wide 3:2 composition. No people or faces as a main subject, no text, no letters, no numbers, no typography, no logos, no watermark, no border.",
+        "rawInputChecksum": "sha256:70078b67be3739c063e2342930234bf37f129c0e000727010783bd16855f0ea2",
+        "archive": "data/catalog/originals/blueprint-courtyard-house.jpg (quality-95 archival derivative)"
+      },
+      "width": 1800,
+      "height": 1200,
+      "checksum": "sha256:70078b67be3739c063e2342930234bf37f129c0e000727010783bd16855f0ea2",
+      "fullImage": "/images/full/blueprint-courtyard-house.webp",
+      "thumbnail": "/images/thumbs/blueprint-courtyard-house.webp"
     }
   ],
   "puzzles": [
@@ -1406,6 +1846,310 @@
       },
       "checksum": "sha256:0234df928b10445fb7966cdca2a881003a12ba81497e06e1b8e04b74dd95901d",
       "thumbnail": "/images/thumbs/abstract-night-mosaic.webp"
+    },
+    {
+      "id": "blueprint-bran-castle",
+      "category": "blueprint-architecture",
+      "name": "Bran Castle Blueprint",
+      "nameRo": "Plan Castelul Bran",
+      "image": "/images/full/blueprint-bran-castle.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-bran-castle.jpg (original source; archived as blueprint-bran-castle.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural stilizat al Castelului Bran.",
+        "en": "Stylized architectural plan of Bran Castle."
+      },
+      "checksum": "sha256:0315fb7529b13d45454fd44d0dcae5c60de2a6cb20bf59cb2b572d446399cb6d",
+      "thumbnail": "/images/thumbs/blueprint-bran-castle.webp"
+    },
+    {
+      "id": "blueprint-modern-pavilion",
+      "category": "blueprint-architecture",
+      "name": "Modern Pavilion Blueprint",
+      "nameRo": "Plan pavilion modern",
+      "image": "/images/full/blueprint-modern-pavilion.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-modern-pavilion.jpg (original source; archived as blueprint-modern-pavilion.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan detaliat al unui pavilion contemporan.",
+        "en": "Detailed plan of a contemporary pavilion."
+      },
+      "checksum": "sha256:cc2a283710d850f03982936d5a5bc96a7a260590c297f415a34e35f2efee4056",
+      "thumbnail": "/images/thumbs/blueprint-modern-pavilion.webp"
+    },
+    {
+      "id": "blueprint-observatory",
+      "category": "blueprint-architecture",
+      "name": "Observatory Blueprint",
+      "nameRo": "Plan observator",
+      "image": "/images/full/blueprint-observatory.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-observatory.jpg (original source; archived as blueprint-observatory.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural al unui observator cu dom.",
+        "en": "Architectural plan of a domed observatory."
+      },
+      "checksum": "sha256:7272e28df7d43340c509b6603af50271d571d5ffcf617843b6d23d4581c81e26",
+      "thumbnail": "/images/thumbs/blueprint-observatory.webp"
+    },
+    {
+      "id": "blueprint-bridge",
+      "category": "blueprint-architecture",
+      "name": "Suspension Bridge Blueprint",
+      "nameRo": "Plan pod suspendat",
+      "image": "/images/full/blueprint-bridge.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-bridge.jpg (original source; archived as blueprint-bridge.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural al unui pod suspendat.",
+        "en": "Architectural plan of a suspension bridge."
+      },
+      "checksum": "sha256:4ce3148ad8c84cdef09e99d7f8c993124d5ddac28b43eb6af6c2429e06d9d0aa",
+      "thumbnail": "/images/thumbs/blueprint-bridge.webp"
+    },
+    {
+      "id": "blueprint-greenhouse",
+      "category": "blueprint-architecture",
+      "name": "Greenhouse Blueprint",
+      "nameRo": "Plan seră",
+      "image": "/images/full/blueprint-greenhouse.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-greenhouse.jpg (original source; archived as blueprint-greenhouse.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural al unei sere modulare.",
+        "en": "Architectural plan of a modular greenhouse."
+      },
+      "checksum": "sha256:488f5459055b44798132572edce682ad49de2706115b15f6933f32d0f0380a46",
+      "thumbnail": "/images/thumbs/blueprint-greenhouse.webp"
+    },
+    {
+      "id": "blueprint-train-station",
+      "category": "blueprint-architecture",
+      "name": "Train Station Blueprint",
+      "nameRo": "Plan gară",
+      "image": "/images/full/blueprint-train-station.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-train-station.jpg (original source; archived as blueprint-train-station.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural al unei gări contemporane.",
+        "en": "Architectural plan of a contemporary train station."
+      },
+      "checksum": "sha256:655043578a39bc8803c0d3503b3112551312caca651b6e26226c97ead1b743d3",
+      "thumbnail": "/images/thumbs/blueprint-train-station.webp"
+    },
+    {
+      "id": "blueprint-library",
+      "category": "blueprint-architecture",
+      "name": "Library Blueprint",
+      "nameRo": "Plan bibliotecă",
+      "image": "/images/full/blueprint-library.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-library.jpg (original source; archived as blueprint-library.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural al unei biblioteci luminoase.",
+        "en": "Architectural plan of a bright library."
+      },
+      "checksum": "sha256:0000b7cd5fa390cc4d2713c1e3ed1a7a5e593f91300915a3acf43577bda9cf44",
+      "thumbnail": "/images/thumbs/blueprint-library.webp"
+    },
+    {
+      "id": "blueprint-amphitheater",
+      "category": "blueprint-architecture",
+      "name": "Amphitheater Blueprint",
+      "nameRo": "Plan amfiteatru",
+      "image": "/images/full/blueprint-amphitheater.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-amphitheater.jpg (original source; archived as blueprint-amphitheater.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural al unui amfiteatru în aer liber.",
+        "en": "Architectural plan of an outdoor amphitheater."
+      },
+      "checksum": "sha256:00ab254f69c9b97f2ce938a1de76a4734a89d946698f96964167ed99bc306bcb",
+      "thumbnail": "/images/thumbs/blueprint-amphitheater.webp"
+    },
+    {
+      "id": "blueprint-lighthouse",
+      "category": "blueprint-architecture",
+      "name": "Lighthouse Blueprint",
+      "nameRo": "Plan far",
+      "image": "/images/full/blueprint-lighthouse.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-lighthouse.jpg (original source; archived as blueprint-lighthouse.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural al unui far de coastă.",
+        "en": "Architectural plan of a coastal lighthouse."
+      },
+      "checksum": "sha256:8508e1cf7fede4c5f5d7af3f3611ee3d7747714db9843f96258b2a6c32ffaa9b",
+      "thumbnail": "/images/thumbs/blueprint-lighthouse.webp"
+    },
+    {
+      "id": "blueprint-courtyard-house",
+      "category": "blueprint-architecture",
+      "name": "Courtyard House Blueprint",
+      "nameRo": "Plan casă cu curte",
+      "image": "/images/full/blueprint-courtyard-house.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether original catalog",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
+      "originalFilename": "blueprint-courtyard-house.jpg (original source; archived as blueprint-courtyard-house.jpg)",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "alt": {
+        "ro": "Plan arhitectural al unei case cu curte interioară.",
+        "en": "Architectural plan of a courtyard house."
+      },
+      "checksum": "sha256:70078b67be3739c063e2342930234bf37f129c0e000727010783bd16855f0ea2",
+      "thumbnail": "/images/thumbs/blueprint-courtyard-house.webp"
+    }
+  ],
+  "batches": [
+    {
+      "retiredAt": "2026-09-04",
+      "reason": "Delisted after contact-sheet review: both sets repeat one procedural visual recipe and do not meet the catalog differentiation/quality gate. These are not candidates for the activity picker or future automatic re-import.",
+      "puzzleIds": [
+        "iso-floating-garden",
+        "iso-harbor-village",
+        "iso-solar-observatory",
+        "iso-mountain-railway",
+        "iso-desert-oasis",
+        "iso-coastal-lighthouse",
+        "iso-forest-workshop",
+        "iso-arctic-research",
+        "iso-river-market",
+        "iso-sky-islands",
+        "abstract-azure-arches",
+        "abstract-pink-orbit",
+        "abstract-violet-lattice",
+        "abstract-crystalline",
+        "abstract-tessellation",
+        "abstract-fluid-topography",
+        "abstract-paper-folds",
+        "abstract-solar-rings",
+        "abstract-kinetic-grid",
+        "abstract-night-mosaic"
+      ]
+    },
+    {
+      "retiredAt": "2026-09-07",
+      "reason": "Blueprint Architecture delisted as part of the catalog quality remediation (P1): the ten procedural plans repeat a single visual recipe and the named-subject truthfulness review is unresolved. Public derivatives, manifest keys, catalog puzzles and source records were already removed from the active catalog on this branch; this batch records that retirement for provenance and room-scoped legacy restoration.",
+      "puzzleIds": [
+        "blueprint-bran-castle",
+        "blueprint-modern-pavilion",
+        "blueprint-observatory",
+        "blueprint-bridge",
+        "blueprint-greenhouse",
+        "blueprint-train-station",
+        "blueprint-library",
+        "blueprint-amphitheater",
+        "blueprint-lighthouse",
+        "blueprint-courtyard-house"
+      ]
     }
   ]
 }

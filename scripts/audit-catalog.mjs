@@ -265,7 +265,6 @@ const PUBLIC_LICENSES = new Set(["pd", "cc0", "cc-by", "cc-by-sa"]);
 if (catalog.stage5ImportedAt) {
   const expectedStage5 = {
     paintings: 5, landscapes: 5, landmarks: 5, nature: 5, cities: 5,
-    "isometric-worlds": 10, "abstract-geometry": 10, "blueprint-architecture": 10,
   };
   const retired = new Set(Object.keys(catalog.retiredCategories || {}));
   for (const [category, expected] of Object.entries(expectedStage5)) {

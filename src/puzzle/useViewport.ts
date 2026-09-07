@@ -68,23 +68,38 @@ export function useViewport() {
 
   /** Fit the target plus caller-supplied authoritative piece bounds. */
   const fit = useCallback(
-    (puzzle: PuzzleView | null, bounds?: WorldBounds) => {
+    (puzzle: PuzzleView | null, bounds?: WorldBounds, opts?: { minScale?: number; inset?: { top?: number; bottom?: number; left?: number; right?: number } }) => {
       if (!puzzle) return;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       const mobile = vw < 640;
       const b = bounds || { x0: 0, y0: 0, x1: puzzle.width, y1: puzzle.height };
+      // Screen-pixel insets reserve room for the HUD chrome (top session bar,
+      // bottom camera/zoom controls) so a fitted view lands inside the visible
+      // safe area instead of sliding under the overlays — same rule the canvas
+      // sheet fit follows. The world-unit padding below only adds breathing
+      // room around the framed bounds.
+      const inset = opts?.inset ?? {};
+      const inTop = inset.top ?? 0;
+      const inBottom = inset.bottom ?? 0;
+      const inLeft = inset.left ?? 0;
+      const inRight = inset.right ?? 0;
+      const availW = Math.max(1, vw - inLeft - inRight);
+      const availH = Math.max(1, vh - inTop - inBottom);
       const padX = mobile ? 64 : 140;
       const padY = mobile ? 64 : 110;
       const bw = Math.max(1, b.x1 - b.x0) + padX * 2;
       const bh = Math.max(1, b.y1 - b.y0) + padY * 2;
-      const readableMinimum = mobile ? 0.22 : 0.26;
-      const scale = clamp(Math.max(readableMinimum, Math.min(vw / bw, vh / bh)), MIN_SCALE, 1.05);
+      // The readable minimum keeps ordinary fits legible. Callers framing an
+      // overview (the compact initial board view) may relax it: double-tap
+      // provides the readable working zoom on phones.
+      const readableMinimum = opts?.minScale ?? (mobile ? 0.22 : 0.26);
+      const scale = clamp(Math.max(readableMinimum, Math.min(availW / bw, availH / bh)), MIN_SCALE, 1.05);
       const cx = (b.x0 + b.x1) / 2;
       const cy = (b.y0 + b.y1) / 2;
       setCamera({
-        x: vw / 2 - cx * scale,
-        y: vh / 2 - cy * scale,
+        x: inLeft + availW / 2 - cx * scale,
+        y: inTop + availH / 2 - cy * scale,
         scale,
       });
     },

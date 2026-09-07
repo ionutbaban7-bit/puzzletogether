@@ -196,7 +196,7 @@ ok("text reconstruction by rows + coordinates", firstLine === "poveste este.", J
 ok("second row is a separate line in the text", lines.length >= 2, JSON.stringify(lines.slice(0, 2)));
 
 // ---------------------------------------------------------------- EN room
-const enRoom = await post("/api/rooms", { puzzleId: "sentence-travel", difficulty: "quick", name: "Bob", contentLanguage: "en" });
+const enRoom = await post("/api/rooms", { puzzleId: "sentence-funny-story", difficulty: "quick", name: "Bob", contentLanguage: "en" });
 const enHost = await connect(enRoom.data.room.id, enRoom.data.playerId);
 await enHost.waitFor("init");
 send(enHost, { t: "control", action: "start" });
