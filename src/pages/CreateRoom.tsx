@@ -6,12 +6,12 @@ import { LangToggle, pick, T, useLang } from "../lib/i18n";
 import { CategoryGlyph, Logo, Spinner } from "../components/ui";
 import type { CatalogData, CoachingActivity, Difficulty, PuzzleInfo } from "../types";
 
-const CATEGORY_EMOJI: Record<string, string> = { "letter-canvas": "✍️", "sentence-canvas": "💬", paintings: "🎨", landscapes: "🏔️", landmarks: "🗼", nature: "🌿", cities: "🏙️", coaching: "🧭" };
+const CATEGORY_EMOJI: Record<string, string> = { "letter-canvas": "✍️", "sentence-canvas": "💬", paintings: "🎨", landscapes: "🏔️", landmarks: "🗼", nature: "🌿", cities: "🏙️", inspiration: "✨", coaching: "🧭" };
 const CATEGORY_NAMES: Record<string, { ro: string; en: string }> = {
   "letter-canvas": { ro: "Foaie de litere", en: "Letter Canvas" }, "sentence-canvas": { ro: "Foaie de propoziții", en: "Sentence Canvas" },
   paintings: { ro: "Picturi", en: "Paintings" }, landscapes: { ro: "Peisaje", en: "Landscapes" }, landmarks: { ro: "Repere", en: "Landmarks" },
   nature: { ro: "Natură", en: "Nature" }, cities: { ro: "Orașe", en: "Cities" },
-
+  inspiration: { ro: "Inspirație", en: "Inspiration" },
   coaching: { ro: "Team coaching", en: "Team coaching" },
 };
 const DIFFICULTY_META: Record<string, { minutes: string; people: string }> = {

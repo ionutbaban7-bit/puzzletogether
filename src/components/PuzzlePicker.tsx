@@ -12,6 +12,7 @@ const CATEGORY_EMOJI: Record<string, string> = {
   landmarks: "🗼",
   nature: "🌿",
   cities: "🏙️",
+  inspiration: "✨",
   coaching: "🧭",
 };
 const CANVAS_CATEGORIES = new Set(["letter-canvas", "sentence-canvas"]);

@@ -32,6 +32,7 @@ const CATEGORY_ICON: Record<string, string> = {
   landmarks: "🗼",
   nature: "🌿",
   cities: "🏙️",
+  inspiration: "✨",
   coaching: "🧭",
 };
 
@@ -85,6 +86,7 @@ const CATEGORY_LABELS = {
   landmarks: { ro: "Repere globale", en: "World Landmarks" },
   nature: { ro: "Natură", en: "Nature" },
   cities: { ro: "Orașe", en: "Cities" },
+  inspiration: { ro: "Inspirație", en: "Inspiration" },
   coaching: { ro: "Coaching", en: "Coaching" },
 } as const;
 
