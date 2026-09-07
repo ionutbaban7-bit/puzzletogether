@@ -253,10 +253,17 @@ export default function CanvasBoard({ puzzle, canvas, tiles, cursors, players, y
     const padRight = mobile ? 16 : 84;
     const padTop = mobile ? 84 : 90;
     // Reserve room for both the lower source bank and its compact action strip.
+    // The paddings are screen pixels, so they must be subtracted from the
+    // viewport BEFORE dividing by the sheet's world size. (The previous
+    // `vw / (sheetW + pads)` form treated pixels as world units and rendered
+    // the sheet ~40% larger than the safe area, pushing lane 1 under the HUD
+    // and behind the bottom rack.)
     const padBottom = mobile ? mobileRackHeight + 66 : 278;
-    const scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, Math.min(vw / (c.sheetW + padLeft + padRight), vh / (c.sheetH + padTop + padBottom))));
-    const targetX = padLeft + (vw - padLeft - padRight - c.sheetW * scale) / 2;
-    const targetY = padTop + (vh - padTop - padBottom - c.sheetH * scale) / 2;
+    const availW = Math.max(1, vw - padLeft - padRight);
+    const availH = Math.max(1, vh - padTop - padBottom);
+    const scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, Math.min(availW / c.sheetW, availH / c.sheetH)));
+    const targetX = padLeft + Math.max(0, (availW - c.sheetW * scale) / 2);
+    const targetY = padTop + Math.max(0, (availH - c.sheetH * scale) / 2);
     setCamera({ x: targetX, y: targetY, scale });
   }, [setCamera, mobileRackHeight, visualViewport.height, visualViewport.width]);
 
