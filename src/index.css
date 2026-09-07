@@ -201,9 +201,9 @@ body {
 .signature-script {
   display: inline-block;
   font-family: "Segoe Print", "Bradley Hand", "Brush Script MT", cursive;
-  font-size: 1.05rem;
+  font-size: 0.82rem;
   font-style: italic;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.015em;
   transform: rotate(-3deg);
   transform-origin: left center;

@@ -42,13 +42,6 @@ const SHOWCASE = [
   { image: "/images/thumbs/machu-picchu.webp", label: { ro: "Repere", en: "Landmarks" } },
 ];
 
-const STATS: Array<{ big: string; label: Bilingual }> = [
-  { big: "73+", label: { ro: "imagini licențiate", en: "licensed photos" } },
-  { big: "5", label: { ro: "dificultăți", en: "difficulty levels" } },
-  { big: "6", label: { ro: "echipe colorate", en: "colour teams" } },
-  { big: "24h", label: { ro: "camere active", en: "room lifetime" } },
-];
-
 export default function LandingPage() {
   const { lang } = useLang();
 
@@ -83,18 +76,11 @@ export default function LandingPage() {
           {/* Hero */}
           <section className="grid items-center gap-10 lg:grid-cols-[1.05fr_.95fr] lg:gap-14">
             <div className="animate-fade-up">
-              <div className="inline-flex items-center gap-2 rounded-full border border-brand-400/30 bg-brand-500/10 px-4 py-2 text-xs font-bold uppercase tracking-[.16em] text-brand-200">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-400 opacity-60" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-300" />
-                </span>
-                <T value={{ ro: "Joc de echipă", en: "Team activity" }} />
-              </div>
-              <h1 className="font-display mt-6 max-w-3xl text-5xl font-extrabold leading-[1.02] tracking-tight text-white sm:text-7xl">
+              <h1 className="font-display mt-0 max-w-3xl text-5xl font-extrabold leading-[1.02] tracking-tight text-white sm:text-7xl">
                 <T value={{ ro: "Jucați.", en: "Play." }} />{" "}
                 <span className="bg-gradient-to-r from-brand-200 via-brand-300 to-white bg-clip-text text-transparent">
                   <T value={{ ro: "Vorbiți.", en: "Talk." }} />{" "}
-                  <T value={{ ro: "Decideți.", en: "Decide." }} />
+                  <T value={{ ro: "Alegeți.", en: "Choose." }} />
                 </span>
               </h1>
               <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-300 sm:text-xl">
@@ -161,16 +147,15 @@ export default function LandingPage() {
             </section>
           </section>
 
-          {/* Trust / stat strip */}
-          <section className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/10 sm:grid-cols-4">
-            {STATS.map((stat) => (
-              <div key={stat.big} className="bg-ink-900/90 px-5 py-5 text-center">
-                <div className="font-display text-2xl font-extrabold text-white sm:text-3xl">{stat.big}</div>
-                <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-ink-400">
-                  <T value={stat.label} />
-                </div>
-              </div>
-            ))}
+          <section className="mx-auto mt-16 max-w-4xl border-y border-white/10 px-4 py-10 text-center sm:mt-20 sm:px-8 sm:py-12">
+            <blockquote className="font-display text-xl font-medium italic leading-relaxed tracking-tight text-white sm:text-2xl">
+              <T
+                value={{
+                  ro: '"Nu mai căutăm oameni perfecți. Construim un spațiu unde oameni imperfecți pot face împreună lucruri perfecte. Asta am exersat azi. Asta ducem cu noi mai departe."',
+                  en: '"We are no longer looking for perfect people. We are building a space where imperfect people can create perfect things together. That is what we practiced today. That is what we carry forward."',
+                }}
+              />
+            </blockquote>
           </section>
 
           {/* External coaching companion */}
