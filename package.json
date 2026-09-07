@@ -18,6 +18,7 @@
     "test:render-contract": "node scripts/render-contract-test.mjs",
     "test:e2e": "node scripts/browser-test.mjs && node scripts/coaching-browser-test.mjs && node scripts/canvas-browser-test.mjs",
     "test:e2e:canvas": "node scripts/canvas-browser-test.mjs",
+    "test:e2e:mobile": "node scripts/mobile-gameplay-test.mjs",
     "catalog:audit": "node scripts/audit-catalog.mjs",
     "catalog:pipeline": "node scripts/catalog-pipeline.mjs",
     "catalog:report": "node scripts/catalog-report.mjs",

@@ -32,6 +32,7 @@ interface Grab {
   lastSentX: number;
   lastSentY: number;
   first: boolean;
+  pointerType: string;
 }
 
 /** A press only becomes a server claim after a small intentional movement. */
@@ -42,6 +43,7 @@ interface PendingGrab {
   offsetY: number;
   startX: number;
   startY: number;
+  pointerType: string;
 }
 
 const DRAG_START_MOUSE_PX = 4;
@@ -126,6 +128,14 @@ export default function Board({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const { camera, cameraRef, zoomAt, zoomBy, fit } = useViewport();
 
+  // The session bar (top) and camera/zoom controls (bottom) overlay the board;
+  // every programmatic fit must frame inside that safe area, not the raw
+  // viewport, or the top tray row lands under the header.
+  const fitInset = () => {
+    const mobile = typeof window !== "undefined" && window.innerWidth < 640;
+    return mobile ? { top: 72, bottom: 96 } : { top: 84, bottom: 88 };
+  };
+
   // Live refs for the draw loop
   const piecesRef = useRef(pieces);
   piecesRef.current = pieces;
@@ -143,7 +153,18 @@ export default function Board({
   const fitBoard = useCallback(() => {
     const currentPuzzle = puzzleRef.current;
     const unplaced = Object.values(piecesRef.current).filter((piece) => !piece.locked);
-    fit(currentPuzzle, boundsForPieces(currentPuzzle, unplaced, true));
+    // Compact screens: fitting the whole scatter band (board + up to 820 world
+    // units of pieces below it) clamps to an unreadable minimum zoom and the
+    // target board ends up mostly off-screen. Instead frame the target with a
+    // sliver of the piece band below it — every scattered piece stays one
+    // swipe away, the whole target stays visible, and double-tap jumps to the
+    // readable working zoom.
+    const compact = typeof window !== "undefined" && window.innerWidth < 640;
+    if (compact) {
+      fit(currentPuzzle, { x0: 0, y0: 0, x1: currentPuzzle.width, y1: currentPuzzle.height + 240 }, { minScale: MIN_SCALE, inset: fitInset() });
+      return;
+    }
+    fit(currentPuzzle, boundsForPieces(currentPuzzle, unplaced, true), { inset: fitInset() });
   }, [fit]);
 
   // Gesture state is mutable so an active touch never causes a React render.
@@ -158,6 +179,13 @@ export default function Board({
   const cursorScreen = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const lastMoveSent = useRef(0);
   const gestureType = useRef<"none" | "press" | "pan" | "drag" | "pinch" | "minimap">("none");
+  // Last known screen position of the pointer that owns the active drag. The
+  // auto-pan loop reads it so a held piece keeps travelling even when the
+  // finger stops moving right at a screen edge.
+  const dragScreen = useRef<{ x: number; y: number } | null>(null);
+  const autopanRaf = useRef(0);
+  // Double-tap (empty canvas) zoom toggle bookkeeping.
+  const lastEmptyTap = useRef<{ t: number; x: number; y: number; moved: boolean } | null>(null);
 
   const [showReference, setShowReference] = useState(true);
   const [filter, setFilter] = useState<FilterMode>("all");
@@ -292,6 +320,7 @@ export default function Board({
   useEffect(() => {
     return () => {
       cancelAnimationFrame(glowAnim.current);
+      stopAutopan();
       if (raf.current) {
         cancelAnimationFrame(raf.current);
         // StrictMode immediately remounts effects in development. Clear the
@@ -299,6 +328,7 @@ export default function Board({
         raf.current = 0;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Dirty on any external state change that draw() reads from refs/props.
@@ -946,7 +976,7 @@ export default function Board({
     return { x: p.x, y: p.y };
   }
 
-  function makePendingGrab(hit: Piece, pointerId: number, point: { x: number; y: number }) {
+  function makePendingGrab(hit: Piece, pointerId: number, point: { x: number; y: number }, pointerType = "mouse") {
     const world = screenToWorld(point.x, point.y);
     const hp = displayPos(hit);
     pendingGrab.current = {
@@ -956,8 +986,69 @@ export default function Board({
       offsetY: world.y - hp.y,
       startX: point.x,
       startY: point.y,
+      pointerType,
     };
     gestureType.current = "press";
+  }
+
+  /**
+   * Touch drag edge auto-pan. On a phone the scatter band and the target
+   * board never fit on screen together at a readable zoom, so carrying a
+   * piece across the world used to require drop → pan → re-grab cycles.
+   * While a touch-held piece approaches a screen edge, pan the camera in
+   * that direction and move the piece with it, until the finger leaves the
+   * edge zone or the drag ends.
+   */
+  function startAutopan() {
+    if (autopanRaf.current) return;
+    let last = performance.now();
+    const step = () => {
+      autopanRaf.current = 0;
+      const g = grab.current;
+      const pos = dragScreen.current;
+      const canvas = canvasRef.current;
+      if (!g || !pos || !canvas || gestureType.current !== "drag") return;
+      const now = performance.now();
+      const dt = Math.min(64, now - last) / 1000;
+      last = now;
+      const EDGE = 56;
+      const MAX_SPEED = 620;
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      let vx = 0;
+      let vy = 0;
+      if (pos.x < EDGE) vx = MAX_SPEED * (1 - Math.max(0, pos.x) / EDGE);
+      else if (pos.x > w - EDGE) vx = -MAX_SPEED * (1 - Math.max(0, w - pos.x) / EDGE);
+      if (pos.y < EDGE) vy = MAX_SPEED * (1 - Math.max(0, pos.y) / EDGE);
+      else if (pos.y > h - EDGE) vy = -MAX_SPEED * (1 - Math.max(0, h - pos.y) / EDGE);
+      if (vx !== 0 || vy !== 0) {
+        cameraRef.current.x += vx * dt;
+        cameraRef.current.y += vy * dt;
+        const piece = piecesRef.current[g.id];
+        if (piece) {
+          const world = screenToWorld(pos.x, pos.y);
+          piece.x = world.x - g.offsetX;
+          piece.y = world.y - g.offsetY;
+          if (now - g.throttle >= 50) {
+            g.throttle = now;
+            g.first = false;
+            g.lastSentX = piece.x;
+            g.lastSentY = piece.y;
+            store.sendPiece(piece.id, piece.x, piece.y, true);
+          }
+        }
+        schedule();
+      }
+      autopanRaf.current = requestAnimationFrame(step);
+    };
+    autopanRaf.current = requestAnimationFrame(step);
+  }
+
+  function stopAutopan() {
+    if (autopanRaf.current) {
+      cancelAnimationFrame(autopanRaf.current);
+      autopanRaf.current = 0;
+    }
   }
 
   function activateGrab(pending: PendingGrab) {
@@ -976,6 +1067,7 @@ export default function Board({
       lastSentX: piece.x,
       lastSentY: piece.y,
       first: true,
+      pointerType: pending.pointerType,
     };
     pendingGrab.current = null;
     grab.current = g;
@@ -985,6 +1077,8 @@ export default function Board({
     piece.drag = true;
     piece.moved = true;
     store.sendPiece(piece.id, piece.x, piece.y, true);
+    dragScreen.current = { x: pending.startX, y: pending.startY };
+    if (g.pointerType !== "mouse") startAutopan();
     return g;
   }
 
@@ -992,6 +1086,8 @@ export default function Board({
     const g = grab.current;
     grab.current = null;
     pendingGrab.current = null;
+    stopAutopan();
+    dragScreen.current = null;
     if (!g) {
       schedule();
       return;
@@ -1052,8 +1148,40 @@ export default function Board({
       ? pickPiece(world.x, world.y, sample.pointerType === "mouse" && e.shiftKey, touch ? 20 : 0)
       : null;
     if (hit) {
-      makePendingGrab(hit, sample.pointerId, pos);
+      lastEmptyTap.current = null;
+      makePendingGrab(hit, sample.pointerId, pos, sample.pointerType);
     } else {
+      // Double-tap on empty canvas toggles between the readable mobile zoom
+      // and the framed board view — the fastest way to travel between the
+      // scatter band and the target without pinch gymnastics.
+      const now = performance.now();
+      const lastTap = lastEmptyTap.current;
+      if (
+        lastTap &&
+        !lastTap.moved &&
+        now - lastTap.t < 320 &&
+        Math.hypot(pos.x - lastTap.x, pos.y - lastTap.y) < 48
+      ) {
+        lastEmptyTap.current = null;
+        const canvas = canvasRef.current;
+        // Readable mobile zoom: about four piece-widths across the screen.
+        const target =
+          canvas && puzzleRef.current
+            ? Math.min(
+                MAX_SCALE,
+                Math.max(0.35, canvas.clientWidth / (Math.max(1, puzzleRef.current.pieceW) * 4)),
+              )
+            : null;
+        if (target && cameraRef.current.scale < target * 0.9) {
+          zoomAt(pos.x, pos.y, target / cameraRef.current.scale);
+        } else {
+          fitBoard();
+        }
+        gestureType.current = "none";
+        schedule();
+        return;
+      }
+      lastEmptyTap.current = { t: now, x: pos.x, y: pos.y, moved: false };
       gestureType.current = "pan";
       pan.current = {
         id: sample.pointerId,
@@ -1114,6 +1242,7 @@ export default function Board({
     if (gestureType.current === "drag" && grab.current?.pointerId === sample.pointerId) {
       const world = screenToWorld(pos.x, pos.y);
       const currentGrab = grab.current;
+      dragScreen.current = pos;
       const piece = piecesRef.current[currentGrab.id];
       if (piece) {
         piece.x = world.x - currentGrab.offsetX;
@@ -1132,6 +1261,9 @@ export default function Board({
     }
 
     if (gestureType.current === "pan" && pan.current && sample.pointerId === pan.current.id) {
+      if (lastEmptyTap.current && Math.hypot(pos.x - lastEmptyTap.current.x, pos.y - lastEmptyTap.current.y) > 8) {
+        lastEmptyTap.current.moved = true;
+      }
       cameraRef.current.x = pan.current.cx + (pos.x - pan.current.sx);
       cameraRef.current.y = pan.current.cy + (pos.y - pan.current.sy);
       schedule();
@@ -1180,6 +1312,8 @@ export default function Board({
     if (!g) return;
     const piece = piecesRef.current[g.id];
     grab.current = null;
+    stopAutopan();
+    dragScreen.current = null;
     if (!piece) return;
     const px = finalX ?? piece.x;
     const py = finalY ?? piece.y;
@@ -1250,7 +1384,7 @@ export default function Board({
   const bringUnplacedIntoView = () => {
     const p = puzzleRef.current;
     const unplaced = Object.values(piecesRef.current).filter((piece) => !piece.locked);
-    fit(p, boundsForPieces(p, unplaced, false));
+    fit(p, boundsForPieces(p, unplaced, false), { inset: fitInset() });
   };
 
   const totalPieces = Object.keys(pieces).length;
