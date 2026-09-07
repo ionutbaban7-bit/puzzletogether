@@ -95,14 +95,14 @@ ok("catalog exposes the four canvas modes", JSON.stringify((catalog.data.canvasM
 ok("catalog exposes RO + EN letter sets with diacritics", (catalog.data.letterSets?.ro || "").includes("ĂÂÎȘȚ") && (catalog.data.letterSets?.en || "").length === 26);
 
 // ------------------------------------------------------------------ create room
-const created = await post(BASE, "/api/rooms", { puzzleId: "agile-words", difficulty: "quick", name: "Ana", sessionName: "Canvas protocol", contentLanguage: "ro" });
+const created = await post(BASE, "/api/rooms", { puzzleId: "letter-anagrams", difficulty: "quick", name: "Ana", sessionName: "Canvas protocol", contentLanguage: "ro" });
 const roomId = created.data.room.id;
 const hostId = created.data.playerId;
 const code = created.data.room.code;
 ok("canvas room starts in a locked lobby with the content language", created.status === 200 && created.data.room.stage === "lobby" && created.data.room.contentLanguage === "ro");
 ok("canvas room uses the canvas mode total (quick = 96)", created.data.room.total === 96);
 
-const badMode = await post(BASE, "/api/rooms", { puzzleId: "agile-words", difficulty: "easy", name: "Bad", contentLanguage: "ro" });
+const badMode = await post(BASE, "/api/rooms", { puzzleId: "letter-anagrams", difficulty: "easy", name: "Bad", contentLanguage: "ro" });
 ok("photo difficulty is rejected for canvas activities", badMode.status === 400);
 
 const joined = await post(BASE, `/api/rooms/${roomId}/join`, { name: "Mihai", code });
@@ -157,7 +157,7 @@ const foreignReject = await p2.waitFor("error", (m) => m.code === "letter_unavai
 ok("letters outside the content language are rejected", foreignReject.code === "letter_unavailable");
 
 // EN room: Romanian diacritics must be rejected
-const enRoom = await post(BASE, "/api/rooms", { puzzleId: "agile-words", difficulty: "quick", name: "Bob", contentLanguage: "en" });
+const enRoom = await post(BASE, "/api/rooms", { puzzleId: "letter-anagrams", difficulty: "quick", name: "Bob", contentLanguage: "en" });
 const enHost = await connect(BASE, enRoom.data.room.id, enRoom.data.playerId);
 await enHost.waitFor("init");
 send(enHost, { t: "control", action: "start" });
@@ -254,7 +254,7 @@ if (sparseLetter) {
 } else {
   ok("finite inventory exhausts (letter ran out)", false, "no single-count letter found");
 }
-const sandboxRoom = await post(BASE, "/api/rooms", { puzzleId: "agile-words", difficulty: "sandbox", name: "Sam", contentLanguage: "en" });
+const sandboxRoom = await post(BASE, "/api/rooms", { puzzleId: "letter-anagrams", difficulty: "sandbox", name: "Sam", contentLanguage: "en" });
 const sandboxHost = await connect(BASE, sandboxRoom.data.room.id, sandboxRoom.data.playerId);
 const sandboxInit = await sandboxHost.waitFor("init");
 ok("sandbox mode has an unlimited (null) inventory", sandboxInit.canvas && sandboxInit.canvas.inventory === null);

@@ -61,9 +61,7 @@ export function CategoryGlyph({ id, fallback }: { id: string; fallback?: string 
   if (id === "abstract-geometry") {
     return <svg className={common} viewBox="0 0 24 24" fill="none" aria-hidden><circle cx="12" cy="12" r="8.4" stroke="currentColor" strokeWidth="1.6" opacity=".45" /><path d="m12 4.7 6.3 11H5.7L12 4.7Z" fill="currentColor" opacity=".32" /><path d="M5 18.5 19 5.5M6.5 7.5h11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>;
   }
-  if (id === "blueprint-architecture") {
-    return <svg className={common} viewBox="0 0 24 24" fill="none" aria-hidden><path d="M4 3.5h16v17H4z" stroke="currentColor" strokeWidth="1.6" /><path d="M7 17V9l5-3 5 3v8M5.5 13h13M12 6v11" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M7 17h10" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" /></svg>;
-  }
+
   return <span aria-hidden>{fallback || "🧩"}</span>;
 }
 

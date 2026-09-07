@@ -25,13 +25,11 @@ const incomingDir = path.join(root, "data/catalog/incoming");
 const publicImagesDir = path.join(root, "server/public/images");
 
 const categories = {
-  "isometric-worlds": { name: "Isometric Worlds", icon: "isometric-worlds" },
-  "abstract-geometry": { name: "Abstract Geometry", icon: "abstract-geometry" },
-  "blueprint-architecture": { name: "Blueprint Architecture", icon: "blueprint-architecture" },
+  // Note: isometric-worlds, abstract-geometry and blueprint-architecture are retired
+  // after the clean-up (single blank sheets for canvas, real-photo catalogue only).
 };
 const expectedCounts = {
   paintings: 5, landscapes: 5, landmarks: 5, nature: 5, cities: 5,
-  "isometric-worlds": 10, "abstract-geometry": 10, "blueprint-architecture": 10,
 };
 const rawHash = (file) => `sha256:${crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex")}`;
 const sourceFileFor = (entry) => {
@@ -46,7 +44,7 @@ const write = (file, value) => fs.writeFileSync(file, `${JSON.stringify(value, n
 const fail = (message) => { console.error(`✗ ${message}`); process.exit(1); };
 
 const additions = json(additionsPath);
-const retiredCategories = new Set(["isometric-worlds", "abstract-geometry"]);
+const retiredCategories = new Set(["isometric-worlds", "abstract-geometry", "blueprint-architecture"]);
 if (additions.entries.some((entry) => retiredCategories.has(entry.category))) {
   fail("this historical Stage 5 additions manifest contains delisted repetitive art. Do not re-import it; create a newly reviewed replacement manifest instead.");
 }
@@ -57,7 +55,7 @@ const listedCounts = Object.fromEntries(Object.keys(expectedCounts).map((categor
 for (const [category, expected] of Object.entries(expectedCounts)) {
   if (listedCounts[category] !== expected) fail(`expected ${expected} ${category} additions; found ${listedCounts[category] || 0}`);
 }
-if (additions.entries.length !== 55) fail(`expected 55 additions; found ${additions.entries.length}`);
+if (additions.entries.length !== 25) fail(`expected 25 additions; found ${additions.entries.length}`);
 
 for (const entry of additions.entries) {
   const raw = sourceFileFor(entry);

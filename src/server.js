@@ -331,6 +331,18 @@ function applyCanvasTeamModel(room, { resetInventory = false } = {}) {
   const canvas = room.canvas;
   if (!canvas) return;
   ensureTeamState(room);
+  const isUnlimited = !canvas.mode || canvas.mode.tiles === 0;
+  if (isUnlimited) {
+    // Clean freeform blank sheet: no lanes, unlimited supply.
+    canvas.version = 1;
+    canvas.lanes = [];
+    if (!resetInventory) return;
+    canvas.inventory = null;
+    canvas.teamInventory = null;
+    resetCanvasJokers(room);
+    return;
+  }
+  // Legacy finite modes keep the original lane-based flow.
   canvas.version = 2;
   const colourTeams = room.teamMode === TEAM_MODE_COLOR ? room.teams : [];
   canvas.lanes = buildCanvasLanes(canvas.category, colourTeams);
@@ -873,9 +885,14 @@ function normalizeContentLanguage(value, fallback = "en") {
 
 function buildCanvasState(puzzle, mode, contentLanguage) {
   const isLetter = puzzle.category === "letter-canvas";
-  const inventory = isLetter ? buildLetterInventory(mode, contentLanguage) : buildSentenceInventory(contentLanguage);
+  // Simplified blank sheet: sandbox (0 tiles) is a clean freeform sheet with
+  // unlimited supply — dark surface, letters/words below, drag what you need.
+  // Legacy finite modes (quick/medium/hard) keep the original lane-based flow
+  // for backward compatibility and protocol tests.
+  const isUnlimited = !mode || mode.tiles === 0;
+  const inventory = isUnlimited ? null : (isLetter ? buildLetterInventory(mode, contentLanguage) : buildSentenceInventory(contentLanguage));
   return {
-    version: 2,
+    version: isUnlimited ? 1 : 2,
     category: puzzle.category,
     mode,
     contentLanguage,
@@ -885,10 +902,10 @@ function buildCanvasState(puzzle, mode, contentLanguage) {
     tileH: isLetter ? CANVAS_TILE_H : CANVAS_WORD_H,
     wordGap: isLetter ? 0 : CANVAS_WORD_GAP,
     tiles: new Map(),
-    inventory, // Map<text, remaining> or null (sandbox)
+    inventory, // Map<text, remaining> or null (sandbox unlimited)
     teamInventory: null,
     jokers: new Map(), // teamKey -> remaining joker draws (filled per canvas)
-    lanes: buildCanvasLanes(puzzle.category),
+    lanes: isUnlimited ? [] : buildCanvasLanes(puzzle.category),
     nextId: 1,
     history: new Map(), // playerId -> undo stack
   };
@@ -1864,7 +1881,7 @@ function applyCanvasOp(room, playerId, msg, ws) {
         } else if (CANVAS_PUNCT_SET.includes(raw)) {
           text = raw;
           kind = "punctuation";
-        } else if (playerInventory?.has(raw)) {
+        } else if (playerInventory ? playerInventory.has(raw) : (sentenceVocab[canvas.contentLanguage] || sentenceVocab.en).some((e) => e.w === raw)) {
           text = raw;
           kind = "word";
         } else {
@@ -1902,41 +1919,81 @@ function applyCanvasOp(room, playerId, msg, ws) {
       break;
     }
     case "joker": {
-      if (!isLetter) { send(ws, { t: "error", code: "joker_letter_only", message: "The joker is a Letter Canvas surprise draw." }); return; }
-      const key = canvasJokerKey(room, playerId);
-      const remaining = key ? (canvas.jokers?.get(key) ?? 0) : 0;
-      if (!key || remaining <= 0) {
-        send(ws, { t: "canvasRejected", reason: "joker_exhausted" });
-        return;
+      const isUnlimited = !canvas.mode || canvas.mode.tiles === 0;
+      if (!isUnlimited) {
+        // Legacy finite mode: enforce the joker bank (3 per team).
+        const key = canvasJokerKey(room, playerId);
+        const remaining = key ? (canvas.jokers?.get(key) ?? 0) : 0;
+        if (!key || remaining <= 0) {
+          send(ws, { t: "canvasRejected", reason: "joker_exhausted" });
+          return;
+        }
+        let text;
+        let kind;
+        if (isLetter) {
+          const alphabet = CANVAS_LETTER_SETS[canvas.contentLanguage] || CANVAS_LETTER_SETS.en;
+          const available = [...alphabet].filter((ch) => {
+            if (!playerInventory) return true;
+            return (playerInventory.get(ch) || 0) > 0;
+          });
+          const pool = available.length ? available : [...alphabet];
+          text = pool[Math.floor(Math.random() * pool.length)];
+          kind = "letter";
+          if (!takeCanvasInventory(playerInventory, text)) {
+            send(ws, { t: "canvasRejected", reason: "inventory", text });
+            return;
+          }
+          inventoryChanged = true;
+        } else {
+          const pack = sentenceVocab[canvas.contentLanguage] || sentenceVocab.en;
+          const pool = pack.filter((e) => e.c !== "punctuation");
+          const entry = pool[Math.floor(Math.random() * pool.length)];
+          text = entry.w;
+          kind = "word";
+          if (playerInventory && !takeCanvasInventory(playerInventory, text)) {
+            send(ws, { t: "canvasRejected", reason: "inventory", text });
+            return;
+          }
+          if (playerInventory) inventoryChanged = true;
+        }
+        canvas.jokers.set(key, remaining - 1);
+        const jitterX = ((canvas.nextId * 53) % 160) - 80;
+        const jitterY = ((canvas.nextId * 97) % 90) - 45;
+        const tile = spawnCanvasTile(canvas, text, kind, {
+          x: canvas.sheetW / 2 + jitterX,
+          y: canvas.sheetH * 0.4 + jitterY,
+          heldBy: playerId,
+          createdBy: playerId,
+          teamId: ownTeamId,
+        });
+        pushCanvasHistory(canvas, playerId, { op: "spawn", id: tile.id, fromInventory: !!playerInventory });
+        list.push(serializeCanvasTile(tile));
+        break;
       }
-      // Pick a genuinely random letter from the content-language alphabet. When
-      // the bank is finite, prefer letters that are still in stock so the draw
-      // is always usable; sandbox mode is unlimited.
-      const alphabet = CANVAS_LETTER_SETS[canvas.contentLanguage] || CANVAS_LETTER_SETS.en;
-      const available = [...alphabet].filter((ch) => {
-        if (!playerInventory) return true; // unlimited sandbox
-        return (playerInventory.get(ch) || 0) > 0;
-      });
-      const pool = available.length ? available : [...alphabet];
-      const text = pool[Math.floor(Math.random() * pool.length)];
-      if (!takeCanvasInventory(playerInventory, text)) {
-        send(ws, { t: "canvasRejected", reason: "inventory", text });
-        return;
+      // Unlimited blank sheet: random surprise that never runs out (per language).
+      let text;
+      let kind;
+      if (isLetter) {
+        const alphabet = CANVAS_LETTER_SETS[canvas.contentLanguage] || CANVAS_LETTER_SETS.en;
+        text = [...alphabet][Math.floor(Math.random() * alphabet.length)];
+        kind = "letter";
+      } else {
+        const pack = sentenceVocab[canvas.contentLanguage] || sentenceVocab.en;
+        const pool = pack.filter((e) => e.c !== "punctuation");
+        const entry = pool[Math.floor(Math.random() * pool.length)];
+        text = entry.w;
+        kind = "word";
       }
-      inventoryChanged = true;
-      canvas.jokers.set(key, remaining - 1);
       const jitterX = ((canvas.nextId * 53) % 160) - 80;
       const jitterY = ((canvas.nextId * 97) % 90) - 45;
-      const tile = spawnCanvasTile(canvas, text, "letter", {
-        // Place it large/open on the sheet (not into a lane) so the surprise
-        // letter lands front and centre for the team to decide what to do with.
+      const tile = spawnCanvasTile(canvas, text, kind, {
         x: canvas.sheetW / 2 + jitterX,
         y: canvas.sheetH * 0.4 + jitterY,
         heldBy: playerId,
         createdBy: playerId,
         teamId: ownTeamId,
       });
-      pushCanvasHistory(canvas, playerId, { op: "spawn", id: tile.id, fromInventory: true });
+      pushCanvasHistory(canvas, playerId, { op: "spawn", id: tile.id, fromInventory: false });
       list.push(serializeCanvasTile(tile));
       break;
     }

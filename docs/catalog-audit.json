@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-04T19:57:21.005Z",
+  "generatedAt": "2026-09-07T09:16:43.453Z",
   "thresholds": {
     "MIN_LONG_EDGE": 900,
     "MIN_SHORT_EDGE": 600,
@@ -27,146 +27,6 @@
     {
       "code": "W2",
       "message": "/images/tokyo.jpg: license-inherited-from-legacy-catalog-not-reverified"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 5) — manual review: /images/blueprint-bran-castle.jpg ≈ /images/blueprint-observatory.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 9) — manual review: /images/blueprint-bran-castle.jpg ≈ /images/blueprint-bridge.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 7) — manual review: /images/blueprint-bran-castle.jpg ≈ /images/blueprint-train-station.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 9) — manual review: /images/blueprint-bran-castle.jpg ≈ /images/blueprint-library.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 9) — manual review: /images/blueprint-bran-castle.jpg ≈ /images/blueprint-amphitheater.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 6) — manual review: /images/blueprint-bran-castle.jpg ≈ /images/blueprint-lighthouse.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 9) — manual review: /images/blueprint-modern-pavilion.jpg ≈ /images/blueprint-bridge.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 5) — manual review: /images/blueprint-modern-pavilion.jpg ≈ /images/blueprint-library.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 10) — manual review: /images/blueprint-modern-pavilion.jpg ≈ /images/blueprint-courtyard-house.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 4) — manual review: /images/blueprint-observatory.jpg ≈ /images/blueprint-bridge.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 8) — manual review: /images/blueprint-observatory.jpg ≈ /images/blueprint-greenhouse.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 8) — manual review: /images/blueprint-observatory.jpg ≈ /images/blueprint-train-station.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 6) — manual review: /images/blueprint-observatory.jpg ≈ /images/blueprint-library.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 4) — manual review: /images/blueprint-observatory.jpg ≈ /images/blueprint-amphitheater.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 5) — manual review: /images/blueprint-observatory.jpg ≈ /images/blueprint-lighthouse.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 4) — manual review: /images/blueprint-bridge.jpg ≈ /images/blueprint-greenhouse.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 8) — manual review: /images/blueprint-bridge.jpg ≈ /images/blueprint-train-station.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 6) — manual review: /images/blueprint-bridge.jpg ≈ /images/blueprint-library.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 6) — manual review: /images/blueprint-bridge.jpg ≈ /images/blueprint-amphitheater.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 9) — manual review: /images/blueprint-bridge.jpg ≈ /images/blueprint-lighthouse.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 7) — manual review: /images/blueprint-bridge.jpg ≈ /images/blueprint-courtyard-house.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 8) — manual review: /images/blueprint-greenhouse.jpg ≈ /images/blueprint-train-station.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 8) — manual review: /images/blueprint-greenhouse.jpg ≈ /images/blueprint-library.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 8) — manual review: /images/blueprint-greenhouse.jpg ≈ /images/blueprint-amphitheater.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 7) — manual review: /images/blueprint-greenhouse.jpg ≈ /images/blueprint-courtyard-house.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 8) — manual review: /images/blueprint-train-station.jpg ≈ /images/blueprint-library.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 8) — manual review: /images/blueprint-train-station.jpg ≈ /images/blueprint-amphitheater.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 7) — manual review: /images/blueprint-train-station.jpg ≈ /images/blueprint-lighthouse.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 7) — manual review: /images/blueprint-train-station.jpg ≈ /images/blueprint-courtyard-house.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 6) — manual review: /images/blueprint-library.jpg ≈ /images/blueprint-amphitheater.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 9) — manual review: /images/blueprint-library.jpg ≈ /images/blueprint-lighthouse.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 9) — manual review: /images/blueprint-library.jpg ≈ /images/blueprint-courtyard-house.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 5) — manual review: /images/blueprint-amphitheater.jpg ≈ /images/blueprint-lighthouse.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 9) — manual review: /images/blueprint-amphitheater.jpg ≈ /images/blueprint-courtyard-house.jpg"
-    },
-    {
-      "code": "W4",
-      "message": "possibly similar images (dHash distance 10) — manual review: /images/blueprint-lighthouse.jpg ≈ /images/blueprint-courtyard-house.jpg"
     }
   ],
   "entries": [
@@ -379,22 +239,6 @@
       "problems": []
     },
     {
-      "asset": "/images/words-agile.svg",
-      "category": "letter-canvas",
-      "status": "verified",
-      "license": "All rights reserved — in-house work",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/words-innovation.svg",
-      "category": "letter-canvas",
-      "status": "verified",
-      "license": "All rights reserved — in-house work",
-      "ok": true,
-      "problems": []
-    },
-    {
       "asset": "/images/words-scrabble.svg",
       "category": "letter-canvas",
       "status": "verified",
@@ -403,47 +247,7 @@
       "problems": []
     },
     {
-      "asset": "/images/words-motto.svg",
-      "category": "letter-canvas",
-      "status": "verified",
-      "license": "All rights reserved — in-house work",
-      "ok": true,
-      "problems": []
-    },
-    {
       "asset": "/images/sentence-funny-story.svg",
-      "category": "sentence-canvas",
-      "status": "verified",
-      "license": "All rights reserved — in-house work",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/sentence-travel.svg",
-      "category": "sentence-canvas",
-      "status": "verified",
-      "license": "All rights reserved — in-house work",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/sentence-nature.svg",
-      "category": "sentence-canvas",
-      "status": "verified",
-      "license": "All rights reserved — in-house work",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/sentence-future.svg",
-      "category": "sentence-canvas",
-      "status": "verified",
-      "license": "All rights reserved — in-house work",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/sentence-positive-message.svg",
       "category": "sentence-canvas",
       "status": "verified",
       "license": "All rights reserved — in-house work",
@@ -679,86 +483,6 @@
       "category": "cities",
       "status": "verified",
       "license": "CC BY 4.0",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/blueprint-bran-castle.jpg",
-      "category": "blueprint-architecture",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/blueprint-modern-pavilion.jpg",
-      "category": "blueprint-architecture",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/blueprint-observatory.jpg",
-      "category": "blueprint-architecture",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/blueprint-bridge.jpg",
-      "category": "blueprint-architecture",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/blueprint-greenhouse.jpg",
-      "category": "blueprint-architecture",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/blueprint-train-station.jpg",
-      "category": "blueprint-architecture",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/blueprint-library.jpg",
-      "category": "blueprint-architecture",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/blueprint-amphitheater.jpg",
-      "category": "blueprint-architecture",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/blueprint-lighthouse.jpg",
-      "category": "blueprint-architecture",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/blueprint-courtyard-house.jpg",
-      "category": "blueprint-architecture",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
       "ok": true,
       "problems": []
     },
