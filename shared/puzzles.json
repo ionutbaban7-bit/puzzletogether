@@ -34,6 +34,11 @@
       "id": "cities",
       "name": "Cities",
       "icon": "🏙️"
+    },
+    {
+      "id": "inspiration",
+      "name": "Inspiration",
+      "icon": "✨"
     }
   ],
   "difficulties": [
@@ -1551,6 +1556,136 @@
       ],
       "thumbnail": "/images/thumbs/bow-lake.webp",
       "checksum": "sha256:6a8bbc0e6cd2d892383ad8add94ae0f89ba8991579a52b6561bd0faf2e8e5878"
+    },
+    {
+      "id": "inspiration-marcus-aurelius",
+      "category": "inspiration",
+      "name": "Marcus Aurelius — Power Over Mind",
+      "nameRo": "Marcus Aurelius — Puterea minții",
+      "image": "/images/full/inspiration-marcus-aurelius.webp",
+      "thumbnail": "/images/thumbs/inspiration-marcus-aurelius.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether (in-house)",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original AI portrait, quote overlay at bottom, archival JPEG then WebP derivatives.",
+      "originalFilename": "inspiration-marcus-aurelius.jpg",
+      "checksum": "sha256:6860edb410f9ff1147c7d51287bcc24e29f25c01186b3f29cbb14bd74e6220aa",
+      "focalPoint": [
+        0.5,
+        0.45
+      ],
+      "alt": {
+        "ro": "Portret ulei de Marcus Aurelius cu citatul despre puterea minții — You have power over your mind — not outside events. Realize this, and you will find strength.",
+        "en": "Oil portrait of Marcus Aurelius with quote: You have power over your mind — not outside events. Realize this, and you will find strength."
+      }
+    },
+    {
+      "id": "inspiration-julius-caesar",
+      "category": "inspiration",
+      "name": "Julius Caesar — Believe What You Wish",
+      "nameRo": "Iulius Cezar — Credința dorinței",
+      "image": "/images/full/inspiration-julius-caesar.webp",
+      "thumbnail": "/images/thumbs/inspiration-julius-caesar.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether (in-house)",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original AI portrait, quote overlay at bottom, archival JPEG then WebP derivatives.",
+      "originalFilename": "inspiration-julius-caesar.jpg",
+      "checksum": "sha256:3ceec0688f4d5c66f7c91de00efbf9de9925db13a6051f516dd776846f7e02b7",
+      "focalPoint": [
+        0.5,
+        0.38
+      ],
+      "alt": {
+        "ro": "Portret ulei de Iulius Cezar pe câmp de luptă cu citatul Men willingly believe what they wish.",
+        "en": "Oil portrait of Julius Caesar on battlefield with quote: Men willingly believe what they wish."
+      }
+    },
+    {
+      "id": "inspiration-napoleon",
+      "category": "inspiration",
+      "name": "Napoleon — Dealer in Hope",
+      "nameRo": "Napoleon — Negustor de speranță",
+      "image": "/images/full/inspiration-napoleon.webp",
+      "thumbnail": "/images/thumbs/inspiration-napoleon.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether (in-house)",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original AI portrait, quote overlay at bottom, archival JPEG then WebP derivatives.",
+      "originalFilename": "inspiration-napoleon.jpg",
+      "checksum": "sha256:71e18bcfac4536887f62c1e918233607022cf7e4db277a663ba6783872cbdc3b",
+      "focalPoint": [
+        0.5,
+        0.4
+      ],
+      "alt": {
+        "ro": "Portret ulei de Napoleon Bonaparte cu citatul A leader is a dealer in hope.",
+        "en": "Oil portrait of Napoleon Bonaparte with quote: A leader is a dealer in hope."
+      }
+    },
+    {
+      "id": "inspiration-rumi",
+      "category": "inspiration",
+      "name": "Rumi — Clever to Wise",
+      "nameRo": "Rumi — De la isteț la înțelept",
+      "image": "/images/full/inspiration-rumi.webp",
+      "thumbnail": "/images/thumbs/inspiration-rumi.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether (in-house)",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original AI portrait, quote overlay at bottom, archival JPEG then WebP derivatives.",
+      "originalFilename": "inspiration-rumi.jpg",
+      "checksum": "sha256:88c7b328c80d87dd6c1bd1c10361bbc4cd66fd0d97b6093ed9cd58f8f39d2d8b",
+      "focalPoint": [
+        0.5,
+        0.42
+      ],
+      "alt": {
+        "ro": "Portret ulei de Rumi cu citatul Yesterday I was clever... Today I am wise, so I am changing myself.",
+        "en": "Oil portrait of Rumi with quote: Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself."
+      }
+    },
+    {
+      "id": "inspiration-alexander",
+      "category": "inspiration",
+      "name": "Alexander — Lions and Sheep",
+      "nameRo": "Alexandru — Lei și oi",
+      "image": "/images/full/inspiration-alexander.webp",
+      "thumbnail": "/images/thumbs/inspiration-alexander.webp",
+      "credit": "PuzzleTogether original — CC0 1.0",
+      "license": "CC0 1.0 Universal",
+      "source": "PuzzleTogether (in-house)",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "sourceName": "PuzzleTogether (in-house)",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Original AI portrait, quote overlay at bottom, archival JPEG then WebP derivatives.",
+      "originalFilename": "inspiration-alexander.jpg",
+      "checksum": "sha256:f27de269ed12dff433f96d24e6071afcfc70b965a989d15afda532f0e13bdf17",
+      "focalPoint": [
+        0.5,
+        0.4
+      ],
+      "alt": {
+        "ro": "Portret ulei de Alexandru cel Mare cu citatul despre lei conduși de oaie și oi conduse de leu.",
+        "en": "Oil portrait of Alexander the Great with quote: I am not afraid of an army of lions led by a sheep; I am afraid of an army of sheep led by a lion."
+      }
     }
   ]
 }

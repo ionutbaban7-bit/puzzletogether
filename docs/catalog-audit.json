@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-07T09:16:43.453Z",
+  "generatedAt": "2026-09-07T09:29:50.640Z",
   "thresholds": {
     "MIN_LONG_EDGE": 900,
     "MIN_SHORT_EDGE": 600,
@@ -507,6 +507,46 @@
       "category": "nature",
       "status": "verified",
       "license": "CC0 / Public Domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/inspiration-marcus-aurelius.jpg",
+      "category": "inspiration",
+      "status": "verified",
+      "license": "CC0 1.0 Universal",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/inspiration-julius-caesar.jpg",
+      "category": "inspiration",
+      "status": "verified",
+      "license": "CC0 1.0 Universal",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/inspiration-napoleon.jpg",
+      "category": "inspiration",
+      "status": "verified",
+      "license": "CC0 1.0 Universal",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/inspiration-rumi.jpg",
+      "category": "inspiration",
+      "status": "verified",
+      "license": "CC0 1.0 Universal",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/inspiration-alexander.jpg",
+      "category": "inspiration",
+      "status": "verified",
+      "license": "CC0 1.0 Universal",
       "ok": true,
       "problems": []
     }

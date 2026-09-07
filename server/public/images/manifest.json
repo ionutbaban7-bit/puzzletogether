@@ -266,5 +266,25 @@
   "bow-lake.webp": {
     "w": 1400,
     "h": 1050
+  },
+  "inspiration-marcus-aurelius.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "inspiration-julius-caesar.webp": {
+    "w": 848,
+    "h": 1264
+  },
+  "inspiration-napoleon.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "inspiration-rumi.webp": {
+    "w": 1264,
+    "h": 848
+  },
+  "inspiration-alexander.webp": {
+    "w": 1264,
+    "h": 848
   }
 }

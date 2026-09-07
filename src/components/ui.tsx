@@ -55,6 +55,9 @@ export function Logo({
 
 export function CategoryGlyph({ id, fallback }: { id: string; fallback?: string }) {
   const common = "inline-block h-4 w-4 shrink-0 align-[-0.15em]";
+  if (id === "inspiration") {
+    return <svg className={common} viewBox="0 0 24 24" fill="none" aria-hidden><path d="M12 2 14.4 7 20 7.8l-4 3.9.9 5.5L12 14.6 7.1 17.2l.9-5.5L4 7.8l5.6-.8L12 2Z" fill="currentColor" opacity=".28" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M9 19h6M12 18v2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>;
+  }
   if (id === "isometric-worlds") {
     return <svg className={common} viewBox="0 0 24 24" fill="none" aria-hidden><path d="m12 2 9 5-9 5-9-5 9-5Z" fill="currentColor" opacity=".28" /><path d="m3 7 9 5 9-5M3 7v10l9 5 9-5V7M12 12v10" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /></svg>;
   }

@@ -2283,6 +2283,226 @@
       "width": 1400,
       "height": 1050,
       "checksum": "sha256:6a8bbc0e6cd2d892383ad8add94ae0f89ba8991579a52b6561bd0faf2e8e5878"
+    },
+    {
+      "asset": "/images/inspiration-marcus-aurelius.jpg",
+      "category": "inspiration",
+      "activityId": null,
+      "puzzleId": "inspiration-marcus-aurelius",
+      "name": {
+        "ro": "Marcus Aurelius — Puterea minții",
+        "en": "Marcus Aurelius — Power Over Mind"
+      },
+      "alt": {
+        "ro": "Portret ulei de Marcus Aurelius cu citatul despre puterea minții",
+        "en": "Oil portrait of Marcus Aurelius with quote: You have power over your mind — not outside events."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original AI portrait, quote overlay at bottom, archival JPEG then WebP derivatives.",
+      "downloadedAt": "2026-09-07",
+      "originalFilename": "inspiration-marcus-aurelius.jpg",
+      "focalPoint": [
+        0.5,
+        0.45
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-07",
+        "visualReview": "passed: 2026-09-07 manual visual review — leadership portrait, readable quote, no watermark.",
+        "rawInputChecksum": "sha256:placeholder",
+        "originalInputFilename": "inspiration-marcus-aurelius.jpg",
+        "prompt": "Oil painting portrait of Marcus Aurelius with laurel, stoic, quote banner at bottom in English.",
+        "archive": "data/catalog/originals/inspiration-marcus-aurelius.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:6860edb410f9ff1147c7d51287bcc24e29f25c01186b3f29cbb14bd74e6220aa",
+      "fullImage": "/images/full/inspiration-marcus-aurelius.webp",
+      "thumbnail": "/images/thumbs/inspiration-marcus-aurelius.webp"
+    },
+    {
+      "asset": "/images/inspiration-julius-caesar.jpg",
+      "category": "inspiration",
+      "activityId": null,
+      "puzzleId": "inspiration-julius-caesar",
+      "name": {
+        "ro": "Iulius Cezar — Credința dorinței",
+        "en": "Julius Caesar — Believe What You Wish"
+      },
+      "alt": {
+        "ro": "Portret ulei de Iulius Cezar pe câmp de luptă cu citatul Men willingly believe what they wish.",
+        "en": "Oil portrait of Julius Caesar on battlefield with quote: Men willingly believe what they wish."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original AI portrait, quote overlay at bottom, archival JPEG then WebP derivatives.",
+      "downloadedAt": "2026-09-07",
+      "originalFilename": "inspiration-julius-caesar.jpg",
+      "focalPoint": [
+        0.5,
+        0.38
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-07",
+        "visualReview": "passed: 2026-09-07 manual visual review — war leader portrait, readable quote.",
+        "rawInputChecksum": "sha256:placeholder",
+        "originalInputFilename": "inspiration-julius-caesar.jpg",
+        "prompt": "Oil painting portrait of Julius Caesar with battlefield, quote banner.",
+        "archive": "data/catalog/originals/inspiration-julius-caesar.jpg (quality-95 archival derivative)"
+      },
+      "width": 848,
+      "height": 1264,
+      "checksum": "sha256:3ceec0688f4d5c66f7c91de00efbf9de9925db13a6051f516dd776846f7e02b7",
+      "fullImage": "/images/full/inspiration-julius-caesar.webp",
+      "thumbnail": "/images/thumbs/inspiration-julius-caesar.webp"
+    },
+    {
+      "asset": "/images/inspiration-napoleon.jpg",
+      "category": "inspiration",
+      "activityId": null,
+      "puzzleId": "inspiration-napoleon",
+      "name": {
+        "ro": "Napoleon — Negustor de speranță",
+        "en": "Napoleon — Dealer in Hope"
+      },
+      "alt": {
+        "ro": "Portret ulei de Napoleon Bonaparte cu citatul A leader is a dealer in hope.",
+        "en": "Oil portrait of Napoleon Bonaparte with quote: A leader is a dealer in hope."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original AI portrait, quote overlay at bottom, archival JPEG then WebP derivatives.",
+      "downloadedAt": "2026-09-07",
+      "originalFilename": "inspiration-napoleon.jpg",
+      "focalPoint": [
+        0.5,
+        0.4
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-07",
+        "visualReview": "passed: 2026-09-07 manual visual review — leadership portrait, readable quote.",
+        "rawInputChecksum": "sha256:placeholder",
+        "originalInputFilename": "inspiration-napoleon.jpg",
+        "prompt": "Oil painting portrait of Napoleon with uniform, quote banner.",
+        "archive": "data/catalog/originals/inspiration-napoleon.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:71e18bcfac4536887f62c1e918233607022cf7e4db277a663ba6783872cbdc3b",
+      "fullImage": "/images/full/inspiration-napoleon.webp",
+      "thumbnail": "/images/thumbs/inspiration-napoleon.webp"
+    },
+    {
+      "asset": "/images/inspiration-rumi.jpg",
+      "category": "inspiration",
+      "activityId": null,
+      "puzzleId": "inspiration-rumi",
+      "name": {
+        "ro": "Rumi — De la isteț la înțelept",
+        "en": "Rumi — Clever to Wise"
+      },
+      "alt": {
+        "ro": "Portret ulei de Rumi cu citatul Yesterday I was clever... Today I am wise, so I am changing myself.",
+        "en": "Oil portrait of Rumi with quote: Yesterday I was clever... Today I am wise, so I am changing myself."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original AI portrait, quote overlay at bottom, archival JPEG then WebP derivatives.",
+      "downloadedAt": "2026-09-07",
+      "originalFilename": "inspiration-rumi.jpg",
+      "focalPoint": [
+        0.5,
+        0.42
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-07",
+        "visualReview": "passed: 2026-09-07 manual visual review — poet portrait, readable long quote.",
+        "rawInputChecksum": "sha256:placeholder",
+        "originalInputFilename": "inspiration-rumi.jpg",
+        "prompt": "Oil painting portrait of Rumi with warm light, quote banner.",
+        "archive": "data/catalog/originals/inspiration-rumi.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:88c7b328c80d87dd6c1bd1c10361bbc4cd66fd0d97b6093ed9cd58f8f39d2d8b",
+      "fullImage": "/images/full/inspiration-rumi.webp",
+      "thumbnail": "/images/thumbs/inspiration-rumi.webp"
+    },
+    {
+      "asset": "/images/inspiration-alexander.jpg",
+      "category": "inspiration",
+      "activityId": null,
+      "puzzleId": "inspiration-alexander",
+      "name": {
+        "ro": "Alexandru — Lei și oi",
+        "en": "Alexander — Lions and Sheep"
+      },
+      "alt": {
+        "ro": "Portret ulei de Alexandru cel Mare cu citatul despre lei conduși de oaie și oi conduse de leu.",
+        "en": "Oil portrait of Alexander the Great with quote: I am not afraid of an army of lions led by a sheep; I am afraid of an army of sheep led by a lion."
+      },
+      "creator": "PuzzleTogether original",
+      "sourceName": "PuzzleTogether original catalog",
+      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
+      "license": "CC0 1.0 Universal",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "PuzzleTogether original — CC0 1.0",
+      "changesMade": "Original AI portrait, quote overlay at bottom, archival JPEG then WebP derivatives.",
+      "downloadedAt": "2026-09-07",
+      "originalFilename": "inspiration-alexander.jpg",
+      "focalPoint": [
+        0.5,
+        0.4
+      ],
+      "status": "verified",
+      "issues": [],
+      "generation": {
+        "tool": "Arena image generation",
+        "generatedAt": "2026-09-07",
+        "visualReview": "passed: 2026-09-07 manual visual review — war leadership portrait, long quote wrapping.",
+        "rawInputChecksum": "sha256:placeholder",
+        "originalInputFilename": "inspiration-alexander.jpg",
+        "prompt": "Oil painting portrait of Alexander with armor, quote banner.",
+        "archive": "data/catalog/originals/inspiration-alexander.jpg (quality-95 archival derivative)"
+      },
+      "width": 1264,
+      "height": 848,
+      "checksum": "sha256:f27de269ed12dff433f96d24e6071afcfc70b965a989d15afda532f0e13bdf17",
+      "fullImage": "/images/full/inspiration-alexander.webp",
+      "thumbnail": "/images/thumbs/inspiration-alexander.webp"
     }
   ],
   "stage5ImportedAt": "2026-09-03",
