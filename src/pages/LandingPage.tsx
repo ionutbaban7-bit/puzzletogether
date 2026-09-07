@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { navigate } from "../lib/router";
 import { Logo } from "../components/ui";
 import { LangToggle, T, type Bilingual, useLang } from "../lib/i18n";
@@ -42,8 +43,20 @@ const SHOWCASE = [
   { image: "/images/thumbs/machu-picchu.webp", label: { ro: "Repere", en: "Landmarks" } },
 ];
 
+/**
+ * Showcase tiles are tiny (≤75 KB) and sit in the hero, so they load eagerly:
+ * lazy-loading gives no bandwidth win here and has mis-fired on some mobile
+ * browsers (iOS Safari + WebP + off-screen mosaics), leaving broken-image
+ * icons. Real dimensions also reserve the correct box before the bytes arrive.
+ * If a tile still fails (offline, blocked, unsupported codec), the fallback
+ * shows a labelled gradient tile instead of a broken-image icon.
+ */
+const SHOWCASE_THUMB_W = 480;
+const SHOWCASE_THUMB_H = 360;
+
 export default function LandingPage() {
   const { lang } = useLang();
+  const [failedImages, setFailedImages] = useState<ReadonlySet<string>>(new Set());
 
   return (
     <div className="marketing-page landing-page">
@@ -129,13 +142,27 @@ export default function LandingPage() {
                     key={item.image}
                     className={`relative overflow-hidden rounded-2xl ${i === 0 ? "col-span-2 row-span-2" : ""}`}
                   >
-                    <img
-                      src={item.image}
-                      alt={item.label[lang]}
-                      loading="lazy"
-                      decoding="async"
-                      className="h-full w-full object-cover opacity-90 transition duration-700 hover:scale-105 hover:opacity-100"
-                    />
+                    {failedImages.has(item.image) ? (
+                      <div className="flex h-full min-h-24 w-full items-center justify-center bg-gradient-to-br from-brand-700/60 via-ink-900 to-cp-purple-700/40">
+                        <span className="text-xl" aria-hidden>
+                          🧩
+                        </span>
+                      </div>
+                    ) : (
+                      <img
+                        src={item.image}
+                        alt={item.label[lang]}
+                        width={SHOWCASE_THUMB_W}
+                        height={SHOWCASE_THUMB_H}
+                        decoding="async"
+                        onError={() =>
+                          setFailedImages((prev) =>
+                            prev.has(item.image) ? prev : new Set(prev).add(item.image),
+                          )
+                        }
+                        className="h-full w-full object-cover opacity-90 transition duration-700 hover:scale-105 hover:opacity-100"
+                      />
+                    )}
                     <span className="absolute bottom-1.5 left-1.5 rounded-full border border-white/10 bg-ink-950/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur">
                       {item.label[lang]}
                     </span>
@@ -203,16 +230,25 @@ export default function LandingPage() {
                     }}
                   />
                 </p>
+                {/*
+                  Same-tab navigation: the external Clarity Express app has its
+                  own way back (in-app Back + the browser Back button), so the
+                  CTA deliberately keeps the user in this tab instead of
+                  spawning a new one per click.
+                */}
                 <a
                   className="btn mt-5 w-full bg-brand-600 px-5 py-3 text-[15px] text-white shadow-lg shadow-brand-600/25 hover:bg-brand-500 active:scale-[0.98]"
                   href={CLARITY_EXPRESS_URL}
-                  target="_blank"
-                  rel="noreferrer"
                 >
-                  <T value={{ ro: "Testează cu echipa", en: "Try it with your team" }} /> <span aria-hidden>↗</span>
+                  <T value={{ ro: "Testează cu echipa", en: "Try it with your team" }} /> <span aria-hidden>→</span>
                 </a>
                 <div className="mt-3 text-center text-[11px] text-ink-500">
-                  <T value={{ ro: "Se deschide într-o pagină nouă", en: "Opens in a new tab" }} />
+                  <T
+                    value={{
+                      ro: "Se deschide în aceeași filă — „Înapoi” te aduce aici",
+                      en: "Opens in this tab — “Back” brings you here",
+                    }}
+                  />
                 </div>
               </div>
             </div>
