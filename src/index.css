@@ -53,16 +53,17 @@ body {
 
 @layer components {
   .btn {
-    @apply inline-flex min-h-11 select-none items-center justify-center gap-2 rounded-full font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-300 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-11 select-none items-center justify-center gap-2 rounded-full font-semibold tracking-[-0.01em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-300/35 disabled:cursor-not-allowed disabled:opacity-50;
+    -webkit-tap-highlight-color: transparent;
   }
   .btn-primary {
-    @apply btn bg-cp-pink-600 px-6 py-3 text-[15px] text-white shadow-lg shadow-cp-pink-600/25 hover:bg-cp-pink-700 active:scale-[0.98];
+    @apply btn bg-brand-600 px-6 py-3 text-[15px] text-white shadow-lg shadow-brand-600/25 hover:bg-brand-500 active:scale-[0.98];
   }
   .btn-secondary {
-    @apply btn border border-brand-600 bg-white px-6 py-3 text-[15px] text-brand-700 shadow-sm hover:bg-brand-50 active:scale-[0.98];
+    @apply btn border border-brand-300 bg-white px-6 py-3 text-[15px] text-brand-700 shadow-sm hover:border-brand-500 hover:bg-brand-50 active:scale-[0.98];
   }
   .btn-dark {
-    @apply btn border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/90 backdrop-blur hover:bg-white/10 active:scale-[0.98];
+    @apply btn border border-white/15 bg-white/[.06] px-4 py-2 text-sm text-white/90 backdrop-blur hover:border-white/25 hover:bg-white/10 active:scale-[0.98];
   }
   .btn-sm {
     @apply min-h-10 px-3.5 py-2 text-sm;
@@ -95,6 +96,134 @@ body {
     linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
   background-size: 72px 72px;
+}
+
+/* Setup screens are deliberately quieter than the landing page: a single
+   dark workspace keeps attention on choosing an activity and entering names.
+   The attribute selectors bridge the existing utility classes without making
+   the interaction logic carry visual-theme concerns. */
+.setup-page {
+  color: #e4e8f3;
+  background-color: #0b0e1a;
+  background-image:
+    radial-gradient(circle at 10% 0%, rgba(14, 119, 183, 0.16), transparent 32rem),
+    radial-gradient(circle at 95% 85%, rgba(104, 65, 154, 0.13), transparent 28rem),
+    linear-gradient(rgba(255, 255, 255, 0.014) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.014) 1px, transparent 1px);
+  background-size: auto, auto, 72px 72px, 72px 72px;
+}
+
+.setup-page .card {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: 0 20px 70px -34px rgba(0, 0, 0, 0.7);
+}
+.setup-page .input {
+  border-color: rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.055);
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+.setup-page .input:focus {
+  border-color: rgba(55, 164, 209, 0.8);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 4px rgba(22, 137, 201, 0.16);
+}
+.setup-page .btn-secondary {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.055);
+  color: #f3f5fb;
+  box-shadow: none;
+}
+.setup-page .btn-secondary:hover {
+  border-color: rgba(123, 201, 232, 0.55);
+  background: rgba(255, 255, 255, 0.1);
+}
+.setup-page [class*="bg-white"] {
+  background-color: rgba(255, 255, 255, 0.045);
+}
+.setup-page [class*="bg-white/95"] {
+  background-color: rgba(16, 20, 31, 0.92);
+}
+.setup-page [class*="bg-brand-50"],
+.setup-page [class*="bg-cp-purple-50"],
+.setup-page [class*="bg-ink-50"] {
+  background-color: rgba(22, 137, 201, 0.1);
+}
+.setup-page [class*="bg-emerald-100"] {
+  background-color: rgba(16, 185, 129, 0.14);
+}
+.setup-page [class*="border-brand-100"],
+.setup-page [class*="border-ink-200"],
+.setup-page [class*="border-ink-300"] {
+  border-color: rgba(255, 255, 255, 0.11);
+}
+.setup-page [class*="text-ink-900"] {
+  color: #fff;
+}
+.setup-page [class*="text-ink-700"] {
+  color: #e4e8f3;
+}
+.setup-page [class*="text-ink-600"] {
+  color: #c2c9dd;
+}
+.setup-page [class*="text-ink-500"] {
+  color: #97a0ba;
+}
+.setup-page [class*="text-cp-purple-700"] {
+  color: #d7b9f2;
+}
+.setup-page [class*="text-brand-700"],
+.setup-page [class*="text-brand-600"] {
+  color: #b7e2f4;
+}
+.setup-page [class*="text-emerald-700"] {
+  color: #86efac;
+}
+.setup-page [class*="bg-emerald-100"] {
+  background-color: rgba(16, 185, 129, 0.14);
+}
+
+/* A small signature is intentionally expressive while remaining readable and
+   selectable. It gives the footer a human finish without adding another logo. */
+.footer-signature {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #b7e2f4;
+}
+.footer-signature::before {
+  width: 1.6rem;
+  height: 1px;
+  content: "";
+  background: rgba(123, 201, 232, 0.45);
+}
+.signature-script {
+  display: inline-block;
+  font-family: "Segoe Print", "Bradley Hand", "Brush Script MT", cursive;
+  font-size: 1.05rem;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  transform: rotate(-3deg);
+  transform-origin: left center;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+button:not(:disabled),
+a[href] {
+  cursor: pointer;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(123, 201, 232, 0.75);
+  outline-offset: 3px;
 }
 
 @keyframes confetti-fall {

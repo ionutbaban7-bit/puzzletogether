@@ -280,12 +280,24 @@ export default function LandingPage() {
           </section>
         </main>
 
-        <footer className="flex flex-col items-center justify-between gap-3 border-t border-white/10 py-7 text-xs text-ink-400 sm:flex-row">
-          <span>© 2026 PuzzleTogether</span>
-          <div className="flex gap-4">
+        <footer className="flex flex-col items-center justify-between gap-4 border-t border-white/10 py-7 text-xs text-ink-400 sm:flex-row">
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 sm:justify-start">
+            <span>© 2026 PuzzleTogether</span>
+            <span className="footer-signature" aria-label="by Ionut Baban">
+              <span className="signature-script">by Ionut Baban</span>
+            </span>
+          </div>
+          <div className="flex flex-wrap justify-center gap-4">
             <a href="#privacy" className="transition hover:text-brand-200">Privacy</a>
             <a href="#terms" className="transition hover:text-brand-200">Terms</a>
-            <a href="mailto:hello@puzzletogether.app" className="transition hover:text-brand-200">Contact</a>
+            <a
+              href="https://www.linkedin.com/in/ionut-baban-004489127/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition hover:text-brand-200"
+            >
+              Contact · LinkedIn ↗
+            </a>
           </div>
         </footer>
       </div>

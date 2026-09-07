@@ -39,8 +39,8 @@ export default {
           100: "#e4e8f3",
           50: "#f3f5fb",
         },
-        // Coaching Partners: azure is the dependable primary, hot pink is
-        // reserved for calls to action, and purple marks secondary choices.
+        // Product palette: azure is the dependable primary, emerald confirms
+        // progress, and purple marks secondary activity choices.
         brand: {
           50: "#edf8fd",
           100: "#d9f0fa",
