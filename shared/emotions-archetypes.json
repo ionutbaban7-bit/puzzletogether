@@ -1,7 +1,7 @@
 {
   "disclaimer": {
-    "ro": "Arhetipurile sunt o metaforă pentru sistemele emoționale (Panksepp) și pentru „partea” care vorbește în tine (limbajul „parts”, IFS). E un instrument de reflecție, nu o tipologie validată și nu e un test psihologic.",
-    "en": "Archetypes are a metaphor for emotional systems (Panksepp) and for the “part” speaking in you (the “parts” language, IFS). It is a reflection instrument, not a validated typology and not a psychological test."
+    "ro": "Numele sunt imagini funcționale, nu un catalog de arhetipuri — nu sunt arhetipurile lui Jung și nici personaje din Călătoria Eroului: fiecare voce stă pe un sistem emoțional de bază (Panksepp), în limbajul de „parts” (IFS). Orfanul poartă imaginea copilului rănit, cunoscută din linia Jung–Bradshaw. Instrument de reflecție, nu o tipologie validată și nu un test psihologic.",
+    "en": "The names are functional images, not an archetypal catalogue — they are not Jung's archetypes, nor Hero's Journey characters: each voice sits on a core emotional system (Panksepp), in “parts” language (IFS). The Orphan carries the wounded-child image known from the Jung–Bradshaw line. A reflection instrument, not a validated typology and not a psychological test."
   },
   "archetypes": [
     {
@@ -30,7 +30,7 @@
     },
     {
       "id": "plangatorul", "icon": "🕯️", "color": "#3b82f6",
-      "name": { "ro": "Purtătorul de doliu", "en": "The Mourner" },
+      "name": { "ro": "Orfanul", "en": "The Orphan" },
       "system": { "ro": "sistemul PANIC/GRIEF / familia tristețe", "en": "the PANIC/GRIEF system / sadness family" },
       "claim": { "ro": "„Te ajut să accepți ce s-a pierdut.”", "en": "“I help you accept what was lost.”" },
       "function": { "ro": "adesea semnalează pierdere și te oprește să mergi mai departe fără a o recunoaște", "en": "often signals loss and stops you from going on without acknowledging it" },
@@ -38,7 +38,7 @@
       "overreachesWhen": { "ro": "când te izolează, când „amintirea” devine o evadare de la viața prezentă", "en": "when it isolates you, when “remembering” becomes an escape from present life" },
       "itsFear": { "ro": "că dacă nu mai plângi, pierderea nu mai contează", "en": "that if you stop crying, the loss no longer matters" },
       "whatToSay": { "ro": "„Mulțumesc că mă oprești. Plângem 5 minute, apoi mănânc, ies, și aleg un lucru mic pentru azi.”", "en": "“Thank you for stopping me. We cry 5 minutes, then I eat, go out, and choose one small thing for today.”" },
-      "reflectionQuestion": { "ro": "Ce a pierdut Purtătorul de doliu ultima dată? Ai procesat-o sau ai lăsat-o în coadă?", "en": "What did your Mourner lose the last time? Did you process it, or did you leave it in the queue?" }
+      "reflectionQuestion": { "ro": "Ce a pierdut Orfanul ultima dată? Ai procesat-o sau ai lăsat-o în coadă?", "en": "What did the Orphan lose the last time? Did you process it, or did you leave it in the queue?" }
     },
     {
       "id": "sarbatoritorul", "icon": "🎉", "color": "#f59e0b",
