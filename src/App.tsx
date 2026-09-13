@@ -5,6 +5,7 @@ import LandingPage from "./pages/LandingPage";
 import CreateRoom from "./pages/CreateRoom";
 import JoinRoom from "./pages/JoinRoom";
 import RoomRoute from "./pages/RoomRoute";
+import EmotionsPage from "./pages/EmotionsPage";
 
 export default function App() {
   const route = useRoute();
@@ -27,6 +28,9 @@ export default function App() {
       break;
     case "room":
       page = <RoomRoute roomId={route.roomId} />;
+      break;
+    case "emotions":
+      page = <EmotionsPage />;
       break;
     default:
       page = <LandingPage />;

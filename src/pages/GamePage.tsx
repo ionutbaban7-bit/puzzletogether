@@ -3,6 +3,7 @@ import Board from "../puzzle/Board";
 import CanvasBoard from "../puzzle/CanvasBoard";
 import RankingActivity from "../puzzle/RankingActivity";
 import QuestionnaireActivity from "../puzzle/QuestionnaireActivity";
+import EmotionsActivity from "../puzzle/EmotionsActivity";
 import { api } from "../lib/api";
 import { copyToClipboard, formatClock, inviteUrl } from "../lib/format";
 import { navigate } from "../lib/router";
@@ -366,6 +367,13 @@ export default function GamePage() {
         />
       ) : isCoaching && mode === "questionnaire" ? (
         <QuestionnaireActivity
+          key={`${room.puzzleId}:${epoch}`}
+          puzzle={puzzle}
+          players={players}
+          youId={youId}
+        />
+      ) : isCoaching && mode === "emotions" ? (
+        <EmotionsActivity
           key={`${room.puzzleId}:${epoch}`}
           puzzle={puzzle}
           players={players}

@@ -254,6 +254,87 @@ export default function LandingPage() {
             </div>
           </section>
 
+          {/* CARTOGRAF — the emotions zone */}
+          <section className="relative mt-16 overflow-hidden rounded-[32px] border border-cp-purple-300/25 bg-gradient-to-br from-cp-purple-500/15 via-ink-900 to-ink-900 shadow-pop">
+            <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full border border-cp-purple-300/10 bg-cp-purple-500/10 blur-2xl" />
+            <div className="relative grid gap-8 p-6 sm:p-8 lg:grid-cols-[1.2fr_.8fr] lg:items-center lg:p-10">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full border border-cp-purple-300/25 bg-cp-purple-500/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[.18em] text-cp-purple-300">
+                  <span>✦</span>
+                  <T value={{ ro: "CARTOGRAF · zona de emoții", en: "CARTOGRAF · the emotions zone" }} />
+                </div>
+                <h2 className="font-display mt-4 max-w-2xl text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+                  <T value={{ ro: "Simți. Numesc. Alege.", en: "Feel it. Name it. Choose." }} />
+                </h2>
+                <p className="mt-4 max-w-2xl text-sm leading-relaxed text-ink-200 sm:text-base">
+                  <T
+                    value={{
+                      ro: "Construiește-ți harta lumii interioare: roata emoțiilor cu 24 de stări detaliate, meteo-ul emoțional, expediții de reflecție, frontiera fricilor și muzeul dovezilor. Solo — sau în cameră, unde aceeași situație arată ceruri diferite pentru fiecare.",
+                      en: "Build your map of the inner world: the emotion wheel with 24 detailed states, the emotional weather, reflection expeditions, the frontier of fears and the museum of evidence. Solo — or in the room, where the same situation shows different skies for each person.",
+                    }}
+                  />
+                </p>
+                <div className="mt-5 grid gap-2 text-sm text-ink-300 sm:grid-cols-3">
+                  <div className="flex items-start gap-2">
+                    <span className="mt-0.5 text-cp-purple-300">✓</span>
+                    <span><T value={{ ro: "24 emoții + 11 amestecuri", en: "24 emotions + 11 blends" }} /></span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="mt-0.5 text-cp-purple-300">✓</span>
+                    <span><T value={{ ro: "Camera Mare pentru echipe", en: "The Big Room for teams" }} /></span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="mt-0.5 text-cp-purple-300">✓</span>
+                    <span><T value={{ ro: "Datele rămân la tine", en: "Your data stays yours" }} /></span>
+                  </div>
+                </div>
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                  <button className="btn-primary px-5 py-3 text-[15px]" onClick={() => navigate("/emotii")}>
+                    <T value={{ ro: "Începe atlasul tău", en: "Start your atlas" }} /> <span aria-hidden>→</span>
+                  </button>
+                  <button className="btn px-5 py-3 text-[15px]" onClick={() => navigate("/create")}>
+                    <T value={{ ro: "Jocul în cameră", en: "The room game" }} />
+                  </button>
+                </div>
+                <p className="mt-3 text-[11px] text-ink-500">
+                  <T value={{ ro: "Instrument de reflecție, nu test psihologic. Fără cont, fără scoruri, fără diagnoze.", en: "A reflection instrument, not a psychological test. No account, no scores, no diagnoses." }} />
+                </p>
+              </div>
+              {/* Mini wheel preview */}
+              <div className="rounded-2xl border border-white/10 bg-ink-950/55 p-5 sm:p-6">
+                <div className="text-[11px] font-bold uppercase tracking-[.2em] text-ink-400">Roata emoțiilor</div>
+                <svg viewBox="0 0 200 200" className="mx-auto mt-3 w-52 animate-float" aria-hidden="true">
+                  {["#f59e0b", "#10b981", "#6366f1", "#a855f7", "#3b82f6", "#14b8a6", "#ef4444", "#fb923c"].map((c, i) => {
+                    const a0 = (i * 45 - 90 - 22.5) * (Math.PI / 180);
+                    const a1 = a0 + Math.PI / 4;
+                    const seg = (r0: number, r1: number, a: number, b: number) => {
+                      const p = (r: number, t: number) => [100 + r * Math.cos(t), 100 + r * Math.sin(t)];
+                      const [x0, y0] = p(r1, a); const [x1, y1] = p(r1, b); const [x2, y2] = p(r0, b); const [x3, y3] = p(r0, a);
+                      return `M ${x0} ${y0} A ${r1} ${r1} 0 0 1 ${x1} ${y1} L ${x2} ${y2} A ${r0} ${r0} 0 0 0 ${x3} ${y3} Z`;
+                    };
+                    return (
+                      <g key={c}>
+                        <path d={seg(30, 52, a0, a1)} fill={c} opacity="0.95" />
+                        <path d={seg(55, 74, a0, a1)} fill={c} opacity="0.75" />
+                        <path d={seg(77, 94, a0, a1)} fill={c} opacity="0.5" />
+                      </g>
+                    );
+                  })}
+                  <circle cx="100" cy="100" r="26" fill="#10141f" stroke="#232a3d" />
+                  <text x="100" y="105" textAnchor="middle" fontSize="12" fill="#e4e8f3" fontWeight="700">🗺️</text>
+                </svg>
+                <p className="mt-3 text-center text-xs leading-relaxed text-ink-400">
+                  <T
+                    value={{
+                      ro: "8 teritorii × 3 niveluri de intensitate — fiecare cu cartea ei: corp, gânduri, impuls, funcție, cercetare.",
+                      en: "8 territories × 3 intensity levels — each with its own book: body, thoughts, impulse, function, research.",
+                    }}
+                  />
+                </p>
+              </div>
+            </div>
+          </section>
+
           {/* Features */}
           <section className="mt-20">
             <div className="text-center">

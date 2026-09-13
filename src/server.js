@@ -16,6 +16,9 @@ import { WebSocketServer } from "ws";
 
 import puzzlesData from "../shared/puzzles.json" with { type: "json" };
 import coachingData from "../shared/coaching.json" with { type: "json" };
+import emotionsTaxonomy from "../shared/emotions-taxonomy.json" with { type: "json" };
+import emotionsSituations from "../shared/emotions-situations.json" with { type: "json" };
+import emotionsArchetypes from "../shared/emotions-archetypes.json" with { type: "json" };
 import sentenceVocab from "../shared/sentence-vocabulary.json" with { type: "json" };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -133,6 +136,78 @@ const CANVAS_MODES = new Map((puzzlesData.canvasModes || []).map((m) => [m.id, m
 const COACHING = coachingData;
 const puzzleById = new Map(PUZZLES.map((p) => [p.id, p]));
 const activityById = new Map(COACHING.activities.map((a) => [a.id, a]));
+
+// The CARTOGRAF room activity (The Big Room). Reuses the coaching activity
+// plumbing: same stage flow, private-until-reveal votes, host controls, harvest.
+const EMOTIONS_ACTIVITY = {
+  id: "emotions-camera-mare",
+  mode: "emotions",
+  name: { ro: "Camera Mare — Harta Emoțiilor", en: "The Big Room — The Emotion Map" },
+  description: { ro: "Facilitatorul citește o situație, fiecare votează privat emoția + intensitatea + arhetipul, iar ecranul arată distribuția anonimă: «Aceeași situație. N ceruri diferite.»", en: "The facilitator reads a situation, each participant privately votes emotion + intensity + archetype, and the screen shows the anonymous distribution: “Same situation. N different skies.”" },
+  duration: "30–45 min",
+  cover: "/images/emotions/camera-mare.svg",
+  scenario: {
+    title: { ro: "Regulile camerei", en: "The room's rules" },
+    situation: { ro: "Voturile sunt private până la reveal. Fiecare emoție e validă — nu există răspuns corect. «Pas» e o mișcare legală și anonimă. Nimeni nu e obligat să explice de ce a ales ce a ales. Ce se spune în cameră, rămâne în cameră.", en: "Votes are private until the reveal. Every emotion is valid — there is no right answer. “Pass” is a legal, anonymous move. Nobody has to explain their choice. What is said in the room stays in the room." },
+  },
+  instructions: { ro: "Facilitatorul pornește un tur (meteo de pornire, situație, muzeu, meteo de final). După voturile private, reveal-ul arată doar agregatul anonim — numere, nu nume.", en: "The facilitator starts a round (starting weather, situation, museum, final weather). After the private votes, the reveal shows only the anonymous aggregate — numbers, not names." },
+  situations: emotionsSituations.room,
+};
+activityById.set(EMOTIONS_ACTIVITY.id, EMOTIONS_ACTIVITY);
+const EMOTION_ID_SET = new Set([
+  ...emotionsTaxonomy.emotions.map((e) => e.id),
+  ...emotionsTaxonomy.blends.map((b) => b.id),
+]);
+const ARCHETYPE_ID_SET = new Set(emotionsArchetypes.archetypes.map((a) => a.id));
+function freshEmotionsState() {
+  return { kind: null, situationId: null, round: 0, votes: new Map(), revealed: false, history: [], safetyWord: "" };
+}
+function emotionNameOf(id) {
+  const e = emotionsTaxonomy.emotions.find((x) => x.id === id) || emotionsTaxonomy.blends.find((x) => x.id === id);
+  return e ? e.name : id;
+}
+function computeEmotionsAgg(room) {
+  const e = room.emotions;
+  const votes = [...e.votes.values()];
+  const counts = {};
+  const archetypeCounts = {};
+  let passed = 0;
+  let intensitySum = 0;
+  let intensityN = 0;
+  const lines = [];
+  for (const v of votes) {
+    if (v.passed) { passed += 1; continue; }
+    for (const id of v.emotions) counts[id] = (counts[id] || 0) + 1;
+    if (v.archetype) archetypeCounts[v.archetype] = (archetypeCounts[v.archetype] || 0) + 1;
+    intensitySum += v.intensity;
+    intensityN += 1;
+    if (v.line) lines.push(v.line);
+  }
+  // Shuffle museum lines so they never correlate with join order.
+  for (let i = lines.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [lines[i], lines[j]] = [lines[j], lines[i]];
+  }
+  const situation = e.situationId ? (room.coachingActivity?.situations || []).find((x) => x.id === e.situationId) : null;
+  return {
+    kind: e.kind, round: e.round, situationId: e.situationId,
+    situation: situation ? { text: situation.text, heavy: situation.heavy } : null,
+    counts, archetypeCounts, passed,
+    intensityAvg: intensityN ? Math.round((intensitySum / intensityN) * 10) / 10 : null,
+    lines, at: Date.now(),
+  };
+}
+function publicEmotionsState(room) {
+  const e = room.emotions;
+  if (!e) return null;
+  return {
+    kind: e.kind, situationId: e.situationId, round: e.round, revealed: e.revealed,
+    history: e.history, safetyWordActive: !!e.safetyWord,
+    // A Pass is a valid, anonymous answer — it counts toward progress.
+    votedCount: e.votes.size,
+    totalPlayers: [...room.players.values()].filter((pl) => pl.role !== "spectator").length,
+  };
+}
 
 let imageDims = {};
 try {
@@ -651,6 +726,7 @@ function roomView(room) {
     insights: room.insights,
     debriefNotes: room.debriefNotes,
     actions: room.actions,
+    emotions: publicEmotionsState(room),
   };
 }
 
@@ -1013,6 +1089,8 @@ function buildPuzzleSetup(config) {
     }));
   } else if (coachingActivity?.mode === "questionnaire") {
     total = coachingActivity.questions.length;
+  } else if (coachingActivity?.mode === "emotions") {
+    total = 0;
   }
 
   const dims = puzzle
@@ -1066,12 +1144,12 @@ function buildPuzzleSetup(config) {
       sourceUrl: puzzle?.sourceUrl || undefined,
       licenseUrl: puzzle?.licenseUrl || undefined,
       mystery: !coachingActivity ? !!config.mystery : undefined,
-      width: board ? board.width : dims.w,
-      height: board ? board.height : dims.h,
-      cols: layout ? layout.cols : grid.cols,
-      rows: layout ? layout.rows : grid.rows,
-      pieceW: board ? board.pieceW : grid.pieceW,
-      pieceH: board ? board.pieceH : grid.pieceH,
+      width: coachingActivity?.mode === "emotions" ? 0 : board ? board.width : dims.w,
+      height: coachingActivity?.mode === "emotions" ? 0 : board ? board.height : dims.h,
+      cols: coachingActivity?.mode === "emotions" ? 0 : layout ? layout.cols : grid.cols,
+      rows: coachingActivity?.mode === "emotions" ? 0 : layout ? layout.rows : grid.rows,
+      pieceW: coachingActivity?.mode === "emotions" ? 0 : board ? board.pieceW : grid.pieceW,
+      pieceH: coachingActivity?.mode === "emotions" ? 0 : board ? board.pieceH : grid.pieceH,
       scenario: null,
       canvasMode: null,
       contentLanguage: null,
@@ -1100,6 +1178,7 @@ function resetWorkshopState(room, { lobby = true } = {}) {
   room.insights = { observed: "", learned: "", tryNext: "" };
   room.debriefNotes = [];
   room.actions = [];
+  if (room.emotions) room.emotions = freshEmotionsState();
 }
 
 function applyPuzzleToRoom(room, config) {
@@ -1121,6 +1200,7 @@ function applyPuzzleToRoom(room, config) {
   room.rankingSlots = setup.rankingSlots;
   room.puzzle = setup.puzzleMeta;
   room.pieces = setup.pieces;
+  room.emotions = setup.coachingActivity?.mode === "emotions" ? freshEmotionsState() : null;
   room.seed = crypto.randomInt(1, 2 ** 31);
   // Track the uploaded file (if any) so it is deleted when the room is reaped.
   room.customImageFile =
@@ -1180,6 +1260,7 @@ function createRoom(config, creator = {}) {
     insights: { observed: "", learned: "", tryNext: "" },
     debriefNotes: [],
     actions: [],
+    emotions: null,
     chat: [],
     completed: false,
     completedAt: null,
@@ -1227,7 +1308,11 @@ function persistableRoom(room) {
     timerDurationMs: room.timerDurationMs, lastActivityAt: room.lastActivityAt, stage: room.stage,
     boardLocked: room.boardLocked, jigsawLayout: room.jigsawLayout || "scatter", revealed: room.revealed, celebrationMode: room.celebrationMode,
     facilitatorNotes: room.facilitatorNotes, insights: room.insights, debriefNotes: room.debriefNotes,
-    actions: room.actions, chat: room.chat, completed: room.completed, completedAt: room.completedAt,
+    actions: room.actions, emotions: room.emotions ? {
+      kind: room.emotions.kind, situationId: room.emotions.situationId, round: room.emotions.round,
+      revealed: room.emotions.revealed, history: room.emotions.history, safetyWord: room.emotions.safetyWord,
+      votes: [...room.emotions.votes],
+    } : null, chat: room.chat, completed: room.completed, completedAt: room.completedAt,
     completedInMs: room.completedInMs, completionPlayers: room.completionPlayers,
   };
 }
@@ -1335,6 +1420,11 @@ function restoreSnapshots() {
         completed: !!raw.completed, completedAt: raw.completedAt, completedInMs: raw.completedInMs,
         completionPlayers: raw.completionPlayers || [],
       });
+      room.emotions = raw.emotions && room.coachingActivity?.mode === "emotions"
+        ? { kind: raw.emotions.kind, situationId: raw.emotions.situationId, round: raw.emotions.round || 0,
+            revealed: !!raw.emotions.revealed, history: raw.emotions.history || [], safetyWord: raw.emotions.safetyWord || "",
+            votes: new Map(raw.emotions.votes || []) }
+        : null;
       rooms.set(room.id, room);
       codeIndex.set(room.code, room.id);
       } catch (err) {
@@ -1606,6 +1696,45 @@ function applyControl(room, playerId, msg, ws) {
       room.boardLocked = true;
       broadcast(room, { t: "puzzleMeta", puzzle: puzzleView(room) });
       break;
+    case "emotionsRound": {
+      if (room.coachingActivity?.mode !== "emotions" || !room.emotions || room.stage !== "play") {
+        return send(ws, { t: "error", code: "emotions_unavailable", message: "Emotion rounds are available during play." });
+      }
+      const kind = ["weather-start", "situation", "museum", "weather-end"].includes(String(msg.kind)) ? String(msg.kind) : null;
+      if (!kind) return send(ws, { t: "error", code: "bad_emotions_round", message: "Unknown round kind." });
+      let situationId = null;
+      if (kind === "situation") {
+        const id = String(msg.situationId || "");
+        if (!(room.coachingActivity.situations || []).some((x) => x.id === id)) {
+          return send(ws, { t: "error", code: "unknown_situation", message: "Unknown situation." });
+        }
+        situationId = id;
+      }
+      // A new round keeps the session history (for export) and the safety word.
+      room.emotions = { ...freshEmotionsState(), round: room.emotions.round + 1, kind, situationId, safetyWord: room.emotions.safetyWord, history: room.emotions.history };
+      broadcastRoom(room);
+      break;
+    }
+    case "emotionsReveal": {
+      if (room.coachingActivity?.mode !== "emotions" || !room.emotions?.kind || room.emotions.revealed) {
+        return send(ws, { t: "error", code: "emotions_reveal_invalid", message: "Reveal is available once per round." });
+      }
+      const agg = computeEmotionsAgg(room);
+      room.emotions.revealed = true;
+      room.emotions.history.push(agg);
+      broadcast(room, { t: "emotionsReveal", agg });
+      broadcastRoom(room);
+      logEvent("emotions_reveal", room, { kind: room.emotions.kind });
+      break;
+    }
+    case "emotionsSafetyWord": {
+      if (room.coachingActivity?.mode !== "emotions" || !room.emotions) {
+        return send(ws, { t: "error", code: "emotions_unavailable", message: "Emotion rooms only." });
+      }
+      room.emotions.safetyWord = String(msg.text || "").trim().slice(0, 40);
+      broadcastRoom(room);
+      break;
+    }
     case "timer": {
       const seconds = Math.max(0, Math.min(60 * 60, Number(msg.seconds) || 0));
       room.timerDurationMs = seconds ? seconds * 1000 : null;
@@ -1726,6 +1855,7 @@ function exportPayload(room) {
     insights: room.insights,
     debriefNotes: room.debriefNotes,
     actions: room.actions,
+    emotions: room.emotions ? { rounds: room.emotions.history, safetyWordActive: !!room.emotions.safetyWord } : null,
     facilitatorNotes: room.facilitatorNotes,
   };
 }
@@ -2271,9 +2401,15 @@ app.get("/api/puzzles", (_req, res) => res.json({
   letterSets: CANVAS_LETTER_SETS,
   sentencePacks: { ro: sentenceVocab.ro, en: sentenceVocab.en },
   coaching: publicCoachingCatalog(),
+  emotions: { category: { id: "emotions", name: "Emotions", icon: "🗺️" }, activities: [{ ...EMOTIONS_ACTIVITY, situations: undefined }] },
   maxPlayers: MAX_PLAYERS,
 }));
 app.get("/api/coaching", (_req, res) => res.json(publicCoachingCatalog()));
+app.get("/api/emotions", (_req, res) => res.json({
+  taxonomy: emotionsTaxonomy,
+  situations: emotionsSituations,
+  archetypes: emotionsArchetypes,
+}));
 
 app.post("/api/rooms", (req, res) => {
   const { puzzleId, difficulty, name, sessionName, role, contentLanguage, mystery, customImage, teamMode, teamCount } = req.body || {};
@@ -2462,7 +2598,12 @@ app.get("/api/rooms/:id/export", (req, res) => {
   const actions = payload.actions.map((a) => `<li>${htmlEscape(a.text)} — ${htmlEscape(room.knownPlayers.get(a.ownerId)?.name || "Unassigned")} ${a.due ? `(${htmlEscape(a.due)})` : ""}</li>`).join("");
   const ranking = payload.ranking ? `<h2>Team ranking${payload.deviationScore != null ? ` · deviation ${payload.deviationScore}` : ""}</h2><ol>${payload.ranking.map((r) => `<li>${htmlEscape(r.item.en || r.item.ro)} — team ${r.teamRank ?? "–"}${r.expertRank ? ` / expert ${r.expertRank}` : ""}</li>`).join("")}</ol>` : "";
   const canvas = payload.canvas ? `<h2>Canvas composition (${payload.canvas.contentLanguage.toUpperCase()} · ${htmlEscape(payload.canvas.mode)} · ${payload.canvas.tiles.length} tiles)</h2><pre style="white-space:pre-wrap;font-family:Georgia,serif;font-size:17px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px">${htmlEscape(payload.canvas.text || "—")}</pre>` : "";
-  res.type("html").send(`<!doctype html><html><head><meta charset="utf-8"><title>${htmlEscape(room.sessionName)} — PuzzleTogether</title><style>body{font:14px system-ui;max-width:800px;margin:40px auto;color:#172033}h1,h2{color:#27358f}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.card{border:1px solid #ddd;border-radius:12px;padding:14px}@media print{button{display:none}}</style></head><body><button onclick="print()">Print / Save PDF</button><h1>${htmlEscape(room.sessionName)}</h1><p>${htmlEscape(room.config.puzzleId)} · ${new Date(room.startedAt || room.createdAt).toLocaleString()}</p>${ranking}${canvas}<h2>Insights</h2><div class="grid"><div class="card"><b>Observed</b><p>${htmlEscape(room.insights.observed)}</p></div><div class="card"><b>Learned</b><p>${htmlEscape(room.insights.learned)}</p></div><div class="card"><b>Try next</b><p>${htmlEscape(room.insights.tryNext)}</p></div></div><h2>Action items</h2><ul>${actions || "<li>No action items captured.</li>"}</ul></body></html>`);
+  const emotionsHtml = payload.emotions?.rounds?.length ? `<h2>Emotion map (anonymous aggregate)</h2><ul>${payload.emotions.rounds.map((r) => {
+    const counts = Object.entries(r.counts).map(([id, n]) => `${htmlEscape((emotionNameOf(id)?.en) || id)} ×${n}`).join(", ") || "—";
+    const situation = r.situation ? ` — ${htmlEscape(r.situation.text.en || r.situation.text.ro)}` : "";
+    return `<li><b>${htmlEscape(r.kind)}</b>${situation}: ${counts}${r.passed ? ` · ${r.passed} passed` : ""}${r.intensityAvg != null ? ` · avg intensity ${r.intensityAvg}/10` : ""}${r.lines?.length ? ` · museum: ${r.lines.map(htmlEscape).join("; ")}` : ""}</li>`;
+  }).join("")}</ul>` : "";
+  res.type("html").send(`<!doctype html><html><head><meta charset="utf-8"><title>${htmlEscape(room.sessionName)} — PuzzleTogether</title><style>body{font:14px system-ui;max-width:800px;margin:40px auto;color:#172033}h1,h2{color:#27358f}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.card{border:1px solid #ddd;border-radius:12px;padding:14px}@media print{button{display:none}}</style></head><body><button onclick="print()">Print / Save PDF</button><h1>${htmlEscape(room.sessionName)}</h1><p>${htmlEscape(room.config.puzzleId)} · ${new Date(room.startedAt || room.createdAt).toLocaleString()}</p>${ranking}${canvas}${emotionsHtml}<h2>Insights</h2><div class="grid"><div class="card"><b>Observed</b><p>${htmlEscape(room.insights.observed)}</p></div><div class="card"><b>Learned</b><p>${htmlEscape(room.insights.learned)}</p></div><div class="card"><b>Try next</b><p>${htmlEscape(room.insights.tryNext)}</p></div></div><h2>Action items</h2><ul>${actions || "<li>No action items captured.</li>"}</ul></body></html>`);
 });
 
 // Compatibility-only archival image route for a room snapshot created before
@@ -2581,7 +2722,7 @@ wss.on("connection", (ws) => {
         startCursorRelay(room);
         touch(room);
         send(ws, {
-          t: "init", protocolVersion: PROTOCOL_VERSION, you: pid, room: roomView(room), puzzle: puzzleView(room), players: activePlayerList(room), pieces: room.pieces.map(serializePiece), ratings: ratingListFor(room, pid), scores: scoreList(room), chat: room.chat,
+          t: "init", protocolVersion: PROTOCOL_VERSION, you: pid, room: roomView(room), puzzle: puzzleView(room), players: activePlayerList(room), pieces: room.pieces.map(serializePiece), ratings: ratingListFor(room, pid), emotionsVote: room.emotions?.votes.get(pid) || null, scores: scoreList(room), chat: room.chat,
           facilitator: isHost(room, pid) ? { notes: room.facilitatorNotes } : undefined,
           cursors: [...room.conns.entries()].filter(([id]) => id !== pid).map(([id, c]) => ({ id, x: c.cursor.x, y: c.cursor.y })),
           canvas: canvasSnapshot(room),
@@ -2710,6 +2851,43 @@ wss.on("connection", (ws) => {
         touch(room);
         for (const [pid, conn] of room.conns) send(conn.ws, { t: "ratings", list: ratingListFor(room, pid) });
         if (done) logEvent("rating_done", room, { playerId });
+        break;
+      }
+      case "emotionsVote": {
+        const { room, playerId } = attached;
+        const player = room.players.get(playerId);
+        if (!room.emotions || room.coachingActivity?.mode !== "emotions" || room.stage !== "play" || room.boardLocked || !player || player.role === "spectator") break;
+        const emotions = Array.isArray(msg.emotions) ? [...new Set(msg.emotions)].map(String).filter((id) => EMOTION_ID_SET.has(id)).slice(0, 3) : [];
+        const passed = msg.passed === true;
+        const line = String(msg.line || "").trim().slice(0, 140);
+        if (room.emotions.kind === "museum") {
+          if (!line) break;
+          room.emotions.votes.set(playerId, { emotions: [], intensity: 0, archetype: null, passed: false, line, at: Date.now() });
+        } else if (passed) {
+          room.emotions.votes.set(playerId, { emotions: [], intensity: 0, archetype: null, passed: true, line: null, at: Date.now() });
+        } else if (emotions.length) {
+          const intensity = Math.max(0, Math.min(10, Math.round(Number(msg.intensity) || 0)));
+          const archetype = ARCHETYPE_ID_SET.has(String(msg.archetype)) ? String(msg.archetype) : null;
+          room.emotions.votes.set(playerId, { emotions, intensity, archetype, passed: false, line: null, at: Date.now() });
+        } else {
+          break;
+        }
+        touch(room);
+        for (const [pid, conn] of room.conns) send(conn.ws, { t: "emotionsVote", mine: room.emotions.votes.get(pid) || null });
+        broadcastRoom(room);
+        logEvent(passed ? "emotions_pass" : "emotions_vote", room, { playerId });
+        break;
+      }
+      case "safety": {
+        const { room, playerId } = attached;
+        if (!room.emotions?.safetyWord) break;
+        const word = String(msg.word || "").trim().toLowerCase();
+        if (!word || word !== room.emotions.safetyWord.trim().toLowerCase()) break;
+        const now = Date.now();
+        if (!room.boardLocked) { room.boardLocked = true; if (!room.pausedAt) room.pausedAt = now; }
+        broadcast(room, { t: "safetyPause" });
+        broadcastRoom(room);
+        logEvent("safety_pause", room, { playerId });
         break;
       }
       case "team": {

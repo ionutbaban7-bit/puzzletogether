@@ -149,6 +149,8 @@ export interface RoomView {
   insights: WorkshopInsights;
   debriefNotes: string[];
   actions: ActionItem[];
+  /** CARTOGRAF room (The Big Room) — public, aggregate-only state. */
+  emotions?: EmotionsPublicState | null;
 }
 
 export interface Bilingual {
@@ -178,7 +180,7 @@ export interface PuzzleView {
   seed?: number;
   snapDistance: number;
   isCoaching?: boolean;
-  mode?: "ranking" | "questionnaire";
+  mode?: "ranking" | "questionnaire" | "emotions";
   activityId?: string;
   activity?: CoachingActivity;
   rankingSlots?: RankingSlot[];
@@ -243,15 +245,57 @@ export interface ProfileType {
   team: Bilingual;
 }
 
+export interface EmotionsSituation {
+  id: string;
+  category: string;
+  text: Bilingual;
+  heavy: boolean;
+  debriefPrompts?: Bilingual[];
+}
+
+export interface EmotionsVote {
+  emotions: string[];
+  intensity: number;
+  archetype: string | null;
+  passed: boolean;
+  line: string | null;
+  at: number;
+}
+
+export interface EmotionsAgg {
+  kind: string;
+  round: number;
+  situationId: string | null;
+  situation: { text: Bilingual; heavy: boolean } | null;
+  counts: Record<string, number>;
+  archetypeCounts: Record<string, number>;
+  passed: number;
+  intensityAvg: number | null;
+  lines: string[];
+  at: number;
+}
+
+export interface EmotionsPublicState {
+  kind: string | null;
+  situationId: string | null;
+  round: number;
+  revealed: boolean;
+  history: EmotionsAgg[];
+  safetyWordActive: boolean;
+  votedCount: number;
+  totalPlayers: number;
+}
+
 export interface CoachingActivity {
   id: string;
-  mode: "ranking" | "questionnaire";
+  mode: "ranking" | "questionnaire" | "emotions";
   name: Bilingual;
   description: Bilingual;
   duration: string;
   cover: string;
   scenario?: { title: Bilingual; situation: Bilingual };
   instructions?: Bilingual;
+  situations?: EmotionsSituation[];
   items?: RankingItem[];
   debrief?: Bilingual[];
   layout?: { cols: number; rows: number; padX: number; padY: number; slotW: number; slotH: number; gapX: number; gapY: number };
@@ -299,6 +343,10 @@ export interface PuzzleInfo {
 }
 export interface CanvasMode { id: string; name: string; tiles: number }
 export interface SentencePackEntry { w: string; c: string; n: number }
+export interface EmotionsCatalog {
+  category: { id: string; name: string; icon: string };
+  activities: CoachingActivity[];
+}
 export interface CatalogData {
   categories: Category[];
   difficulties: Difficulty[];
@@ -307,6 +355,7 @@ export interface CatalogData {
   letterSets?: Record<string, string>;
   sentencePacks?: Record<string, SentencePackEntry[]>;
   coaching: CoachingCatalog;
+  emotions?: EmotionsCatalog;
   maxPlayers: number;
 }
 export type JoinStatus = "idle" | "connecting" | "joined" | "denied" | "closed";

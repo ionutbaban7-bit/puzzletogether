@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { RoomSocket } from "./lib/ws";
-import type { ActionItem, CanvasState, CanvasTile, ChatEntry, CursorView, JoinStatus, Piece, PlayerView, PuzzleView, RatingView, RoomView, ScoreView, WorkshopInsights } from "./types";
+import type { ActionItem, CanvasState, CanvasTile, ChatEntry, CursorView, EmotionsAgg, EmotionsVote, JoinStatus, Piece, PlayerView, PuzzleView, RatingView, RoomView, ScoreView, WorkshopInsights } from "./types";
 
 export interface StoreState {
   status: JoinStatus;
@@ -25,13 +25,19 @@ export interface StoreState {
   epoch: number;
   canvas: CanvasState | null;
   canvasTiles: Record<number, CanvasTile>;
+  /** CARTOGRAF room: my private vote for the current round. */
+  emotionsMine: EmotionsVote | null;
+  /** CARTOGRAF room: the last revealed (anonymous aggregate) of the current round. */
+  emotionsAgg: EmotionsAgg | null;
+  /** CARTOGRAF room: a participant triggered the safety word. */
+  safetyPaused: boolean;
 }
 
 const initialState: StoreState = {
   status: "idle", connected: false, reconnectAttempt: 0, reconnectExhausted: false,
   you: null, room: null, puzzle: null, players: [], pieces: {}, cursors: {},
   completion: null, ratings: {}, scores: [], chat: [], facilitatorNotes: "", epoch: 0,
-  canvas: null, canvasTiles: {},
+  canvas: null, canvasTiles: {}, emotionsMine: null, emotionsAgg: null, safetyPaused: false,
 };
 
 let state: StoreState = initialState;
@@ -90,6 +96,7 @@ function handleMessage(msg: { t: string; [key: string]: unknown }) {
         you: msg.you as string, room, puzzle: msg.puzzle as PuzzleView, players,
         pieces: indexPieces((msg.pieces as Piece[]) || []), ratings: Object.fromEntries(ratings.map((rating) => [rating.playerId, rating])),
         scores: (msg.scores as ScoreView[]) || [], chat: (msg.chat as ChatEntry[]) || [], cursors,
+        emotionsMine: (msg.emotionsVote as EmotionsVote | null) || null, emotionsAgg: (() => { const h = (msg.room as RoomView).emotions?.history; return (msg.room as RoomView).emotions?.revealed && h?.length ? h[h.length - 1] : null; })(),
         facilitatorNotes: ((msg.facilitator as { notes?: string } | undefined)?.notes || ""), protocolError: undefined,
         completion: room.completed ? { players: players.map((player) => player.name), scores: (msg.scores as ScoreView[]) || [] } : null,
         canvas, canvasTiles: indexTiles(((msg.canvas as { tiles?: CanvasTile[] } | undefined)?.tiles) || []),
@@ -178,6 +185,7 @@ function handleMessage(msg: { t: string; [key: string]: unknown }) {
         room: msg.room as RoomView, puzzle: (msg.puzzle as PuzzleView) || state.puzzle,
         pieces: indexPieces((msg.pieces as Piece[]) || []), completion: null, ratings: {}, scores: [],
         epoch: state.epoch + 1, canvas, canvasTiles: indexTiles(((msg.canvas as { tiles?: CanvasTile[] } | undefined)?.tiles) || []),
+        emotionsMine: null, emotionsAgg: null, safetyPaused: false,
       });
       break;
     }
@@ -203,6 +211,9 @@ function handleMessage(msg: { t: string; [key: string]: unknown }) {
       });
       break;
     }
+    case "emotionsVote": set({ emotionsMine: (msg.mine as EmotionsVote | null) || null }); break;
+    case "emotionsReveal": set({ emotionsAgg: msg.agg as EmotionsAgg }); break;
+    case "safetyPause": set({ safetyPaused: true }); break;
     case "error": set({ protocolError: String(msg.message || "Realtime action failed.") }); break;
     case "deny": set({ status: "denied", denyCode: msg.code as string, denyMessage: msg.message as string, connected: false }); break;
     case "closed": set({ status: "closed", closedMessage: String(msg.message || "This room has closed."), connected: false }); break;
@@ -249,6 +260,9 @@ export const store = {
   },
   sendCursor(x: number, y: number) { if (state.connected) socket.send({ t: "cursor", x: Math.round(x), y: Math.round(y) }); },
   sendRating(answers: Record<string, "A" | "B">, done: boolean) { if (state.connected) socket.send({ t: "rating", answers, done }); },
+  sendEmotionsVote(vote: { emotions?: string[]; intensity?: number; archetype?: string | null; passed?: boolean; line?: string }) { if (state.connected) socket.send({ t: "emotionsVote", ...vote }); },
+  sendSafetyWord(word: string) { if (state.connected) socket.send({ t: "safety", word }); },
+  dismissSafetyPause() { set({ safetyPaused: false }); },
   sendControl(action: string, data: Record<string, unknown> = {}) { if (state.connected) socket.send({ t: "control", action, ...data }); },
   /** Participant-safe lobby team selection; host configuration uses sendControl. */
   sendTeam(action: "select", teamId: string) { if (state.connected) socket.send({ t: "team", action, teamId }); },

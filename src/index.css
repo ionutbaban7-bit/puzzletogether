@@ -77,6 +77,13 @@ body {
   .pill {
     @apply inline-flex items-center gap-1.5 rounded-full border border-brand-100 bg-white px-3 py-1.5 text-xs font-medium text-ink-600;
   }
+  /* CARTOGRAF chips: dark-surface pill for emotion tags in the Emotion Book. */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-ink-100;
+  }
+  .chip-hover {
+    @apply transition hover:border-white/30 hover:bg-white/10 hover:text-white;
+  }
   .overlay-card {
     @apply rounded-[28px] border border-white/10 bg-ink-900/85 text-white shadow-pop backdrop-blur-md;
   }

@@ -134,3 +134,45 @@ scope. The full evidence and ordered implementation brief are in:
 - [~] **P1/P2 — accessibility, mobile shell, security, resilience, CI, and
   observability:** prioritised in the remediation review rather than implied
   complete by the original structural catalog and protocol passes.
+
+## CARTOGRAF — emotions zone, implemented 2026-09-13
+
+Full execution of `docs/emotions/01–03` (phases 0–8): solo `/emotii` experience
+plus the team "Camera Mare" activity reusing the room infrastructure.
+
+- [x] Content: 24 emotions + 11 blends (8 Plutchik territories × 3 levels,
+  research-anchored with explicit limits), 64 solo + 32 room situations,
+  8 inner-voice archetypes. Audit gate: `npm run emotions:audit` green.
+- [x] Solo zone (`src/emotions/`): emotion wheel (SVG, 24 segments + hub
+  compass), Emotion Book detail (12 sections per emotion, "map, not
+  territory" footer), 7 tabs — Harta, Meteo (daily check-in), Expediții
+  (situation naming + debrief), Frontiera (prediction tracker, inhibitory
+  learning framing), Muzeul (anonymous lines), Locuitorii (archetypes),
+  Atlasul (local summary + honest "what it can/cannot do" + JSON export +
+  reset). All data local-only (localStorage).
+- [x] Team Camera Mare (`src/puzzle/EmotionsActivity.tsx` + server
+  `emotions*` protocol): private votes (1–3 emotions + intensity 0–10 +
+  optional archetype, or anonymous Pass), 4 round kinds (weather-start,
+  situation, museum, weather-end), anonymous aggregate reveal
+  ("Aceeași situație. N ceruri diferite."), host facilitator controls,
+  host safety word → participant trigger → board lock + calm pause overlay
+  (112 + ARPS resources), export JSON/HTML includes rounds, reset clears.
+- [x] Wiring: `/emotii` route, landing CARTOGRAF section, CreateRoom
+  category + activity card, GamePage mode branch, FacilitatorPanel
+  compatibility, RO/EN throughout.
+- [x] QA (this sandbox, no Chromium available — jsdom + real-protocol harness):
+  - `npm run typecheck` and `npm run build` pass.
+  - `node scripts/camera-mare-smoke.mjs` — **44/44** live-server protocol
+    checks: create/join, lobby gates, round kinds, dedupe/clamp/truncate,
+    private confirm, anonymous aggregate (counts/passed/intensity/archetypes),
+    history preserved across rounds, reveal-once, museum lines, safety word
+    (case-insensitive, board lock, safetyPause), exports, reset.
+  - `node scripts/ui-smoke.mjs` — **50/50** jsdom render checks: all 7 solo
+    tabs + interactions (meteo log, frontier prediction + resolution, museum
+    line, atlas), wheel 24 segments, Emotion Book + blend detail, room
+    participant/host flows (vote → reveal → safety overlay), landing section,
+    CreateRoom catalog card.
+- [x] Bugs found and fixed during QA: round start wiping session history,
+  votedCount excluding Pass answers, VotePanel local state persisting across
+    rounds (per-round key), blend cards mapping blend-of ids through the wrong
+    table, family legend `rings` type misuse, missing `.chip` styles.
