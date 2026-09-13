@@ -65,6 +65,7 @@ async function main() {
   click(btnByText(body, "Harta"));
   check("map: 8 families listed", hasText(body, "Frică") && hasText(body, "Anticipare") && hasText(body, "Tristețe"), "");
   check("map: blends section", hasText(body, "Amestecurile") || hasText(body, "blends"), "");
+  check("emotions zone: light theme (no dark tokens)", !/bg-ink-950|bg-ink-900|border-white\/|bg-sky-400|text-sky-|bg-cp-azure/.test(body.innerHTML), "");
   // open the Emotion Book from the wheel
   const cells = document.querySelectorAll("g.wheel-cell");
   check("wheel: 24 emotion segments", cells.length === 24, String(cells.length));
@@ -153,10 +154,14 @@ async function main() {
   check("host: reveal button", hasText(document.body, "Reveal (anonim)"), "");
   await act(async () => { rootC.unmount(); rootD.unmount(); });
 
-  console.log("== D. LandingPage — CARTOGRAF section ==");
+  console.log("== D. LandingPage — three categories (light Google theme) ==");
   const rootE = await renderProbe(<LanguageProvider><LandingPage /></LanguageProvider>);
-  check("landing: CARTOGRAF section", hasText(document.body, "CARTOGRAF"));
-  check("landing: emotions CTA", hasText(document.body, "Începe atlasul tău") && hasText(document.body, "Jocul în cameră"), "");
+  check("landing: hero", hasText(document.body, "Jucați."), "");
+  check("landing: three category cards", hasText(document.body, "Alege zona ta") && hasText(document.body, "Puzzle") && hasText(document.body, "Emoții") && hasText(document.body, "Clarity Express"), "");
+  check("landing: CARTOGRAF zone CTA", hasText(document.body, "CARTOGRAF") && hasText(document.body, "Deschide harta"), "");
+  check("landing: signature removed", !hasText(document.body, "Ionut Baban"), "signature must be gone (temporary removal)");
+  const darkRe = /bg-ink-950|bg-ink-900|border-white\/|bg-sky-400|text-sky-|bg-cp-azure/;
+  check("landing: light theme (no dark tokens)", !darkRe.test(document.body.innerHTML), (document.body.innerHTML.match(darkRe) || []).join(","));
   await act(async () => { rootE.unmount(); });
 
   console.log("== E. CreateRoom — emotions category ==");

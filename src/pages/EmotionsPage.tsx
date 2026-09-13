@@ -32,27 +32,27 @@ export default function EmotionsPage() {
   const [calm, setCalm] = useState(false);
 
   return (
-    <div className="min-h-screen bg-ink-950 text-ink-100">
+    <div className="min-h-screen bg-white text-g-ink">
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-white/8 bg-ink-950/85 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-g-line bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate("/")} className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-ink-300 transition hover:bg-white/10" aria-label={lang === "ro" ? "Înapoi la PuzzleTogether" : "Back to PuzzleTogether"}>←</button>
+            <button onClick={() => navigate("/")} className="flex h-9 w-9 items-center justify-center rounded-full border border-g-line bg-white text-g-sub transition hover:bg-g-soft" aria-label={lang === "ro" ? "Înapoi la PuzzleTogether" : "Back to PuzzleTogether"}>←</button>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-display text-base font-extrabold tracking-[.18em] text-white">CARTOGRAF</span>
-                <span className="rounded-full border border-sky-400/30 bg-sky-400/10 px-2 py-0.5 text-[10px] font-semibold text-sky-300">
+                <span className="font-display text-base font-extrabold tracking-[.18em] text-g-ink">CARTOGRAF</span>
+                <span className="rounded-full border border-g-blue/25 bg-g-blue-tint px-2 py-0.5 text-[10px] font-semibold text-g-blue">
                   {lang === "ro" ? "zona de emoții" : "emotions zone"}
                 </span>
               </div>
-              <p className="text-[11px] text-ink-400">
+              <p className="text-[11px] text-g-sub">
                 <T value={{ ro: "Simți. Numesc. Alege. — o hartă a lumii tale interioare", en: "Feel it. Name it. Choose. — a map of your inner world" }} />
               </p>
             </div>
           </div>
           <button
             onClick={() => setCalm(true)}
-            className="flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-400/10 px-4 py-2 text-sm font-semibold text-sky-200 transition hover:bg-sky-400/20"
+            className="flex items-center gap-2 rounded-full border border-g-blue/25 bg-g-blue-tint px-4 py-2 text-sm font-semibold text-g-blue transition hover:bg-[#d2e3fc]"
           >
             🌙 <T value={{ ro: "Calm", en: "Calm" }} />
           </button>
@@ -64,7 +64,7 @@ export default function EmotionsPage() {
               key={t.id}
               onClick={() => setTab(t.id)}
               className={`flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold transition ${
-                tab === t.id ? "bg-white/10 text-white shadow-chip" : "text-ink-400 hover:bg-white/5 hover:text-ink-200"
+                tab === t.id ? "bg-g-blue-tint text-g-blue-dark" : "text-g-sub hover:bg-g-soft hover:text-g-ink"
               }`}
             >
               <span aria-hidden="true">{t.icon}</span>
@@ -85,7 +85,7 @@ export default function EmotionsPage() {
       </main>
 
       {/* Non-therapy statement */}
-      <footer className="border-t border-white/8 px-4 py-6 text-center text-xs leading-relaxed text-ink-500">
+      <footer className="border-t border-g-line px-4 py-6 text-center text-xs leading-relaxed text-g-sub">
         <T value={{
           ro: "CARTOGRAF e un instrument de reflecție, nu un test psihologic. Nu diagnostichează, nu tratează și nu înlocuiește psihoterapia. Pentru frici intense sau suferință persistentă, lucrul cu un psiholog/psihoterapeut e calea. Datele tale rămân în browserul tău.",
           en: "CARTOGRAF is a reflection instrument, not a psychological test. It does not diagnose, treat, or replace psychotherapy. For intense fears or persistent suffering, working with a psychologist/psychotherapist is the way. Your data stays in your browser.",
@@ -105,15 +105,15 @@ function MapTab({ selectedId, onSelect }: { selectedId: string | null; onSelect:
       <div className="grid items-start gap-8 lg:grid-cols-[1.15fr_.85fr]">
         <div className="animate-fade-up">
           <Wheel onSelect={onSelect} selectedId={selectedId} />
-          <p className="mt-3 text-center text-xs text-ink-400">
+          <p className="mt-3 text-center text-xs text-g-sub">
             <T value={{ ro: "8 teritorii (Plutchik) × 3 niveluri de intensitate · amestecurile stau la graniță", en: "8 territories (Plutchik) × 3 intensity levels · blends live at the borders" }} />
           </p>
         </div>
-        <div className="animate-fade-up rounded-[28px] border border-white/8 bg-ink-900/60 p-5" style={{ animationDelay: ".1s" }}>
-          <h2 className="font-display text-lg font-bold text-white">
-            <T value={{ ro: "Burla lumii tale", en: "Your world's compass" }} />
+        <div className="animate-fade-up rounded-[28px] border border-g-line bg-white p-5 shadow-[0_1px_2px_rgba(60,64,67,0.08)]" style={{ animationDelay: ".1s" }}>
+          <h2 className="font-display text-lg font-bold text-g-ink">
+            <T value={{ ro: "Busola lumii tale", en: "Your world's compass" }} />
           </h2>
-          <p className="mb-3 mt-1 text-xs text-ink-400">
+          <p className="mb-3 mt-1 text-xs text-g-sub">
             <T value={{ ro: "unde stă fiecare emoție: valență (negativ ↔ pozitiv) × intensitate (calm ↔ tulbure)", en: "where each emotion sits: valence (negative ↔ positive) × arousal (calm ↔ turbulent)" }} />
           </p>
           <Compass selectedId={selectedId} />
@@ -122,18 +122,18 @@ function MapTab({ selectedId, onSelect }: { selectedId: string | null; onSelect:
 
       {/* Family legend */}
       <section className="animate-fade-up" style={{ animationDelay: ".15s" }}>
-        <h2 className="font-display text-lg font-bold text-white">
+        <h2 className="font-display text-lg font-bold text-g-ink">
           <T value={{ ro: "Cele 8 teritorii", en: "The 8 territories" }} />
         </h2>
         <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
           {Taxonomy.meta.families.map((f) => (
-            <div key={f.id} className="flex items-center gap-3 rounded-2xl border border-white/8 bg-ink-900/60 p-3">
+            <div key={f.id} className="flex items-center gap-3 rounded-2xl border border-g-line bg-white p-3 shadow-[0_1px_2px_rgba(60,64,67,0.06)]">
               <span className="flex h-10 w-10 items-center justify-center rounded-xl text-xl" style={{ background: familyShade(f.color, 2), boxShadow: `0 4px 14px -4px ${f.color}55` }}>
                 {f.icon}
               </span>
               <div>
-                <p className="text-sm font-bold text-white"><T value={f.name} /></p>
-                <p className="text-[11px] text-ink-400">{f.rings[lang].join(" · ")}</p>
+                <p className="text-sm font-bold text-g-ink"><T value={f.name} /></p>
+                <p className="text-[11px] text-g-sub">{f.rings[lang].join(" · ")}</p>
               </div>
             </div>
           ))}
@@ -142,23 +142,23 @@ function MapTab({ selectedId, onSelect }: { selectedId: string | null; onSelect:
 
       {/* Blends */}
       <section className="animate-fade-up" style={{ animationDelay: ".2s" }}>
-        <h2 className="font-display text-lg font-bold text-white">
+        <h2 className="font-display text-lg font-bold text-g-ink">
           <T value={{ ro: "Amestecurile — emoțiile mixte", en: "The blends — mixed emotions" }} />
         </h2>
-        <p className="mt-1 text-sm text-ink-400">
+        <p className="mt-1 text-sm text-g-sub">
           <T value={{ ro: "Viața rar stă pe o singură emoție. Când doi vecini de pe roată stau alături, apare un al treilea cer.", en: "Life rarely sits on a single emotion. When two neighbours on the wheel stand together, a third sky appears." }} />
         </p>
         <div className="mt-3 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
           {Taxonomy.blends.map((b: Blend) => {
             return (
-              <button key={b.id} onClick={() => onSelect(b.id)} className="group rounded-2xl border border-white/8 bg-ink-900/60 p-4 text-left transition hover:border-white/20 hover:bg-ink-800/60">
+              <button key={b.id} onClick={() => onSelect(b.id)} className="group rounded-2xl border border-g-line bg-white p-4 text-left shadow-[0_1px_2px_rgba(60,64,67,0.06)] transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-[0_4px_12px_rgba(60,64,67,0.12)]">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-bold text-white group-hover:text-sky-200">
+                  <p className="text-sm font-bold text-g-ink group-hover:text-g-blue">
                     <T value={b.name} />
                   </p>
                   <span className="text-lg">{isBlend(b) ? `${familyIconOf(b.blendOf[0])}${familyIconOf(b.blendOf[1])}` : ""}</span>
                 </div>
-                <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-ink-400">{pickB(b.def, lang)}</p>
+                <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-g-sub">{pickB(b.def, lang)}</p>
               </button>
             );
           })}

@@ -92,12 +92,10 @@ export default function CreateRoom() {
 
   return (
     <div className="marketing-page setup-page">
-      <div aria-hidden className="marketing-orb -left-20 top-36 h-52 w-52 bg-brand-500/15" />
-      <div aria-hidden className="marketing-orb -right-24 top-12 h-72 w-72 bg-cp-purple-500/15" />
       <div className="relative mx-auto max-w-5xl px-4 pb-20 sm:px-6">
-        <header className="flex items-center justify-between border-b border-white/10 py-5">
-          <button onClick={() => navigate("/")} aria-label="PuzzleTogether home"><Logo dark /></button>
-          <div className="flex items-center gap-2"><LangToggle dark /><button onClick={() => navigate("/join")} className="btn btn-dark btn-sm"><T value={{ ro: "Intră în cameră", en: "Join a room" }} /></button></div>
+        <header className="flex items-center justify-between border-b border-g-line py-5">
+          <button onClick={() => navigate("/")} aria-label="PuzzleTogether home"><Logo /></button>
+          <div className="flex items-center gap-2"><LangToggle /><button onClick={() => navigate("/join")} className="btn btn-sm border border-g-line bg-white text-g-sub hover:bg-g-soft"><T value={{ ro: "Intră în cameră", en: "Join a room" }} /></button></div>
         </header>
 
         <div className="mx-auto mb-8 flex max-w-lg items-center gap-3">

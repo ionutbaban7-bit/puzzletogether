@@ -32,10 +32,10 @@ export default function MuseumTab() {
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
         <Card>
-          <h2 className="font-display text-lg font-bold text-white">
+          <h2 className="font-display text-lg font-bold text-g-ink">
             <T value={{ ro: "Lasă un rând pe perete", en: "Leave a line on the wall" }} />
           </h2>
-          <p className="mt-1 text-xs text-ink-400">
+          <p className="mt-1 text-xs text-g-sub">
             <T value={{ ro: "ex. «O dată am…», «Deși era frică, am…»", en: "e.g. “Once I…”, “Even though I was scared, I…”" }} />
           </p>
           <div className="mt-3">
@@ -47,21 +47,21 @@ export default function MuseumTab() {
         </Card>
 
         <Card delay={0.1}>
-          <h2 className="font-display text-lg font-bold text-white">
+          <h2 className="font-display text-lg font-bold text-g-ink">
             <T value={{ ro: "Peretele", en: "The wall" }} />
           </h2>
           {lines.length === 0 ? (
-            <p className="mt-3 text-sm text-ink-500">
+            <p className="mt-3 text-sm text-g-faint">
               <T value={{ ro: "Peretele e gol — prima expoziție așteaptă. Nu trebuie să fie ceva mare. Poate fi și un mic «am spus nu».", en: "The wall is empty — the first exhibition is waiting. It does not have to be big. It can be a small “I said no”." }} />
             </p>
             ) : (
               <ul className="mt-3 space-y-2">
                 {lines.map((l) => (
-                  <li key={l.at} className="group rounded-xl border border-white/8 bg-white/[.03] px-4 py-2.5">
-                    <p className="text-sm italic leading-relaxed text-ink-100">„{l.text}"</p>
+                  <li key={l.at} className="group rounded-xl border border-g-line bg-g-soft px-4 py-2.5">
+                    <p className="text-sm italic leading-relaxed text-g-ink">„{l.text}"</p>
                     <div className="mt-1 flex items-center justify-between">
-                      <span className="text-[10px] text-ink-500">{formatDate(l.at, lang)}</span>
-                      <button className="text-[10px] text-ink-500 opacity-0 transition hover:text-rose-300 group-hover:opacity-100" onClick={() => setLines(removeMuseumLine(l.text))}>
+                      <span className="text-[10px] text-g-faint">{formatDate(l.at, lang)}</span>
+                      <button className="text-[10px] text-g-faint opacity-0 transition hover:text-g-red group-hover:opacity-100" onClick={() => setLines(removeMuseumLine(l.text))}>
                         <T value={{ ro: "ia de pe perete", en: "take down" }} />
                       </button>
                     </div>
@@ -72,7 +72,7 @@ export default function MuseumTab() {
         </Card>
       </div>
 
-      <p className="text-center text-[11px] leading-relaxed text-ink-500">
+      <p className="text-center text-[11px] leading-relaxed text-g-faint">
         <T value={{ ro: "Rândurile sunt ale tale, rămân în browserul tău. În varianta de echipă, rândurile tuturor sunt amestecate și anonime.", en: "The lines are yours, they stay in your browser. In the team edition, everyone's lines are shuffled and anonymous." }} />
       </p>
     </div>

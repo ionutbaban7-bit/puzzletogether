@@ -34,33 +34,33 @@ export default function EmotionCard({ emotionId, onClose, onNavigate }: {
   const levelLabel = lang === "ro" ? ["nuanță", "emoție de bază", "extrem"] : ["nuance", "base emotion", "extreme"];
 
   return (
-    <div className="fixed inset-0 z-[70] flex justify-end bg-ink-950/70 backdrop-blur-[2px]" onClick={onClose} role="dialog" aria-modal="true" aria-label={pickB(item.name, lang)}>
+    <div className="fixed inset-0 z-[70] flex justify-end bg-ink-950/40 backdrop-blur-[2px]" onClick={onClose} role="dialog" aria-modal="true" aria-label={pickB(item.name, lang)}>
       <div
-        className="h-full w-full max-w-[560px] overflow-y-auto border-l border-white/10 bg-ink-900 shadow-pop"
+        className="h-full w-full max-w-[560px] overflow-y-auto border-l border-g-line bg-white shadow-pop"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 border-b border-white/8 bg-ink-900/95 px-6 py-4 backdrop-blur">
+        <div className="sticky top-0 z-10 border-b border-g-line bg-white/95 px-6 py-4 backdrop-blur">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-2xl">{family?.icon}</div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-g-line bg-g-soft text-2xl">{family?.icon}</div>
               <div>
-                <h2 className="font-display text-xl font-extrabold leading-tight text-white">{pickB(item.name, lang)}</h2>
-                <p className="mt-0.5 text-xs text-ink-400">
+                <h2 className="font-display text-xl font-extrabold leading-tight text-g-ink">{pickB(item.name, lang)}</h2>
+                <p className="mt-0.5 text-xs text-g-sub">
                   {blend
                     ? (lang === "ro" ? "amestec de emoții" : "emotion blend")
                     : (lang === "ro" ? `${pickB(family?.name, lang) ?? ""} · nivel ${emotion!.level} — ${levelLabel[emotion!.level - 1]}` : `${pickB(family?.name, lang) ?? ""} · level ${emotion!.level} — ${levelLabel[emotion!.level - 1]}`)}
                 </p>
               </div>
             </div>
-            <button onClick={onClose} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-ink-200 transition hover:bg-white/10" aria-label={lang === "ro" ? "Închide cartea" : "Close the book"}>✕</button>
+            <button onClick={onClose} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-g-line bg-g-soft text-g-sub transition hover:bg-g-soft" aria-label={lang === "ro" ? "Închide cartea" : "Close the book"}>✕</button>
           </div>
         </div>
 
         <div className="space-y-4 px-6 py-5 pb-24">
           {/* Definition */}
           <section>
-            <p className="rounded-2xl border border-white/8 bg-white/[.03] p-4 text-[15px] leading-relaxed text-white">
+            <p className="rounded-2xl border border-g-line bg-g-soft p-4 text-[15px] leading-relaxed text-g-ink">
               {pickB(item.def, lang)}
             </p>
           </section>
@@ -91,19 +91,19 @@ export default function EmotionCard({ emotionId, onClose, onNavigate }: {
           <Section icon="🔬" title={lang === "ro" ? "Cercetarea din spate" : "The research behind it"}>
             <ul className="space-y-1.5">
               {emotion?.research.map((r, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs text-ink-300">
-                  <span className={`mt-0.5 rounded px-1.5 py-0.5 text-[9px] font-bold ${r.status === "verified" ? "bg-emerald-400/10 text-emerald-300" : "bg-amber-400/10 text-amber-300"}`}>
+                <li key={i} className="flex items-start gap-2 text-xs text-g-sub">
+                  <span className={`mt-0.5 rounded px-1.5 py-0.5 text-[9px] font-bold ${r.status === "verified" ? "bg-g-green-tint text-g-green" : "bg-g-yellow-tint text-[#b06000]"}`}>
                     {r.status === "verified" ? (lang === "ro" ? "verificat" : "verified") : (lang === "ro" ? "de verificat" : "to verify")}
                   </span>
                   <span>{r.title} ({r.year}) — {r.source}</span>
                 </li>
               ))}
-              {blend && <li className="text-xs text-ink-400">{lang === "ro" ? "amestecurile urmează structura roții lui Plutchik (1980/2001)" : "blends follow Plutchik's wheel structure (1980/2001)"}</li>}
+              {blend && <li className="text-xs text-g-sub">{lang === "ro" ? "amestecurile urmează structura roții lui Plutchik (1980/2001)" : "blends follow Plutchik's wheel structure (1980/2001)"}</li>}
             </ul>
-            {emotion && <p className="mt-2 text-xs leading-relaxed text-ink-400">{pickB(emotion.caveat, lang)}</p>}
+            {emotion && <p className="mt-2 text-xs leading-relaxed text-g-sub">{pickB(emotion.caveat, lang)}</p>}
           </Section>
 
-          <p className="pt-2 text-center text-xs italic text-ink-500">
+          <p className="pt-2 text-center text-xs italic text-g-faint">
             {lang === "ro" ? "Aceasta e o hartă a teritoriului, nu teritoriul însuși." : "This is a map of the territory, not the territory itself."}
           </p>
         </div>
@@ -114,11 +114,11 @@ export default function EmotionCard({ emotionId, onClose, onNavigate }: {
 
 function Section({ icon, title, children }: { icon: string; title: string; children: React.ReactNode }) {
   return (
-    <section className="border-t border-white/8 pt-4">
-      <h3 className="flex items-center gap-2 text-[13px] font-bold uppercase tracking-wide text-ink-300">
+    <section className="border-t border-g-line pt-4">
+      <h3 className="flex items-center gap-2 text-[13px] font-bold uppercase tracking-wide text-g-sub">
         <span aria-hidden="true">{icon}</span> {title}
       </h3>
-      <div className="mt-2 text-sm leading-relaxed text-ink-100">{children}</div>
+      <div className="mt-2 text-sm leading-relaxed text-g-ink">{children}</div>
     </section>
   );
 }
@@ -132,21 +132,21 @@ function EmotionSections({ emotion, lang, onNavigate }: { emotion: Emotion; lang
                   {emotion.spectrum.map((step, i) => (
                     <div key={i} className="flex-1 text-center">
                       <div
-                        className={`h-2 rounded-full ${i === emotion.spectrumIndex ? "bg-white" : i < emotion.spectrumIndex ? "bg-white/50" : "bg-white/15"}`}
+                        className={`h-2 rounded-full ${i === emotion.spectrumIndex ? "bg-g-blue" : i < emotion.spectrumIndex ? "bg-g-blue/50" : "bg-g-line"}`}
                         title={pickB(step, lang)}
                       />
-                      <p className={`mt-1 truncate text-[9px] leading-tight ${i === emotion.spectrumIndex ? "font-bold text-white" : "text-ink-400"}`}>
+                      <p className={`mt-1 truncate text-[9px] leading-tight ${i === emotion.spectrumIndex ? "font-bold text-g-ink" : "text-g-sub"}`}>
                         {pickB(step, lang)}
                       </p>
                     </div>
                   ))}
                 </div>
-                <p className="mt-2 text-xs text-ink-400">{lang === "ro" ? "de la nuanță la extrem — Plutchik" : "from nuance to extreme — Plutchik"}</p>
+                <p className="mt-2 text-xs text-g-sub">{lang === "ro" ? "de la nuanță la extrem — Plutchik" : "from nuance to extreme — Plutchik"}</p>
               </Section>
 
               <Section icon="🫀" title={lang === "ro" ? "Cum se anunță în corp?" : "How does it announce itself in the body?"}>
                 <p>{pickB(emotion.body, lang)}</p>
-                <p className="mt-1.5 text-xs text-ink-400">{lang === "ro" ? "model tipic raportat — corpul tău are dreptul la propria hartă (Nummenmaa 2014)" : "typical reported pattern — your body has the right to its own map (Nummenmaa 2014)"}</p>
+                <p className="mt-1.5 text-xs text-g-sub">{lang === "ro" ? "model tipic raportat — corpul tău are dreptul la propria hartă (Nummenmaa 2014)" : "typical reported pattern — your body has the right to its own map (Nummenmaa 2014)"}</p>
               </Section>
 
               <Section icon="💭" title={lang === "ro" ? "Ce gânduri vin cu ea" : "Thoughts that come with it"}>
@@ -155,7 +155,7 @@ function EmotionSections({ emotion, lang, onNavigate }: { emotion: Emotion; lang
                     <span key={i} className="chip">{t}</span>
                   ))}
                 </div>
-                <p className="mt-1.5 text-xs text-ink-400">{lang === "ro" ? "exemple, nu diagnoze" : "examples, not diagnoses"}</p>
+                <p className="mt-1.5 text-xs text-g-sub">{lang === "ro" ? "exemple, nu diagnoze" : "examples, not diagnoses"}</p>
               </Section>
 
               <Section icon="" title={lang === "ro" ? "Ce impuls apare" : "The impulse that appears"}>{pickB(emotion.impulse, lang)}</Section>
@@ -185,11 +185,11 @@ function EmotionSections({ emotion, lang, onNavigate }: { emotion: Emotion; lang
                     <span key={i} className="chip">{t}</span>
                   ))}
                 </div>
-                <p className="mt-1.5 text-xs text-ink-400">{lang === "ro" ? "frecvent raportat" : "frequently reported"}</p>
+                <p className="mt-1.5 text-xs text-g-sub">{lang === "ro" ? "frecvent raportat" : "frequently reported"}</p>
               </Section>
 
               <Section icon="⏱️" title={lang === "ro" ? "Exercițiu de 60 de secunde" : "A 60-second exercise"}>
-                <p className="rounded-xl border border-sky-400/20 bg-sky-400/5 p-3 text-sky-100">{pickB(emotion.microExercise, lang)}</p>
+                <p className="rounded-xl border border-g-blue/25 bg-g-blue-tint p-3 text-g-blue-dark">{pickB(emotion.microExercise, lang)}</p>
               </Section>
     </>
   );

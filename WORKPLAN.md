@@ -176,3 +176,42 @@ plus the team "Camera Mare" activity reusing the room infrastructure.
   votedCount excluding Pass answers, VotePanel local state persisting across
     rounds (per-round key), blend cards mapping blend-of ids through the wrong
     table, family legend `rings` type misuse, missing `.chip` styles.
+
+## Google-style light redesign — 2026-09-13 (same-day follow-up)
+
+User directive: whole app look "super clear, elegant, simplu", inspired by
+learning.google/work/; main page presents the 3 categories (Clarity Express,
+Emoții, Puzzle) clean; footer signature "by Ionut Baban" removed *for now*.
+
+- [x] New `g` palette in `tailwind.config.js` (Google blues/greens/reds +
+  `g-ink #202124`, `g-sub #5f6368`, `g-line #dadce0`, `g-soft #f8f9fa`).
+- [x] `src/index.css`: `.marketing-page`/`.landing-page` → white canvas;
+  `.setup-page` → soft gray `#f8f9fa` with light card/input overrides; dark
+  setup overrides + `.footer-signature`/`.signature-script` removed; focus
+  ring → Google blue; `.chip` → light pill.
+- [x] `LandingPage` rewritten: centered hero (Jucați. Vorbiți. Alegeți.),
+  3 equal category cards — 🧩 Puzzle → /create, 🗺️ Emoții/CARTOGRAF →
+  /emotii, 💬 Clarity Express → external hub — then 3-step flow, privacy/use
+  cards, minimal footer (© 2026 PuzzleTogether · Privacy · Terms — no
+  signature, no LinkedIn).
+- [x] CARTOGRAF zone light conversion: `Wheel.tsx` (white/`#f8f9fa` field,
+  white segment gaps, ink hub + labels, blue selection), `Compass.tsx`
+  (white plot, Google-colored quadrants), `EmotionsPage` + all 7 tabs +
+  Emotion Book drawer + CalmScreen (white cards, `g-line` borders, one blue
+  accent; green/yellow/red status colors from the `g` palette).
+- [x] Create/Join room pages: light (removed dark `Logo`/`LangToggle`/
+  `btn-dark` variants + marketing orbs).
+- [x] Deliberate exception: the live in-room game stage stays deep navy —
+  it is the "projector" surface where the white board and colored pieces
+  read best (white app chrome, dark stage, like a video player).
+- [x] RO wording pass: "Burla lumii tale" → "Busola lumii tale"
+  (EmotionsPage + Compass caption), "Burla valență × intensitate" → "Busola…",
+  InhabitantsTab "vorbesc în toată lumea" → "vorbesc în fiecare dintre noi",
+  MeteoTab "o hărta meteo" → "o hartă meteo", taxonomy JSON: "durere
+  anumbită" → "durere difuză, fără cauză clară", "un prăbușire" → "o
+  prăbușire" (×2), "o „cețură"…alarmă de alarmă" → "o „ceată" interioară…
+  alarmă puternică".
+- [x] QA: `tsc --noEmit` clean; `npm run build` clean; `camera-mare-smoke`
+  44/44; `ui-smoke` ALL PASSED (Section D updated to the new landing: hero,
+  3 category cards, CARTOGRAF CTA, and an explicit "signature removed"
+  assertion).

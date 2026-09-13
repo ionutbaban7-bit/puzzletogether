@@ -26,6 +26,24 @@ export default {
         ],
       },
       colors: {
+        // Google-style light surfaces (learning.google aesthetic): white space,
+        // near-black ink, quiet gray lines, one confident blue.
+        g: {
+          blue: "#1a73e8",
+          "blue-dark": "#1765cc",
+          "blue-tint": "#e8f0fe",
+          green: "#188038",
+          "green-tint": "#e6f4ea",
+          red: "#d93025",
+          "red-tint": "#fce8e6",
+          yellow: "#f9ab00",
+          "yellow-tint": "#fef7e0",
+          ink: "#202124",
+          sub: "#5f6368",
+          faint: "#9aa0a6",
+          line: "#dadce0",
+          soft: "#f8f9fa",
+        },
         ink: {
           950: "#0b0e1a",
           900: "#10141f",

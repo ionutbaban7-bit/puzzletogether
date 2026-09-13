@@ -109,13 +109,13 @@ export default function Wheel({ onSelect, selectedId }: Props) {
       <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full select-none" aria-hidden="true">
         <defs>
           <radialGradient id="wheel-bg" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#141a2c" />
-            <stop offset="78%" stopColor="#0d1120" />
-            <stop offset="100%" stopColor="#0b0e1a" />
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="78%" stopColor="#f8f9fa" />
+            <stop offset="100%" stopColor="#f1f3f4" />
           </radialGradient>
           <radialGradient id="wheel-hub" cx="50%" cy="42%" r="60%">
-            <stop offset="0%" stopColor="#1b2238" />
-            <stop offset="100%" stopColor="#10141f" />
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="100%" stopColor="#f8f9fa" />
           </radialGradient>
           {Taxonomy.meta.families.map((f) => (
             <radialGradient key={f.id} id={`grad-${f.id}`} cx="50%" cy="50%" r="75%">
@@ -128,9 +128,9 @@ export default function Wheel({ onSelect, selectedId }: Props) {
         <circle cx={CX} cy={CY} r={316} fill="url(#wheel-bg)" />
         {/* slow decorative tick ring */}
         <g className="origin-center" style={{ animation: "spin 90s linear infinite" }}>
-          <circle cx={CX} cy={CY} r={310} fill="none" stroke="#2a3350" strokeWidth="1" strokeDasharray="2 10" opacity="0.7" />
+          <circle cx={CX} cy={CY} r={310} fill="none" stroke="#dadce0" strokeWidth="1" strokeDasharray="2 10" opacity="0.9" />
         </g>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } } .wheel-cell { transition: filter .18s ease, opacity .18s ease; } .wheel-cell:hover { filter: brightness(1.18) drop-shadow(0 0 14px rgba(255,255,255,0.25)); }`}</style>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } } .wheel-cell { transition: filter .18s ease, opacity .18s ease; } .wheel-cell:hover { filter: brightness(1.06) drop-shadow(0 2px 10px rgba(26,115,232,0.28)); }`}</style>
 
         {/* Sectors */}
         {FAMILY_ORDER.map((familyId, si) => {
@@ -155,7 +155,7 @@ export default function Wheel({ onSelect, selectedId }: Props) {
                     <path
                       d={annularSector(ring.r0 + 2, ring.r1 - 2, a0 + 0.008, a1 - 0.008)}
                       fill={familyShade(family.color, ring.level)}
-                      stroke={isSelected ? "#ffffff" : isFocused ? "#bae6fd" : "#0b0e1a"}
+                      stroke={isSelected ? "#1a73e8" : isFocused ? "#8ab4f8" : "#ffffff"}
                       strokeWidth={isSelected ? 3 : isFocused ? 2.5 : 2}
                       strokeDasharray={isFocused && !isSelected ? "5 4" : undefined}
                       style={{ transform: isHover ? "scale(1.035)" : undefined }}
@@ -183,7 +183,7 @@ export default function Wheel({ onSelect, selectedId }: Props) {
                     <text x={fx} y={below ? fy - 16 : fy + 8} textAnchor="middle" fontSize={21}>
                       {family.icon}
                     </text>
-                    <text x={fx} y={below ? fy - 30 : fy + 26} textAnchor="middle" fontSize={12.5} fontWeight={700} fill="#e4e8f3">
+                    <text x={fx} y={below ? fy - 30 : fy + 26} textAnchor="middle" fontSize={12.5} fontWeight={700} fill="#202124">
                       {pickB(family.name, lang)}
                     </text>
                   </g>
@@ -194,35 +194,35 @@ export default function Wheel({ onSelect, selectedId }: Props) {
         })}
 
         {/* Hub */}
-        <circle cx={CX} cy={CY} r={112} fill="url(#wheel-hub)" stroke="#2a3350" strokeWidth="1.5" />
-        <circle cx={CX} cy={CY} r={104} fill="none" stroke="#232a3d" strokeWidth="1" strokeDasharray="3 6" />
+        <circle cx={CX} cy={CY} r={112} fill="url(#wheel-hub)" stroke="#dadce0" strokeWidth="1.5" />
+        <circle cx={CX} cy={CY} r={104} fill="none" stroke="#e8eaed" strokeWidth="1" strokeDasharray="3 6" />
         {previewEmotion && previewFamily ? (
           <g style={{ pointerEvents: "none" }}>
             <text x={CX} y={CY - 44} textAnchor="middle" fontSize={34}>{previewFamily.icon}</text>
             {wrapLabel(pickB(previewEmotion.name, lang)).map((line, i) => (
-              <text key={i} x={CX} y={CY - 4 + i * 20} textAnchor="middle" fontSize={20} fontWeight={800} fill="#ffffff">
+              <text key={i} x={CX} y={CY - 4 + i * 20} textAnchor="middle" fontSize={20} fontWeight={800} fill="#202124">
                 {line}
               </text>
             ))}
-            <text x={CX} y={CY + 34 + (wrapLabel(pickB(previewEmotion.name, lang)).length > 1 ? 18 : 0)} textAnchor="middle" fontSize={11.5} fill="#97a0ba">
+            <text x={CX} y={CY + 34 + (wrapLabel(pickB(previewEmotion.name, lang)).length > 1 ? 18 : 0)} textAnchor="middle" fontSize={11.5} fill="#5f6368">
               {lang === "ro"
                 ? `nivel ${previewEmotion.level} · ${Taxonomy.meta.families.find((f) => f.id === (previewEmotion as Emotion).family)?.rings[lang]?.[previewEmotion.level - 1] ?? ""}`
                 : `level ${previewEmotion.level} · ${Taxonomy.meta.families.find((f) => f.id === (previewEmotion as Emotion).family)?.rings[lang]?.[previewEmotion.level - 1] ?? ""}`}
             </text>
-            <text x={CX} y={CY + 58 + (wrapLabel(pickB(previewEmotion.name, lang)).length > 1 ? 18 : 0)} textAnchor="middle" fontSize={11} fontWeight={600} fill="#7bc9e8">
+            <text x={CX} y={CY + 58 + (wrapLabel(pickB(previewEmotion.name, lang)).length > 1 ? 18 : 0)} textAnchor="middle" fontSize={11} fontWeight={600} fill="#1a73e8">
               {lang === "ro" ? "deschide cartea →" : "open the book →"}
             </text>
           </g>
         ) : (
           <g style={{ pointerEvents: "none" }}>
-            <text x={CX} y={CY - 26} textAnchor="middle" fontSize={21} fontWeight={800} letterSpacing="4" fill="#ffffff">CARTOGRAF</text>
-            <text x={CX} y={CY + 2} textAnchor="middle" fontSize={12} fill="#97a0ba">
+            <text x={CX} y={CY - 26} textAnchor="middle" fontSize={21} fontWeight={800} letterSpacing="4" fill="#202124">CARTOGRAF</text>
+            <text x={CX} y={CY + 2} textAnchor="middle" fontSize={12} fill="#5f6368">
               {lang === "ro" ? "alege o emoție de pe roată" : "pick an emotion from the wheel"}
             </text>
-            <text x={CX} y={CY + 22} textAnchor="middle" fontSize={10.5} fill="#6b7592">
+            <text x={CX} y={CY + 22} textAnchor="middle" fontSize={10.5} fill="#80868b">
               {lang === "ro" ? "8 teritorii · 3 niveluri · 11 amestecuri" : "8 territories · 3 levels · 11 blends"}
             </text>
-            <text x={CX} y={CY + 44} textAnchor="middle" fontSize={10} fill="#4a5470">
+            <text x={CX} y={CY + 44} textAnchor="middle" fontSize={10} fill="#9aa0a6">
               {lang === "ro" ? "săgeți = navighezi · Enter = deschide" : "arrows = navigate · Enter = open"}
             </text>
           </g>
