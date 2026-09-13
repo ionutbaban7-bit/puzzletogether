@@ -154,11 +154,18 @@ async function main() {
   check("host: reveal button", hasText(document.body, "Reveal (anonim)"), "");
   await act(async () => { rootC.unmount(); rootD.unmount(); });
 
-  console.log("== D. LandingPage — three categories (light Google theme) ==");
+  console.log("== D. LandingPage — premium redesign (hero + 3 zones) ==");
   const rootE = await renderProbe(<LanguageProvider><LandingPage /></LanguageProvider>);
-  check("landing: hero", hasText(document.body, "Jucați."), "");
-  check("landing: three category cards", hasText(document.body, "Alege zona ta") && hasText(document.body, "Puzzle") && hasText(document.body, "Emoții") && hasText(document.body, "Clarity Express"), "");
-  check("landing: CARTOGRAF zone CTA", hasText(document.body, "CARTOGRAF") && hasText(document.body, "Deschide harta"), "");
+  check("landing: hero headline", hasText(document.body, "Conectează oamenii.") && hasText(document.body, "Pornește conversația."), "");
+  check("landing: hero CTAs", hasText(document.body, "Începe o experiență") && hasText(document.body, "Explorează zonele"), "");
+  check("landing: hero microcopy", hasText(document.body, "Fără cont. Fără instalări."), "");
+  check("landing: three zone cards", hasText(document.body, "Alege cum vrei să înceapă conversația.") && hasText(document.body, "Puzzle") && hasText(document.body, "Emoții") && hasText(document.body, "Clarity Express"), "");
+  check("landing: curiosity CTAs", hasText(document.body, "Pornește jocul") && hasText(document.body, "Explorează harta") && hasText(document.body, "Descoperă întrebarea"), "");
+  check("landing: illustrations present", document.querySelectorAll("img[src^='/images/landing/']").length === 4, String(document.querySelectorAll("img[src^='/images/landing/']").length));
+  check("landing: play→conversation section", hasText(document.body, "Începe cu joaca.") && hasText(document.body, "CONNECT") && hasText(document.body, "REFLECT") && hasText(document.body, "ACT"), "");
+  check("landing: steps section", hasText(document.body, "De la primul click la un insight real.") && hasText(document.body, "Lasă conversația să curgă."), "");
+  check("landing: trust section", hasText(document.body, "Creat pentru oameni. Gândit cu grijă."), "");
+  check("landing: footer tagline", hasText(document.body, "Play. Connect. Reflect. Act."), "");
   check("landing: signature removed", !hasText(document.body, "Ionut Baban"), "signature must be gone (temporary removal)");
   const darkRe = /bg-ink-950|bg-ink-900|border-white\/|bg-sky-400|text-sky-|bg-cp-azure/;
   check("landing: light theme (no dark tokens)", !darkRe.test(document.body.innerHTML), (document.body.innerHTML.match(darkRe) || []).join(","));

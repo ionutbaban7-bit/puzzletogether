@@ -8,6 +8,10 @@ body,
   height: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 .game-shell {
   /* Dynamic viewport units keep the game and its fixed chrome above iPhone
      Safari browser chrome/keyboard; the first declaration is the fallback. */
@@ -96,12 +100,130 @@ body {
   }
 }
 
-/* The landing page is a clean white canvas — the product cards carry the colour. */
+/* The landing page — premium light canvas: airy off-white, one strategic
+   blue→indigo→violet gradient, soft shadows, generous type.
+   Font preference (Inter/Manrope/Geist) falls back to the system's best
+   modern sans so workshops stay reliable behind strict CSPs. */
 .landing-page {
-  background-color: #ffffff;
-  background-image:
-    radial-gradient(circle at 12% -4%, rgba(26, 115, 232, 0.05), transparent 28rem),
-    radial-gradient(circle at 92% 8%, rgba(24, 128, 56, 0.04), transparent 26rem);
+  background-color: #fbfbfd;
+  font-family: "Inter", "Manrope", "Geist", -apple-system, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+}
+.landing-page .font-display {
+  font-family: "Manrope", "Inter", "Geist", -apple-system, "SF Pro Display", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+}
+
+/* ── Landing micro-interactions ─────────────────────────────────── */
+@keyframes pt-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+@keyframes pt-float-slow {
+  0%, 100% { transform: translateY(0) rotate(-0.6deg); }
+  50% { transform: translateY(-7px) rotate(0.6deg); }
+}
+@keyframes pt-gradient-pan {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes pt-reveal {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pt-float { animation: pt-float 7s ease-in-out infinite; }
+.pt-float-slow { animation: pt-float-slow 8.5s ease-in-out infinite; }
+
+.pt-gradient-text {
+  background: linear-gradient(94deg, #1a73e8 0%, #4f46e5 48%, #8b5cf6 100%);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: pt-gradient-pan 9s ease-in-out infinite;
+}
+
+.pt-btn-primary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background-image: linear-gradient(120deg, #1a73e8, #4f46e5 58%, #7c3aed);
+  background-size: 170% auto;
+  background-position: 0% 50%;
+  color: #fff;
+  box-shadow: 0 10px 26px -12px rgba(79, 70, 229, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition:
+    background-position 0.5s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.pt-btn-primary:hover {
+  background-position: 95% 50%;
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px -12px rgba(79, 70, 229, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+.pt-btn-primary:active { transform: translateY(0) scale(0.99); }
+
+/* Premium card: hairline border, near-invisible resting shadow, gradient
+   glow that fades in on hover, 5px lift. */
+.pt-card {
+  position: relative;
+  border: 1px solid rgba(218, 222, 228, 0.75);
+  border-radius: 28px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(30, 41, 59, 0.04);
+  overflow: hidden;
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 0.35s ease;
+}
+.pt-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  background: radial-gradient(60% 42% at 50% 0%, var(--pt-glow, rgba(79, 70, 229, 0.12)), transparent 72%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+.pt-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(199, 210, 254, 0.9);
+  box-shadow: 0 22px 44px -20px rgba(30, 41, 59, 0.22);
+}
+.pt-card:hover::before { opacity: 1; }
+
+.pt-card-img { transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.pt-card:hover .pt-card-img { transform: scale(1.035); }
+/* melts the illustration's bottom edge into the white card */
+.pt-img-fade::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 28%;
+  pointer-events: none;
+  background: linear-gradient(to top, #ffffff, rgba(255, 255, 255, 0));
+}
+
+.pt-reveal { opacity: 0; transform: translateY(18px); }
+.pt-reveal.is-visible { animation: pt-reveal 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  .pt-float,
+  .pt-float-slow,
+  .pt-gradient-text {
+    animation: none !important;
+  }
 }
 
 /* Setup screens (create/join) sit on a soft gray so white cards lift gently. */

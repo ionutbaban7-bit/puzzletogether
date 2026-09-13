@@ -215,3 +215,42 @@ Emoții, Puzzle) clean; footer signature "by Ionut Baban" removed *for now*.
   44/44; `ui-smoke` ALL PASSED (Section D updated to the new landing: hero,
   3 category cards, CARTOGRAF CTA, and an explicit "signature removed"
   assertion).
+
+## Premium landing redesign — 2026-09-13 (v2, same-day)
+
+User directive: make the main page a premium, memorable, interactive
+experience (Google/Microsoft *principles*, not their interfaces) — "wow →
+clarity → curiosity → click", editorial illustration identity, subtle
+micro-interactions, mobile-first, no functional changes.
+
+- [x] 4 original editorial illustrations (AI-generated, consistent identity:
+  sophisticated lightly-caricatured figures, blue→indigo→violet, off-white):
+  `server/public/images/landing/{hero,puzzle,emotions,clarity}.png` — hero
+  (4 people + 3D puzzle + speech bubbles + idea bulb + connection nodes),
+  Puzzle (team building a giant glowing puzzle, high-five), Emoții (calm
+  figure inside a violet inner-map orbit), Clarity Express (futuristic metro
+  with people conversing, speech bubbles, motion).
+- [x] `LandingPage` v2: sticky translucent header; two-column hero with
+  headline "Conectează oamenii. Pornește conversația. Descoperă ce se
+  întâmplă între voi." (gradient third line), curiosity CTAs ("Începe o
+  experiență →" gradient primary / "Explorează zonele" outline) + microcopy;
+  3 premium zone cards ("Alege cum vrei să înceapă conversația.") with
+  illustrations occupying the top 35–40%, tagline/description/CTA
+  ("Pornește jocul", "Explorează harta", "Descoperă întrebarea");
+  "Începe cu joaca. Ajungi la conversație." section with PLAY → CONNECT →
+  REFLECT → ACT flow tiles (custom SVG glyphs); "De la primul click la un
+  insight real." 3-step cards (01 Intră / 02 Explorează / 03 Capturează);
+  human trust section "Creat pentru oameni. Gândit cu grijă."; minimalist
+  footer (logo + "Play. Connect. Reflect. Act." + links + © 2026).
+- [x] Micro-interactions (all subtle, reduced-motion safe): IntersectionObserver
+  scroll reveals (`Reveal` component with jsdom guard), card hover lift −5px +
+  shadow + per-zone gradient glow (`--pt-glow`), illustration scale 1.035,
+  slow-panning gradient text (9s), floating accent dots + hero info chips
+  (7–9s), gradient-primary button with position shift, smooth anchor scroll.
+- [x] Typography: landing-scoped Inter/Manrope/Geist preference with system
+  fallback (keeps the no-webfont CSP-safe approach); headings 600–800 with
+  negative tracking; body ≤ ~70ch, dark gray not pure black.
+- [x] QA: `tsc` clean; build clean (73 kB CSS); ui-smoke Section D rewritten
+  (12 assertions: hero/CTAs/microcopy/zones/curiosity CTAs/4 illustrations/
+  flow/steps/trust/footer tagline/signature removed/no dark tokens) — ALL
+  PASSED; `camera-mare-smoke` 44/44; all 4 images 200 on :4173.
