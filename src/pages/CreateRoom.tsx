@@ -20,6 +20,7 @@ const DIFFICULTY_META: Record<string, { minutes: string; people: string }> = {
   quick: { minutes: "10–20 min", people: "2–8" }, standard: { minutes: "20–35 min", people: "2–10" }, extended: { minutes: "35–50 min", people: "2–12" }, sandbox: { minutes: "liber", people: "2–20" },
 };
 const CANVAS_CATEGORIES = new Set(["letter-canvas", "sentence-canvas"]);
+const CLARITY_EXPRESS_URL = "https://coaching-hub-1.onrender.com/";
 
 export default function CreateRoom() {
   const { lang } = useLang();
@@ -40,8 +41,38 @@ export default function CreateRoom() {
   const [uploading, setUploading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [pendingStarter, setPendingStarter] = useState<null | "puzzle" | "emotions">(null);
 
   useEffect(() => { api.fetchCatalog().then(setCatalog).catch(() => setError(lang === "ro" ? "Biblioteca nu a putut fi încărcată." : "Could not load the activity library.")); }, [lang]);
+
+  // Triple door: the three landing zones become one-tap entry points.
+  // They preselect a representative experience and jump straight to the
+  // lobby step; the full catalog stays below for power users.
+  function applyStarter(kind: "puzzle" | "emotions") {
+    if (!catalog) { setPendingStarter(kind); return; }
+    if (kind === "emotions") {
+      const activity = catalog.emotions?.activities?.[0];
+      if (!activity) return;
+      setCategory("emotions");
+      setPuzzleId(activity.id);
+      setStep(2);
+      return;
+    }
+    const cat = catalog.categories.find((c) => !CANVAS_CATEGORIES.has(c.id) && c.id !== "coaching" && c.id !== "emotions");
+    const puzzle = catalog.puzzles.find((p) => p.category === cat?.id);
+    if (!cat || !puzzle) return;
+    setCategory(cat.id);
+    setPuzzleId(puzzle.id);
+    setDifficulty("medium");
+    setStep(2);
+  }
+  useEffect(() => {
+    if (!pendingStarter || !catalog) return;
+    const kind = pendingStarter;
+    setPendingStarter(null);
+    applyStarter(kind);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [catalog, pendingStarter]);
   const isCoaching = category === "coaching";
   const isEmotions = category === "emotions";
   const isCanvas = CANVAS_CATEGORIES.has(category);
@@ -105,9 +136,52 @@ export default function CreateRoom() {
         {step === 1 ? (
           <div className="space-y-7 animate-fade-up">
             <div>
-              <h1 className="font-display text-3xl font-extrabold text-ink-900"><T value={{ ro: "Alege activitatea", en: "Choose activity" }} /></h1>
-              <p className="mt-2 text-ink-600"><T value={{ ro: "Apoi creezi lobby-ul.", en: "Then create the lobby." }} /></p>
+              <h1 className="font-display text-3xl font-extrabold text-ink-900"><T value={{ ro: "Unde începem?", en: "Where do we begin?" }} /></h1>
+              <p className="mt-2 text-ink-600"><T value={{ ro: "Alege o ușă rapidă — ajungi direct la lobby. Sau descoperă tot catalogul mai jos.", en: "Pick a quick door — it jumps straight to the lobby. Or browse the full catalog below." }} /></p>
             </div>
+
+            <section aria-label="quick starts">
+              <div className="grid gap-3 sm:grid-cols-3">
+                <button
+                  type="button"
+                  onClick={() => applyStarter("puzzle")}
+                  className="group rounded-2xl border border-g-line bg-white p-4 text-left shadow-[0_1px_2px_rgba(30,41,59,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-[0_12px_28px_-14px_rgba(30,41,59,0.25)]"
+                >
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#eef4ff] text-lg" aria-hidden>🧩</span>
+                  <span className="font-display mt-2.5 block text-[15px] font-bold text-g-ink"><T value={{ ro: "Puzzle", en: "Puzzle" }} /></span>
+                  <span className="mt-1 block text-xs leading-relaxed text-g-sub"><T value={{ ro: "Un joc de imagini ca să gândeți împreună.", en: "An image game to think together." }} /></span>
+                  <span className="mt-2.5 inline-flex items-center gap-1 text-[13px] font-bold text-brand-600"><T value={{ ro: "La lobby", en: "To the lobby" }} /><span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">→</span></span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyStarter("emotions")}
+                  className="group rounded-2xl border border-g-line bg-white p-4 text-left shadow-[0_1px_2px_rgba(30,41,59,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-cp-purple-300 hover:shadow-[0_12px_28px_-14px_rgba(30,41,59,0.25)]"
+                >
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f5f0fd] text-lg" aria-hidden>🗺️</span>
+                  <span className="font-display mt-2.5 block text-[15px] font-bold text-g-ink"><T value={{ ro: "Emoții · Camera Mare", en: "Emotions · The Big Room" }} /></span>
+                  <span className="mt-1 block text-xs leading-relaxed text-g-sub"><T value={{ ro: "Harta stărilor, voturi private, reveal anonim.", en: "A map of moods, private votes, anonymous reveal." }} /></span>
+                  <span className="mt-2.5 inline-flex items-center gap-1 text-[13px] font-bold text-cp-purple-600"><T value={{ ro: "La lobby", en: "To the lobby" }} /><span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">→</span></span>
+                </button>
+                <a
+                  href={CLARITY_EXPRESS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-2xl border border-g-line bg-white p-4 text-left shadow-[0_1px_2px_rgba(30,41,59,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-cp-purple-300 hover:shadow-[0_12px_28px_-14px_rgba(30,41,59,0.25)]"
+                >
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f5f0fd] text-lg" aria-hidden>💬</span>
+                  <span className="font-display mt-2.5 block text-[15px] font-bold text-g-ink"><T value={{ ro: "Clarity Express", en: "Clarity Express" }} /></span>
+                  <span className="mt-1 block text-xs leading-relaxed text-g-sub"><T value={{ ro: "1.100+ întrebări pentru conversații care contează.", en: "1,100+ questions for conversations that matter." }} /></span>
+                  <span className="mt-2.5 inline-flex items-center gap-1 text-[13px] font-bold text-cp-purple-600"><T value={{ ro: "Deschide hub-ul", en: "Open the hub" }} /><span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">↗</span></span>
+                </a>
+              </div>
+            </section>
+
+            <div className="flex items-center gap-3" aria-hidden>
+              <span className="h-px flex-1 bg-g-line" />
+              <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-g-faint"><T value={{ ro: "sau alege din catalog", en: "or pick from the catalog" }} /></span>
+              <span className="h-px flex-1 bg-g-line" />
+            </div>
+
             <section>
               <div className="flex flex-wrap gap-2">
                 {catalog?.categories.map((item) => <CategoryButton key={item.id} id={item.id} active={category === item.id} onClick={() => { setCategory(item.id); setPuzzleId(null); setUpload(null); setDifficulty(CANVAS_CATEGORIES.has(item.id) ? "sandbox" : "medium"); }} lang={lang} />)}

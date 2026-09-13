@@ -6,6 +6,7 @@ import Wheel from "../emotions/Wheel";
 import Compass from "../emotions/Compass";
 import EmotionCard from "../emotions/EmotionCard";
 import CalmScreen from "../emotions/CalmScreen";
+import { FirstRunCoach, useFirstRun } from "../emotions/FirstRun";
 import MeteoTab from "../emotions/MeteoTab";
 import ExpeditionsTab from "../emotions/ExpeditionsTab";
 import FrontierTab from "../emotions/FrontierTab";
@@ -30,6 +31,23 @@ export default function EmotionsPage() {
   const [tab, setTab] = useState<Tab>("mapa");
   const [selected, setSelected] = useState<string | null>(null);
   const [calm, setCalm] = useState(false);
+
+  // First-run coach: 0 = wheel hint, 1 = book hint, 2 = weather invite.
+  const firstRun = useFirstRun();
+  const [frStep, setFrStep] = useState<0 | 1 | 2>(0);
+  const selectEmotion = (id: string) => {
+    setSelected(id);
+    if (firstRun.active && frStep === 0) setFrStep(1);
+  };
+  const closeBook = () => {
+    setSelected(null);
+    if (firstRun.active && frStep === 1) setFrStep(2);
+  };
+  const frNext = () => {
+    if (frStep === 1 && selected) setSelected(null);
+    setFrStep((s) => (s === 1 ? 2 : s));
+  };
+  const frFinish = () => firstRun.finish();
 
   return (
     <div className="min-h-screen bg-white text-g-ink">
@@ -57,13 +75,16 @@ export default function EmotionsPage() {
             🌙 <T value={{ ro: "Calm", en: "Calm" }} />
           </button>
         </div>
-        {/* Tabs */}
-        <nav className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4 pb-2" aria-label={lang === "ro" ? "Secțiuni" : "Sections"}>
+        {/* Tabs — scroll-snap + right-edge fade signal that more sections exist */}
+        <nav
+          className="mx-auto flex max-w-6xl snap-x snap-proximity gap-1 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [mask-image:linear-gradient(90deg,black_94%,transparent)]"
+          aria-label={lang === "ro" ? "Secțiuni" : "Sections"}
+        >
           {TABS.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold transition ${
+              className={`flex shrink-0 snap-start items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold transition ${
                 tab === t.id ? "bg-g-blue-tint text-g-blue-dark" : "text-g-sub hover:bg-g-soft hover:text-g-ink"
               }`}
             >
@@ -75,7 +96,7 @@ export default function EmotionsPage() {
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-6 pb-20">
-        {tab === "mapa" && <MapTab selectedId={selected} onSelect={setSelected} />}
+        {tab === "mapa" && <MapTab selectedId={selected} onSelect={selectEmotion} />}
         {tab === "meteo" && <MeteoTab />}
         {tab === "expeditions" && <ExpeditionsTab />}
         {tab === "frontier" && <FrontierTab />}
@@ -92,8 +113,20 @@ export default function EmotionsPage() {
         }} />
       </footer>
 
-      {selected && <EmotionCard emotionId={selected} onClose={() => setSelected(null)} onNavigate={setSelected} />}
+      {selected && <EmotionCard emotionId={selected} onClose={closeBook} onNavigate={selectEmotion} />}
       <CalmScreen open={calm} onClose={() => setCalm(false)} />
+      {firstRun.active && tab === "mapa" && !calm && (
+        <FirstRunCoach
+          step={frStep}
+          bookOpen={!!selected}
+          onSkip={frFinish}
+          onNext={frNext}
+          onGoMeteo={() => {
+            frFinish();
+            setTab("meteo");
+          }}
+        />
+      )}
     </div>
   );
 }

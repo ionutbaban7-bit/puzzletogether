@@ -171,9 +171,11 @@ async function main() {
   check("landing: light theme (no dark tokens)", !darkRe.test(document.body.innerHTML), (document.body.innerHTML.match(darkRe) || []).join(","));
   await act(async () => { rootE.unmount(); });
 
-  console.log("== E. CreateRoom — emotions category ==");
+  console.log("== E. CreateRoom — triple door + emotions category ==");
   const rootF = await renderProbe(<LanguageProvider><CreateRoom /></LanguageProvider>);
   await act(async () => { await waitMs(900); }); // let the catalog fetch resolve
+  check("create room: triple door starters", hasText(document.body, "Unde începem?") && hasText(document.body, "La lobby") && hasText(document.body, "Clarity Express"), document.body.textContent?.slice(0, 300) || "");
+  check("create room: catalog divider", hasText(document.body, "sau alege din catalog"), "");
   check("create room: emotions category button", hasText(document.body, "CARTOGRAF · emoții") || hasText(document.body, "CARTOGRAF · emotions"), document.body.textContent?.slice(0, 300) || "");
   const catBtn = btnByText(document.body, "CARTOGRAF · emoții") || btnByText(document.body, "CARTOGRAF · emotions");
   click(catBtn);

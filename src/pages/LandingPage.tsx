@@ -23,7 +23,7 @@ type Zone = {
 const ZONES: Zone[] = [
   {
     id: "puzzle",
-    image: "/images/landing/puzzle.png",
+    image: "/images/landing/puzzle.webp",
     alt: "",
     title: { ro: "Puzzle", en: "Puzzle" },
     tagline: { ro: "Joacă-te. Conectează-te. Construiește împreună.", en: "Play. Connect. Build together." },
@@ -39,7 +39,7 @@ const ZONES: Zone[] = [
   },
   {
     id: "emotions",
-    image: "/images/landing/emotions.png",
+    image: "/images/landing/emotions.webp",
     alt: "",
     title: { ro: "Emoții", en: "Emotions" },
     tagline: { ro: "Vezi ce se întâmplă în interior.", en: "See what's happening inside." },
@@ -55,7 +55,7 @@ const ZONES: Zone[] = [
   },
   {
     id: "clarity",
-    image: "/images/landing/clarity.png",
+    image: "/images/landing/clarity.webp",
     alt: "",
     title: { ro: "Clarity Express", en: "Clarity Express" },
     tagline: { ro: "O întrebare bună poate schimba o conversație.", en: "A good question can change a conversation." },
@@ -277,6 +277,18 @@ export default function LandingPage() {
                 <p className="mt-5 text-sm text-g-faint">
                   <T value={{ ro: "Fără cont. Fără instalări. Intră, joacă-te și începe conversația.", en: "No account. No installs. Jump in, play, and start the conversation." }} />
                 </p>
+                <div className="mt-6 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[13px] font-medium text-g-sub">
+                  <span className="rounded-full bg-g-soft px-3 py-1">
+                    <T value={{ ro: "Echipe de 2–20", en: "Teams of 2–20" }} />
+                  </span>
+                  <span className="rounded-full bg-g-soft px-3 py-1">
+                    <T value={{ ro: "15–45 minute", en: "15–45 minutes" }} />
+                  </span>
+                  <span className="rounded-full bg-g-soft px-3 py-1">RO / EN</span>
+                  <span className="rounded-full bg-g-soft px-3 py-1">
+                    <T value={{ ro: "din browser, pe telefon", en: "in the browser, on phones" }} />
+                  </span>
+                </div>
               </div>
             </Reveal>
 
@@ -317,9 +329,12 @@ export default function LandingPage() {
                 </div>
                 <div className="overflow-hidden rounded-[32px] bg-[#f4f6f8] shadow-[0_30px_70px_-32px_rgba(30,41,59,0.3)] ring-1 ring-black/[0.04]">
                   <img
-                    src="/images/landing/hero.png"
+                    src="/images/landing/hero.webp"
                     alt=""
+                    width={1408}
+                    height={768}
                     loading="eager"
+                    fetchPriority="high"
                     className="w-full select-none"
                     draggable={false}
                   />

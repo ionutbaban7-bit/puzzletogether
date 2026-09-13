@@ -4,24 +4,33 @@ export default {
   theme: {
     extend: {
       fontFamily: {
+        // Modern, readable identity: Manrope for display, Inter for body,
+        // with a strong system fallback so workshops stay reliable behind
+        // strict corporate CSPs (no webfont dependency).
         sans: [
-          '"Poppins"',
           '"Inter"',
+          '"Manrope"',
+          '"Geist"',
+          "-apple-system",
+          '"SF Pro Text"',
+          '"Segoe UI Variable Text"',
+          '"Segoe UI"',
           "ui-sans-serif",
           "system-ui",
-          "-apple-system",
-          '"Segoe UI"',
-          "Roboto",
           '"Helvetica Neue"',
           "Arial",
           "sans-serif",
         ],
         display: [
-          '"Poppins"',
+          '"Manrope"',
           '"Inter"',
+          '"Geist"',
+          "-apple-system",
+          '"SF Pro Display"',
+          '"Segoe UI Variable Display"',
+          '"Segoe UI"',
           "ui-sans-serif",
           "system-ui",
-          "-apple-system",
           "sans-serif",
         ],
       },
@@ -40,7 +49,8 @@ export default {
           "yellow-tint": "#fef7e0",
           ink: "#202124",
           sub: "#5f6368",
-          faint: "#9aa0a6",
+          // darkened from #9aa0a6 (2.5:1, failed WCAG AA) to #70757a (4.6:1)
+          faint: "#70757a",
           line: "#dadce0",
           soft: "#f8f9fa",
         },
@@ -57,24 +67,36 @@ export default {
           100: "#e4e8f3",
           50: "#f3f5fb",
         },
-        // Product palette: azure is the dependable primary, emerald confirms
-        // progress, and purple marks secondary activity choices.
+        // Brand blue — the single primary, remapped from the old azure/cyan
+        // scale onto the blue→indigo identity. 300+ doubles as the dark-stage
+        // accent (readable on navy); 600 is the light-surface primary.
         brand: {
-          50: "#edf8fd",
-          100: "#d9f0fa",
-          200: "#b7e2f4",
-          300: "#7bc9e8",
-          400: "#37a4d1",
-          500: "#1689c9",
-          600: "#0e77b7",
-          700: "#085d92",
-          800: "#064a75",
-          900: "#083b5c",
+          50: "#eef4ff",
+          100: "#dbe7fe",
+          200: "#b8cdfd",
+          300: "#8ab4f8",
+          400: "#669df6",
+          500: "#4285f4",
+          600: "#1a73e8",
+          700: "#1765cc",
+          800: "#1356b0",
+          900: "#0f4590",
         },
         cp: {
-          azure: { 50: "#edf8fd", 100: "#d9f0fa", 300: "#7bc9e8", 600: "#0e77b7", 700: "#085d92" },
+          azure: { 50: "#eef4ff", 100: "#dbe7fe", 300: "#8ab4f8", 600: "#1a73e8", 700: "#1765cc" },
           pink: { 50: "#fff0f7", 100: "#ffd9ec", 300: "#f98bc4", 500: "#f23b9d", 600: "#d72c88", 700: "#c61e78" },
-          purple: { 50: "#f5f0fa", 100: "#e9ddf5", 300: "#bd99df", 500: "#8a58c0", 700: "#69419a" },
+          // Violet secondary, aligned with the landing gradient; full scale
+          // (the old one was missing 200/400/600 that the UI referenced).
+          purple: {
+            50: "#f5f0fd",
+            100: "#e8dcfb",
+            200: "#d4bcf6",
+            300: "#b993f0",
+            400: "#a172e8",
+            500: "#8b5cf6",
+            600: "#7c3aed",
+            700: "#6d2fd4",
+          },
           slate: "#94a3b8",
         },
       },

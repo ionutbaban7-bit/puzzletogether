@@ -3,6 +3,64 @@ import { pick, T, useLang } from "../lib/i18n";
 import { store } from "../store";
 import type { ActionItem, CoachingActivity, PlayerView, RoomView, WorkshopInsights } from "../types";
 
+/** The keepable moment: a session "postcard" with the brand identity,
+ *  generated at the end of every session so the team leaves with something
+ *  it can save or share. */
+function SessionPostcard({ room, activity, players }: { room: RoomView; activity?: CoachingActivity; players: PlayerView[] }) {
+  const { lang } = useLang();
+  const [copied, setCopied] = useState(false);
+  const isEmotions = room.puzzleId === "emotions-camera-mare" || activity?.id === "emotions-camera-mare";
+  const rounds = isEmotions ? (room.emotions?.round || 1) : null;
+  const date = new Date(room.createdAt).toLocaleDateString(lang === "ro" ? "ro-RO" : "en-GB", { day: "numeric", month: "long", year: "numeric" });
+  const title = activity ? pick(activity.name, lang) : room.sessionName;
+
+  const summary = [
+    `PuzzleTogether — ${room.sessionName}`,
+    `${title} · ${date}`,
+    `${players.length} ${lang === "ro" ? "oameni" : "people"}${rounds ? " · " + rounds + " " + (lang === "ro" ? (rounds > 1 ? "runde" : "rundă") : rounds > 1 ? "rounds" : "round") + (isEmotions ? (lang === "ro" ? " · voturi private, reveal anonim" : " · private votes, anonymous reveal") : "") : ""}`,
+    lang === "ro" ? "Play. Connect. Reflect. Act. — o conversație care contează." : "Play. Connect. Reflect. Act. — a conversation that matters.",
+  ].join("\n");
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(summary);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard blocked (permissions/CSP) — the text stays visible below */
+    }
+  };
+
+  return (
+    <section aria-label={lang === "ro" ? "Rezumatul sesiunii" : "Session summary"} className="mt-7 overflow-hidden rounded-3xl bg-white shadow-[0_18px_50px_-20px_rgba(0,0,0,0.55)]">
+      <div aria-hidden className="h-1.5 w-full bg-gradient-to-r from-[#1a73e8] via-[#4f46e5] to-[#8b5cf6]" />
+      <div className="p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="font-display text-sm font-bold text-g-ink">
+              Puzzle<span className="pt-wordmark">Together</span>
+            </p>
+            <h2 className="font-display mt-1 truncate text-xl font-extrabold tracking-tight text-g-ink">{room.sessionName}</h2>
+            <p className="mt-1 text-sm font-medium text-g-sub">{title}</p>
+            <p className="mt-0.5 text-xs text-g-faint">
+              {date} · {players.length} {lang === "ro" ? "oameni" : "people"}
+              {rounds ? ` · ${rounds} ${lang === "ro" ? (rounds > 1 ? "runde" : "rundă") : rounds > 1 ? "rounds" : "round"}` : ""}
+            </p>
+            <p className="mt-3 text-[11px] font-bold uppercase tracking-[0.18em] text-g-faint">Play. Connect. Reflect. Act.</p>
+          </div>
+          <button
+            onClick={copy}
+            className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-bold text-white transition-all duration-300 ${copied ? "bg-g-green" : "bg-gradient-to-r from-[#1a73e8] via-[#4f46e5] to-[#7c3aed] hover:shadow-[0_10px_24px_-10px_rgba(79,70,229,0.7)]"}`}
+          >
+            {copied ? (lang === "ro" ? "Copiat ✓" : "Copied ✓") : lang === "ro" ? "Copiază rezumatul" : "Copy summary"}
+          </button>
+        </div>
+        <pre className="mt-4 hidden select-all rounded-2xl bg-g-soft p-3 text-[11px] leading-relaxed text-g-sub" aria-hidden>{summary}</pre>
+      </div>
+    </section>
+  );
+}
+
 export default function HarvestBoard({ room, activity, players }: { room: RoomView; activity?: CoachingActivity; players: PlayerView[] }) {
   const { lang } = useLang();
   const [insights, setInsights] = useState<WorkshopInsights>(room.insights);
@@ -22,6 +80,8 @@ export default function HarvestBoard({ room, activity, players }: { room: RoomVi
     <div className="h-full overflow-y-auto bg-ink-950 px-4 pb-28 pt-24 text-white sm:px-8 sm:pt-28">
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-wrap items-end justify-between gap-3"><div><div className="text-[11px] font-bold uppercase tracking-[.24em] text-emerald-300">{room.stage === "debrief" ? "Debrief" : "Harvest"}</div><h1 className="font-display mt-1 text-2xl font-extrabold sm:text-3xl"><T value={{ ro: "Din joc în decizii", en: "Turn play into decisions" }} /></h1><p className="mt-2 max-w-2xl text-sm text-ink-300"><T value={{ ro: "Capturați ce ați observat, ce ați învățat și ce veți încerca. Conținutul rămâne în sesiune și intră în export.", en: "Capture what you observed, learned and will try next. Everything stays with the session and appears in the export." }} /></p></div><span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-ink-300">{room.sessionName}</span></div>
+
+        <SessionPostcard room={room} activity={activity} players={players} />
 
         {prompts.length > 0 && <section className="mt-7 rounded-3xl border border-white/10 bg-white/[.035] p-5 sm:p-6"><h2 className="font-display font-bold"><T value={{ ro: "Întrebări de debrief", en: "Debrief prompts" }} /></h2><div className="mt-4 grid gap-3 md:grid-cols-2">{prompts.map((prompt, index) => <label key={index} className="block rounded-2xl border border-white/10 bg-ink-900/70 p-4"><span className="text-xs font-semibold leading-relaxed text-ink-200">{index + 1}. {pick(prompt, lang)}</span><textarea className="mt-3 min-h-20 w-full resize-y rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-white outline-none focus:border-brand-400" value={debrief[index] || ""} onChange={(event) => setDebrief((current) => { const next = [...current]; next[index] = event.target.value; return next; })} onBlur={() => store.saveDebrief(debrief)} placeholder={lang === "ro" ? "Scribe-ul captează ideea echipei…" : "The scribe captures the team's thought…"} /></label>)}</div></section>}
 

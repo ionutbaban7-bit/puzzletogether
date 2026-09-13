@@ -120,6 +120,7 @@ export default function GamePage() {
   const canvasTiles = useStore((s) => s.canvasTiles);
 
   const [shareOpen, setShareOpen] = useState(false);
+  const [resetConfirm, setResetConfirm] = useState(false);
   const [facilitatorOpen, setFacilitatorOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [actionsOpen, setActionsOpen] = useState(false);
@@ -616,7 +617,7 @@ export default function GamePage() {
             >
               <div className="border-b border-white/10 pb-2"><LangToggle dark /></div>
               {isHost && <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !px-3" onClick={() => { setPickerOpen(true); setActionsOpen(false); }}>🧩 <T value={{ ro: "Alt puzzle", en: "New puzzle" }} /></button>}
-              {isHost && isJigsaw && room.stage === "play" && <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !border-rose-400/35 !bg-rose-500/15 !px-3" onClick={() => { setActionsOpen(false); if (window.confirm(lang === "ro" ? "Resetezi puzzle-ul pentru toată echipa?" : "Reset the puzzle for everyone?")) handlePuzzleReset(); }}>↺ <T value={{ ro: "Resetează puzzle-ul", en: "Reset puzzle" }} /></button>}
+              {isHost && isJigsaw && room.stage === "play" && <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !border-rose-400/35 !bg-rose-500/15 !px-3" onClick={() => { setActionsOpen(false); setResetConfirm(true); }}>↺ <T value={{ ro: "Resetează puzzle-ul", en: "Reset puzzle" }} /></button>}
               {isHost && <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !border-emerald-400/30 !px-3" onClick={() => { setFacilitatorOpen(true); setActionsOpen(false); }}>🎛 <T value={{ ro: "Facilitează", en: "Facilitate" }} /></button>}
               <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !px-3" onClick={() => { setShareOpen(true); setActionsOpen(false); }}>🔗 <T value={{ ro: "Partajează", en: "Share" }} /></button>
               <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !px-3" onClick={handleLeave}>🚪 <T value={{ ro: "Pleacă", en: "Leave" }} /></button>
@@ -649,7 +650,13 @@ export default function GamePage() {
             <div className="min-h-0 flex-1 overflow-y-auto p-6 sm:p-8">
               <div className="text-[11px] font-bold uppercase tracking-[.25em] text-brand-300"><T value={{ ro: "Lobby de workshop", en: "Workshop lobby" }} /></div>
               <h1 className="font-display mt-3 text-2xl font-extrabold text-white sm:text-3xl">{room.sessionName}</h1>
-              <p className="mt-2 text-sm text-ink-300"><T value={{ ro: "Apeși Start când sunteți gata.", en: "Press Start when ready." }} /></p>
+              <p className="mt-2 text-sm text-ink-300">
+              {isHost ? (
+                <T value={{ ro: "Pornește sesiunea când toată lumea e gata.", en: "Start the session when everyone is ready." }} />
+              ) : (
+                <T value={{ ro: "Facilitatorul pornește sesiunea când toată lumea e gata.", en: "The facilitator will start the session when everyone is ready." }} />
+              )}
+            </p>
               {isCanvas && puzzle.scenario && (
                 <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left">
                   <div className="text-[10px] font-bold uppercase tracking-[.2em] text-brand-300"><T value={{ ro: "Scenariu", en: "Scenario" }} /> · {puzzle.contentLanguage?.toUpperCase()}</div>
@@ -711,6 +718,32 @@ export default function GamePage() {
         >
           <T value={{ ro: "Tu", en: "You" }} /> · {me.name}
         </div>
+      )}
+
+      {/* --------------------------------------------------- reset confirm */}
+      {resetConfirm && room && (
+        <Modal onClose={() => setResetConfirm(false)}>
+          <div className="overlay-card w-[400px] max-w-full p-6">
+            <div className="text-2xl" aria-hidden>↺</div>
+            <h2 className="font-display mt-2 text-lg font-bold text-white">
+              <T value={{ ro: "Resetezi puzzle-ul pentru toată echipa?", en: "Reset the puzzle for everyone?" }} />
+            </h2>
+            <p className="mt-1.5 text-sm leading-relaxed text-ink-300">
+              <T value={{ ro: "Toate piesele se întorc în banca. Acțiunea nu poate fi anulată.", en: "All pieces go back to the bank. This can't be undone." }} />
+            </p>
+            <div className="mt-5 flex justify-end gap-2">
+              <button className="btn btn-dark btn-sm" onClick={() => setResetConfirm(false)}>
+                <T value={{ ro: "Anulează", en: "Cancel" }} />
+              </button>
+              <button
+                className="btn btn-sm bg-rose-500 px-4 font-bold text-white transition hover:bg-rose-600"
+                onClick={() => { setResetConfirm(false); handlePuzzleReset(); }}
+              >
+                <T value={{ ro: "Resetează", en: "Reset" }} />
+              </button>
+            </div>
+          </div>
+        </Modal>
       )}
 
       {/* --------------------------------------------------- share modal */}

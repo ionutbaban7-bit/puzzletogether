@@ -35,7 +35,7 @@ html {
 
 body {
   @apply bg-ink-950 text-ink-900 antialiased;
-  font-family: "Poppins", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-family: "Inter", "Manrope", "Geist", -apple-system, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior: none;
 }
@@ -52,7 +52,7 @@ body {
 }
 
 .font-display {
-  font-family: "Poppins", "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Manrope", "Inter", "Geist", -apple-system, "SF Pro Display", "Segoe UI Variable Display", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer components {
@@ -110,6 +110,15 @@ body {
 }
 .landing-page .font-display {
   font-family: "Manrope", "Inter", "Geist", -apple-system, "SF Pro Display", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+}
+
+/* Brand wordmark: "Together" in the blue→violet signature gradient. */
+.pt-wordmark {
+  background: linear-gradient(92deg, #1a73e8 10%, #7c3aed 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 /* ── Landing micro-interactions ─────────────────────────────────── */

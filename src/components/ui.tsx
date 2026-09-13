@@ -7,8 +7,8 @@ export function LogoMark({ size = 34 }: { size?: number }) {
       <rect width="64" height="64" rx="15" fill={`url(#${gradientId})`} />
       <defs>
         <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#0E77B7" />
-          <stop offset="100%" stopColor="#8A58C0" />
+          <stop offset="0%" stopColor="#1a73e8" />
+          <stop offset="100%" stopColor="#7c3aed" />
         </linearGradient>
       </defs>
       <g
@@ -43,10 +43,10 @@ export function Logo({
       {wordmark && (
         <span
           className={`font-display text-[17px] font-bold tracking-tight ${
-            dark ? "text-white" : "text-ink-900"
+            dark ? "text-white" : "text-g-ink"
           }`}
         >
-          Puzzle<span className={dark ? "text-brand-300" : "text-brand-600"}>Together</span>
+          Puzzle<span className={dark ? "text-brand-300" : "pt-wordmark"}>Together</span>
         </span>
       )}
     </span>

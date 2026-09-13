@@ -254,3 +254,49 @@ micro-interactions, mobile-first, no functional changes.
   (12 assertions: hero/CTAs/microcopy/zones/curiosity CTAs/4 illustrations/
   flow/steps/trust/footer tagline/signature removed/no dark tokens) — ALL
   PASSED; `camera-mare-smoke` 44/44; all 4 images 200 on :4173.
+
+## Consulting audit + Waves 1–3 — 2026-09-13 (same-day, user-approved)
+
+10-consultant critique (identity, product, interaction, a11y, motion,
+mobile, data-viz, performance) produced a P0–P2 findings list; the user
+approved ALL three waves.
+
+- [x] Wave 1 — unified design system:
+  - `brand` scale remapped from azure/cyan onto the blue identity
+    (#1a73e8 primary, #8ab4f8 dark-stage accent) — the whole in-room stage,
+    lobby, focus rings and Create/Join upgrade with zero class churn;
+    `cp.purple` aligned to violet #8b5cf6 with the full scale (200/400/600
+    were referenced but undefined — now generated); `cp.azure` follows brand.
+  - Typography unified: Manrope (display) + Inter (body) with system
+    fallback across the app (Poppins retired); CSP-safe (no webfonts).
+  - Logo: mark gradient → #1a73e8→#7c3aed; wordmark "Together" →
+    signature gradient (`.pt-wordmark`).
+  - a11y contrast: `g.faint` #9aa0a6 (2.5:1, WCAG fail) → #70757a (4.6:1).
+  - Landing images: 4 PNGs (5.6 MB) → WebP q82 (200 KB, −96%); hero gets
+    width/height + `fetchPriority="high"`; new stats chips row under hero
+    (Echipe 2–20 · 15–45 min · RO/EN · din browser).
+- [x] Wave 2 — major interaction changes:
+  - **Triple door** in CreateRoom ("Unde începem?"): 3 starter cards
+    mirroring the landing zones (Puzzle → featured catalog puzzle, Emoții →
+    Camera Mare, Clarity Express → external hub), preselect + jump straight
+    to the lobby step; pending-starter race handled for async catalog;
+    full catalog kept below a "sau alege din catalog" divider.
+  - **CARTOGRAF first-run** (`src/emotions/FirstRun.tsx`): 3-step dismissible
+    coach (wheel → emotion book → weather invite), once via localStorage,
+    non-blocking (pointer-events only on the card), auto-advances when the
+    user opens the book, CTA switches tab to Meteo.
+  - Lobby copy per role (host: "Pornește sesiunea…" / participant:
+    "Facilitatorul pornește…").
+  - Puzzle reset: `window.confirm` anti-pattern → styled confirm modal.
+- [x] Wave 3 — product depth:
+  - **Session postcard** in HarvestBoard: white gradient-identity card at
+    the end of every session (name, activity, date, people, rounds,
+    "Play. Connect. Reflect. Act.") with copy-to-clipboard summary — the
+    keepable moment.
+  - Route-level code-split (`App.tsx` lazy): initial bundle 580 kB →
+    175 kB (landing eager; CreateRoom/JoinRoom/RoomRoute/EmotionsPage
+    on-demand chunks).
+  - Tabs affordance: scroll-snap + right-edge mask fade on the 7-tab bar.
+- [x] QA: `tsc` clean; build clean (4 lazy chunks); ui-smoke ALL PASSED
+  (new: triple-door + catalog-divider assertions in Section E);
+  `camera-mare-smoke` 44/44; `emotions:audit` OK; all WebP 200 on :4173.
