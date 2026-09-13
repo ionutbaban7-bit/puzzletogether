@@ -4,6 +4,7 @@ import { Logo } from "../components/ui";
 import { LangToggle, T, type Bilingual, useLang } from "../lib/i18n";
 
 const CLARITY_EXPRESS_URL = "https://coaching-hub-1.onrender.com/";
+const DIGI_LIBRARY_URL = "https://s.go.ro/0qcuk8op";
 
 type Zone = {
   id: string;
@@ -249,10 +250,6 @@ export default function LandingPage() {
                   <T value={{ ro: "Conectează oamenii.", en: "Connect people." }} />
                   <br />
                   <T value={{ ro: "Pornește conversația.", en: "Start the conversation." }} />
-                  <br />
-                  <span className="pt-gradient-text">
-                    <T value={{ ro: "Descoperă ce se întâmplă între voi.", en: "Discover what's happening between you." }} />
-                  </span>
                 </h1>
                 <p className="mt-6 max-w-[34rem] text-lg leading-relaxed text-g-sub">
                   <T
@@ -277,6 +274,22 @@ export default function LandingPage() {
                 <p className="mt-5 text-sm text-g-faint">
                   <T value={{ ro: "Fără cont. Fără instalări. Intră, joacă-te și începe conversația.", en: "No account. No installs. Jump in, play, and start the conversation." }} />
                 </p>
+                <a
+                  href={DIGI_LIBRARY_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group mt-5 inline-flex items-center gap-2.5 rounded-full border border-dashed border-g-line bg-white px-5 py-2.5 text-sm font-semibold text-g-sub shadow-[0_1px_2px_rgba(30,41,59,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:border-g-faint hover:text-g-ink"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden>
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5v13Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+                    <path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+                  </svg>
+                  <T value={{ ro: "Către biblioteca digitală", en: "To the digital library" }} />
+                  <span className="rounded-full border border-amber-200 bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-amber-700">
+                    <T value={{ ro: "în lucru", en: "in progress" }} />
+                  </span>
+                  <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">↗</span>
+                </a>
                 <div className="mt-6 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[13px] font-medium text-g-sub">
                   <span className="rounded-full bg-g-soft px-3 py-1">
                     <T value={{ ro: "Echipe de 2–20", en: "Teams of 2–20" }} />
