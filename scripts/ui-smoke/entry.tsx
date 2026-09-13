@@ -50,11 +50,11 @@ async function main() {
   check("CARTOGRAF header", hasText(body, "CARTOGRAF"));
   check("wheel rendered", !!document.querySelector("div[aria-label*='Roata'], div[aria-label*='Emotion']"), "");
   const tabNames: [string, string][] = [
-    ["Meteo", "Ce cer e în tine acum?"],
+    ["Meteo", "Cum e metoul din tine acum?"],
     ["Expediții", "Expediții"],
     ["Frontiera", "O predicție nouă"],
     ["Muzeul", "Lasă un rând pe perete"],
-    ["Locuitorii", "Cine vorbește în tine astăzi?"],
+    ["Locuitorii", "Ce parte din tine vorbește astăzi?"],
     ["Atlasul", "emoții numite"],
   ];
   for (const [tab, content] of tabNames) {
@@ -112,7 +112,7 @@ async function main() {
   );
   check("situation card", hasText(document.body, "Șeful te roagă să preiei un proiect nou."));
   check("emotion picker chips", hasText(document.body, "Frica") && hasText(document.body, "Furia"));
-  check("archetype chips", hasText(document.body, "Cine vorbește în tine?"));
+  check("archetype chips", hasText(document.body, "Ce parte din tine vorbește?"));
   // select two emotions + intensity
   click(btnByText(document.body, "Frica"));
   click(btnByText(document.body, "Furia"));
@@ -132,7 +132,7 @@ async function main() {
     state.emotionsAgg = agg;
     ((globalThis as Record<string, unknown>).bump as () => void)();
   });
-  check("reveal: N ceruri diferite", hasText(document.body, "ceruri diferite") || hasText(document.body, "different skies"), document.body.textContent?.slice(0, 300) || "");
+  check("reveal: N metouri diferite", hasText(document.body, "metouri diferite") || hasText(document.body, "different skies"), document.body.textContent?.slice(0, 300) || "");
   check("reveal: bars show frica ×2", (hasText(document.body, "Frica") || hasText(document.body, "Fear")) && document.body.textContent?.includes(">2<") === false && hasText(document.body, "2"), "");
   check("reveal: Pas count", hasText(document.body, "Pas"), "");
   // safety pause overlay
@@ -162,9 +162,9 @@ async function main() {
   check("landing: three zone cards", hasText(document.body, "Alege cum vrei să înceapă conversația.") && hasText(document.body, "Puzzle") && hasText(document.body, "Emoții") && hasText(document.body, "Clarity Express"), "");
   check("landing: curiosity CTAs", hasText(document.body, "Pornește jocul") && hasText(document.body, "Explorează harta") && hasText(document.body, "Descoperă întrebarea"), "");
   check("landing: illustrations present", document.querySelectorAll("img[src^='/images/landing/']").length === 4, String(document.querySelectorAll("img[src^='/images/landing/']").length));
-  check("landing: play→conversation section", hasText(document.body, "Începe cu joaca.") && hasText(document.body, "CONNECT") && hasText(document.body, "REFLECT") && hasText(document.body, "ACT"), "");
+  check("landing: play→conversation section", hasText(document.body, "Start JOC!") && hasText(document.body, "CONNECT") && hasText(document.body, "REFLECT") && hasText(document.body, "ACT"), "");
   check("landing: steps section", hasText(document.body, "De la primul click la un insight real.") && hasText(document.body, "Lasă conversația să curgă."), "");
-  check("landing: trust section", hasText(document.body, "Creat pentru oameni. Gândit cu grijă."), "");
+  check("landing: trust section", hasText(document.body, "Mai mult decât informație. Experiență."), "");
   check("landing: footer tagline", hasText(document.body, "Play. Connect. Reflect. Act."), "");
   check("landing: signature removed", !hasText(document.body, "Ionut Baban"), "signature must be gone (temporary removal)");
   const darkRe = /bg-ink-950|bg-ink-900|border-white\/|bg-sky-400|text-sky-|bg-cp-azure/;

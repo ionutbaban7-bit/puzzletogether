@@ -30,13 +30,13 @@ export default function MeteoTab() {
       <Title
         ro="Meteo"
         en="Weather"
-        sub={{ ro: "Verificarea de meteo a teritoriului tău. O dată pe zi sau de câte ori vrei — fără comentarii, doar o hartă a cerului de azi.", en: "The weather check-in for your territory. Once a day or as often as you like — no commentary, just a map of today's sky." }}
+        sub={{ ro: "Verificarea de meteo a teritoriului tău. O dată pe zi sau de câte ori vrei — fără comentarii, doar o hartă a metoului de azi.", en: "The weather check-in for your territory. Once a day or as often as you like — no commentary, just a map of today's weather." }}
       />
 
       <div className="grid gap-6 lg:grid-cols-[1.1fr_.9fr]">
         <Card>
           <h2 className="font-display text-lg font-bold text-g-ink">
-            <T value={{ ro: "Ce cer e în tine acum?", en: "What sky is in you right now?" }} />
+            <T value={{ ro: "Cum e metoul din tine acum?", en: "How's the weather inside you right now?" }} />
           </h2>
           <p className="mt-1 text-xs text-g-sub"><T value={{ ro: "1–3 emoții · nu există răspuns corect", en: "1–3 emotions · there is no right answer" }} /></p>
           <div className="mt-4">
@@ -46,7 +46,7 @@ export default function MeteoTab() {
             <IntensitySlider value={intensity} onChange={setIntensity} />
           </div>
           <div className="mt-4">
-            <p className="text-xs font-bold text-g-sub"><T value={{ ro: "Cine vorbește în tine? (opțional)", en: "Who is speaking in you? (optional)" }} /></p>
+            <p className="text-xs font-bold text-g-sub"><T value={{ ro: "Ce parte din tine vorbește? (opțional)", en: "Which part of you is speaking? (optional)" }} /></p>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {Archetypes.archetypes.map((a) => (
                 <button
@@ -129,7 +129,7 @@ export default function MeteoTab() {
       </div>
 
       <p className="text-center text-[11px] leading-relaxed text-g-faint">
-        <T value={{ ro: "Notarea meteului nu e un diagnostic. E ca o hartă meteo: descrie cerul, nu te descrie pe tine.", en: "Logging the weather is not a diagnosis. It is like a weather map: it describes the sky, not you." }} />
+        <T value={{ ro: "Notarea meteului nu e un diagnostic. E ca o hartă meteo: descrie metoul, nu te descrie pe tine.", en: "Logging the weather is not a diagnosis. It is like a weather map: it describes the weather, not you." }} />
       </p>
     </div>
   );

@@ -224,9 +224,9 @@ function VotePanel({ kind, situationText, situationHeavy, mine }: {
   const question = kind === "situation"
     ? (lang === "ro" ? "Ce simți în această situație?" : "What do you feel in this situation?")
     : kind === "weather-start"
-      ? (lang === "ro" ? "Ce cer e în tine chiar acum?" : "What sky is in you right now?")
+      ? (lang === "ro" ? "Cum e metoul din tine chiar acum?" : "How's the weather inside you right now?")
       : kind === "weather-end"
-        ? (lang === "ro" ? "Ce cer e în tine acum, la final?" : "What sky is in you now, at the end?")
+        ? (lang === "ro" ? "Cum e metoul din tine, la final?" : "How's the weather inside you now, at the end?")
         : "";
 
   function toggle(id: string) {
@@ -306,7 +306,7 @@ function VotePanel({ kind, situationText, situationHeavy, mine }: {
 
           <div className="mt-4">
             <p className="text-xs font-bold text-ink-300">
-              <T value={{ ro: "Cine vorbește în tine? (opțional)", en: "Who is speaking in you? (optional)" }} />
+              <T value={{ ro: "Ce parte din tine vorbește? (opțional)", en: "Which part of you is speaking? (optional)" }} />
             </p>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {Archetypes.archetypes.map((a) => (
@@ -379,7 +379,7 @@ function RevealPanel({ agg, debriefPrompts, totalPlayers }: { agg: EmotionsAgg; 
         <h2 className="font-display mt-2 text-2xl font-extrabold text-white">
           {isMuseum
             ? (lang === "ro" ? "Muzeul camerei" : "The room's museum")
-            : (lang === "ro" ? `Aceeași situație. ${distinct} ${distinct === 1 ? "cer diferit" : "ceruri diferite"}.` : `Same situation. ${distinct} different ${distinct === 1 ? "sky" : "skies"}.`)}
+            : (lang === "ro" ? `Aceeași situație. ${distinct} ${distinct === 1 ? "metou diferit" : "metouri diferite"}.` : `Same situation. ${distinct} different ${distinct === 1 ? "sky" : "skies"}.`)}
         </h2>
         {agg.intensityAvg != null && (
           <p className="mt-2 text-xs text-ink-300">

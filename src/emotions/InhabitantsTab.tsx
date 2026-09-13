@@ -31,13 +31,13 @@ export default function InhabitantsTab() {
         ro="Locuitorii"
         en="The Inhabitants"
         sub={{
-          ro: "Opt voci rezidente care vorbesc în fiecare dintre noi — de la Căpitanul Sarcină la Avocatul Riscului. E un metamodel pentru dialogul interior, nu un test de personalitate: într-o zi poți fi toți la un moment dat.",
-          en: "Eight resident voices that speak in everyone — from the Captain of the Load to the Risk Lawyer. It is a metamodel for inner dialogue, not a personality test: in one day you can be all of them.",
+          ro: "Opt voci rezidente care vorbesc în fiecare dintre noi — de la Gardianul la Observatorul. E un metamodel pentru dialogul interior, nu un test de personalitate: într-o zi poți fi toți la un moment dat.",
+          en: "Eight resident voices that speak in everyone — from the Guardian to the Observer. It is a metamodel for inner dialogue, not a personality test: in one day you can be all of them.",
         }}
       />
 
       <Card>
-        <h2 className="font-display text-lg font-bold text-g-ink"><T value={{ ro: "Cine vorbește în tine astăzi?", en: "Who is speaking in you today?" }} /></h2>
+        <h2 className="font-display text-lg font-bold text-g-ink"><T value={{ ro: "Ce parte din tine vorbește astăzi?", en: "Which part of you is speaking today?" }} /></h2>
         <p className="mt-1 text-xs text-g-sub"><T value={{ ro: "Alege 1–2 voci. Apoi citește ce spune fiecare — și ce s-ar putea să fie prea mult.", en: "Pick 1–2 voices. Then read what each one says — and what it might be saying too much of." }} /></p>
         <div className="mt-3 flex flex-wrap gap-1.5">
           {Archetypes.archetypes.map((a) => (
@@ -49,7 +49,7 @@ export default function InhabitantsTab() {
         </div>
         <div className="mt-3">
           <p className="text-xs font-bold text-g-sub"><T value={{ ro: "Ce ți-a spus astăzi (opțional, doar pentru tine)", en: "What it told you today (optional, only for you)" }} /></p>
-          <div className="mt-1.5"><LineInput value={note} onChange={setNote} maxLength={140} placeholder={lang === "ro" ? "ex. „Dacă nu e perfect, nu conta.„…" : "e.g. “If it's not perfect, it doesn't count.”…"} /></div>
+          <div className="mt-1.5"><LineInput value={note} onChange={setNote} maxLength={140} placeholder={lang === "ro" ? "ex. „Dacă nu e perfect, nu conta.”…" : "e.g. “If it's not perfect, it doesn't count.”…"} /></div>
         </div>
         <div className="mt-4 flex items-center gap-3">
           <button className="btn-primary" onClick={submit} disabled={!picked.length}><T value={{ ro: "Notează cine a vorbit", en: "Log who spoke" }} /></button>

@@ -9,7 +9,7 @@
       "name": { "ro": "Gardianul", "en": "The Guardian" },
       "system": { "ro": "sistemul FEAR / familia frică", "en": "the FEAR system / fear family" },
       "claim": { "ro": "„Încerc să te protejez de pericol.”", "en": "“I try to protect you from danger.”" },
-      "function": { "ro": "adesea semnalează pericol sau incertitudine și te pregătește pentru cel mai rău", "en": "often signals danger or uncertainty and prepares you for the worst" },
+      "function": { "ro": "adesea semnalează pericol sau incertitudine și te pregătește pentru cel mai rău scenariu", "en": "often signals danger or uncertainty and prepares you for the worst case" },
       "usefulWhen": { "ro": "când pericolul e real: atenție, pregătire, limite clare", "en": "when the danger is real: attention, preparation, clear limits" },
       "overreachesWhen": { "ro": "când catastrofizează, paralyzează, și face din orice situație o amenințare", "en": "when it catastrophizes, paralyzes, and turns any situation into a threat" },
       "itsFear": { "ro": "să nu fie pregătit(ă) pentru pericolul care vine", "en": "of not being ready for the danger that comes" },
@@ -23,14 +23,14 @@
       "claim": { "ro": "„Nu las să-ți fie încălcat ce contează.”", "en": "“I won't let what matters to you be violated.”" },
       "function": { "ro": "adesea semnalează o încălcare a granițelor sau a valorilor și aduce energie pentru acțiune", "en": "often signals a violation of boundaries or values and brings energy for action" },
       "usefulWhen": { "ro": "când cineva îți încălcează o limită: dreptate, energie, acțiune clară", "en": "when someone crosses a limit of yours: justice, energy, clear action" },
-      "overreachesWhen": { "ro": "când explodează pe cei apropiați, când transformă orice frustrare în război", "en": "when it explodes on close ones, when it turns any frustration into war" },
+      "overreachesWhen": { "ro": "când își descarcă furia pe cei apropiați, când transformă orice frustrare în război", "en": "when it takes its anger out on close ones, when it turns any frustration into war" },
       "itsFear": { "ro": "să fie ignorat(ă) și să nu te mai apere de nimeni", "en": "of being ignored and no longer defending you" },
       "whatToSay": { "ro": "„Energie, mulțumesc. Întreabă-mă mai întâi: ce a fost încălcat exact? Apoi alegem cum acționăm.”", "en": "“Energy, thank you. Ask me first: what exactly was violated? Then we choose how to act.”" },
       "reflectionQuestion": { "ro": "Ce valoare a fost încălcată ultima dată? Apărătorul a acționat corect sau a lăsat urme?", "en": "What value was violated the last time? Did the Defender act correctly or did it leave traces?" }
     },
     {
       "id": "plangatorul", "icon": "🕯️", "color": "#3b82f6",
-      "name": { "ro": "Plângătorul", "en": "The Mourner" },
+      "name": { "ro": "Purtătorul de doliu", "en": "The Mourner" },
       "system": { "ro": "sistemul PANIC/GRIEF / familia tristețe", "en": "the PANIC/GRIEF system / sadness family" },
       "claim": { "ro": "„Te ajut să accepți ce s-a pierdut.”", "en": "“I help you accept what was lost.”" },
       "function": { "ro": "adesea semnalează pierdere și te oprește să mergi mai departe fără a o recunoaște", "en": "often signals loss and stops you from going on without acknowledging it" },
@@ -38,11 +38,11 @@
       "overreachesWhen": { "ro": "când te izolează, când „amintirea” devine o evadare de la viața prezentă", "en": "when it isolates you, when “remembering” becomes an escape from present life" },
       "itsFear": { "ro": "că dacă nu mai plângi, pierderea nu mai contează", "en": "that if you stop crying, the loss no longer matters" },
       "whatToSay": { "ro": "„Mulțumesc că mă oprești. Plângem 5 minute, apoi mănânc, ies, și aleg un lucru mic pentru azi.”", "en": "“Thank you for stopping me. We cry 5 minutes, then I eat, go out, and choose one small thing for today.”" },
-      "reflectionQuestion": { "ro": "Ce a pierdut Plângătorul tău ultima dată? A fost procesat(ă) sau lăsat(ă) în coadă?", "en": "What did your Mourner lose the last time? Was it processed or left in the queue?" }
+      "reflectionQuestion": { "ro": "Ce a pierdut Purtătorul de doliu ultima dată? Ai procesat-o sau ai lăsat-o în coadă?", "en": "What did your Mourner lose the last time? Did you process it, or did you leave it in the queue?" }
     },
     {
       "id": "sarbatoritorul", "icon": "🎉", "color": "#f59e0b",
-      "name": { "ro": "Sărbătoritorul", "en": "The Celebrant" },
+      "name": { "ro": "Sărbătătorul", "en": "The Celebrant" },
       "system": { "ro": "sistemul PLAY / familia bucurie", "en": "the PLAY system / joy family" },
       "claim": { "ro": "„Marchez ce merită repetat.”", "en": "“I mark what is worth repeating.”" },
       "function": { "ro": "adesea semnalează ce a mers și te face să repeți, să împarți, să savurezi", "en": "often signals what worked and makes you repeat, share, savor" },
@@ -50,16 +50,16 @@
       "overreachesWhen": { "ro": "când ignoră riscurile pentru a nu strica atmosfera, sau când „sărbătorea” devine o mască", "en": "when it ignores risks not to ruin the atmosphere, or when “celebrating” becomes a mask" },
       "itsFear": { "ro": "că dacă nu mai marchezi, nimeni nu va mai repeta ce contează", "en": "that if you stop marking, no one will repeat what matters" },
       "whatToSay": { "ro": "„Bucurie, mulțumesc. Spune-mi exact ce a mers, ca să-l putem repeta — nu doar să simțim.”", "en": "“Joy, thank you. Tell me exactly what worked, so we can repeat it — not just feel it.”" },
-      "reflectionQuestion": { "ro": "Ce a sărbătorit Sărbătoritorul de ultima dată? Ai repetat ceva din cauza lui?", "en": "What did the Celebrant celebrate last time? Did you repeat something because of it?" }
+      "reflectionQuestion": { "ro": "Ce a sărbătorit Sărbătătorul de ultima dată? Ai repetat ceva din cauza lui?", "en": "What did the Celebrant celebrate last time? Did you repeat something because of it?" }
     },
     {
-      "id": "tinatorul", "icon": "", "color": "#10b981",
-      "name": { "ro": "Ținătorul de apartenență", "en": "The Belonging Keeper" },
+      "id": "tinatorul", "icon": "🤝", "color": "#10b981",
+      "name": { "ro": "Paznicul legăturii", "en": "The Bond Keeper" },
       "system": { "ro": "sistemul CARE / familia trust", "en": "the CARE system / trust family" },
       "claim": { "ro": "„Te țin aproape de grup.”", "en": "“I keep you close to the group.”" },
-      "function": { "ro": "adesea semnalează apartenență: ce te leagă de ceilalți, ce trebuie ținut ca să nu fii respins", "en": "often signals belonging: what binds you to others, what must be kept so you are not rejected" },
-      "usefulWhen": { "ro": "când relațiile contează: cooperare, iertare, starea aproape", "en": "when relationships matter: cooperation, forgiveness, staying close" },
-      "overreachesWhen": { "ro": "când devine plăcătoare („da-automat”) sau când te face să te pierzi pe tine pentru a fi acceptat(ă)", "en": "when it becomes sycophancy (“auto-yes”) or when it makes you lose yourself to be accepted" },
+      "function": { "ro": "adesea semnalează nevoia de apartenență: ce te leagă de ceilalți, ce ții strâns ca să nu fii respins", "en": "often signals the need for belonging: what binds you to others, what you hold on to so you are not rejected" },
+      "usefulWhen": { "ro": "când relațiile contează: cooperare, iertare, apropiere", "en": "when relationships matter: cooperation, forgiveness, closeness" },
+      "overreachesWhen": { "ro": "când devine acord automat („da” la orice) sau când te face să te pierzi pe tine ca să fii acceptat(ă)", "en": "when it becomes automatic agreement (“yes” to anything) or when it makes you lose yourself to be accepted" },
       "itsFear": { "ro": "să fii respins(ă) și să rămâi singur/singură", "en": "of being rejected and ending up alone" },
       "whatToSay": { "ro": "„Mulțumesc că mă ții în grup. Dar spune-mi când „da”-ul meu nu mai e al meu — atunci plec cu demnitate.”", "en": "“Thank you for keeping me in the group. But tell me when my “yes” is no longer mine — then I leave with dignity.”" },
       "reflectionQuestion": { "ro": "Unde ai spus „da” ultima dată doar ca să rămâi în grup? Ce ți-a costat?", "en": "Where did you say “yes” last time just to stay in the group? What did it cost you?" }
@@ -73,7 +73,7 @@
       "usefulWhen": { "ro": "când trebuie pornit ceva: curaj, curiozitate, plan", "en": "when something has to start: courage, curiosity, plan" },
       "overreachesWhen": { "ro": "când devine impulsivitate (pornește fără plan) sau plictis cronic (nu mai stă în nimic)", "en": "when it becomes impulsiveness (starts without a plan) or chronic boredom (doesn't stay in anything)" },
       "itsFear": { "ro": "că dacă nu mai pornești, viața se termină înainte de a începe", "en": "that if you stop starting, life ends before it begins" },
-      "whatToSay": { "ro": "„Energie, mulțumesc. Dar dă-mi 5 minute de plan, ca pașii să fie de mei, nu de fugă.”", "en": "“Energy, thank you. But give me 5 minutes of plan, so the steps are mine, not of flight.”" },
+      "whatToSay": { "ro": "„Energie, mulțumesc. Dar dă-mi cinci minute de plan — pași aleși, nu fugă.”", "en": "“Energy, thank you. But give me five minutes of plan — chosen steps, not flight.”" },
       "reflectionQuestion": { "ro": "Ce a pornit Exploratorul de ultima dată? A ajuns undeva sau a fost o fugă?", "en": "What did the Explorer start last time? Did it get somewhere or was it a flight?" }
     },
     {
@@ -83,7 +83,7 @@
       "claim": { "ro": "„Te avertizez să nu fii văzut(ă) imperfect.”", "en": "“I warn you not to be seen imperfect.”" },
       "function": { "ro": "adesea semnalează distanța dintre cum ești și cum crezi că ar trebui să fii; ține un standard", "en": "often signals the distance between how you are and how you think you should be; it holds a standard" },
       "usefulWhen": { "ro": "când standardul e al tău și e real: calitate, grijă la detalii, onestitate față de tine", "en": "when the standard is yours and is real: quality, care for detail, honesty with yourself" },
-      "overreachesWhen": { "ro": "când devine impostor („nu meriți, ai noroc”) sau când te face să te ascunzi și să nu arăți ce faci", "en": "when it becomes impostor (\"you don't deserve it, you're lucky\") or when it makes you hide and not show what you do" },
+      "overreachesWhen": { "ro": "când devine sindromul impostorului („nu meriți, ai noroc”) sau când te face să te ascunzi și să nu arăți ce faci", "en": "when it becomes impostor syndrome (“you don't deserve it, you're lucky”) or when it makes you hide and not show what you do" },
       "itsFear": { "ro": "să fii descoperit(ă) ca „nu suficient de bun/bună”", "en": "of being found out as “not good enough”" },
       "whatToSay": { "ro": "„Standard, mulțumesc. Dar amintește-ți: dovezile sunt în muzeu. Nu ești povestea ta.”", "en": "“Standard, thank you. But remember: the evidence is in the museum. You are not your story.”" },
       "reflectionQuestion": { "ro": "Ce poveste spune Criticul despre tine ultima dată? Ce dovezi concrete o contradic?", "en": "What story does the Critic tell about you last time? What concrete evidence contradicts it?" }
@@ -93,7 +93,7 @@
       "name": { "ro": "Observatorul", "en": "The Observer" },
       "system": { "ro": "meta / familia surprindere", "en": "meta / the surprise family" },
       "claim": { "ro": "„Te opresc și deschid o ușă nouă.”", "en": "“I stop you and open a new door.”" },
-      "function": { "ro": "adesea semnalează noutate: ceva ce modelul tău nu prevedea, o oportunitate de a actualiza harta", "en": "often signals novelty: something your model didn't predict, an opportunity to update the map" },
+      "function": { "ro": "adesea semnalează noutatea: ceva ce modelul tău nu prevedea, o oportunitate de a actualiza harta", "en": "often signals novelty: something your model didn't predict, an opportunity to update the map" },
       "usefulWhen": { "ro": "când lumea s-a schimbat: atenție, re-orientare, „nu știam că...”", "en": "when the world changed: attention, re-orientation, “I didn't know that...”" },
       "overreachesWhen": { "ro": "când devine șoc (nu mai lași lumea să treacă) sau derută cronic (nu mai poți alege un fir)", "en": "when it becomes shock (you don't let the world pass) or chronic bewilderment (you can no longer choose a thread)" },
       "itsFear": { "ro": "că dacă nu mai oprești, lumea trece pe lângă tine fără ca tu să o vezi", "en": "that if you stop stopping, the world passes by you without you seeing it" },

@@ -59,7 +59,7 @@ export default function AtlasTab() {
       <Title
         ro="Atlasul"
         en="The Atlas"
-        sub={{ ro: "Harta până acum. Numără emoțiile numite, cerurile notate și frontierele cucerite — și spune exact ce pot și ce nu pot face aceste numere.", en: "The map so far. It counts the emotions named, the skies logged, and the frontiers crossed — and says exactly what those numbers can and cannot do." }}
+        sub={{ ro: "Harta până acum. Numără emoțiile numite, metourile notate și frontierele cucerite — și spune exact ce pot și ce nu pot face aceste numere.", en: "The map so far. It counts the emotions named, the weather logged, and the frontiers crossed — and says exactly what those numbers can and cannot do." }}
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

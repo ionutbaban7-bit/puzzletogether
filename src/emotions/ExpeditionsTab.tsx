@@ -96,7 +96,7 @@ export default function ExpeditionsTab() {
                 </div>
                 <div className="mt-5"><IntensitySlider value={intensity} onChange={setIntensity} /></div>
                 <div className="mt-4">
-                  <p className="text-xs font-bold text-g-sub"><T value={{ ro: "Cine vorbește în tine? (opțional)", en: "Who is speaking in you? (optional)" }} /></p>
+                  <p className="text-xs font-bold text-g-sub"><T value={{ ro: "Ce parte din tine vorbește? (opțional)", en: "Which part of you is speaking? (optional)" }} /></p>
                   <div className="mt-1.5 flex flex-wrap gap-1.5">
                     {Archetypes.archetypes.map((a) => (
                       <button key={a.id} type="button" onClick={() => setArchetype((cur) => (cur === a.id ? null : a.id))}

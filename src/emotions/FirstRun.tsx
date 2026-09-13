@@ -102,7 +102,7 @@ export function FirstRunCoach({
               <T value={{ ro: "O dată pe zi, notează meteoul.", en: "Once a day, log the weather." }} />
             </p>
             <p className="mt-1 text-[13px] leading-relaxed text-g-sub">
-              <T value={{ ro: "Ce cer e în tine azi? Lucrează ~20 de secunde. Fără scoruri, fără comentarii.", en: "What's the sky inside you today? Takes ~20 seconds. No scores, no commentary." }} />
+              <T value={{ ro: "Cum e metoul din tine azi? Lucrează ~20 de secunde. Fără scoruri, fără comentarii.", en: "How's the weather inside you today? Takes ~20 seconds. No scores, no commentary." }} />
             </p>
             <div className="mt-3 flex justify-between">
               <button onClick={onSkip} className="text-[13px] font-semibold text-g-faint transition hover:text-g-ink">

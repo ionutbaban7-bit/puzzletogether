@@ -86,8 +86,8 @@ const STEPS: Array<{ n: string; label: Bilingual; title: Bilingual; text: Biling
     label: { ro: "INTRĂ", en: "JOIN" },
     title: { ro: "Alege experiența.", en: "Choose the experience." },
     text: {
-      ro: "Deschide un joc, o hartă emoțională sau o conversație și invită echipa să intre în experiență.",
-      en: "Open a game, an emotion map or a conversation, and invite your team into the experience.",
+      ro: "Începe jocul și invită echipa să se bucure de experiență.",
+      en: "Start the game and invite your team to enjoy the experience.",
     },
     color: "#1a73e8",
     icon: (
@@ -426,10 +426,7 @@ export default function LandingPage() {
             <Reveal>
               <div>
                 <h2 className="font-display text-3xl font-extrabold tracking-[-0.025em] text-g-ink sm:text-[2.5rem] sm:leading-[1.12]">
-                  <T value={{ ro: "Începe cu joaca.", en: "Start with play." }} />{" "}
-                  <span className="pt-gradient-text">
-                    <T value={{ ro: "Ajungi la conversație.", en: "Arrive at conversation." }} />
-                  </span>
+                  <T value={{ ro: "Start JOC!", en: "Start PLAY!" }} />
                 </h2>
                 <div className="mt-6 space-y-4 text-[17px] leading-relaxed text-g-sub">
                   <p>
@@ -539,7 +536,7 @@ export default function LandingPage() {
           <div className="mx-auto max-w-6xl">
             <Reveal className="mx-auto max-w-2xl text-center">
               <h2 className="font-display text-3xl font-extrabold tracking-[-0.025em] text-g-ink sm:text-[2.4rem]">
-                <T value={{ ro: "Creat pentru oameni. Gândit cu grijă.", en: "Made for people. Crafted with care." }} />
+                <T value={{ ro: "Mai mult decât informație. Experiență.", en: "More than information. Experience." }} />
               </h2>
             </Reveal>
             <div className="mx-auto mt-9 grid max-w-4xl gap-5 sm:grid-cols-2">
