@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-07T16:39:20.650Z",
+  "generatedAt": "2026-09-24T17:19:14.983Z",
   "thresholds": {
     "MIN_LONG_EDGE": 900,
     "MIN_SHORT_EDGE": 600,
@@ -7,28 +7,7 @@
     "DHASH_SUSPECT_LIMIT": 10
   },
   "errors": [],
-  "warnings": [
-    {
-      "code": "W2",
-      "message": "/images/eiffel-tower.jpg: license-inherited-from-legacy-catalog-not-reverified"
-    },
-    {
-      "code": "W2",
-      "message": "/images/statue-of-liberty.jpg: license-corrected-from-legacy-catalog:was-PD-is-CC-BY-SA-3.0"
-    },
-    {
-      "code": "W2",
-      "message": "/images/paris-louvre.jpg: license-inherited-from-legacy-catalog-not-reverified"
-    },
-    {
-      "code": "W2",
-      "message": "/images/venice.jpg: license-corrected-from-legacy-catalog:was-CC-BY-SA-4.0-is-CC-BY-SA-2.0"
-    },
-    {
-      "code": "W2",
-      "message": "/images/tokyo.jpg: license-inherited-from-legacy-catalog-not-reverified"
-    }
-  ],
+  "warnings": [],
   "entries": [
     {
       "asset": "/images/mona-lisa.jpg",
@@ -170,7 +149,7 @@
       "asset": "/images/statue-of-liberty.jpg",
       "category": "landmarks",
       "status": "verified",
-      "license": "CC BY-SA 3.0",
+      "license": "Public domain",
       "ok": true,
       "problems": []
     },
@@ -186,7 +165,7 @@
       "asset": "/images/aurora.jpg",
       "category": "nature",
       "status": "verified",
-      "license": "Public domain (U.S. federal government work)",
+      "license": "Public domain",
       "ok": true,
       "problems": []
     },
@@ -287,202 +266,10 @@
       "problems": []
     },
     {
-      "asset": "/images/aurora-abstraction.jpg",
-      "category": "paintings",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/carpathian-folk-painting.jpg",
-      "category": "paintings",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/botanical-mosaic-painting.jpg",
-      "category": "paintings",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/coastal-color-study.jpg",
-      "category": "paintings",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/night-garden-painting.jpg",
-      "category": "paintings",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/fagaras-sunrise.jpg",
-      "category": "landscapes",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/danube-delta-mist.jpg",
-      "category": "landscapes",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/apuseni-karst.jpg",
-      "category": "landscapes",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/transfagarasan-autumn.jpg",
-      "category": "landscapes",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/rila-lake.jpg",
-      "category": "landscapes",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/bran-castle-dawn.jpg",
-      "category": "landmarks",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/palace-parliament-dusk.jpg",
-      "category": "landmarks",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/corvin-castle.jpg",
-      "category": "landmarks",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/sighisoara-clock-tower.jpg",
-      "category": "landmarks",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/maramures-wooden-church.jpg",
-      "category": "landmarks",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/carpathian-beech-forest.jpg",
-      "category": "nature",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/danube-pelicans.jpg",
-      "category": "nature",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/red-deer-meadow.jpg",
-      "category": "nature",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/poppy-meadow.jpg",
-      "category": "nature",
-      "status": "verified",
-      "license": "CC0 1.0 Universal",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/ice-cave.jpg",
-      "category": "nature",
-      "status": "verified",
-      "license": "CC BY-SA 3.0",
-      "ok": true,
-      "problems": []
-    },
-    {
       "asset": "/images/bucharest-calea-victoriei.jpg",
       "category": "cities",
       "status": "verified",
       "license": "CC BY-SA 2.0",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/sibiu-square.jpg",
-      "category": "cities",
-      "status": "verified",
-      "license": "Pexels License (free to use, no attribution required)",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/cluj-unirii-square.jpg",
-      "category": "cities",
-      "status": "verified",
-      "license": "CC BY 4.0",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/timisoara-union-square.jpg",
-      "category": "cities",
-      "status": "verified",
-      "license": "CC BY-SA 3.0",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/brasov-council-square.jpg",
-      "category": "cities",
-      "status": "verified",
-      "license": "CC BY 4.0",
       "ok": true,
       "problems": []
     },
@@ -495,58 +282,74 @@
       "problems": []
     },
     {
-      "asset": "/images/victoria-falls.jpg",
-      "category": "nature",
-      "status": "verified",
-      "license": "CC BY 4.0",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/bow-lake.jpg",
-      "category": "nature",
-      "status": "verified",
-      "license": "CC0 / Public Domain",
-      "ok": true,
-      "problems": []
-    },
-    {
-      "asset": "/images/inspiration-marcus-aurelius.jpg",
+      "asset": "/images/napoleon-alps.jpg",
       "category": "inspiration",
       "status": "verified",
-      "license": "CC0 1.0 Universal",
+      "license": "Public domain",
       "ok": true,
       "problems": []
     },
     {
-      "asset": "/images/inspiration-julius-caesar.jpg",
+      "asset": "/images/marcus-aurelius-louvre.jpg",
       "category": "inspiration",
       "status": "verified",
-      "license": "CC0 1.0 Universal",
+      "license": "Public domain",
       "ok": true,
       "problems": []
     },
     {
-      "asset": "/images/inspiration-napoleon.jpg",
+      "asset": "/images/earth-apollo17.jpg",
       "category": "inspiration",
       "status": "verified",
-      "license": "CC0 1.0 Universal",
+      "license": "Public domain",
       "ok": true,
       "problems": []
     },
     {
-      "asset": "/images/inspiration-rumi.jpg",
-      "category": "inspiration",
+      "asset": "/images/grand-canyon-hopi.jpg",
+      "category": "landscapes",
       "status": "verified",
-      "license": "CC0 1.0 Universal",
+      "license": "CC BY-SA 3.0",
       "ok": true,
       "problems": []
     },
     {
-      "asset": "/images/inspiration-alexander.jpg",
-      "category": "inspiration",
+      "asset": "/images/mount-fuji.jpg",
+      "category": "landscapes",
       "status": "verified",
-      "license": "CC0 1.0 Universal",
+      "license": "CC BY 3.0",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/bran-castle-photo.jpg",
+      "category": "landmarks",
+      "status": "verified",
+      "license": "CC0",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/sibiu-piata-mare.jpg",
+      "category": "cities",
+      "status": "verified",
+      "license": "CC BY-SA 4.0",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/rocky-mountains-adams.jpg",
+      "category": "landscapes",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/emotions/camera-mare.svg",
+      "category": "coaching",
+      "status": "verified",
+      "license": "All rights reserved — in-house work",
       "ok": true,
       "problems": []
     }

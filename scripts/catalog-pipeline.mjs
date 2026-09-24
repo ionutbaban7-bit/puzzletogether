@@ -46,8 +46,14 @@ const fail = (m) => { console.error(`✗ ${m}`); process.exit(1); };
 
 
 function convert(args, out) {
-  execFileSync("convert", args, { stdio: "pipe" });
-  if (!fs.existsSync(out) || fs.statSync(out).size === 0) throw new Error(`convert failed: ${out}`);
+  const temporary = out.replace(/\.webp$/, `.writing-${process.pid}.webp`);
+  try {
+    execFileSync("convert", [...args.slice(0, -1), temporary], { stdio: "pipe" });
+    if (!fs.existsSync(temporary) || fs.statSync(temporary).size === 0) throw new Error(`convert failed: ${out}`);
+    fs.renameSync(temporary, out);
+  } finally {
+    if (fs.existsSync(temporary)) fs.rmSync(temporary);
+  }
 }
 
 const catalog = JSON.parse(fs.readFileSync(catalogPath, "utf8"));
@@ -117,7 +123,9 @@ for (const e of catalog.entries) {
     !force &&
     recorded === `sha256:${hash}` &&
     fs.existsSync(fullDest) &&
+    fs.statSync(fullDest).size > 0 &&
     fs.existsSync(thumbDest) &&
+    fs.statSync(thumbDest).size > 0 &&
     fs.existsSync(originalDest);
 
   if (upToDate) {
@@ -165,7 +173,10 @@ for (const e of catalog.entries) {
     }
   }
 
-  if (e.fullImage && e.width && e.height) manifest[path.basename(e.fullImage)] = { w: e.width, h: e.height };
+  // The board uses the delivered derivative, not the archived source dimensions.
+  // Keeping source dimensions here produced empty pieces after downscaling.
+  const servedDims = identifyRaster(fullDest);
+  if (e.fullImage && servedDims) manifest[path.basename(e.fullImage)] = servedDims;
 }
 
 // ---- merge metadata into shared/puzzles.json -------------------------------

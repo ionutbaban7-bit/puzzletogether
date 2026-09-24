@@ -31,8 +31,8 @@ export const api = {
   joinRoom(ref: string, name: string, pid?: string, code?: string) {
     return post<{ room: RoomView; playerId: string; returning?: boolean }>(`/api/rooms/${encodeURIComponent(ref)}/join`, { name, pid, code });
   },
-  changePuzzle(ref: string, puzzleId: string, difficulty: string, pid: string, contentLanguage?: "ro" | "en") {
-    return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/puzzle`, { puzzleId, difficulty, pid, contentLanguage });
+  changePuzzle(ref: string, puzzleId: string, difficulty: string, pid: string, contentLanguage?: "ro" | "en", mystery?: boolean) {
+    return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/puzzle`, { puzzleId, difficulty, pid, contentLanguage, mystery });
   },
   takeover(ref: string, pid: string) { return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/takeover`, { pid }); },
   getRoom(ref: string) {

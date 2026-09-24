@@ -1,7 +1,7 @@
 {
   "mona-lisa.webp": {
-    "w": 1920,
-    "h": 2861
+    "w": 1476,
+    "h": 2200
   },
   "starry-night.webp": {
     "w": 1920,
@@ -12,8 +12,8 @@
     "h": 1324
   },
   "girl-pearl-earring.webp": {
-    "w": 1920,
-    "h": 2248
+    "w": 1879,
+    "h": 2200
   },
   "sunrise.webp": {
     "w": 1600,
@@ -28,8 +28,8 @@
     "h": 1739
   },
   "water-lilies.webp": {
-    "w": 1500,
-    "h": 1168
+    "w": 1927,
+    "h": 2200
   },
   "cafe-terrace.webp": {
     "w": 1558,
@@ -52,8 +52,8 @@
     "h": 1444
   },
   "eiffel-tower.webp": {
-    "w": 1920,
-    "h": 3553
+    "w": 1189,
+    "h": 2200
   },
   "machu-picchu.webp": {
     "w": 1920,
@@ -96,8 +96,8 @@
     "h": 807
   },
   "venice.webp": {
-    "w": 1920,
-    "h": 2880
+    "w": 1467,
+    "h": 2200
   },
   "tokyo.webp": {
     "w": 1920,
@@ -127,136 +127,48 @@
     "w": 800,
     "h": 600
   },
-  "aurora-abstraction.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "carpathian-folk-painting.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "botanical-mosaic-painting.webp": {
-    "w": 1376,
-    "h": 768
-  },
-  "coastal-color-study.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "night-garden-painting.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "fagaras-sunrise.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "danube-delta-mist.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "apuseni-karst.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "transfagarasan-autumn.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "rila-lake.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "bran-castle-dawn.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "palace-parliament-dusk.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "corvin-castle.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "sighisoara-clock-tower.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "maramures-wooden-church.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "carpathian-beech-forest.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "danube-pelicans.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "red-deer-meadow.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "poppy-meadow.webp": {
-    "w": 1264,
-    "h": 848
-  },
-  "ice-cave.webp": {
-    "w": 1600,
-    "h": 1067
-  },
   "bucharest-calea-victoriei.webp": {
-    "w": 4608,
-    "h": 3456
-  },
-  "sibiu-square.webp": {
-    "w": 1600,
-    "h": 1067
-  },
-  "cluj-unirii-square.webp": {
-    "w": 1600,
-    "h": 1067
-  },
-  "timisoara-union-square.webp": {
-    "w": 3648,
-    "h": 1740
-  },
-  "brasov-council-square.webp": {
-    "w": 1600,
-    "h": 1054
+    "w": 2200,
+    "h": 1650
   },
   "antelope-canyon.webp": {
     "w": 2000,
     "h": 1333
   },
-  "victoria-falls.webp": {
-    "w": 1600,
-    "h": 899
+  "napoleon-alps.webp": {
+    "w": 1169,
+    "h": 1371
   },
-  "bow-lake.webp": {
-    "w": 1400,
-    "h": 1050
+  "marcus-aurelius-louvre.webp": {
+    "w": 1466,
+    "h": 2200
   },
-  "inspiration-marcus-aurelius.webp": {
-    "w": 1264,
-    "h": 848
+  "earth-apollo17.webp": {
+    "w": 2198,
+    "h": 2200
   },
-  "inspiration-julius-caesar.webp": {
-    "w": 848,
-    "h": 1264
+  "grand-canyon-hopi.webp": {
+    "w": 2200,
+    "h": 1805
   },
-  "inspiration-napoleon.webp": {
-    "w": 1264,
-    "h": 848
+  "mount-fuji.webp": {
+    "w": 1728,
+    "h": 1152
   },
-  "inspiration-rumi.webp": {
-    "w": 1264,
-    "h": 848
+  "bran-castle-photo.webp": {
+    "w": 1972,
+    "h": 1479
   },
-  "inspiration-alexander.webp": {
-    "w": 1264,
-    "h": 848
+  "sibiu-piata-mare.webp": {
+    "w": 1650,
+    "h": 2200
+  },
+  "rocky-mountains-adams.webp": {
+    "w": 2200,
+    "h": 1725
+  },
+  "camera-mare.svg": {
+    "w": 480,
+    "h": 360
   }
 }

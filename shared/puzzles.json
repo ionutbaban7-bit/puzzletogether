@@ -99,10 +99,10 @@
       "credit": "PuzzleTogether B2B Studio",
       "license": "All rights reserved — in-house work",
       "source": "PuzzleTogether (in-house)",
-      "nameRo": "Foaie albă — Litere",
+      "nameRo": "Foaie de litere — Multicolor",
       "alt": {
-        "ro": "Foaie albă pentru construcție liberă cu litere",
-        "en": "Blank sheet for free letter building"
+        "ro": "Copertă SVG originală pentru canvasul de litere „Multicolor”",
+        "en": "Original SVG cover for the Multicolor letter canvas"
       },
       "attribution": "PuzzleTogether B2B Studio",
       "sourceName": "PuzzleTogether (in-house)",
@@ -135,10 +135,10 @@
           "en": "Build freely whatever comes to mind with letters and words. No complicated rules."
         }
       },
-      "nameRo": "Foaie albă — Propoziții",
+      "nameRo": "Foaie de propoziții — Povestea amuzantă",
       "alt": {
-        "ro": "Foaie albă pentru construcție liberă cu cuvinte",
-        "en": "Blank sheet for free sentence building"
+        "ro": "Copertă SVG originală pentru canvasul de propoziții „Povestea amuzantă”",
+        "en": "Original SVG cover for the Funny Story sentence canvas"
       },
       "attribution": "PuzzleTogether B2B Studio",
       "sourceName": "PuzzleTogether (in-house)",
@@ -158,7 +158,7 @@
       "category": "paintings",
       "name": "Mona Lisa",
       "image": "/images/full/mona-lisa.webp",
-      "credit": "Leonardo da Vinci (1452–1519), public domain",
+      "credit": "Leonardo da Vinci · Public domain",
       "license": "Public domain",
       "source": "Wikimedia Commons",
       "nameRo": "Mona Lisa",
@@ -166,12 +166,12 @@
         "ro": "Portretul Mona Lisa de Leonardo da Vinci, pictură din sec. al XVI-lea",
         "en": "Mona Lisa portrait by Leonardo da Vinci, 16th-century painting"
       },
-      "attribution": "Leonardo da Vinci (1452–1519), public domain",
+      "attribution": "Leonardo da Vinci · Public domain",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg",
       "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Mona Lisa, by Leonardo da Vinci, from C2RMF retouched.jpg",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg",
       "checksum": "sha256:276868845c54914913c965b208eec75db55c1675489e563852f155c5db58b536",
       "focalPoint": [
         0.5,
@@ -184,7 +184,7 @@
       "category": "paintings",
       "name": "Starry Night",
       "image": "/images/full/starry-night.webp",
-      "credit": "Vincent van Gogh (1853–1890), public domain",
+      "credit": "Vincent van Gogh · Public domain",
       "license": "Public domain",
       "source": "Wikimedia Commons",
       "nameRo": "Noaptea înstelată",
@@ -192,12 +192,12 @@
         "ro": "Noaptea înstelată, pictură de Vincent van Gogh (1889)",
         "en": "The Starry Night, painting by Vincent van Gogh (1889)"
       },
-      "attribution": "Vincent van Gogh (1853–1890), public domain",
+      "attribution": "Vincent van Gogh · Public domain",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
       "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Van Gogh - Starry Night - Google Art Project.jpg",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
       "checksum": "sha256:dbca2f16b195f6e83feb98d44c0d98eb0b39f560314efbedfedab9e45caa8a2f",
       "focalPoint": [
         0.5,
@@ -210,7 +210,7 @@
       "category": "paintings",
       "name": "The Great Wave off Kanagawa",
       "image": "/images/full/great-wave.webp",
-      "credit": "Katsushika Hokusai (1760–1849), public domain",
+      "credit": "Katsushika Hokusai · Public domain",
       "license": "Public domain",
       "source": "Wikimedia Commons",
       "nameRo": "Marea undă de la Kanagawa",
@@ -218,12 +218,12 @@
         "ro": "Xilogravura japoneză „Marea undă de la Kanagawa” de Katsushika Hokusai",
         "en": "Japanese woodblock print The Great Wave off Kanagawa by Katsushika Hokusai"
       },
-      "attribution": "Katsushika Hokusai (1760–1849), public domain",
+      "attribution": "Katsushika Hokusai · Public domain",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tsunami_by_hokusai_19th_century.jpg",
       "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Tsunami by hokusai 19th century.jpg",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Tsunami_by_hokusai_19th_century.jpg",
       "checksum": "sha256:1fe333e332097e42cb3b92223997d065432ed46f35ba4191b1adba069f9354cf",
       "focalPoint": [
         0.35,
@@ -236,7 +236,7 @@
       "category": "paintings",
       "name": "Girl with a Pearl Earring",
       "image": "/images/full/girl-pearl-earring.webp",
-      "credit": "Johannes Vermeer (1632–1675), public domain",
+      "credit": "Johannes Vermeer · Public domain",
       "license": "Public domain",
       "source": "Wikimedia Commons",
       "nameRo": "Fata cu perla",
@@ -244,12 +244,12 @@
         "ro": "„Fata cu perla”, pictură de Johannes Vermeer (cca. 1665)",
         "en": "Girl with a Pearl Earring, painting by Johannes Vermeer (c. 1665)"
       },
-      "attribution": "Johannes Vermeer (1632–1675), public domain",
+      "attribution": "Johannes Vermeer · Public domain",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Girl_with_a_Pearl_Earring.jpg",
       "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Girl with a Pearl Earring.jpg",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Girl_with_a_Pearl_Earring.jpg",
       "checksum": "sha256:c77be6fcb16c70a8913d55199e7ac736f9da0d62105ca5605380370eadd5535d",
       "focalPoint": [
         0.5,
@@ -262,7 +262,7 @@
       "category": "paintings",
       "name": "Impression, Sunrise",
       "image": "/images/full/sunrise.webp",
-      "credit": "Claude Monet (1840–1926), public domain",
+      "credit": "Claude Monet · Public domain",
       "license": "Public domain",
       "source": "Wikimedia Commons",
       "nameRo": "Impresie, răsărit",
@@ -270,12 +270,12 @@
         "ro": "„Impresie, răsărit” de Claude Monet (1872), pictură impresionistă",
         "en": "Impression, Sunrise by Claude Monet (1872), impressionist painting"
       },
-      "attribution": "Claude Monet (1840–1926), public domain",
+      "attribution": "Claude Monet · Public domain",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Monet_-_Impression,_Sunrise.jpg",
       "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Monet - Impression, Sunrise.jpg",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Monet_-_Impression,_Sunrise.jpg",
       "checksum": "sha256:4ddfd849ed38c27eb8ccb47ecdfd3a329b5d41607ebc13fdb5fb721afb8df1a3",
       "focalPoint": [
         0.55,
@@ -288,7 +288,7 @@
       "category": "paintings",
       "name": "The Kiss",
       "image": "/images/full/the-kiss.webp",
-      "credit": "Gustav Klimt (1862–1918), public domain",
+      "credit": "Gustav Klimt · Public domain",
       "license": "Public domain",
       "source": "Wikimedia Commons",
       "nameRo": "Sărutul",
@@ -296,12 +296,12 @@
         "ro": "„Sărutul” de Gustav Klimt (1907–1908), pictură cu foiță de aur",
         "en": "The Kiss by Gustav Klimt (1907–1908), oil and gold leaf painting"
       },
-      "attribution": "Gustav Klimt (1862–1918), public domain",
+      "attribution": "Gustav Klimt · Public domain",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg",
       "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "The Kiss - Gustav Klimt - Google Cultural Institute.jpg",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg",
       "checksum": "sha256:fc990e1da72cebba75883e8f6516ce7c97337e28ef372d5eee97990ccce4787e",
       "focalPoint": [
         0.5,
@@ -314,7 +314,7 @@
       "category": "paintings",
       "name": "The Scream",
       "image": "/images/full/the-scream.webp",
-      "credit": "Edvard Munch (1863–1944), public domain",
+      "credit": "Edvard Munch · Public domain",
       "license": "Public domain",
       "source": "Wikimedia Commons",
       "nameRo": "Strigătul",
@@ -322,12 +322,12 @@
         "ro": "„Strigătul” de Edvard Munch (versiunea pastel, 1910)",
         "en": "The Scream by Edvard Munch (pastel version, 1910)"
       },
-      "attribution": "Edvard Munch (1863–1944), public domain",
+      "attribution": "Edvard Munch · Public domain",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Edvard_Munch_-_The_Scream_-_Google_Art_Project.jpg",
       "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Edvard Munch - The Scream - Google Art Project.jpg",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Edvard_Munch_-_The_Scream_-_Google_Art_Project.jpg",
       "checksum": "sha256:e9e881a6f9f1af4e506d722d1012fe8e78c1b25f9680a4010c4f1c78a48b9fe9",
       "focalPoint": [
         0.5,
@@ -340,7 +340,7 @@
       "category": "paintings",
       "name": "Water Lilies",
       "image": "/images/full/water-lilies.webp",
-      "credit": "Claude Monet (1840–1926), public domain",
+      "credit": "Claude Monet · Public domain",
       "license": "Public domain",
       "source": "Wikimedia Commons",
       "nameRo": "Nufăruri",
@@ -348,13 +348,13 @@
         "ro": "„Nufăruri” (Nymphéas) de Claude Monet, serie de picturi impresționiste",
         "en": "Water Lilies (Nymphéas) by Claude Monet, impressionist painting series"
       },
-      "attribution": "Claude Monet (1840–1926), public domain",
+      "attribution": "Claude Monet · Public domain",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Monet,_Claude_-_Water_Lilies_(Nymph%C3%A9as)_-_Google_Art_Project.jpg",
       "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Monet, Claude - Water Lilies (Nymphéas) - Google Art Project.jpg",
-      "checksum": "sha256:9577a337bedd678cf031fe31001d1346a7a659fffe38675ceed4dbe3f9ddae76",
+      "changesMade": "Archival JPEG resized to a maximum edge of 2600px. WebP delivery preserves the aspect ratio; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Monet,_Claude_-_Water_Lilies_(Nymphéas)_-_Google_Art_Project.jpg",
+      "checksum": "sha256:bce8b6ed6e978343af9c3a53138cc3c531fee4558f68a6b297d0c250c2697596",
       "focalPoint": [
         0.5,
         0.5
@@ -366,7 +366,7 @@
       "category": "paintings",
       "name": "Café Terrace at Night",
       "image": "/images/full/cafe-terrace.webp",
-      "credit": "Vincent van Gogh (1853–1890), public domain",
+      "credit": "Vincent van Gogh · Public domain",
       "license": "Public domain",
       "source": "Wikimedia Commons",
       "nameRo": "Terrasa cafenelei noaptea",
@@ -374,12 +374,12 @@
         "ro": "„Terrasa cafenelei pe Piața Forum noaptea, Arles” de Vincent van Gogh (1888)",
         "en": "Café Terrace at Night (Place du Forum, Arles) by Vincent van Gogh (1888)"
       },
-      "attribution": "Vincent van Gogh (1853–1890), public domain",
+      "attribution": "Vincent van Gogh · Public domain",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vincent_Willem_van_Gogh_-_Cafe_Terrace_at_Night_(Yorck).jpg",
       "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Vincent Willem van Gogh - Cafe Terrace at Night (Yorck).jpg",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Vincent_Willem_van_Gogh_-_Cafe_Terrace_at_Night_(Yorck).jpg",
       "checksum": "sha256:7d0dc475ce1d9b2d7d381f66a873742c1078deb96133db2ad93ebae7ffe22d7b",
       "focalPoint": [
         0.5,
@@ -392,20 +392,20 @@
       "category": "paintings",
       "name": "The Milkmaid",
       "image": "/images/full/the-milkmaid.webp",
-      "credit": "Johannes Vermeer (1632–1675), public domain",
+      "credit": "Johannes Vermeer · Public domain",
       "license": "Public domain",
-      "source": "Wikimedia Commons (Rijksmuseum)",
+      "source": "Wikimedia Commons",
       "nameRo": "Fata cu cana de lapte",
       "alt": {
         "ro": "„Fata cu cana de lapte” (Het Melkmeisje) de Johannes Vermeer (cca. 1658–1661), Rijksmuseum",
         "en": "The Milkmaid (Het Melkmeisje) by Johannes Vermeer (c. 1658–1661), Rijksmuseum"
       },
-      "attribution": "Johannes Vermeer (1632–1675), public domain",
-      "sourceName": "Wikimedia Commons (Rijksmuseum)",
+      "attribution": "Johannes Vermeer · Public domain",
+      "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg",
       "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Johannes Vermeer - Het melkmeisje - Google Art Project.jpg",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg",
       "checksum": "sha256:216380d75254bc89f73cc1365fdf3fefc6ca7006504baf2902cd43a71ae63e06",
       "focalPoint": [
         0.5,
@@ -418,7 +418,7 @@
       "category": "landscapes",
       "name": "The Matterhorn",
       "image": "/images/full/matterhorn.webp",
-      "credit": "Photo: chil (Camptocamp.org) · derivative work Zander, CC BY-SA 3.0",
+      "credit": "Photo: chil, on Camptocamp.org Derivative work:Zacharie Grossen · CC BY-SA 3.0",
       "license": "CC BY-SA 3.0",
       "source": "Wikimedia Commons",
       "nameRo": "Matterhorn",
@@ -426,12 +426,12 @@
         "ro": "Vârfurile Matterhorn și Dent d'Hérens văzute de pe Domhütte, Valais",
         "en": "Matterhorn and Dent d'Hérens seen from the Domhütte, Valais"
       },
-      "attribution": "Photo: chil (Camptocamp.org) · derivative work Zander, CC BY-SA 3.0",
+      "attribution": "Photo: chil, on Camptocamp.org Derivative work:Zacharie Grossen · CC BY-SA 3.0",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Matterhorn_from_Domh%C3%BCtte_-_2.jpg",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression; derivative of the original photo",
-      "originalFilename": "Matterhorn from Domhütte - 2.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Matterhorn_from_Domhütte_-_2.jpg",
       "checksum": "sha256:fa1b598f3d4b302de07f48d94dc9966060aa3ebd5468d85270a6a06961affc9a",
       "focalPoint": [
         0.5,
@@ -444,7 +444,7 @@
       "category": "nature",
       "name": "Moraine Lake",
       "image": "/images/full/moraine-lake.webp",
-      "credit": "Gorgo (Wikimedia Commons)",
+      "credit": "Gorgo · Public domain",
       "license": "Public domain",
       "source": "Wikimedia Commons",
       "nameRo": "Lacul Moraine",
@@ -452,12 +452,12 @@
         "ro": "Lacul Moraine și Valea celor Zece Vârfuri, Parcul Național Banff, Canada",
         "en": "Moraine Lake and the Valley of the Ten Peaks, Banff National Park, Canada"
       },
-      "attribution": "Gorgo (Wikimedia Commons)",
+      "attribution": "Gorgo · Public domain",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Moraine_Lake_17092005.jpg",
       "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Moraine Lake 17092005.jpg",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Moraine_Lake_17092005.jpg",
       "checksum": "sha256:adb3041e3ac2de4cf3e7c3d186ea2c39a1a811b4a5fff4f888a6711579833d5f",
       "focalPoint": [
         0.5,
@@ -470,7 +470,7 @@
       "category": "landscapes",
       "name": "Oia, Santorini",
       "image": "/images/full/santorini.webp",
-      "credit": "Danbu14, CC BY-SA 3.0",
+      "credit": "Danbu14 · CC BY-SA 3.0",
       "license": "CC BY-SA 3.0",
       "source": "Wikimedia Commons",
       "nameRo": "Oia, Santorini",
@@ -478,12 +478,12 @@
         "ro": "Vedere asupra satului Oia, insula Santorini, Grecia",
         "en": "View over the village of Oia, Santorini island, Greece"
       },
-      "attribution": "Danbu14, CC BY-SA 3.0",
+      "attribution": "Danbu14 · CC BY-SA 3.0",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Santorini_Oia.jpg",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Santorini Oia.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Santorini_Oia.jpg",
       "checksum": "sha256:53bb7cf0802013d8c6799314a8f2a57146beb3aca913128f865e9f591840fec1",
       "focalPoint": [
         0.5,
@@ -496,7 +496,7 @@
       "category": "landmarks",
       "name": "Eiffel Tower",
       "image": "/images/full/eiffel-tower.webp",
-      "credit": "Benh LIEU SONG (Wikimedia Commons)",
+      "credit": "Benh LIEU SONG · Public domain",
       "license": "Public domain",
       "source": "Wikimedia Commons",
       "nameRo": "Turnul Eiffel",
@@ -504,12 +504,12 @@
         "ro": "Turnul Eiffel văzut de la nord-est, Paris, Franța",
         "en": "The Eiffel Tower seen from the north-east, Paris, France"
       },
-      "attribution": "Benh LIEU SONG (Wikimedia Commons)",
+      "attribution": "Benh LIEU SONG · Public domain",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tour_Eiffel_Wikimedia_Commons.jpg",
       "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Tour Eiffel Wikimedia Commons.jpg",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Tour_Eiffel_Wikimedia_Commons.jpg",
       "checksum": "sha256:5511b3d01068956af15fae8d173fdd3ea1b054b651c4866e9e3c9a1c81e93c3b",
       "focalPoint": [
         0.5,
@@ -522,7 +522,7 @@
       "category": "landmarks",
       "name": "Machu Picchu",
       "image": "/images/full/machu-picchu.webp",
-      "credit": "Martin St-Amant, CC BY-SA 3.0",
+      "credit": "Martin St-Amant (S23678) · CC BY-SA 3.0",
       "license": "CC BY-SA 3.0",
       "source": "Wikimedia Commons",
       "nameRo": "Machu Picchu",
@@ -530,12 +530,12 @@
         "ro": "Situl arheologic incaș Machu Picchu, Peru",
         "en": "Machu Picchu Inca archaeological site, Peru"
       },
-      "attribution": "Martin St-Amant, CC BY-SA 3.0",
+      "attribution": "Martin St-Amant (S23678) · CC BY-SA 3.0",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:99_-_Machu_Picchu_-_Juin_2009.edit3.jpg",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression; derivative of the original photo",
-      "originalFilename": "99 - Machu Picchu - Juin 2009.edit3.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "99_-_Machu_Picchu_-_Juin_2009.edit3.jpg",
       "checksum": "sha256:1574dab26d407dddf1b7e52cde228041b14e8bd484ef573b8fcb865d42012a8d",
       "focalPoint": [
         0.5,
@@ -548,7 +548,7 @@
       "category": "landmarks",
       "name": "Taj Mahal",
       "image": "/images/full/taj-mahal.webp",
-      "credit": "Yann, CC BY-SA 4.0",
+      "credit": "Yann; edited by King of Hearts · CC BY-SA 4.0",
       "license": "CC BY-SA 4.0",
       "source": "Wikimedia Commons",
       "nameRo": "Taj Mahal",
@@ -556,12 +556,12 @@
         "ro": "Mauzoleul Taj Mahal din Agra, India",
         "en": "Taj Mahal mausoleum, Agra, India"
       },
-      "attribution": "Yann, CC BY-SA 4.0",
+      "attribution": "Yann; edited by King of Hearts · CC BY-SA 4.0",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Taj_Mahal,_Agra,_India_edit2.jpg",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression; edited version of the original photo",
-      "originalFilename": "Taj Mahal, Agra, India edit2.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Taj_Mahal,_Agra,_India_edit2.jpg",
       "checksum": "sha256:0cad4c3a711575b76e72480f1d6de358ee3e2f940a2201baaa02725ab1574e13",
       "focalPoint": [
         0.5,
@@ -574,7 +574,7 @@
       "category": "landmarks",
       "name": "The Colosseum",
       "image": "/images/full/colosseum.webp",
-      "credit": "FeaturedPics, CC BY-SA 4.0",
+      "credit": "FeaturedPics · CC BY-SA 4.0",
       "license": "CC BY-SA 4.0",
       "source": "Wikimedia Commons",
       "nameRo": "Coloseul",
@@ -582,12 +582,12 @@
         "ro": "Amfiteatrul Flavian (Coloseul), Roma, Italia",
         "en": "The Flavian Amphitheatre (Colosseum), Rome, Italy"
       },
-      "attribution": "FeaturedPics, CC BY-SA 4.0",
+      "attribution": "FeaturedPics · CC BY-SA 4.0",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Colosseo_2020.jpg",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Colosseo 2020.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Colosseo_2020.jpg",
       "checksum": "sha256:e2556474b9eaf380ecb969d5117423e9eed2db01a207f39092a6692b58ec2f77",
       "focalPoint": [
         0.5,
@@ -600,20 +600,20 @@
       "category": "landmarks",
       "name": "Statue of Liberty",
       "image": "/images/full/statue-of-liberty.webp",
-      "credit": "Elcobbola, CC BY-SA 3.0",
-      "license": "CC BY-SA 3.0",
+      "credit": "Elcobbola · Public domain",
+      "license": "Public domain",
       "source": "Wikimedia Commons",
       "nameRo": "Statuia Libertății",
       "alt": {
         "ro": "Statuia Libertății de pe insula Liberty, New York, SUA",
         "en": "Statue of Liberty on Liberty Island, New York, USA"
       },
-      "attribution": "Elcobbola, CC BY-SA 3.0",
+      "attribution": "Elcobbola · Public domain",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Statue_of_Liberty_7.jpg",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Statue of Liberty 7.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Statue_of_Liberty_7.jpg",
       "checksum": "sha256:e0d1094223b034694172b7b727d2ba8923f2cd7d1196e2438d4a63ed9c06360e",
       "focalPoint": [
         0.5,
@@ -626,7 +626,7 @@
       "category": "landmarks",
       "name": "St. Peter's Square",
       "image": "/images/full/vatican.webp",
-      "credit": "Diliff, CC BY-SA 3.0",
+      "credit": "Diliff · CC BY-SA 3.0",
       "license": "CC BY-SA 3.0",
       "source": "Wikimedia Commons",
       "nameRo": "Piazza San Pietro",
@@ -634,12 +634,12 @@
         "ro": "Piazza San Pietro, Vatican, Roma, Italia",
         "en": "St. Peter's Square, Vatican City, Rome, Italy"
       },
-      "attribution": "Diliff, CC BY-SA 3.0",
+      "attribution": "Diliff · CC BY-SA 3.0",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:St_Peter%27s_Square,_Vatican_City_-_April_2007.jpg",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "St Peter's Square, Vatican City - April 2007.jpg",
+      "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "St_Peter's_Square,_Vatican_City_-_April_2007.jpg",
       "checksum": "sha256:54286c6400d8cd03548ca41a7d881d3918120bc80828002065f4ccefcf51833d",
       "focalPoint": [
         0.5,
@@ -652,20 +652,20 @@
       "category": "nature",
       "name": "Aurora Borealis",
       "image": "/images/full/aurora.webp",
-      "credit": "U.S. Air Force photo by Senior Airman Joshua Strang, public domain",
-      "license": "Public domain (U.S. federal government work)",
-      "source": "Wikimedia Commons (USAF photo, 18 January 2005)",
+      "credit": "United States Air Force photo by Senior Airman Joshua Strang · Public domain",
+      "license": "Public domain",
+      "source": "Wikimedia Commons",
       "nameRo": "Aurorele polare",
       "alt": {
         "ro": "Aurorele boreale deasupra Bear Lake, Alaska, SUA",
         "en": "Aurora borealis above Bear Lake, Alaska, USA"
       },
-      "attribution": "U.S. Air Force photo by Senior Airman Joshua Strang, public domain",
-      "sourceName": "Wikimedia Commons (USAF photo, 18 January 2005)",
+      "attribution": "United States Air Force photo by Senior Airman Joshua Strang · Public domain",
+      "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Aurora_Borealis_Alaska.jpg",
-      "licenseUrl": "https://en.wikipedia.org/wiki/United_states_federal_government_copyright",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Aurora Borealis Alaska.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Aurora_Borealis_Alaska.jpg",
       "checksum": "sha256:919e09dd35d15842a97798237004e15c933816ea540e0aabe4b224b45ed310b9",
       "focalPoint": [
         0.5,
@@ -678,7 +678,7 @@
       "category": "nature",
       "name": "Tulip in Bloom",
       "image": "/images/full/flower.webp",
-      "credit": "Photo by and (c)2007 Derek Ramsey (Ram-Man); co-attribution to Chanticleer Garden required, CC BY-SA 3.0",
+      "credit": "Derek Ramsey (Ram-Man), Chanticleer Garden · CC BY-SA 3.0",
       "license": "CC BY-SA 3.0",
       "source": "Wikimedia Commons",
       "nameRo": "Lalea înflorită",
@@ -686,12 +686,12 @@
         "ro": "Lalea Tulipa clusiana „Lady Jane” înflorită, grădina Chanticleer",
         "en": "Tulip Tulipa clusiana 'Lady Jane' in bloom, Chanticleer Garden"
       },
-      "attribution": "Photo by and (c)2007 Derek Ramsey (Ram-Man); co-attribution to Chanticleer Garden required, CC BY-SA 3.0",
+      "attribution": "Derek Ramsey (Ram-Man), Chanticleer Garden · CC BY-SA 3.0",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tulip_Tulipa_clusiana_%27Lady_Jane%27_Rock_Ledge_Flower_Edit_2000px.jpg",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Tulip Tulipa clusiana 'Lady Jane' Rock Ledge Flower Edit 2000px.jpg",
+      "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Tulip_Tulipa_clusiana_'Lady_Jane'_Rock_Ledge_Flower_Edit_2000px.jpg",
       "checksum": "sha256:516313c1fd00c2e0270b17684addddc1e338f0e96eef987b1b193868093ec52e",
       "focalPoint": [
         0.5,
@@ -704,7 +704,7 @@
       "category": "nature",
       "name": "Beauchamp Falls",
       "image": "/images/full/waterfall.webp",
-      "credit": "Dietmar Rabich, CC BY-SA 4.0",
+      "credit": "Dietmar Rabich · CC BY-SA 4.0",
       "license": "CC BY-SA 4.0",
       "source": "Wikimedia Commons",
       "nameRo": "Cascada Beauchamp",
@@ -712,12 +712,12 @@
         "ro": "Cascada Beauchamp, pădure de fag, Parkul Național Great Otway, Victoria, Australia",
         "en": "Beauchamp Falls in a beech forest, Great Otway National Park, Victoria, Australia"
       },
-      "attribution": "Dietmar Rabich, CC BY-SA 4.0",
+      "attribution": "Dietmar Rabich · CC BY-SA 4.0",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Beech_Forest_(AU),_Great_Otway_National_Park,_Beauchamp_Falls_--_2019_--_1271.jpg",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Beech Forest (AU), Great Otway National Park, Beauchamp Falls -- 2019 -- 1271.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Beech_Forest_(AU),_Great_Otway_National_Park,_Beauchamp_Falls_--_2019_--_1271.jpg",
       "checksum": "sha256:99681905dd160bc7bda29c1615c2703add79cb5177a4b2768889a23332571ce7",
       "focalPoint": [
         0.5,
@@ -730,7 +730,7 @@
       "category": "cities",
       "name": "Golden Gate Bridge",
       "image": "/images/full/golden-gate.webp",
-      "credit": "Frank Schulenburg, CC BY-SA 4.0",
+      "credit": "Frank Schulenburg · CC BY-SA 4.0",
       "license": "CC BY-SA 4.0",
       "source": "Wikimedia Commons",
       "nameRo": "Podul Golden Gate",
@@ -738,12 +738,12 @@
         "ro": "Podul Golden Gate văzut de pe plaja Marshall, San Francisco, California",
         "en": "Golden Gate Bridge seen from Marshall's Beach, San Francisco, California"
       },
-      "attribution": "Frank Schulenburg, CC BY-SA 4.0",
+      "attribution": "Frank Schulenburg · CC BY-SA 4.0",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Golden_Gate_Bridge_as_seen_from_Marshall%E2%80%99s_Beach,_March_2018.jpg",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Golden Gate Bridge as seen from Marshall's Beach, March 2018.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Golden_Gate_Bridge_as_seen_from_Marshall’s_Beach,_March_2018.jpg",
       "checksum": "sha256:f4fdbbc52a751e2a459f1612f0d9fb39ae660ff40eadfe53b5ae3ce7922e24c1",
       "focalPoint": [
         0.5,
@@ -756,7 +756,7 @@
       "category": "cities",
       "name": "The Louvre, Paris",
       "image": "/images/full/paris-louvre.webp",
-      "credit": "Benh LIEU SONG, CC BY-SA 3.0",
+      "credit": "Benh LIEU SONG (Flickr) · CC BY-SA 3.0",
       "license": "CC BY-SA 3.0",
       "source": "Wikimedia Commons",
       "nameRo": "Muzeul Luvru, Paris",
@@ -764,12 +764,12 @@
         "ro": "Curtea Muzeului Luvru cu piramida sa de sticlă, Paris, Franța",
         "en": "Courtyard of the Louvre Museum with its glass pyramid, Paris, France"
       },
-      "attribution": "Benh LIEU SONG, CC BY-SA 3.0",
+      "attribution": "Benh LIEU SONG (Flickr) · CC BY-SA 3.0",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Louvre_Museum_Wikimedia_Commons.jpg",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Louvre Museum Wikimedia Commons.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Louvre_Museum_Wikimedia_Commons.jpg",
       "checksum": "sha256:7f02eafdd46cb51d9d547aee180fab6bb502b11fd09a1ec1867e9b3785033db3",
       "focalPoint": [
         0.5,
@@ -782,20 +782,20 @@
       "category": "cities",
       "name": "Venice at Dawn",
       "image": "/images/full/venice.webp",
-      "credit": "Benh LIEU SONG (Flickr 75729488@N03), CC BY-SA 2.0",
+      "credit": "Benh LIEU SONG from Torcy, France · CC BY-SA 2.0",
       "license": "CC BY-SA 2.0",
-      "source": "Wikimedia Commons (Flickr transfer)",
+      "source": "Wikimedia Commons",
       "nameRo": "Veneția în zori",
       "alt": {
         "ro": "Piața San Marco în zori, Veneția, Italia",
         "en": "Piazza San Marco at dawn, Venice, Italy"
       },
-      "attribution": "Benh LIEU SONG (Flickr 75729488@N03), CC BY-SA 2.0",
-      "sourceName": "Wikimedia Commons (Flickr transfer)",
+      "attribution": "Benh LIEU SONG from Torcy, France · CC BY-SA 2.0",
+      "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Piazza_San_Marco_at_Dawn,_Venice_(21358879396).jpg",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Piazza San Marco at Dawn, Venice (21358879396).jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Piazza_San_Marco_at_Dawn,_Venice_(21358879396).jpg",
       "checksum": "sha256:03a9d441e08f3b479138c26d59a7c6b8a2cfea14a6813bfa4d1f235ae46aa8b2",
       "focalPoint": [
         0.5,
@@ -808,7 +808,7 @@
       "category": "cities",
       "name": "Tokyo Skyscrapers",
       "image": "/images/full/tokyo.webp",
-      "credit": "Morio, CC BY-SA 3.0",
+      "credit": "Morio · CC BY-SA 3.0",
       "license": "CC BY-SA 3.0",
       "source": "Wikimedia Commons",
       "nameRo": "Turnurile din Tokyo",
@@ -816,12 +816,12 @@
         "ro": "Turnurile din Shinjuku, Tokyo, Japonia (ianuarie 2009)",
         "en": "Shinjuku skyscrapers, Tokyo, Japan (January 2009)"
       },
-      "attribution": "Morio, CC BY-SA 3.0",
+      "attribution": "Morio · CC BY-SA 3.0",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Skyscrapers_of_Shinjuku_2009_January.jpg",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Skyscrapers of Shinjuku 2009 January.jpg",
+      "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Skyscrapers_of_Shinjuku_2009_January.jpg",
       "checksum": "sha256:6da68518f374f6700461a925730ccfbbacf27e9da89b55970495d9272e2c8831",
       "focalPoint": [
         0.5,
@@ -830,540 +830,20 @@
       "thumbnail": "/images/thumbs/tokyo.webp"
     },
     {
-      "id": "aurora-abstraction",
-      "category": "paintings",
-      "name": "Aurora Abstraction",
-      "nameRo": "Abstracție aurorală",
-      "image": "/images/full/aurora-abstraction.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "aurora-abstraction.png (original source; archived as aurora-abstraction.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Pictură abstractă cu panglici de lumină în albastru, roz și violet.",
-        "en": "Abstract painting with ribbons of blue, pink, and purple light."
-      },
-      "checksum": "sha256:cfb9ec4c6f529cf9bf4ca62aa81ee546f52916b386cb4c019237be1bd61e1034",
-      "thumbnail": "/images/thumbs/aurora-abstraction.webp"
-    },
-    {
-      "id": "carpathian-folk-painting",
-      "category": "paintings",
-      "name": "Carpathian Hills",
-      "nameRo": "Coline carpatine",
-      "image": "/images/full/carpathian-folk-painting.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "carpathian-folk-painting.png (original source; archived as carpathian-folk-painting.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Pictură cu coline, câmpuri și munți carpatini.",
-        "en": "Painting of Carpathian hills, fields, and mountains."
-      },
-      "checksum": "sha256:b025217aec634291f081dc299d34fd70e2aeb3f700745296ec3e54b96892d679",
-      "thumbnail": "/images/thumbs/carpathian-folk-painting.webp"
-    },
-    {
-      "id": "botanical-mosaic-painting",
-      "category": "paintings",
-      "name": "Botanical Mosaic",
-      "nameRo": "Mozaic botanic",
-      "image": "/images/full/botanical-mosaic-painting.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "botanical-mosaic-painting.png (original source; archived as botanical-mosaic-painting.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Pictură densă cu frunze, flori și forme botanice.",
-        "en": "Dense painting of leaves, flowers, and botanical forms."
-      },
-      "checksum": "sha256:093225e20881cb0d06ff4d0ed8fd68078a8935dddc64e16d79fdb4652d26b17c",
-      "thumbnail": "/images/thumbs/botanical-mosaic-painting.webp"
-    },
-    {
-      "id": "coastal-color-study",
-      "category": "paintings",
-      "name": "Coastal Colour Study",
-      "nameRo": "Studiu de coastă",
-      "image": "/images/full/coastal-color-study.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "coastal-color-study.png (original source; archived as coastal-color-study.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Pictură impresionistă cu mare, stânci și apus.",
-        "en": "Impressionist painting of sea, rocks, and sunset."
-      },
-      "checksum": "sha256:efa804bd24c0274757249ac67581f8adb74461d3ebda003ff5533e1d84b770d3",
-      "thumbnail": "/images/thumbs/coastal-color-study.webp"
-    },
-    {
-      "id": "night-garden-painting",
-      "category": "paintings",
-      "name": "Night Garden",
-      "nameRo": "Grădină de noapte",
-      "image": "/images/full/night-garden-painting.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "night-garden-painting.png (original source; archived as night-garden-painting.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Pictură nocturnă cu flori luminoase și frunziș indigo.",
-        "en": "Night painting with luminous flowers and indigo foliage."
-      },
-      "checksum": "sha256:62c2669ef470a7571b1ee21f39618f6e3a28bf92ea15d7750be4ac5b9c92af07",
-      "thumbnail": "/images/thumbs/night-garden-painting.webp"
-    },
-    {
-      "id": "fagaras-sunrise",
-      "category": "landscapes",
-      "name": "Făgăraș Sunrise",
-      "nameRo": "Răsărit în Făgăraș",
-      "image": "/images/full/fagaras-sunrise.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "fagaras-sunrise.png (original source; archived as fagaras-sunrise.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Răsărit peste Munții Făgăraș, România.",
-        "en": "Sunrise over the Făgăraș Mountains, Romania."
-      },
-      "checksum": "sha256:ecbaefbf12317bb6dd7b68953c8089c9d5ac9a549f30a05fce737081447d7222",
-      "thumbnail": "/images/thumbs/fagaras-sunrise.webp"
-    },
-    {
-      "id": "danube-delta-mist",
-      "category": "landscapes",
-      "name": "Danube Delta Mist",
-      "nameRo": "Ceață în Delta Dunării",
-      "image": "/images/full/danube-delta-mist.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "danube-delta-mist.png (original source; archived as danube-delta-mist.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Canale și stuf în Delta Dunării, România, la răsărit.",
-        "en": "Channels and reeds in Romania's Danube Delta at dawn."
-      },
-      "checksum": "sha256:9653384eec76ac5ddbe79998c93daca2d5f1aa50f3322ab465bc0ea0d7fbeb40",
-      "thumbnail": "/images/thumbs/danube-delta-mist.webp"
-    },
-    {
-      "id": "apuseni-karst",
-      "category": "landscapes",
-      "name": "Apuseni Karst",
-      "nameRo": "Carst în Apuseni",
-      "image": "/images/full/apuseni-karst.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "apuseni-karst.png (original source; archived as apuseni-karst.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Stânci calcaroase și pădure în Munții Apuseni, România.",
-        "en": "Limestone cliffs and forest in Romania's Apuseni Mountains."
-      },
-      "checksum": "sha256:8fbe68b6b00023b316179f5d5e148fba28fc8ab72094ae079ecc53a70e1b61aa",
-      "thumbnail": "/images/thumbs/apuseni-karst.webp"
-    },
-    {
-      "id": "transfagarasan-autumn",
-      "category": "landscapes",
-      "name": "Transfăgărășan in Autumn",
-      "nameRo": "Transfăgărășan de toamnă",
-      "image": "/images/full/transfagarasan-autumn.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "transfagarasan-autumn.png (original source; archived as transfagarasan-autumn.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Drum montan prin pădure de toamnă, România.",
-        "en": "Mountain road through autumn forest, Romania."
-      },
-      "checksum": "sha256:8797fe2836d1597fbeb0cd53796a61bca978cb7fcb5acf3f1574df0d67906954",
-      "thumbnail": "/images/thumbs/transfagarasan-autumn.webp"
-    },
-    {
-      "id": "rila-lake",
-      "category": "landscapes",
-      "name": "Rila Mountain Lake",
-      "nameRo": "Lac în Rila",
-      "image": "/images/full/rila-lake.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "rila-lake.png (original source; archived as rila-lake.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Lac alpin și vârfuri de granit în Munții Rila.",
-        "en": "Alpine lake and granite peaks in the Rila Mountains."
-      },
-      "checksum": "sha256:c8551edca74c4301ffb900d5112d3ab8cb05cbb1ab318a1e1e41434bc9aaf2a8",
-      "thumbnail": "/images/thumbs/rila-lake.webp"
-    },
-    {
-      "id": "bran-castle-dawn",
-      "category": "landmarks",
-      "name": "Bran Castle at Dawn",
-      "nameRo": "Castelul Bran la răsărit",
-      "image": "/images/full/bran-castle-dawn.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "bran-castle-dawn.png (original source; archived as bran-castle-dawn.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Castelul Bran pe o culme împădurită, România.",
-        "en": "Bran Castle on a wooded ridge, Romania."
-      },
-      "checksum": "sha256:b8ffb6140c3fd8109601a7b9590750e1fd3d13c45ac9b30f2b0786504471f3c0",
-      "thumbnail": "/images/thumbs/bran-castle-dawn.webp"
-    },
-    {
-      "id": "palace-parliament-dusk",
-      "category": "landmarks",
-      "name": "Palace of Parliament",
-      "nameRo": "Palatul Parlamentului",
-      "image": "/images/full/palace-parliament-dusk.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "palace-parliament-dusk.png (original source; archived as palace-parliament-dusk.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Fațada Palatului Parlamentului din București, la ceas albastru.",
-        "en": "Palace of Parliament facade in Bucharest at blue hour."
-      },
-      "checksum": "sha256:323449bb1cc0f5b2ec754507ac10fa78ee606a3b396f6968b9c6a24ef33dd1de",
-      "thumbnail": "/images/thumbs/palace-parliament-dusk.webp"
-    },
-    {
-      "id": "corvin-castle",
-      "category": "landmarks",
-      "name": "Corvin Castle",
-      "nameRo": "Castelul Corvinilor",
-      "image": "/images/full/corvin-castle.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "corvin-castle.png (original source; archived as corvin-castle.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Castelul Corvinilor și podul său de lemn, Hunedoara.",
-        "en": "Corvin Castle and its timber bridge, Hunedoara."
-      },
-      "checksum": "sha256:60763f1c5d03737ae95c153ccca082e470ed84d487e2cf7ec926e1ca575da3a2",
-      "thumbnail": "/images/thumbs/corvin-castle.webp"
-    },
-    {
-      "id": "sighisoara-clock-tower",
-      "category": "landmarks",
-      "name": "Sighișoara Clock Tower",
-      "nameRo": "Turnul cu ceas din Sighișoara",
-      "image": "/images/full/sighisoara-clock-tower.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "sighisoara-clock-tower.png (original source; archived as sighisoara-clock-tower.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Turnul cu ceas și acoperișuri istorice din Sighișoara.",
-        "en": "Clock Tower and historic roofs in Sighișoara."
-      },
-      "checksum": "sha256:2999bfac04fc6d06cfab867ef00c9574c592afb9c4cced595fc5c39aa6e1ce4e",
-      "thumbnail": "/images/thumbs/sighisoara-clock-tower.webp"
-    },
-    {
-      "id": "maramures-wooden-church",
-      "category": "landmarks",
-      "name": "Maramureș Wooden Church",
-      "nameRo": "Biserică din lemn în Maramureș",
-      "image": "/images/full/maramures-wooden-church.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "maramures-wooden-church.png (original source; archived as maramures-wooden-church.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Biserică tradițională din lemn în Maramureș, România.",
-        "en": "Traditional wooden church in Maramureș, Romania."
-      },
-      "checksum": "sha256:ec70457bf60a0cdc84e68156c422a0a387f0fd1569101efba2e3eaf99a40268a",
-      "thumbnail": "/images/thumbs/maramures-wooden-church.webp"
-    },
-    {
-      "id": "carpathian-beech-forest",
-      "category": "nature",
-      "name": "Carpathian Beech Forest",
-      "nameRo": "Pădure de fag carpatină",
-      "image": "/images/full/carpathian-beech-forest.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "carpathian-beech-forest.png (original source; archived as carpathian-beech-forest.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Pădure de fag cu lumină filtrată în Carpați.",
-        "en": "Beech forest with filtered light in the Carpathians."
-      },
-      "checksum": "sha256:6a8186cbd6ced1209fb896523ffed7e7f3d74ea0af2dddf97641a3ff9ec92e81",
-      "thumbnail": "/images/thumbs/carpathian-beech-forest.webp"
-    },
-    {
-      "id": "danube-pelicans",
-      "category": "nature",
-      "name": "Pelicans in the Delta",
-      "nameRo": "Pelicani în Deltă",
-      "image": "/images/full/danube-pelicans.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "danube-pelicans.png (original source; archived as danube-pelicans.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Pelicani deasupra apelor din Delta Dunării.",
-        "en": "Pelicans above the waters of the Danube Delta."
-      },
-      "checksum": "sha256:38d5fa912ba06431998fbba78f8266e7a0e84cb4456e66cbafb8d5bbd794d7b4",
-      "thumbnail": "/images/thumbs/danube-pelicans.webp"
-    },
-    {
-      "id": "red-deer-meadow",
-      "category": "nature",
-      "name": "Red Deer Meadow",
-      "nameRo": "Cerb în poiană",
-      "image": "/images/full/red-deer-meadow.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "red-deer-meadow.png (original source; archived as red-deer-meadow.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Cerb într-o poiană de munte la amurg.",
-        "en": "Red deer in a mountain meadow at dusk."
-      },
-      "checksum": "sha256:a3815e663e7abcffeb7bf96f780083912771ef22aefe4512f958826d28bb74d1",
-      "thumbnail": "/images/thumbs/red-deer-meadow.webp"
-    },
-    {
-      "id": "poppy-meadow",
-      "category": "nature",
-      "name": "Poppy Meadow",
-      "nameRo": "Poiană cu maci",
-      "image": "/images/full/poppy-meadow.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether original catalog",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether original catalog",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether/blob/arena/01a06746-puzzletogether/docs/catalog-originals.md#stage-5-originals",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original source imported as a quality-95 archival JPEG, then optimized to WebP full image and thumbnail.",
-      "originalFilename": "poppy-meadow.png (original source; archived as poppy-meadow.jpg)",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Poiană cu maci roșii, iarbă și nori de vară.",
-        "en": "Meadow of red poppies, grass, and summer clouds."
-      },
-      "checksum": "sha256:3ddfc2e5f04cf6cb63dffb5d99043ad9f9c77c9b25486f0e9d0e18683520b4e4",
-      "thumbnail": "/images/thumbs/poppy-meadow.webp"
-    },
-    {
-      "id": "ice-cave",
-      "category": "nature",
-      "name": "Plitvice Lakes",
-      "nameRo": "Lacurile Plitvice",
-      "image": "/images/full/ice-cave.webp",
-      "credit": "Plitvice Lakes National Park, Croatia — CC BY-SA 3.0",
-      "license": "CC BY-SA 3.0",
-      "source": "Wikimedia Commons / visitcroatia.com",
-      "attribution": "Plitvice Lakes National Park, Croatia — CC BY-SA 3.0",
-      "sourceName": "Wikimedia Commons / visitcroatia.com",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Plitvice_Lakes_National_Park",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "plitvice-lakes-croatia-waterfalls-famous-1.jpg",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Cascade și lacuri turcoaz în Parcul Național Lacurile Plitvice, Croația",
-        "en": "Waterfalls and turquoise lakes in Plitvice Lakes National Park, Croatia"
-      },
-      "checksum": "sha256:68c6a7912c2b20059f36e223d95b304e90d46ccfdd49198b01a754f16ce1f293",
-      "thumbnail": "/images/thumbs/ice-cave.webp"
-    },
-    {
       "id": "bucharest-calea-victoriei",
       "category": "cities",
       "name": "Calea Victoriei, Bucharest",
       "nameRo": "Calea Victoriei, București",
       "image": "/images/full/bucharest-calea-victoriei.webp",
-      "credit": "Stefan Jurca — Bucharest Day 3 - Victoriei (9338461638), CC BY-SA 2.0, via Wikimedia Commons",
+      "credit": "Stefan Jurca from Munich, Germany · CC BY-SA 2.0",
       "license": "CC BY-SA 2.0",
       "source": "Wikimedia Commons",
-      "attribution": "Stefan Jurca — Bucharest Day 3 - Victoriei (9338461638), CC BY-SA 2.0, via Wikimedia Commons",
+      "attribution": "Stefan Jurca from Munich, Germany · CC BY-SA 2.0",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bucharest_Day_3_-_Victoriei_(9338461638).jpg",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
-      "changesMade": "resized from the Wikimedia Commons original; WebP full derivative and focal-point thumbnail generated for the puzzle catalog.",
-      "originalFilename": "Bucharest Day 3 - Victoriei (9338461638).jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Bucharest_Day_3_-_Victoriei_(9338461638).jpg",
       "focalPoint": [
         0.55,
         0.5
@@ -1376,115 +856,11 @@
       "thumbnail": "/images/thumbs/bucharest-calea-victoriei.webp"
     },
     {
-      "id": "sibiu-square",
-      "category": "cities",
-      "name": "Empire State, New York",
-      "nameRo": "Empire State, New York",
-      "image": "/images/full/sibiu-square.webp",
-      "credit": "Empire State Building, New York — Pexels",
-      "license": "Pexels License (free to use, no attribution required)",
-      "source": "pexels.com",
-      "attribution": "Empire State Building, New York — Pexels",
-      "sourceName": "pexels.com",
-      "sourceUrl": "https://www.pexels.com/photo/midtown-manhattan-empire-state-building-1215778/",
-      "licenseUrl": "https://www.pexels.com/license/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "empire-state-new-york-pexels.jpg",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Silueta Manhattan-ului cu Empire State Building la amurg, New York, SUA",
-        "en": "Manhattan skyline with the Empire State Building at dusk, New York, USA"
-      },
-      "checksum": "sha256:0145fe717087f508415169ab9f8e4511680388f2ce2b1f8a19a8fc10c6b3a7be",
-      "thumbnail": "/images/thumbs/sibiu-square.webp"
-    },
-    {
-      "id": "cluj-unirii-square",
-      "category": "cities",
-      "name": "Burj Khalifa, Dubai",
-      "nameRo": "Burj Khalifa, Dubai",
-      "image": "/images/full/cluj-unirii-square.webp",
-      "credit": "Dubai skyline / Burj Khalifa — CC BY 4.0",
-      "license": "CC BY 4.0",
-      "source": "gettyimages.com",
-      "attribution": "Dubai skyline / Burj Khalifa — CC BY 4.0",
-      "sourceName": "gettyimages.com",
-      "sourceUrl": "https://www.gettyimages.co.uk/photos/dubai-skyline-night",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "dubai-skyline-burj-khalifa.jpg",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Burj Khalifa și silueta Dubai-ului noaptea, Emiratele Arabe Unite",
-        "en": "Burj Khalifa and the Dubai skyline at night, United Arab Emirates"
-      },
-      "checksum": "sha256:7309cd33b6000f6a22b86810f72fe9318c7762e4d6b0171fca011f91fc65ac87",
-      "thumbnail": "/images/thumbs/cluj-unirii-square.webp"
-    },
-    {
-      "id": "timisoara-union-square",
-      "category": "cities",
-      "name": "Colosseum, Rome",
-      "nameRo": "Colosseum, Roma",
-      "image": "/images/full/timisoara-union-square.webp",
-      "credit": "AlexanderVanLoon (Wikimedia Commons) — CC BY-SA 3.0",
-      "license": "CC BY-SA 3.0",
-      "source": "Wikimedia Commons",
-      "attribution": "AlexanderVanLoon (Wikimedia Commons) — CC BY-SA 3.0",
-      "sourceName": "Wikimedia Commons",
-      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Colosseum_exterior,_inner_and_outer_wall_AvL.jpg",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "Colosseum exterior, inner and outer wall AvL.jpg",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Exteriorul Colosseum-ului în lumina apusului, Roma, Italia",
-        "en": "The Colosseum exterior at dusk in Rome, Italy"
-      },
-      "checksum": "sha256:aaf2063f1d317d314498ffaae77ce31c3adbe6b301fc6c43099dd7e16b97c5a5",
-      "thumbnail": "/images/thumbs/timisoara-union-square.webp"
-    },
-    {
-      "id": "brasov-council-square",
-      "category": "cities",
-      "name": "Marina Bay, Singapore",
-      "nameRo": "Marina Bay, Singapore",
-      "image": "/images/full/brasov-council-square.webp",
-      "credit": "Marina Bay, Singapore — CC BY 4.0",
-      "license": "CC BY 4.0",
-      "source": "gettyimages.com",
-      "attribution": "Marina Bay, Singapore — CC BY 4.0",
-      "sourceName": "gettyimages.com",
-      "sourceUrl": "https://www.gettyimages.com/photos/singapore-skyline",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "singapore-marina-bay.jpg",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "alt": {
-        "ro": "Marina Bay Sands și silueta orașului Singapore la apus",
-        "en": "Marina Bay Sands and the Singapore skyline at sunset"
-      },
-      "checksum": "sha256:1b5db6716b402bc8ad56debfdf95545a2304a8fdbda6d2e97d60b4a8bb37b67b",
-      "thumbnail": "/images/thumbs/brasov-council-square.webp"
-    },
-    {
       "id": "antelope-canyon",
       "category": "nature",
       "name": "Antelope Canyon",
       "image": "/images/full/antelope-canyon.webp",
-      "credit": "Luca Galuzzi — USA 10150 Antelope Canyon, CC BY-SA 2.5, via Wikimedia Commons",
+      "credit": "Luca Galuzzi (Lucag) · CC BY-SA 2.5",
       "license": "CC BY-SA 2.5",
       "source": "Wikimedia Commons",
       "nameRo": "Canionul Antelope",
@@ -1492,12 +868,12 @@
         "ro": "Formațiuni ondulate din gresie în interiorul canionului Upper Antelope, Arizona, SUA.",
         "en": "Wavy sandstone formations inside Upper Antelope Canyon, Arizona, USA."
       },
-      "attribution": "Luca Galuzzi — USA 10150 Antelope Canyon, CC BY-SA 2.5, via Wikimedia Commons",
+      "attribution": "Luca Galuzzi (Lucag) · CC BY-SA 2.5",
       "sourceName": "Wikimedia Commons",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:USA_10150_Antelope_Canyon_Luca_Galuzzi_2007.jpg",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5/",
-      "changesMade": "resized from the Wikimedia Commons original; WebP full derivative and focal-point thumbnail generated for the puzzle catalog.",
-      "originalFilename": "USA 10150 Antelope Canyon Luca Galuzzi 2007.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+      "changesMade": "Resized to an aspect-preserving WebP; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "USA_10150_Antelope_Canyon_Luca_Galuzzi_2007.jpg",
       "focalPoint": [
         0.5,
         0.5
@@ -1506,186 +882,212 @@
       "checksum": "sha256:4c8c2f26a817f71e47bda5e1689bd7efafcce02e94e12963d17415afa951557e"
     },
     {
-      "id": "victoria-falls",
-      "category": "nature",
-      "name": "Victoria Falls",
-      "image": "/images/full/victoria-falls.webp",
-      "credit": "Victoria Falls between Zambia and Zimbabwe on the Zambezi River — CC BY 4.0",
-      "license": "CC BY 4.0",
-      "source": "istockphoto.com",
-      "nameRo": "Cascadele Victoria",
+      "id": "napoleon-alps",
+      "category": "inspiration",
+      "name": "Napoleon Crossing the Alps",
+      "image": "/images/full/napoleon-alps.webp",
+      "thumbnail": "/images/thumbs/napoleon-alps.webp",
+      "nameRo": "Napoleon trecând Alpii",
       "alt": {
-        "ro": "Cascadele Victoria între Zambia și Zimbabwe, râul Zambezi",
-        "en": "Victoria Falls between Zambia and Zimbabwe on the Zambezi River"
+        "ro": "Napoleon trecând Alpii",
+        "en": "Napoleon Crossing the Alps"
       },
-      "attribution": "Victoria Falls between Zambia and Zimbabwe on the Zambezi River — CC BY 4.0",
-      "sourceName": "istockphoto.com",
-      "sourceUrl": "https://www.istockphoto.com/photos/victoria-falls",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "changesMade": "resized to fit puzzle grid; JPEG recompression",
-      "originalFilename": "victoria-falls.jpg",
-      "focalPoint": [
-        0.5,
-        0.5
-      ],
-      "thumbnail": "/images/thumbs/victoria-falls.webp",
-      "checksum": "sha256:3b9986c5163dbb87710e80c74ea1c1304a5c19fecdcb21f347ef906c735a92f5"
-    },
-    {
-      "id": "bow-lake",
-      "category": "nature",
-      "name": "Bow Lake, Banff",
-      "image": "/images/full/bow-lake.webp",
-      "credit": "Jon Sullivan (goodfreephotos.com) — Public Domain",
-      "license": "CC0 / Public Domain",
-      "source": "goodfreephotos.com (PD Photo.org / Wikimedia Commons)",
-      "nameRo": "Lacul Bow, Banff",
-      "alt": {
-        "ro": "Lacul Bow la apus, cu Munții Stâncoși și păduri, Parcul Național Banff, Canada",
-        "en": "Bow Lake at dusk with the Rocky Mountains and forest, Banff National Park, Canada"
-      },
-      "attribution": "Jon Sullivan (goodfreephotos.com) — Public Domain",
-      "sourceName": "goodfreephotos.com (PD Photo.org / Wikimedia Commons)",
-      "sourceUrl": "https://www.goodfreephotos.com/canada/alberta/banff-national-park/sunset-and-dusk-landscape-near-bow-lake-at-banff-national-park-alberta-canada.jpg.php",
+      "attribution": "Jacques-Louis David · Public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:David_-_Napoleon_crossing_the_Alps_-_Malmaison1.jpg",
       "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
-      "changesMade": "resized to fit puzzle grid (upscaled from public-domain source); JPEG recompression",
-      "originalFilename": "sunset-and-dusk-landscape-near-bow-lake-at-banff-national-park-alberta-canada.jpg",
+      "changesMade": "Archival JPEG resized to a maximum edge of 2600px. WebP delivery preserves the aspect ratio; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "David_-_Napoleon_crossing_the_Alps_-_Malmaison1.jpg",
+      "checksum": "sha256:bb634acf57e58b6f584b972055c7eaed7e13b97a3498298718c7b41a49e45b57",
       "focalPoint": [
         0.5,
         0.5
       ],
-      "thumbnail": "/images/thumbs/bow-lake.webp",
-      "checksum": "sha256:6a8bbc0e6cd2d892383ad8add94ae0f89ba8991579a52b6561bd0faf2e8e5878"
+      "credit": "Jacques-Louis David · Public domain",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
     },
     {
-      "id": "inspiration-marcus-aurelius",
+      "id": "marcus-aurelius-louvre",
       "category": "inspiration",
-      "name": "Marcus Aurelius — Power Over Mind",
-      "nameRo": "Marcus Aurelius — Puterea minții",
-      "image": "/images/full/inspiration-marcus-aurelius.webp",
-      "thumbnail": "/images/thumbs/inspiration-marcus-aurelius.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether (in-house)",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether (in-house)",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original AI portrait, quote overlay at bottom, archival JPEG then WebP derivatives.",
-      "originalFilename": "inspiration-marcus-aurelius.jpg",
-      "checksum": "sha256:6860edb410f9ff1147c7d51287bcc24e29f25c01186b3f29cbb14bd74e6220aa",
+      "name": "Marcus Aurelius · Roman Bronze",
+      "image": "/images/full/marcus-aurelius-louvre.webp",
+      "thumbnail": "/images/thumbs/marcus-aurelius-louvre.webp",
+      "nameRo": "Marcus Aurelius · bronz roman",
+      "alt": {
+        "ro": "Marcus Aurelius · bronz roman",
+        "en": "Marcus Aurelius · Roman Bronze"
+      },
+      "attribution": "Roman sculpture; photograph by Marie-Lan Nguyen (2007) · Public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bronze_Marcus_Aurelius_Louvre.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "Archival JPEG resized to a maximum edge of 2600px. WebP delivery preserves the aspect ratio; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Bronze_Marcus_Aurelius_Louvre.jpg",
+      "checksum": "sha256:4ca09211421ae83d954579a0f53a1e9812b003997bde40763520e2f23e560bb1",
       "focalPoint": [
         0.5,
-        0.45
+        0.5
       ],
-      "alt": {
-        "ro": "Portret ulei de Marcus Aurelius cu citatul despre puterea minții — You have power over your mind — not outside events. Realize this, and you will find strength.",
-        "en": "Oil portrait of Marcus Aurelius with quote: You have power over your mind — not outside events. Realize this, and you will find strength."
-      }
+      "credit": "Roman sculpture; photograph by Marie-Lan Nguyen (2007) · Public domain",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
     },
     {
-      "id": "inspiration-julius-caesar",
+      "id": "earth-apollo17",
       "category": "inspiration",
-      "name": "Julius Caesar — Believe What You Wish",
-      "nameRo": "Iulius Cezar — Credința dorinței",
-      "image": "/images/full/inspiration-julius-caesar.webp",
-      "thumbnail": "/images/thumbs/inspiration-julius-caesar.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether (in-house)",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether (in-house)",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original AI portrait, quote overlay at bottom, archival JPEG then WebP derivatives.",
-      "originalFilename": "inspiration-julius-caesar.jpg",
-      "checksum": "sha256:3ceec0688f4d5c66f7c91de00efbf9de9925db13a6051f516dd776846f7e02b7",
+      "name": "Earth from Apollo 17",
+      "image": "/images/full/earth-apollo17.webp",
+      "thumbnail": "/images/thumbs/earth-apollo17.webp",
+      "nameRo": "Pământul văzut de pe Apollo 17",
+      "alt": {
+        "ro": "Pământul văzut de pe Apollo 17",
+        "en": "Earth from Apollo 17"
+      },
+      "attribution": "NASA/Apollo 17 crew; taken by either Harrison Schmitt or Ron Evans · Public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Earth_seen_from_Apollo_17.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "Archival JPEG resized to a maximum edge of 2600px. WebP delivery preserves the aspect ratio; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "The_Earth_seen_from_Apollo_17.jpg",
+      "checksum": "sha256:f97fba01d0ddca4d5c447f29822d88b3af9184bd5dc88411e2f1611fd8c2f026",
       "focalPoint": [
         0.5,
-        0.38
+        0.5
       ],
-      "alt": {
-        "ro": "Portret ulei de Iulius Cezar pe câmp de luptă cu citatul Men willingly believe what they wish.",
-        "en": "Oil portrait of Julius Caesar on battlefield with quote: Men willingly believe what they wish."
-      }
+      "credit": "NASA/Apollo 17 crew; taken by either Harrison Schmitt or Ron Evans · Public domain",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
     },
     {
-      "id": "inspiration-napoleon",
-      "category": "inspiration",
-      "name": "Napoleon — Dealer in Hope",
-      "nameRo": "Napoleon — Negustor de speranță",
-      "image": "/images/full/inspiration-napoleon.webp",
-      "thumbnail": "/images/thumbs/inspiration-napoleon.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether (in-house)",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether (in-house)",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original AI portrait, quote overlay at bottom, archival JPEG then WebP derivatives.",
-      "originalFilename": "inspiration-napoleon.jpg",
-      "checksum": "sha256:71e18bcfac4536887f62c1e918233607022cf7e4db277a663ba6783872cbdc3b",
+      "id": "grand-canyon-hopi",
+      "category": "landscapes",
+      "name": "Grand Canyon · Hopi Point",
+      "image": "/images/full/grand-canyon-hopi.webp",
+      "thumbnail": "/images/thumbs/grand-canyon-hopi.webp",
+      "nameRo": "Marele Canion · Hopi Point",
+      "alt": {
+        "ro": "Marele Canion · Hopi Point",
+        "en": "Grand Canyon · Hopi Point"
+      },
+      "attribution": "Tuxyso · CC BY-SA 3.0",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Grand_Canyon_Hopi_Point.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "changesMade": "Archival JPEG resized to a maximum edge of 2600px. WebP delivery preserves the aspect ratio; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Grand_Canyon_Hopi_Point.jpg",
+      "checksum": "sha256:40ff8106416acc895fcf4b86ad3d0404c3bf8e96e3272a89db392f4d496332a1",
       "focalPoint": [
         0.5,
-        0.4
+        0.5
       ],
-      "alt": {
-        "ro": "Portret ulei de Napoleon Bonaparte cu citatul A leader is a dealer in hope.",
-        "en": "Oil portrait of Napoleon Bonaparte with quote: A leader is a dealer in hope."
-      }
+      "credit": "Tuxyso · CC BY-SA 3.0",
+      "license": "CC BY-SA 3.0",
+      "source": "Wikimedia Commons"
     },
     {
-      "id": "inspiration-rumi",
-      "category": "inspiration",
-      "name": "Rumi — Clever to Wise",
-      "nameRo": "Rumi — De la isteț la înțelept",
-      "image": "/images/full/inspiration-rumi.webp",
-      "thumbnail": "/images/thumbs/inspiration-rumi.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether (in-house)",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether (in-house)",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original AI portrait, quote overlay at bottom, archival JPEG then WebP derivatives.",
-      "originalFilename": "inspiration-rumi.jpg",
-      "checksum": "sha256:88c7b328c80d87dd6c1bd1c10361bbc4cd66fd0d97b6093ed9cd58f8f39d2d8b",
+      "id": "mount-fuji",
+      "category": "landscapes",
+      "name": "Mount Fuji · Lake Kawaguchi",
+      "image": "/images/full/mount-fuji.webp",
+      "thumbnail": "/images/thumbs/mount-fuji.webp",
+      "nameRo": "Muntele Fuji · Lacul Kawaguchi",
+      "alt": {
+        "ro": "Muntele Fuji · Lacul Kawaguchi",
+        "en": "Mount Fuji · Lake Kawaguchi"
+      },
+      "attribution": "Subramaniam K V · CC BY 3.0",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mount_Fuji_from_Lake_Kawaguchi.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+      "changesMade": "Archival JPEG resized to a maximum edge of 2600px. WebP delivery preserves the aspect ratio; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Mount_Fuji_from_Lake_Kawaguchi.jpg",
+      "checksum": "sha256:922188f43489e1df04cf87fa29c5861e9a9d387312cc2a795e1b3037d65b099b",
       "focalPoint": [
         0.5,
-        0.42
+        0.5
       ],
-      "alt": {
-        "ro": "Portret ulei de Rumi cu citatul Yesterday I was clever... Today I am wise, so I am changing myself.",
-        "en": "Oil portrait of Rumi with quote: Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself."
-      }
+      "credit": "Subramaniam K V · CC BY 3.0",
+      "license": "CC BY 3.0",
+      "source": "Wikimedia Commons"
     },
     {
-      "id": "inspiration-alexander",
-      "category": "inspiration",
-      "name": "Alexander — Lions and Sheep",
-      "nameRo": "Alexandru — Lei și oi",
-      "image": "/images/full/inspiration-alexander.webp",
-      "thumbnail": "/images/thumbs/inspiration-alexander.webp",
-      "credit": "PuzzleTogether original — CC0 1.0",
-      "license": "CC0 1.0 Universal",
-      "source": "PuzzleTogether (in-house)",
-      "attribution": "PuzzleTogether original — CC0 1.0",
-      "sourceName": "PuzzleTogether (in-house)",
-      "sourceUrl": "https://github.com/ionutbaban7-bit/puzzletogether",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "changesMade": "Original AI portrait, quote overlay at bottom, archival JPEG then WebP derivatives.",
-      "originalFilename": "inspiration-alexander.jpg",
-      "checksum": "sha256:f27de269ed12dff433f96d24e6071afcfc70b965a989d15afda532f0e13bdf17",
+      "id": "bran-castle-photo",
+      "category": "landmarks",
+      "name": "Bran Castle",
+      "image": "/images/full/bran-castle-photo.webp",
+      "thumbnail": "/images/thumbs/bran-castle-photo.webp",
+      "nameRo": "Castelul Bran",
+      "alt": {
+        "ro": "Castelul Bran",
+        "en": "Bran Castle"
+      },
+      "attribution": "Calatorinlume · CC0",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bran_Castle_-_Castelul_Bran.JPG",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "changesMade": "Archival JPEG resized to a maximum edge of 2600px. WebP delivery preserves the aspect ratio; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Bran_Castle_-_Castelul_Bran.JPG",
+      "checksum": "sha256:7e2e88985768c66abc041d1f808caa554b39cf479d84cbe880f2335d2795b92c",
       "focalPoint": [
         0.5,
-        0.4
+        0.5
       ],
+      "credit": "Calatorinlume · CC0",
+      "license": "CC0",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "sibiu-piata-mare",
+      "category": "cities",
+      "name": "Sibiu · Grand Square",
+      "image": "/images/full/sibiu-piata-mare.webp",
+      "thumbnail": "/images/thumbs/sibiu-piata-mare.webp",
+      "nameRo": "Sibiu · Piața Mare",
       "alt": {
-        "ro": "Portret ulei de Alexandru cel Mare cu citatul despre lei conduși de oaie și oi conduse de leu.",
-        "en": "Oil portrait of Alexander the Great with quote: I am not afraid of an army of lions led by a sheep; I am afraid of an army of sheep led by a lion."
-      }
+        "ro": "Sibiu · Piața Mare",
+        "en": "Sibiu · Grand Square"
+      },
+      "attribution": "Silviunastase · CC BY-SA 4.0",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Piata_Mare_din_Sibiu,_Sibiu,_Romania.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "changesMade": "Archival JPEG resized to a maximum edge of 2600px. WebP delivery preserves the aspect ratio; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Piata_Mare_din_Sibiu,_Sibiu,_Romania.jpg",
+      "checksum": "sha256:db9bf0312c88a280aa3a969a5d514acc85a3bbb6b5413d08e1f8b6d4542b1b54",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "credit": "Silviunastase · CC BY-SA 4.0",
+      "license": "CC BY-SA 4.0",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "rocky-mountains-adams",
+      "category": "landscapes",
+      "name": "Rocky Mountains · Ansel Adams",
+      "image": "/images/full/rocky-mountains-adams.webp",
+      "thumbnail": "/images/thumbs/rocky-mountains-adams.webp",
+      "nameRo": "Munții Stâncoși · Ansel Adams",
+      "alt": {
+        "ro": "Munții Stâncoși · Ansel Adams",
+        "en": "Rocky Mountains · Ansel Adams"
+      },
+      "attribution": "Ansel Adams · Public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ansel_Adams_-_National_Archives_79-AA-M09.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "Archival JPEG resized to a maximum edge of 2600px. WebP delivery preserves the aspect ratio; selector thumbnail cropped to 4:3. No generative edits.",
+      "originalFilename": "Ansel Adams - National Archives 79-AA-M09.jpg",
+      "checksum": "sha256:a0a879c1f135174804d5157691a81f11622781f6c68c698fd48c4828083d5b39",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "credit": "Ansel Adams · Public domain",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
     }
   ]
 }

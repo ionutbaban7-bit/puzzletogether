@@ -112,7 +112,7 @@ body {
   .overlay-card {
     @apply rounded-[28px] border border-white/10 bg-ink-900/85 text-white shadow-pop backdrop-blur-md;
   }
-  /* Light, Google-learning-style marketing surface: white, quiet lines. */
+  /* Public setup and joining surface. */
   .marketing-page {
     @apply relative min-h-screen overflow-x-hidden bg-white text-g-ink;
   }
@@ -121,19 +121,30 @@ body {
   }
 }
 
-/* CoachingHub identity is shared across the public pages and workshop chrome. */
-.landing-page, .setup-page, .marketing-page { background: #f3eee4; color: #26372f; }
-.pt-wordmark { color: #1f4c3e; }
-.setup-page .card, .setup-page .input, .setup-page .bg-white { background-color: #fbf8f1; }
-.setup-page .input { color: #26372f; border-color: #d7cebe; }
-.setup-page .input:focus { border-color: #1f4c3e; }
+/* Shared forest palette for the independent PuzzleTogether public pages. */
+.landing-page, .marketing-page {
+  --pt-ink: #f1ecdf; --pt-sub: #d6cebf; --pt-muted: #b6aa96;
+  --pt-line: rgba(242,235,221,.18); --pt-soft: #21392f;
+  background: #14261f; color: var(--pt-ink); color-scheme: dark;
+}
+:is(.landing-page,.marketing-page) :is(.text-g-ink,.text-ink-900,.text-ink-800) { color: #f1ecdf; }
+:is(.landing-page,.marketing-page) :is(.text-g-sub,.text-ink-700,.text-ink-600) { color: #d6cebf; }
+:is(.landing-page,.marketing-page) :is(.text-g-faint,.text-ink-500,.text-ink-400,.studio-kicker) { color: #b6aa96; }
+:is(.landing-page,.marketing-page) :is(.text-brand-600,.text-brand-700,.text-cp-purple-600,.text-cp-purple-700,.pt-wordmark) { color: #d0b27a; }
+:is(.landing-page,.marketing-page) :is(.card,.input,.bg-white,[class~="bg-white/95"],[class~="bg-white/60"],.bg-brand-50,.bg-ink-50,.bg-cp-purple-50) { background-color: #1b3027; }
+:is(.landing-page,.marketing-page) :is(.border-g-line,.border-brand-100,.border-ink-200,.border-ink-300,.border-cp-purple-200,.border-cp-purple-300,.input,.card) { border-color: rgba(242,235,221,.18); }
+:is(.landing-page,.marketing-page) .input { color: #f1ecdf; }
+:is(.landing-page,.marketing-page) .btn-primary { background: #d0b27a; color: #14261f; box-shadow: none; }
+:is(.landing-page,.marketing-page) .btn-primary:hover { background: #e1c38c; }
+:is(.landing-page,.marketing-page) .btn-secondary { background: transparent; color: #d0b27a; border-color: #d0b27a; }
+:is(.landing-page,.marketing-page) .input:focus { border-color: #d0b27a; }
 .studio-wrap { width: min(1160px, calc(100% - 40px)); margin-inline: auto; }
-.studio-kicker { color: #756f64; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; }
+.studio-kicker { color: #b6aa96; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; }
 .studio-heading { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-weight: 400; letter-spacing: -.045em; line-height: 1.04; }
-.studio-activity { display: flex; flex-direction: column; padding: 28px; border: 1px solid #d7cebe; background: #fbf8f1; transition: border-color .2s, background .2s; }
-.studio-activity:hover { border-color: #896a41; background: #f5efe5; }
+.studio-activity { display: flex; flex-direction: column; padding: 28px; border: 1px solid var(--pt-line); background: #1b3027; transition: border-color .2s, background .2s; }
+.studio-activity:hover { border-color: #d0b27a; background: #21392f; }
 .studio-activity:focus-visible, a:focus-visible { outline: 3px solid #896a41; outline-offset: 4px; }
-.studio-hero-image { aspect-ratio: 1 / 1.05; object-fit: cover; width: 100%; border-radius: 3px; }
+.studio-hero-image { aspect-ratio: 1.45; object-fit: contain; width: 100%; border-radius: 3px; }
 @media (max-width: 640px) { .studio-wrap { width: min(100% - 32px, 1160px); } .studio-hero-image { aspect-ratio: 1.7; } }
 
 button,
@@ -149,7 +160,7 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid rgba(26, 115, 232, 0.6);
+  outline: 3px solid #d0b27a;
   outline-offset: 3px;
 }
 

@@ -1129,6 +1129,7 @@ function buildPuzzleSetup(config) {
       difficulty: difficulty.id,
       total,
       contentLanguage: null,
+      mystery: !coachingActivity && !!config.mystery,
       customImage: config.customImage || undefined,
     },
     coachingActivity: coachingActivity || null,
@@ -1296,6 +1297,7 @@ function persistableRoom(room) {
     id: room.id, code: room.code, sessionName: room.sessionName, hostId: room.hostId,
     teamMode: room.teamMode, teams: room.teams,
     config: room.config, pieces: room.pieces.map(serializePiece),
+    jigsawGeometry: isJigsawRoom(room) ? Object.fromEntries(["width", "height", "cols", "rows", "pieceW", "pieceH"].map(key => [key, room.puzzle[key]])) : null,
     canvas: room.canvas ? {
       version: room.canvas.version || 1,
       category: room.canvas.category, mode: room.canvas.mode, contentLanguage: room.canvas.contentLanguage,
@@ -1341,6 +1343,7 @@ function saveSnapshots() {
  */
 function applyRetiredSnapshotPuzzle(room, raw, retiredPuzzle) {
   const entry = retiredEntryByPuzzleId.get(retiredPuzzle.id) || {};
+  const replacement = puzzleById.get(entry.replacementPuzzleId);
   const width = Number(entry.width) || 1800;
   const height = Number(entry.height) || 1200;
   const total = Number(raw.config?.total) || raw.pieces?.length || 25;
@@ -1352,6 +1355,7 @@ function applyRetiredSnapshotPuzzle(room, raw, retiredPuzzle) {
   room.rankingSlots = [];
   room.puzzle = {
     ...retiredPuzzle,
+    ...(replacement || {}),
     image: `/api/retired-images/${encodeURIComponent(retiredPuzzle.id)}`,
     thumbnail: `/api/retired-images/${encodeURIComponent(retiredPuzzle.id)}`,
     width,
@@ -1367,6 +1371,20 @@ function applyRetiredSnapshotPuzzle(room, raw, retiredPuzzle) {
     isCanvas: false,
   };
   room.retiredCatalog = true;
+}
+
+// Existing sessions keep their coordinate system across image optimization.
+// Older snapshots did not persist geometry; infer the regular grid from their
+// immutable target coordinates, never from the current image derivative.
+function restoredJigsawGeometry(raw) {
+  const pieces = raw.pieces;
+  if (!Array.isArray(pieces) || pieces.length < 4) return null;
+  const xs = [...new Set(pieces.map(p => p.correctX))].sort((a,b) => a-b);
+  const ys = [...new Set(pieces.map(p => p.correctY))].sort((a,b) => a-b);
+  if (xs.length < 2 || ys.length < 2 || xs.length * ys.length !== pieces.length) return null;
+  const pieceW = xs[1] - xs[0], pieceH = ys[1] - ys[0];
+  const g = raw.jigsawGeometry || { width: pieceW * xs.length, height: pieceH * ys.length, pieceW, pieceH, cols: xs.length, rows: ys.length };
+  return Object.values(g).every(v => Number.isFinite(v) && v > 0 && v < 100000) ? g : null;
 }
 
 function restoreSnapshots() {
@@ -1387,6 +1405,13 @@ function restoreSnapshots() {
           : raw.config;
         const room = createRoom(bootstrapConfig, { sessionName: raw.sessionName });
         if (retiredPuzzle) applyRetiredSnapshotPuzzle(room, raw, retiredPuzzle);
+        if (isJigsawRoom(room)) {
+          const geometry = restoredJigsawGeometry(raw);
+          if (geometry) {
+            Object.assign(room.puzzle, geometry);
+            room.board = { width: geometry.width, height: geometry.height, pieceW: geometry.pieceW, pieceH: geometry.pieceH };
+          }
+        }
         rooms.delete(room.id);
         codeIndex.delete(room.code);
       room.id = raw.id;
@@ -2544,9 +2569,9 @@ function canvasSnapshot(room) {
 app.post("/api/rooms/:id/puzzle", (req, res) => {
   const room = findRoom(req.params.id);
   if (!room) return res.status(404).json({ error: "Room not found.", code: "room_missing" });
-  const { puzzleId, difficulty, pid, contentLanguage } = req.body || {};
+  const { puzzleId, difficulty, pid, contentLanguage, mystery } = req.body || {};
   if (!pid || pid !== room.hostId) return res.status(403).json({ error: "Only the facilitator can change the activity.", code: "not_host" });
-  try { applyPuzzleToRoom(room, { puzzleId, difficulty, contentLanguage }); } catch { return res.status(400).json({ error: "Unknown puzzle or activity." }); }
+  try { applyPuzzleToRoom(room, { puzzleId, difficulty, contentLanguage, mystery: typeof mystery === "boolean" ? mystery : !!room.config.mystery }); } catch { return res.status(400).json({ error: "Unknown puzzle or activity." }); }
   touch(room);
   broadcast(room, { t: "puzzle", room: roomView(room), puzzle: puzzleView(room), pieces: room.pieces.map(serializePiece), ratings: [], canvas: canvasSnapshot(room) });
   logEvent("puzzle_change", room);
@@ -2641,6 +2666,11 @@ app.get("/api/retired-images/:id", (req, res) => {
   }
   const entry = retiredEntryByPuzzleId.get(id);
   if (!entry) return res.status(404).json({ error: "Retired image not found." });
+  const replacement = puzzleById.get(entry.replacementPuzzleId);
+  if (replacement) {
+    res.setHeader("Cache-Control", "private, max-age=300");
+    return res.sendFile(path.join(publicDir, replacement.image));
+  }
   const original = path.join(rootDir, "data", "catalog", "originals", path.basename(String(entry.asset || "")));
   if (!fs.existsSync(original)) return res.status(404).json({ error: "Retired image archive unavailable." });
   res.setHeader("Cache-Control", "private, max-age=300");

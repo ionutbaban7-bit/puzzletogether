@@ -162,7 +162,7 @@ async function main() {
   check("landing: same-tab CoachingHub return", links.some(a=>a.hostname==="coaching-path.onrender.com" && !a.target));
   check("landing: emotion map stays available", links.some(a=>a.pathname==="/emotii"));
   check("landing: optional participation is explained", hasText(document.body, "pas"));
-  check("landing: practical transfer prompt", hasText(document.body, "responsabil și un termen"));
+  check("landing: casual play explains choosing, inviting and playing", hasText(document.body, "Alege") && hasText(document.body, "Invită") && hasText(document.body, "Joacă") && links.some(a=>a.pathname==="/create" && a.search.includes("activity=puzzle")));
   await act(async () => { rootE.unmount(); });
 
   console.log("== E. CreateRoom — triple door + emotions category ==");
@@ -177,6 +177,23 @@ async function main() {
   check("create room: activity card", hasText(document.body, "Camera Mare") || hasText(document.body, "Big Room"), "");
   check("create room: badge Camera Mare", hasText(document.body, "Camera Mare — Harta Emoțiilor") || hasText(document.body, "The Big Room"), "");
   await act(async () => { rootF.unmount(); });
+
+  // A shared direct link opens the catalog before a room exists. The chosen
+  // image and piece count remain editable until the host creates the lobby.
+  window.history.replaceState({}, "", "/create?activity=puzzle");
+  const rootPuzzle = await renderProbe(<LanguageProvider><CreateRoom /></LanguageProvider>);
+  await act(async () => { await waitMs(500); });
+  check("direct puzzle link opens image selection", hasText(document.body, "Alege imaginea") && !hasText(document.body, "Numele tău"));
+  const mona = document.querySelector<HTMLImageElement>('img[alt="Mona Lisa"]')?.closest("button");
+  click(mona);
+  const hard = [...document.querySelectorAll("button")].find(b => b.textContent?.includes("100 piese"));
+  click(hard);
+  click(btnByText(document.body, "Continuă"));
+  check("Mona Lisa hard remains selected before room creation", hasText(document.body, "Mona Lisa") && hasText(document.body, "100 piese") && hasText(document.body, "Schimbă imaginea sau opțiunile"));
+  click(btnByText(document.body, "Schimbă imaginea sau opțiunile"));
+  check("back to catalog preserves selection", !!document.querySelector('img[alt="Mona Lisa"]')?.closest('button[aria-pressed="true"]') && hasText(document.body,"100 piese"));
+  await act(async () => { rootPuzzle.unmount(); });
+  window.history.replaceState({}, "", "/");
 
   console.log("== F. Solo tabs — interactions (localStorage) ==");
   const type = (el: Element | null, value: string) => {

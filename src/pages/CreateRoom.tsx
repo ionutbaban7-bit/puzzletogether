@@ -29,7 +29,7 @@ export default function CreateRoom() {
   const [name, setName] = useState(() => getSession().name || "");
   const [sessionName, setSessionName] = useState("");
   const [facilitatorOnly, setFacilitatorOnly] = useState(false);
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("paintings");
   const [puzzleId, setPuzzleId] = useState<string | null>(null);
   const [difficulty, setDifficulty] = useState("medium");
   const [contentLanguage, setContentLanguage] = useState<"ro" | "en">("ro");
@@ -48,27 +48,26 @@ export default function CreateRoom() {
 
   useEffect(() => { api.fetchCatalog().then(setCatalog).catch(() => setError(lang === "ro" ? "Biblioteca nu a putut fi încărcată." : "Could not load the activity library.")); }, [lang]);
 
-  // Triple door: the three landing zones become one-tap entry points.
-  // They preselect a representative experience and jump straight to the
-  // lobby step; the full catalog stays below for power users.
+  // Entry links open the relevant selection, never skip the user's choices.
   function applyStarter(kind: "puzzle" | "emotions" | "coaching") {
     if (!catalog) { setPendingStarter(kind); return; }
+    setUpload(null);
     if (kind === "coaching") { setCategory("coaching"); setPuzzleId(null); return; }
     if (kind === "emotions") {
       const activity = catalog.emotions?.activities?.[0];
       if (!activity) return;
       setCategory("emotions");
+      setDifficulty("medium");
       setPuzzleId(activity.id);
       setStep(2);
       return;
     }
     const cat = catalog.categories.find((c) => !CANVAS_CATEGORIES.has(c.id) && c.id !== "coaching" && c.id !== "emotions");
-    const puzzle = catalog.puzzles.find((p) => p.category === cat?.id);
-    if (!cat || !puzzle) return;
+    if (!cat) return;
     setCategory(cat.id);
-    setPuzzleId(puzzle.id);
-    setDifficulty("medium");
-    setStep(2);
+    setPuzzleId(null);
+    setUpload(null);
+    setStep(1);
   }
   useEffect(() => {
     if (!pendingStarter || !catalog) return;
@@ -92,6 +91,7 @@ export default function CreateRoom() {
     setUploading(true); setError("");
     try {
       const result = await api.uploadImage(file);
+      setPuzzleId(null);
       setUpload(result);
       setUploadName(file.name.replace(/\.[^.]+$/, "").slice(0, 60));
     } catch (reason) {
@@ -154,7 +154,7 @@ export default function CreateRoom() {
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-lg" aria-hidden>🧩</span>
                   <span className="font-display mt-2.5 block text-[15px] font-bold text-g-ink"><T value={{ ro: "Puzzle", en: "Puzzle" }} /></span>
                   <span className="mt-1 block text-xs leading-relaxed text-g-sub"><T value={{ ro: "Un joc de imagini ca să gândeți împreună.", en: "An image game to think together." }} /></span>
-                  <span className="mt-2.5 inline-flex items-center gap-1 text-[13px] font-bold text-brand-600"><T value={{ ro: "La lobby", en: "To the lobby" }} /><span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">→</span></span>
+                  <span className="mt-2.5 inline-flex items-center gap-1 text-[13px] font-bold text-brand-600"><T value={{ ro: "Alege imaginea", en: "Choose an image" }} /><span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">→</span></span>
                 </button>
                 <button
                   type="button"
@@ -168,8 +168,6 @@ export default function CreateRoom() {
                 </button>
                 <a
                   href={CLARITY_EXPRESS_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="group rounded-2xl border border-g-line bg-white p-4 text-left shadow-[0_1px_2px_rgba(30,41,59,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-cp-purple-300 hover:shadow-[0_12px_28px_-14px_rgba(30,41,59,0.25)]"
                 >
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-lg" aria-hidden>💬</span>
@@ -202,7 +200,7 @@ export default function CreateRoom() {
             )}
 
             {isJigsaw && <section className="rounded-[24px] border border-brand-100 bg-white p-4"><div className="flex flex-wrap items-center gap-3"><label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-ink-300 bg-ink-50 px-4 py-3 transition hover:border-brand-500"><input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleUploadFile(file); e.target.value = ""; }} /><span className="text-sm font-semibold text-ink-700">{uploading ? <Spinner /> : "📷 "}{upload ? (lang === "ro" ? "Schimbă imaginea" : "Change image") : lang === "ro" ? "Încarcă imagine" : "Upload image"}</span></label>{upload && <button onClick={() => { setUpload(null); setUploadName(""); }} className="btn-secondary btn-sm">{lang === "ro" ? "Folosește catalogul" : "Use catalog"}</button>}{upload && <label className="ml-auto flex min-w-0 items-center gap-2 text-sm"><span className="shrink-0 font-semibold text-ink-700">{lang === "ro" ? "Nume:" : "Name:"}</span><input className="input w-44" maxLength={60} value={uploadName} onChange={(e) => setUploadName(e.target.value)} placeholder={lang === "ro" ? "ex. Fotografia echipei" : "e.g. Team photo"} /></label>}</div>{upload && <div className="mt-3 flex items-center gap-3"><img src={upload.url} alt={uploadName || "custom"} className="h-20 w-28 rounded-xl border border-ink-200 object-cover" /><p className="text-xs leading-relaxed text-ink-500"><b className="text-ink-700">{lang === "ro" ? "Confidențialitate:" : "Privacy:"}</b> {lang === "ro" ? "Doar pentru această cameră. Se șterge la expirare." : "Only for this room. Deleted when it expires."}</p></div>}</section>}
-            {(isCanvas || (isJigsaw && !upload)) && <section><h2 className="font-display text-lg font-bold text-ink-900">{isCanvas ? <T value={{ ro: "Alege foaia", en: "Choose canvas" }} /> : <T value={{ ro: "Alege imaginea", en: "Choose an image" }} />} <span className="ml-1 text-sm font-medium text-ink-400">({puzzles.length})</span></h2><div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{puzzles.map((puzzle) => <PuzzleCard key={puzzle.id} puzzle={puzzle} selected={puzzle.id === puzzleId} onSelect={() => setPuzzleId(puzzle.id)} />)}</div></section>}
+            {(isCanvas || (isJigsaw && !upload)) && <section><h2 className="font-display text-lg font-bold text-ink-900">{isCanvas ? <T value={{ ro: "Alege foaia", en: "Choose canvas" }} /> : <T value={{ ro: "Alege imaginea", en: "Choose an image" }} />} <span className="ml-1 text-sm font-medium text-ink-400">({puzzles.length})</span></h2><div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{puzzles.map((puzzle) => <PuzzleCard key={puzzle.id} puzzle={puzzle} lang={lang} selected={puzzle.id === puzzleId} onSelect={() => setPuzzleId(puzzle.id)} />)}</div></section>}
             {isCoaching && <section><h2 className="font-display text-lg font-bold text-ink-900"><T value={{ ro: "Exerciții pentru 3–8 participanți", en: "Exercises for 3–8 participants" }} /></h2><div className="mt-3 grid gap-4 sm:grid-cols-2">{catalog?.coaching.activities.map((activity) => <ActivityCard key={activity.id} activity={activity} selected={activity.id === puzzleId} onSelect={() => setPuzzleId(activity.id)} lang={lang} />)}</div></section>}
             {isEmotions && <section><h2 className="font-display text-lg font-bold text-ink-900"><T value={{ ro: "Camera Mare — exerciții de emoții pentru 2–12 participanți", en: "The Big Room — emotion exercises for 2–12 participants" }} /></h2><p className="mt-1 text-sm text-ink-500"><T value={{ ro: "Voturi private, reveal anonim agregat, cuvânt de siguranță. Fără diagnostic, fără interpretare automată.", en: "Private votes, anonymous aggregate reveal, safety word. No diagnosis, no automatic interpretation." }} /></p><div className="mt-3 grid gap-4 sm:grid-cols-2">{catalog?.emotions?.activities.map((activity) => <ActivityCard key={activity.id} activity={activity} selected={activity.id === puzzleId} onSelect={() => setPuzzleId(activity.id)} lang={lang} />)}</div></section>}
             {category && !isCoaching && !isEmotions && !isCanvas && <section><h2 className="font-display text-lg font-bold text-ink-900"><T value={{ ro: "Dificultate", en: "Difficulty" }} /></h2><div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">{(catalog?.difficulties || []).map((item) => <DifficultyCard key={item.id} difficulty={item as Difficulty} selected={difficulty === item.id} onSelect={() => setDifficulty(item.id)} lang={lang} />)}</div>{isJigsaw && <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-[24px] border border-brand-100 bg-white p-4"><input type="checkbox" className="mt-1 h-4 w-4 accent-brand-600" checked={mystery} onChange={(e) => setMystery(e.target.checked)} /><span><b className="block text-sm text-ink-900">🕵️ {lang === "ro" ? "Mod mister" : "Mystery mode"}</b><span className="mt-1 block text-xs leading-relaxed text-ink-500">{lang === "ro" ? "Referința apare după jumătate din piese." : "Reference appears after half the pieces."}</span></span></label>}</section>}
@@ -215,10 +213,14 @@ export default function CreateRoom() {
         ) : (
           <div className="card mx-auto max-w-xl p-6 animate-fade-up sm:p-8">
             <button className="text-sm font-semibold text-ink-500 hover:text-ink-900" onClick={() => setStep(1)}>← <T value={{ ro: "Înapoi", en: "Back" }} /></button>
-            <h1 className="font-display mt-5 text-2xl font-bold text-ink-900"><T value={{ ro: "Pregătește lobby-ul", en: "Prepare the lobby" }} /></h1>
+            <h1 className="font-display mt-5 text-2xl font-bold text-ink-900"><T value={{ ro: "Pregătește camera", en: "Set up the room" }} /></h1>
+            <div className="mt-5 flex items-center gap-4 rounded-xl border border-g-line p-3" aria-label={lang === "ro" ? "Selecția ta" : "Your selection"}>
+              {(upload || selectedPuzzle) && <img src={upload?.url || selectedPuzzle?.thumbnail || selectedPuzzle?.image} alt="" className="h-20 w-24 rounded object-contain" />}
+              <div className="min-w-0"><p className="font-semibold">{selectedActivity ? pick(selectedActivity.name, lang) : upload ? uploadName : lang === "ro" ? selectedPuzzle?.nameRo || selectedPuzzle?.name : selectedPuzzle?.name}</p>{isJigsaw && <p className="mt-1 text-sm text-g-sub">{selectedDifficulty?.pieces} {lang === "ro" ? "piese" : "pieces"} · {selectedDifficulty?.name}</p>}<button className="mt-2 text-sm text-brand-600 underline" onClick={() => setStep(1)}>{lang === "ro" ? "Schimbă imaginea sau opțiunile" : "Change image or options"}</button></div>
+            </div>
             <p className="mt-2 text-sm leading-relaxed text-ink-600"><T value={{ ro: "Invitații așteaptă Start. Timpul nu pornește înainte.", en: "Guests wait for Start. Time does not start early." }} /></p>
             <label className="mt-6 block text-sm font-semibold text-ink-700" htmlFor="session-name"><T value={{ ro: "Numele sesiunii", en: "Session name" }} /></label>
-            <input id="session-name" className="input mt-2" maxLength={80} value={sessionName} onChange={(e) => setSessionName(e.target.value)} placeholder={lang === "ro" ? "ex. Retrospectiva Sprint 24" : "e.g. Sprint 24 retrospective"} />
+            <input id="session-name" className="input mt-2" maxLength={80} value={sessionName} onChange={(e) => setSessionName(e.target.value)} placeholder={lang === "ro" ? "ex. Seara de puzzle · opțional" : "e.g. Puzzle night · optional"} />
             <label className="mt-5 block text-sm font-semibold text-ink-700" htmlFor="display-name"><T value={{ ro: "Numele tău", en: "Your display name" }} /></label>
             <input id="display-name" className="input mt-2" maxLength={24} value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Ana" autoFocus />
             <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-2xl border border-brand-100 bg-brand-50 p-4"><input type="checkbox" className="mt-1 h-4 w-4 accent-brand-600" checked={facilitatorOnly} onChange={(e) => setFacilitatorOnly(e.target.checked)} /><span><b className="block text-sm text-ink-900"><T value={{ ro: "Facilitez, nu joc", en: "I facilitate, I don't play" }} /></b><span className="mt-1 block text-xs leading-relaxed text-ink-600"><T value={{ ro: "Vezi, dar nu muți piese sau carduri.", en: "Watch, but do not move pieces or cards." }} /></span></span></label>
@@ -241,27 +243,27 @@ export default function CreateRoom() {
 }
 
 function CategoryButton({ id, active, onClick, lang, coaching = false }: { id: string; active: boolean; onClick: () => void; lang: "ro" | "en"; coaching?: boolean }) {
-  return <button onClick={onClick} className={`inline-flex items-center rounded-full border px-4 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-300 ${active ? coaching ? "border-cp-purple-700 bg-cp-purple-700 text-white" : "border-brand-700 bg-brand-700 text-white" : "border-brand-100 bg-white text-ink-700 hover:border-brand-400"}`}><span className="mr-1.5"><CategoryGlyph id={id} fallback={CATEGORY_EMOJI[id]} /></span>{pick(CATEGORY_NAMES[id], lang)}</button>;
+  return <button onClick={onClick} aria-pressed={active} className={`inline-flex items-center rounded-full border px-4 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-300 ${active ? coaching ? "border-cp-purple-700 bg-cp-purple-700 text-white" : "border-brand-700 bg-brand-700 text-white" : "border-brand-100 bg-white text-ink-700 hover:border-brand-400"}`}><span className="mr-1.5"><CategoryGlyph id={id} fallback={CATEGORY_EMOJI[id]} /></span>{pick(CATEGORY_NAMES[id], lang)}</button>;
 }
-function PuzzleCard({ puzzle, selected, onSelect }: { puzzle: PuzzleInfo; selected: boolean; onSelect: () => void }) {
+function PuzzleCard({ puzzle, selected, onSelect, lang }: { puzzle: PuzzleInfo; selected: boolean; onSelect: () => void; lang: "ro" | "en" }) {
   // The picker deliberately loads the 480px derivative. The board still gets
   // puzzle.image after room creation, so a category with many entries does not
   // compete to download many full-resolution images at once.
   const imageSrc = puzzle.thumbnail || puzzle.image;
-  return <button onClick={onSelect} className={`group overflow-hidden rounded-2xl border bg-white text-left shadow-sm transition ${selected ? "border-brand-600 ring-4 ring-brand-600/15" : "border-ink-200 hover:-translate-y-0.5 hover:shadow-card"}`}><div className="aspect-[4/3] overflow-hidden bg-ink-100"><img src={imageSrc} alt={puzzle.name} loading="lazy" decoding="async" onError={(event) => {
+  return <button onClick={onSelect} aria-pressed={selected} className={`group overflow-hidden rounded-2xl border bg-white text-left shadow-sm transition ${selected ? "border-brand-600 ring-4 ring-brand-600/15" : "border-ink-200 hover:-translate-y-0.5 hover:shadow-card"}`}><div className="aspect-[4/3] overflow-hidden bg-ink-100"><img src={imageSrc} alt={lang === "ro" ? puzzle.nameRo || puzzle.name : puzzle.name} loading="lazy" decoding="async" onError={(event) => {
     // A catalog card stays usable if a thumbnail was evicted from an external
     // cache/CDN: retry exactly once with its full source instead of leaving a
     // broken-image placeholder.
     if (imageSrc === puzzle.image || event.currentTarget.dataset.fullFallback === "true") return;
     event.currentTarget.dataset.fullFallback = "true";
     event.currentTarget.src = puzzle.image;
-  }} className="h-full w-full object-cover transition group-hover:scale-105" /></div><div className="p-3"><div className="truncate text-sm font-semibold text-ink-900">{puzzle.name}</div><div className="mt-1 truncate text-[11px] text-ink-400">{puzzle.credit} · {puzzle.license}</div></div></button>;
+  }} className="h-full w-full object-cover transition group-hover:scale-105" /></div><div className="p-3"><div className="truncate text-sm font-semibold text-ink-900">{lang === "ro" ? puzzle.nameRo || puzzle.name : puzzle.name}</div><div className="mt-1 truncate text-[11px] text-ink-400">{puzzle.credit} · {puzzle.license}</div></div></button>;
 }
 function ActivityCard({ activity, selected, onSelect, lang }: { activity: CoachingActivity; selected: boolean; onSelect: () => void; lang: "ro" | "en" }) {
-  return <button onClick={onSelect} className={`overflow-hidden rounded-2xl border bg-white text-left shadow-sm transition ${selected ? "border-emerald-600 ring-4 ring-emerald-600/15" : "border-ink-200 hover:-translate-y-0.5 hover:shadow-card"}`}><div className="flex"><img src={activity.cover} alt="" className="h-36 w-36 shrink-0 object-cover" /><div className="min-w-0 p-4"><div className="flex flex-wrap gap-2"><span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${activity.mode === "emotions" ? "bg-cp-purple-100 text-cp-purple-700" : "bg-emerald-100 text-emerald-700"}`}>{activity.mode === "ranking" ? "Team ranking" : activity.mode === "emotions" ? "🗺️ Camera Mare" : "Compass"}</span><span className="text-xs text-ink-400">⏱ {activity.duration}</span></div><h3 className="font-display mt-2 font-bold text-ink-900"><T value={activity.name} /></h3><p className="mt-1 line-clamp-3 text-xs leading-relaxed text-ink-500"><T value={activity.description} /></p><div className="mt-2 text-[11px] font-medium text-ink-400">{activity.mode === "ranking" ? (lang === "ro" ? "Ranking liber · reveal ghidat · debrief" : "Free ranking · guided reveal · debrief") : activity.mode === "emotions" ? (lang === "ro" ? "Vot privat · reveal anonim · cuvânt de siguranță" : "Private vote · anonymous reveal · safety word") : (lang === "ro" ? "Răspunsuri private · sumar de echipă" : "Private answers · team summary")}</div></div></div></button>;
+  return <button onClick={onSelect} aria-pressed={selected} className={`overflow-hidden rounded-2xl border bg-white text-left shadow-sm transition ${selected ? "border-emerald-600 ring-4 ring-emerald-600/15" : "border-ink-200 hover:-translate-y-0.5 hover:shadow-card"}`}><div className="flex"><img src={activity.cover} alt="" className="h-36 w-36 shrink-0 object-cover" /><div className="min-w-0 p-4"><div className="flex flex-wrap gap-2"><span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${activity.mode === "emotions" ? "bg-cp-purple-100 text-cp-purple-700" : "bg-emerald-100 text-emerald-700"}`}>{activity.mode === "ranking" ? "Team ranking" : activity.mode === "emotions" ? "🗺️ Camera Mare" : "Compass"}</span><span className="text-xs text-ink-400">⏱ {activity.duration}</span></div><h3 className="font-display mt-2 font-bold text-ink-900"><T value={activity.name} /></h3><p className="mt-1 line-clamp-3 text-xs leading-relaxed text-ink-500"><T value={activity.description} /></p><div className="mt-2 text-[11px] font-medium text-ink-400">{activity.mode === "ranking" ? (lang === "ro" ? "Ranking liber · reveal ghidat · debrief" : "Free ranking · guided reveal · debrief") : activity.mode === "emotions" ? (lang === "ro" ? "Vot privat · reveal anonim · cuvânt de siguranță" : "Private vote · anonymous reveal · safety word") : (lang === "ro" ? "Răspunsuri private · sumar de echipă" : "Private answers · team summary")}</div></div></div></button>;
 }
 function DifficultyCard({ difficulty, selected, onSelect, lang, canvas = false }: { difficulty: Difficulty; selected: boolean; onSelect: () => void; lang: "ro" | "en"; canvas?: boolean }) {
   const meta = DIFFICULTY_META[difficulty.id];
-  return <button onClick={onSelect} className={`rounded-2xl border p-4 text-left transition ${selected ? "border-brand-600 bg-brand-50 ring-4 ring-brand-600/15" : "border-brand-100 bg-white hover:border-brand-400"}`}><b className={selected ? "text-brand-700" : "text-ink-900"}>{difficulty.name}</b><div className="mt-1 text-xs text-ink-500">{difficulty.pieces === 0 ? (lang === "ro" ? "nelimitat" : "unlimited") : `${difficulty.pieces} ${canvas ? (lang === "ro" ? "cărți" : "tiles") : lang === "ro" ? "piese" : "pieces"}`}</div><div className="mt-2 text-[11px] text-ink-400">⏱ {meta?.minutes} · 👥 {meta?.people}</div></button>;
+  return <button onClick={onSelect} aria-pressed={selected} className={`rounded-2xl border p-4 text-left transition ${selected ? "border-brand-600 bg-brand-50 ring-4 ring-brand-600/15" : "border-brand-100 bg-white hover:border-brand-400"}`}><b className={selected ? "text-brand-700" : "text-ink-900"}>{difficulty.name}</b><div className="mt-1 text-xs text-ink-500">{difficulty.pieces === 0 ? (lang === "ro" ? "nelimitat" : "unlimited") : `${difficulty.pieces} ${canvas ? (lang === "ro" ? "cărți" : "tiles") : lang === "ro" ? "piese" : "pieces"}`}</div><div className="mt-2 text-[11px] text-ink-400">⏱ {meta?.minutes} · 👥 {meta?.people}</div></button>;
 }
 function ErrorBox({ children }: { children: React.ReactNode }) { return <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">{children}</div>; }

@@ -565,8 +565,8 @@ export default function GamePage() {
             🔗 <T value={{ ro: "Partajează", en: "Share" }} />
           </button>
           {isHost && (
-            <button className="btn btn-dark btn-sm !border-emerald-400/30 !px-4" onClick={() => setFacilitatorOpen(true)} title={lang === "ro" ? "Controale facilitator" : "Facilitator controls"} aria-label={lang === "ro" ? "Controale facilitator" : "Facilitator controls"}>
-              🎛 <T value={{ ro: "Facilitează", en: "Facilitate" }} />
+            <button className="btn btn-dark btn-sm !border-emerald-400/30 !px-4" onClick={() => setFacilitatorOpen(true)} title={isJigsaw ? lang === "ro" ? "Opțiunile gazdei" : "Host options" : lang === "ro" ? "Controale facilitator" : "Facilitator controls"} aria-label={isJigsaw ? lang === "ro" ? "Opțiunile gazdei" : "Host options" : lang === "ro" ? "Controale facilitator" : "Facilitator controls"}>
+              🎛 {isJigsaw ? <T value={{ ro: "Opțiuni", en: "Options" }} /> : <T value={{ ro: "Facilitează", en: "Facilitate" }} />}
             </button>
           )}
           <button
@@ -621,7 +621,7 @@ export default function GamePage() {
               <div className="border-b border-white/10 pb-2"><LangToggle dark /></div>
               {isHost && <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !px-3" onClick={() => { setPickerOpen(true); setActionsOpen(false); }}>🧩 <T value={{ ro: "Alt puzzle", en: "New puzzle" }} /></button>}
               {isHost && isJigsaw && room.stage === "play" && <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !border-rose-400/35 !bg-rose-500/15 !px-3" onClick={() => { setActionsOpen(false); setResetConfirm(true); }}>↺ <T value={{ ro: "Resetează puzzle-ul", en: "Reset puzzle" }} /></button>}
-              {isHost && <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !border-emerald-400/30 !px-3" onClick={() => { setFacilitatorOpen(true); setActionsOpen(false); }}>🎛 <T value={{ ro: "Facilitează", en: "Facilitate" }} /></button>}
+              {isHost && <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !border-emerald-400/30 !px-3" onClick={() => { setFacilitatorOpen(true); setActionsOpen(false); }}>🎛 {isJigsaw ? <T value={{ ro: "Opțiuni", en: "Options" }} /> : <T value={{ ro: "Facilitează", en: "Facilitate" }} />}</button>}
               <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !px-3" onClick={() => { setShareOpen(true); setActionsOpen(false); }}>🔗 <T value={{ ro: "Partajează", en: "Share" }} /></button>
               <button role="menuitem" className="btn btn-dark btn-sm w-full justify-start !px-3" onClick={handleLeave}>🚪 <T value={{ ro: "Pleacă", en: "Leave" }} /></button>
             </div>
@@ -651,15 +651,16 @@ export default function GamePage() {
         <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink-950/80 p-3 backdrop-blur-md sm:p-4">
           <div className="overlay-card flex max-h-[calc(100dvh-1.5rem)] w-[560px] max-w-full flex-col overflow-y-auto text-center">
             <div className="min-h-0 flex-1 overflow-y-auto p-6 sm:p-8">
-              <div className="text-[11px] font-bold uppercase tracking-[.25em] text-brand-300"><T value={{ ro: "Lobby de workshop", en: "Workshop lobby" }} /></div>
+              <div className="text-[11px] font-bold uppercase tracking-[.25em] text-brand-300"><T value={{ ro: "Camera de așteptare", en: "Waiting room" }} /></div>
               <h1 className="font-display mt-3 text-2xl font-extrabold text-white sm:text-3xl">{room.sessionName}</h1>
               <p className="mt-2 text-sm text-ink-300">
               {isHost ? (
                 <T value={{ ro: "Pornește sesiunea când toată lumea e gata.", en: "Start the session when everyone is ready." }} />
               ) : (
-                <T value={{ ro: "Facilitatorul pornește sesiunea când toată lumea e gata.", en: "The facilitator will start the session when everyone is ready." }} />
+                <T value={{ ro: "Gazda pornește jocul când toată lumea e gata.", en: "The host starts the game when everyone is ready." }} />
               )}
             </p>
+              {isJigsaw && <div className="mt-5 rounded-xl border border-white/15 bg-white/5 p-3"><img src={puzzle.image} alt={pick(puzzle.name, lang)} className="mx-auto max-h-36 w-full object-contain" /><p className="mt-3 text-sm font-semibold text-white">{pick(puzzle.name, lang)} · {total} {lang === "ro" ? "piese" : "pieces"} · {getDifficultyLabel(room.difficulty)}</p>{isHost && <button className="btn btn-dark mt-3 w-full" onClick={() => setPickerOpen(true)}>{lang === "ro" ? "Schimbă puzzle-ul sau dificultatea" : "Change puzzle or difficulty"}</button>}</div>}
               {isCanvas && puzzle.scenario && (
                 <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left">
                   <div className="text-[10px] font-bold uppercase tracking-[.2em] text-brand-300"><T value={{ ro: "Scenariu", en: "Scenario" }} /> · {puzzle.contentLanguage?.toUpperCase()}</div>
@@ -691,7 +692,7 @@ export default function GamePage() {
               {isCanvas && <TeamSetup room={room} players={players} youId={youId} isHost={isHost} />}
             </div>
             <div className="shrink-0 border-t border-white/10 bg-ink-900/95 p-3 backdrop-blur sm:p-4">
-              {isHost ? <div><div className="grid gap-2 sm:grid-cols-2"><button className="btn-primary min-h-11 disabled:cursor-not-allowed disabled:opacity-45" disabled={!canStartTeams} onClick={() => store.sendControl("start")}>▶ <T value={{ ro: "Start pentru toți", en: "Start for everyone" }} /></button><button className="btn btn-dark min-h-11" onClick={() => setShareOpen(true)}>🔗 <T value={{ ro: "Invită colegi", en: "Invite teammates" }} /></button></div>{!canStartTeams && <p className="mt-2 text-center text-xs text-amber-200"><T value={{ ro: `${unassignedTeamMembers.length} participant(i) fără echipă. Repartizează-i înainte de Start.`, en: `${unassignedTeamMembers.length} participant(s) need a team before Start.` }} /></p>}</div> : canTakeOver ? <button className="btn-primary min-h-11 w-full" onClick={() => youId && api.takeover(room.id, youId)}>🎛 <T value={{ ro: "Preia rolul de facilitator", en: "Take over facilitation" }} /></button> : <div className="rounded-xl bg-white/5 px-4 py-3 text-sm text-ink-300">⏳ <T value={{ ro: "Așteptăm facilitatorul…", en: "Waiting for the facilitator…" }} /></div>}
+              {isHost ? <div><div className="grid gap-2 sm:grid-cols-2"><button className="btn-primary min-h-11 disabled:cursor-not-allowed disabled:opacity-45" disabled={!canStartTeams} onClick={() => store.sendControl("start")}>▶ <T value={{ ro: "Start pentru toți", en: "Start for everyone" }} /></button><button className="btn btn-dark min-h-11" onClick={() => setShareOpen(true)}>🔗 <T value={{ ro: "Invită prieteni", en: "Invite friends" }} /></button></div>{!canStartTeams && <p className="mt-2 text-center text-xs text-amber-200"><T value={{ ro: `${unassignedTeamMembers.length} participant(i) fără echipă. Repartizează-i înainte de Start.`, en: `${unassignedTeamMembers.length} participant(s) need a team before Start.` }} /></p>}</div> : canTakeOver ? <button className="btn-primary min-h-11 w-full" onClick={() => youId && api.takeover(room.id, youId)}>🎛 <T value={{ ro: "Preia rolul gazdei", en: "Take over as host" }} /></button> : <div className="rounded-xl bg-white/5 px-4 py-3 text-sm text-ink-300">⏳ <T value={{ ro: "Așteptăm gazda…", en: "Waiting for the host…" }} /></div>}
             </div>
           </div>
         </div>
@@ -755,7 +756,7 @@ export default function GamePage() {
           <div className="overlay-card max-h-[calc(100dvh-1.5rem)] w-[420px] max-w-full overflow-y-auto p-6">
             <div className="flex items-center justify-between">
               <h2 className="font-display text-lg font-bold text-white">
-                <T value={{ ro: "Invită colegi", en: "Invite teammates" }} />
+                <T value={{ ro: "Invită prieteni", en: "Invite friends" }} />
               </h2>
               <button
                 onClick={() => setShareOpen(false)}
@@ -985,7 +986,7 @@ export default function GamePage() {
 
       {/* --------------------------------------------- puzzle picker (host) */}
       {pickerOpen && room && (
-        <PuzzlePicker room={room} youId={youId} onClose={() => setPickerOpen(false)} />
+        <PuzzlePicker room={room} youId={youId} initialMystery={!!puzzle.mystery} onClose={() => setPickerOpen(false)} />
       )}
     </div>
   );

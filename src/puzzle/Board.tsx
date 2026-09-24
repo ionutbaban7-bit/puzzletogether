@@ -7,6 +7,7 @@ import { usePointerLifecycle, type PointerSample, type PointerTerminationReason 
 import { buildEdgeMap, buildPiecePath, pieceEdges, spritePad } from "./jigsaw";
 import { isEdgePiece } from "./tray";
 import { store } from "../store";
+import { containImage, drawPuzzleImage } from "./imageGeometry";
 
 interface BoardProps {
   puzzle: PuzzleView;
@@ -191,6 +192,8 @@ export default function Board({
   const [filter, setFilter] = useState<FilterMode>("all");
 
   const imgRef = useRef<HTMLImageElement | null>(null);
+  const [imageState, setImageState] = useState<"loading" | "ready" | "error">("loading");
+  const [imageRetry, setImageRetry] = useState(0);
   const spriteCache = useRef(new Map<string, HTMLCanvasElement>());
   const pathCache = useRef(new Map<number, Path2D>());
   const imgGen = useRef(0);
@@ -216,10 +219,14 @@ export default function Board({
     pathCache.current.clear();
     schedule();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [edgeMap]);
+  }, [edgeMap, puzzle.width, puzzle.height, puzzle.pieceW, puzzle.pieceH]);
 
   // ------------------------------------------------------------------ image
   useEffect(() => {
+    imgRef.current = null;
+    spriteCache.current.clear();
+    setImageState("loading");
+    schedule();
     const img = new Image();
     img.decoding = "async";
     imgGen.current += 1;
@@ -228,19 +235,20 @@ export default function Board({
     img.onload = () => {
       if (cancelled) return;
       imgRef.current = img;
+      setImageState("ready");
       spriteCache.current.clear();
       // Cheap "wake up" of the render loop
       schedule();
     };
     img.onerror = () => {
-      if (!cancelled) schedule();
+      if (!cancelled) { setImageState("error"); schedule(); }
     };
     img.src = puzzle.image;
     return () => {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [puzzle.image]);
+  }, [puzzle.image, imageRetry]);
 
   // ----------------------------------------------------------- canvas setup
   useEffect(() => {
@@ -550,8 +558,10 @@ export default function Board({
     } else {
       ctx.save();
       ctx.clip(path);
-      // Photo, positioned so this piece's region (plus tab bleed) lines up.
-      ctx.drawImage(img!, -correctX, -correctY);
+      // Piece coordinates use the board's logical dimensions. Optimized WebP
+      // sources (and restored rooms) can have different intrinsic dimensions.
+      // Scale the whole image exactly as the reference/ghost does before clipping.
+      drawPuzzleImage(ctx, img!, puzzleRef.current.width, puzzleRef.current.height, correctX, correctY);
       // Bevel: light catch on the top-left, soft shade on the bottom-right.
       ctx.save();
       ctx.translate(-lw * 0.6, -lw * 0.6);
@@ -855,8 +865,7 @@ export default function Board({
       const pw = puzzle.width;
       const ph = puzzle.height;
       const mobile = w < 640;
-      const bw = mobile ? Math.min(124, Math.round(w * 0.34)) : 168;
-      const bh = Math.min((bw * ph) / pw, mobile ? 100 : 132);
+      const { width: bw, height: bh } = containImage(pw, ph, mobile ? Math.min(124, Math.round(w * 0.34)) : 168, mobile ? 100 : 132);
       const bx = w - bw - (mobile ? 12 : 20);
       const by = mobile ? 148 : 108;
       ctx.save();
@@ -1415,6 +1424,12 @@ export default function Board({
 
   return (
     <div className="relative h-full w-full">
+      {imageState !== "ready" && <div className="absolute inset-0 z-30 flex items-center justify-center bg-[#14261f]/95 p-6">
+        <div role={imageState === "error" ? "alert" : "status"} className="max-w-sm text-center text-ink-100">
+          <p>{imageState === "error" ? (lang === "ro" ? "Imaginea nu s-a încărcat. Progresul camerei este păstrat." : "The picture could not load. Your room progress is saved.") : (lang === "ro" ? "Se încarcă imaginea…" : "Loading the picture…")}</p>
+          {imageState === "error" && <button className="btn-dark mt-4" onClick={() => setImageRetry(n => n + 1)}>{lang === "ro" ? "Încearcă din nou" : "Try again"}</button>}
+        </div>
+      </div>}
       <canvas
         ref={canvasRef}
         role="img"

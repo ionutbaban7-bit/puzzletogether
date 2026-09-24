@@ -25,24 +25,27 @@ export default function PuzzlePicker({
   room,
   youId,
   onClose,
+  initialMystery = false,
 }: {
   room: RoomView;
   youId: string | null;
   onClose: () => void;
+  initialMystery?: boolean;
 }) {
   const { lang } = useLang();
   const [catalog, setCatalog] = useState<CatalogData | null>(null);
   const [category, setCategory] = useState<string>("");
-  const [puzzleId, setPuzzleId] = useState<string | null>(null);
+  const [puzzleId, setPuzzleId] = useState<string | null>(room.puzzleId);
   const [difficulty, setDifficulty] = useState<string>(room.difficulty || "medium");
   const [contentLanguage, setContentLanguage] = useState<"ro" | "en">(room.contentLanguage === "en" ? "en" : "ro");
   const [busy, setBusy] = useState(false);
+  const [mystery, setMystery] = useState(initialMystery);
   const [error, setError] = useState("");
 
   useEffect(() => {
     api
       .fetchCatalog()
-      .then(setCatalog)
+      .then((data) => { setCatalog(data); setCategory(data.puzzles.find(p => p.id === room.puzzleId)?.category || (data.coaching.activities.some(a => a.id === room.puzzleId) ? "coaching" : "paintings")); })
       .catch(() => setError("Could not load the puzzle library."));
   }, []);
 
@@ -54,11 +57,11 @@ export default function PuzzlePicker({
 
   async function handleStart() {
     if (!canStart || !youId || busy) return;
-    if (!window.confirm(lang === "ro" ? "Progresul activității curente se va pierde. Pregătești următoarea activitate?" : "Current activity progress will be lost. Prepare the next activity?")) return;
+    if (room.stage !== "lobby" && !window.confirm(lang === "ro" ? "Progresul activității curente se va pierde. Pregătești următoarea activitate?" : "Current activity progress will be lost. Prepare the next activity?")) return;
     setBusy(true);
     setError("");
     try {
-      await api.changePuzzle(room.id, puzzleId!, difficulty, youId, selectedPuzzle && CANVAS_CATEGORIES.has(selectedPuzzle.category) ? contentLanguage : undefined);
+      await api.changePuzzle(room.id, puzzleId!, difficulty, youId, selectedPuzzle && CANVAS_CATEGORIES.has(selectedPuzzle.category) ? contentLanguage : undefined, mystery);
       onClose(); // everyone (including us) switches via the websocket broadcast
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not change the puzzle.");
@@ -72,13 +75,13 @@ export default function PuzzlePicker({
         <div className="flex items-start justify-between gap-3">
           <div>
             <h2 className="font-display text-xl font-bold text-white">
-              🧩 <T value={{ ro: "Alege următorul puzzle", en: "Pick the next puzzle" }} />
+              🧩 <T value={{ ro: "Alege puzzle-ul și opțiunile", en: "Choose the puzzle and options" }} />
             </h2>
             <p className="mt-1 text-sm text-ink-300">
               <T
                 value={{
-                  ro: "Toți jucătorii rămân conectați — jocul nou pornește instant pentru toată lumea.",
-                  en: "Everyone stays connected — the new game starts instantly for the whole room.",
+                  ro: "Toți rămân în cameră. Schimbi alegerea, apoi gazda apasă Start când sunteți gata.",
+                  en: "Everyone stays in the room. Change the selection, then the host presses Start when you are ready.",
                 }}
               />
             </p>
@@ -154,7 +157,7 @@ export default function PuzzlePicker({
                     <div className="aspect-[4/3] overflow-hidden bg-ink-900">
                       <img
                         src={p.thumbnail || p.image}
-                        alt={p.name}
+                        alt={lang === "ro" ? p.nameRo || p.name : p.name}
                         loading="lazy"
                         decoding="async"
                         onError={(event) => {
@@ -169,7 +172,7 @@ export default function PuzzlePicker({
                     </div>
                     <div className="truncate bg-white/5 px-2.5 py-2 text-xs font-semibold text-white">
                       {puzzleId === p.id && <span className="mr-1 text-brand-300">✓</span>}
-                      {p.name}
+                      {lang === "ro" ? p.nameRo || p.name : p.name}
                     </div>
                   </button>
                 ))}
@@ -265,6 +268,8 @@ export default function PuzzlePicker({
               </div>
             )}
 
+            {category && !isCoaching && !CANVAS_CATEGORIES.has(category) && <label className="flex items-start gap-3 rounded-xl border border-white/15 p-3 text-sm text-white"><input type="checkbox" className="mt-1" checked={mystery} onChange={e => setMystery(e.target.checked)} /><span><T value={{ ro: "Mod mister", en: "Mystery mode" }} /><span className="mt-1 block text-xs text-ink-200"><T value={{ ro: "Referința apare după jumătate din piese.", en: "The reference appears after half the pieces." }} /></span></span></label>}
+
             {!category && (
               <div className="rounded-xl border border-dashed border-white/15 py-10 text-center text-sm text-ink-400">
                 <T value={{ ro: "Alege o categorie de mai sus", en: "Pick a category above" }} />
@@ -288,7 +293,7 @@ export default function PuzzlePicker({
             <T value={{ ro: "Anulează", en: "Cancel" }} />
           </button>
           <button className="btn-primary btn-sm" disabled={!canStart || busy} onClick={handleStart}>
-            {busy ? <Spinner /> : <>→ <T value={{ ro: "Pregătește lobby-ul", en: "Prepare lobby" }} /></>}
+            {busy ? <Spinner /> : <>→ <T value={{ ro: "Salvează alegerea", en: "Save selection" }} /></>}
           </button>
         </div>
       </div>

@@ -158,7 +158,7 @@ ok(
 
 const jigsawDifficulties = apiCatalog.difficulties.filter((difficulty) => difficulty.pieces > 0);
 const matrix = [];
-for (const entry of stage5Puzzles) for (const difficulty of jigsawDifficulties) matrix.push({ entry, difficulty });
+for (const entry of catalog.entries.filter(e => e.puzzleId && !e.asset.endsWith(".svg"))) for (const difficulty of jigsawDifficulties) matrix.push({ entry, difficulty });
 const rooms = await mapLimit(matrix, 8, async ({ entry, difficulty }) => {
   const create = await request(`${BASE}/api/rooms`, {
     method: "POST",
@@ -174,7 +174,7 @@ for (const result of rooms) {
   const puzzle = result.room?.puzzle;
   ok(
     `room matrix: ${result.entry.puzzleId} / ${result.difficulty.id}`,
-    result.status === 200 && puzzle?.image === result.entry.fullImage && puzzle.width >= 900 && puzzle.height >= 600 && puzzle.cols > 0 && puzzle.rows > 0,
+    result.status === 200 && puzzle?.image === result.entry.fullImage && Math.max(puzzle.width, puzzle.height) >= 900 && Math.min(puzzle.width, puzzle.height) >= 600 && puzzle.cols * puzzle.rows === result.difficulty.pieces && puzzle.cols > 0 && puzzle.rows > 0,
     result.status === 200 ? `${puzzle?.width}×${puzzle?.height}, ${puzzle?.cols}×${puzzle?.rows}` : String(result.status),
   );
 }

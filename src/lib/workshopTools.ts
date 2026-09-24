@@ -46,7 +46,7 @@ export function actionCalendar(room: RoomView, players: PlayerView[], lang: Lang
   for (const action of datedActions(room)) {
     const next = new Date(action.due + "T00:00:00Z"); next.setUTCDate(next.getUTCDate()+1);
     const owner = players.find(p=>p.id===action.ownerId)?.name || (lang === "ro" ? "Responsabil de confirmat" : "Confirm owner");
-    lines.push("BEGIN:VEVENT", `UID:${icalText(action.id)}@puzzletogether.coachinghub.ro`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${action.due.replace(/-/g,"")}`, `DTEND;VALUE=DATE:${next.toISOString().slice(0,10).replace(/-/g,"")}`, `SUMMARY:${icalText(action.text)}`, `DESCRIPTION:${icalText(`${room.sessionName}\n${owner}\nCoachingHub · PuzzleTogether`)}`, "TRANSP:TRANSPARENT", "END:VEVENT");
+    lines.push("BEGIN:VEVENT", `UID:${icalText(action.id)}@puzzletogether.coachinghub.ro`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${action.due.replace(/-/g,"")}`, `DTEND;VALUE=DATE:${next.toISOString().slice(0,10).replace(/-/g,"")}`, `SUMMARY:${icalText(action.text)}`, `DESCRIPTION:${icalText(`${room.sessionName}\n${owner}\nPuzzleTogether`)}`, "TRANSP:TRANSPARENT", "END:VEVENT");
   }
   lines.push("END:VCALENDAR"); return lines.map(fold).join("\r\n") + "\r\n";
 }

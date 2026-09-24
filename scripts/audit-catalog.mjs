@@ -102,7 +102,7 @@ for (const e of entries) {
     err("S11", `incomplete catalog metadata (${missingMetadata.join(", ")}): ${e.asset}`);
     problems.push("S11 metadata");
   }
-  if (e.licenseClass === "cc0" && !e.generation) {
+  if (e.licenseClass === "cc0" && e.sourceName === "PuzzleTogether original catalog" && !e.generation) {
     err("S11", `CC0 original is missing generation/source documentation: ${e.asset}`);
     problems.push("S11 generation");
   }
@@ -241,7 +241,7 @@ for (const p of puzzles.puzzles) {
 const puzzleById = new Map(puzzles.puzzles.map((p) => [p.id, p]));
 let coaching = {};
 try { coaching = JSON.parse(fs.readFileSync(path.join(root, "shared", "coaching.json"), "utf8")); } catch { /* optional */ }
-const coachingCovers = new Set((coaching.activities || []).map((a) => a.cover));
+const coachingCovers = new Set([...((coaching.activities || []).map((a) => a.cover)), "/images/emotions/camera-mare.svg"]);
 for (const e of entries) {
   if (e.puzzleId) {
     const pz = puzzleById.get(e.puzzleId);

@@ -1,7 +1,7 @@
 {
   "name": "puzzletogether",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Solve beautiful jigsaw puzzles together, in real time.",
   "type": "module",
   "engines": {
@@ -45,6 +45,7 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
+    "@napi-rs/canvas": "^1.0.9",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@types/ws": "^8.5.12",
