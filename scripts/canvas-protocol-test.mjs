@@ -199,6 +199,7 @@ ok("owner's drop wins and releases the claim", !!dropped);
 const beforeDup = host._lastCanvas.inventory["M"] ?? 0;
 canvasOp(host, "duplicate", { id: tileM.id });
 const dup = await p3.waitFor("canvas", (m) => m.list?.some((t) => t.text === "M" && t.id !== tileM.id && t.heldBy === hostId));
+await host.waitFor("canvas", (m) => m.list?.some((t) => t.id === dup.list[0]?.id));
 ok("duplicate creates a new tile beside the original", !!dup, `newId=${dup.list[0]?.id}`);
 ok("duplicate consumes inventory", (host._lastCanvas.inventory["M"] ?? 0) === beforeDup - 1);
 
@@ -295,7 +296,7 @@ ok("reconnect resyncs the full canvas (tiles + inventory)", reinit.canvas && rei
 // --------------------------------------------------------------- persistence
 // let the debounced snapshot land, then boot a SECOND server on the same data dir
 await wait(900);
-ok("room snapshot file exists", existsSync(path.join(ROOT, ".data", "rooms.json")));
+ok("room snapshot file exists", existsSync(path.join(process.env.DATA_DIR || path.join(ROOT, ".data"), "rooms.json")));
 const secondBase = "http://127.0.0.1:3100";
 const child = spawn(process.execPath, [path.join(ROOT, "src", "server.js")], {
   env: { ...process.env, PORT: "3100" },

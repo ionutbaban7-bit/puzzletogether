@@ -1,0 +1,690 @@
+{
+  "meta": {
+    "name": { "ro": "Roata Emoțiilor", "en": "The Emotion Wheel" },
+    "model": { "ro": "8 familii (Plutchik) × 3 niveluri de intensitate, orientate pe circumplexul valență×arousal (Russell). Epistemie: emoțiile sunt construite, nu descoperite (Barrett).", "en": "8 families (Plutchik) × 3 intensity levels, oriented on the valence×arousal circumplex (Russell). Epistemology: emotions are constructed, not discovered (Barrett)." },
+    "families": [
+      { "id": "joy", "name": { "ro": "Bucurie", "en": "Joy" }, "icon": "😊", "color": "#f59e0b", "rings": { "ro": ["liniște", "bucurie", "extaz"], "en": ["serenity", "joy", "ecstasy"] } },
+      { "id": "trust", "name": { "ro": "Încredere", "en": "Trust" }, "icon": "🤝", "color": "#10b981", "rings": { "ro": ["acceptare", "încredere", "devotament"], "en": ["acceptance", "trust", "devotion"] } },
+      { "id": "fear", "name": { "ro": "Frică", "en": "Fear" }, "icon": "😨", "color": "#6366f1", "rings": { "ro": ["neliniște", "frica", "groază"], "en": ["apprehension", "fear", "terror"] } },
+      { "id": "surprise", "name": { "ro": "Surprindere", "en": "Surprise" }, "icon": "⚡", "color": "#a855f7", "rings": { "ro": ["distracție", "surprindere", "șoc"], "en": ["distraction", "surprise", "shock"] } },
+      { "id": "sadness", "name": { "ro": "Tristețe", "en": "Sadness" }, "icon": "💧", "color": "#3b82f6", "rings": { "ro": ["resemnare", "tristețe", "doliu"], "en": ["pensiveness", "sadness", "grief"] } },
+      { "id": "disgust", "name": { "ro": "Dispreț", "en": "Disgust" }, "icon": "🤢", "color": "#14b8a6", "rings": { "ro": ["plictiseală", "dispreț", "aversiune"], "en": ["boredom", "disgust", "loathing"] } },
+      { "id": "anger", "name": { "ro": "Furie", "en": "Anger" }, "icon": "🔥", "color": "#ef4444", "rings": { "ro": ["enervare", "furie", "furie nestemată"], "en": ["annoyance", "anger", "rage"] } },
+      { "id": "anticipation", "name": { "ro": "Anticipare", "en": "Anticipation" }, "icon": "🧭", "color": "#fb923c", "rings": { "ro": ["interes", "anticipare", "entuziasm"], "en": ["interest", "anticipation", "enthusiasm"] } }
+    ]
+  },
+  "emotions": [
+    {
+      "id": "linistea", "family": "joy", "level": 1, "spectrumIndex": 0,
+      "name": { "ro": "Liniștea", "en": "Serenity" },
+      "def": { "ro": "O stare calmă de satisfacție, fără un motiv mare de numit. Ca o cameră în care, brusc, totul e la locul lui.", "en": "A calm state of contentment, without a big cause to name. Like a room where suddenly everything is in its place." },
+      "body": { "ro": "umeri coborâți; respirație lungă și adâncită; buze ușor zâmbind pe jumătate; o căldură blândă în piept", "en": "shoulders dropped; long, deepened breathing; lips half-smiling; a mild warmth in the chest" },
+      "thoughts": { "ro": ["„Mă pot opri un moment.”", "„Nimic nu mă urcă."], "en": ["“I can stop for a moment.”", "“Nothing is piling up on me.”"] },
+      "impulse": { "ro": "încetinesc, rămân, savurez", "en": "slow down, stay, savor" },
+      "function": { "ro": "adesea semnalează siguranță: corpul își poate permite pauza pentru că nu există pericol activ", "en": "often signals safety: the body can afford the pause because there is no active danger" },
+      "usefulWhen": { "ro": "ca reper: „cum arată echilibrul meu?” — o liniște de bază pe care o poți recunoaște și alege", "en": "as a reference point: “what does my balance look like?” — a baseline calm you can recognize and choose" },
+      "heavyWhen": { "ro": "când „calmul” apare brusc în fața a ceva greu și nu mai pleacă — poate fi anestezie, nu liniște", "en": "when “the calm” appears suddenly in front of something heavy and won't leave — it may be anesthesia, not calm" },
+      "near": ["acceptarea", "bucuria"],
+      "notSameAs": { "ro": "Nu e plictiseală (care doare prin lipsa de stimulare) și nu e deprimare (o durere difuză, fără cauză clară). Liniștea are o ușoară plăcere și un prezent.", "en": "It is not boredom (which hurts from lack of stimulation) and not depression (a dull pain). Serenity has a light pleasure and a present." },
+      "triggers": { "ro": ["o dușă lungă", "o muncă terminată", "un loc liniștit", "o noapte fără alerte"], "en": ["a long shower", "finished work", "a quiet place", "a night without alerts"] },
+      "valence": 3, "arousal": -3,
+      "microExercise": { "ro": "3 respirații lente (4 în, 4 din) și un singur lucru concret care e ok acum: mirosul, temperatura, sunetul.", "en": "3 slow breaths (4 in, 4 out) and one concrete thing that is ok right now: the smell, the temperature, the sound." },
+      "research": [
+        { "title": "Bodily maps of emotions", "year": 2014, "source": "Nummenmaa et al., PNAS", "status": "verified" },
+        { "title": "Emotional granularity", "year": 2017, "source": "Lisa Feldman Barrett", "status": "verified" }
+      ],
+      "caveat": { "ro": "Liniștea e greu de etichetat pentru că nu face zgomot; mulți o raportează abia când le e spus că există.", "en": "Serenity is hard to label because it makes no noise; many report it only when told it exists." },
+      "spectrum": [
+        { "ro": "Liniște", "en": "Serenity" }, { "ro": "Bucurie", "en": "Joy" }, { "ro": "Bucurie vie", "en": "Glee" }, { "ro": "Elare", "en": "Elation" },
+        { "ro": "Extaz", "en": "Ecstasy" }, { "ro": "Euforie", "en": "Jubilation" }, { "ro": "Delir", "en": "Delirium" }, { "ro": "Frenzie", "en": "Frenzy" }
+      ]
+    },
+    {
+      "id": "bucuria", "family": "joy", "level": 2, "spectrumIndex": 1,
+      "name": { "ro": "Bucuria", "en": "Joy" },
+      "def": { "ro": "Plăcerea clară de a primi ceva ce contează: o veste, o reușită, o întâlnire. Are o cauză pe care o poți numi.", "en": "The clear pleasure of receiving something that matters: news, a success, a meeting. It has a cause you can name." },
+      "body": { "ro": "căldură în piept; zâmbet larg; voce mai tare și mai luminoasă; impuls de mișcare (sari, arunci brațele); fața „se deschide”", "en": "warmth in the chest; wide smile; louder, brighter voice; urge to move (jumping, throwing arms); the face “opens up”" },
+      "thoughts": { "ro": ["„A mers!”", "„Îmi place!”", "„Vreau să spun cuiva!”"], "en": ["“It worked!”", "“I like it!”", "“I want to tell someone!”"] },
+      "impulse": { "ro": "sărbătoresc, împart, mă apropie de sursă", "en": "celebrate, share, approach the source" },
+      "function": { "ro": "adesea marchează ce merită repetat: „asta a mers — ține minte”", "en": "often marks what is worth repeating: “that worked — remember”" },
+      "usefulWhen": { "ro": "s-o împărtășești (bucuria crește când e transmisă) și s-o folosești ca combustibil pentru lucruri care contează", "en": "to share it (joy grows when transmitted) and to use it as fuel for things that matter" },
+      "heavyWhen": { "ro": "când depinde de lucruri pe care nu le poți controla (un premiu, un like) și devine un pendul: fericit—gol—fericit—gol", "en": "when it depends on things you cannot control (a prize, a like) and becomes a pendulum: happy—empty—happy—empty" },
+      "near": ["extazul", "entuziasmul", "blend-dragoste"],
+      "notSameAs": { "ro": "Bucuria ≠ euforie (care scapă de realitate) și ≠ distragere (care nu are cauză). Bucuria are o cauză concretă și trece de la sine.", "en": "Joy ≠ euphoria (which escapes reality) and ≠ distraction (which has no cause). Joy has a concrete cause and passes on its own." },
+      "triggers": { "ro": ["un compliment sincer", "o muncă terminată", "o reîntâlnire", "o veste bună neașteptată"], "en": ["a sincere compliment", "finished work", "a reunion", "unexpected good news"] },
+      "valence": 4, "arousal": 1,
+      "microExercise": { "ro": "Scrie cauza în 1 rând („Sunt bucuros pentru că...”) și spune-o unui om. Bucuria neîmpărtășită se stinge.", "en": "Write the cause in 1 line (“I'm happy because...”) and say it to one person. Unshared joy fades out." },
+      "research": [
+        { "title": "Bodily maps of emotions", "year": 2014, "source": "Nummenmaa et al., PNAS", "status": "verified" }
+      ],
+      "caveat": { "ro": "Bucuria e subiectivă și contextuală; roata o plasează ca „pozitivă” pentru că majoritatea o raportează așa.", "en": "Joy is subjective and contextual; the wheel places it as “positive” because most people report it that way." },
+      "spectrum": [
+        { "ro": "Liniște", "en": "Serenity" }, { "ro": "Bucurie", "en": "Joy" }, { "ro": "Bucurie vie", "en": "Glee" }, { "ro": "Elare", "en": "Elation" },
+        { "ro": "Extaz", "en": "Ecstasy" }, { "ro": "Euforie", "en": "Jubilation" }, { "ro": "Delir", "en": "Delirium" }, { "ro": "Frenzie", "en": "Frenzy" }
+      ]
+    },
+    {
+      "id": "extazul", "family": "joy", "level": 3, "spectrumIndex": 4,
+      "name": { "ro": "Extazul", "en": "Ecstasy" },
+      "def": { "ro": "Plăcerea care umple tot câmpul: te pierzi în ea, timpul se comprimă, corpul pare prea mic pentru ce simți.", "en": "The pleasure that fills the whole field: you get lost in it, time compresses, the body seems too small for what you feel." },
+      "body": { "ro": "inimă care bate tare; căldură intensă în tot corpul; zâmbet care nu se mai oprește; voce care tremură; senzație de „zbor”", "en": "heart beating hard; intense warmth through the body; a smile that won't stop; trembling voice; a feeling of “flight”" },
+      "thoughts": { "ro": ["„Nu vreau să se termine.”", "„E mai mult decât pot să țin."], "en": ["“I don't want it to end.”", "“It's more than I can hold.”"] },
+      "impulse": { "ro": "mă predau, celebrez zgomotos, mă apropii extrem de sursă", "en": "surrender, celebrate loudly, approach the source intensely" },
+      "function": { "ro": "adesea marchează momentele care definesc: o nuntă, o reușită mare, o întâlnire rară", "en": "often marks the moments that define: a wedding, a great success, a rare meeting" },
+      "usefulWhen": { "ro": "rar și scurt: e combustibil pentru amintiri care susțin în zilele grele", "en": "rare and short: it is fuel for memories that support you on hard days" },
+      "heavyWhen": { "ro": "când devine dependință de doză (doar „capul” te mai bucură) sau când se confundă cu iubirea — extazul trece, dragostea rămâne", "en": "when it becomes dose-dependence (only “the peak” pleases you) or when it is confused with love — ecstasy passes, love remains" },
+      "near": ["bucuria", "blend-dragoste"],
+      "notSameAs": { "ro": "Extazul ≠ fericirea de bază (care e liniștită) și ≠ euforie artificială (care lasă o coadă de gol). Are un adevărat anvergură și un preț: frica de a-l pierde.", "en": "Ecstasy ≠ baseline happiness (which is calm) and ≠ artificial euphoria (which leaves a tail of emptiness). It has real magnitude and a price: the fear of losing it." },
+      "triggers": { "ro": ["o reușită mare", "un moment de conexiune profundă", "un sport la limita ta", "o creație terminată"], "en": ["a great success", "a moment of deep connection", "a sport at your limit", "a finished creation"] },
+      "valence": 5, "arousal": 4,
+      "microExercise": { "ro": "Când ai parte, oprește-te 10 secunde și numește sursa. Extazul fără sursă numită se transformă în teama de a-l pierde.", "en": "When it happens, stop for 10 seconds and name the source. Ecstasy without a named source turns into the fear of losing it." },
+      "research": [
+        { "title": "Emotion-specific bodily maps (14 emotions)", "year": 2018, "source": "Nummenmaa et al., Scientific Reports", "status": "verified" }
+      ],
+      "caveat": { "ro": "Intensitățile extreme sunt rare în viața de zi cu zi; dacă le simți frecvent fără cauză clară, merită discutat cu un specialist.", "en": "Extreme intensities are rare in daily life; if you feel them frequently without a clear cause, it is worth discussing with a specialist." },
+      "spectrum": [
+        { "ro": "Liniște", "en": "Serenity" }, { "ro": "Bucurie", "en": "Joy" }, { "ro": "Bucurie vie", "en": "Glee" }, { "ro": "Elare", "en": "Elation" },
+        { "ro": "Extaz", "en": "Ecstasy" }, { "ro": "Euforie", "en": "Jubilation" }, { "ro": "Delir", "en": "Delirium" }, { "ro": "Frenzie", "en": "Frenzy" }
+      ]
+    },
+    {
+      "id": "acceptarea", "family": "trust", "level": 1, "spectrumIndex": 0,
+      "name": { "ro": "Acceptarea", "en": "Acceptance" },
+      "def": { "ro": "Un „da” blând, fără condiții: lași lucrul să fie cum e, fără luptă și fără entuziasm. Față de un om, o situație, pe tine însuți.", "en": "A gentle “yes”, without conditions: you let the thing be as it is, without fight and without enthusiasm. Toward a person, a situation, yourself." },
+      "body": { "ro": "relaxare generală; respirație liberă; mâini deschise; un „da” ușor al capului; absența tensiunii în maxilar", "en": "general relaxation; free breathing; open hands; a slight nod; absence of jaw tension" },
+      "thoughts": { "ro": ["„Ok, așa e.”", "„Pot trăi cu asta."], "en": ["“Ok, that's how it is.”", "“I can live with this.”"] },
+      "impulse": { "ro": "lăsare, deschidere, apropiere blândă", "en": "letting go, opening, gentle approach" },
+      "function": { "ro": "adesea semnalează că contextul e suficient de sigur încât să nu te mai apéri", "en": "often signals that the context is safe enough not to defend yourself" },
+      "usefulWhen": { "ro": "față de limitările reale (ale tale și ale altora): e baza oricărei relații care nu se termină în control", "en": "toward real limitations (yours and others'): the basis of any relationship that does not end in control" },
+      "heavyWhen": { "ro": "când „accept” înseamnă de fapt „nu mai am ce face” și devine renunțare pasivă la propria voce", "en": "when “I accept” actually means “I can do nothing more” and becomes a passive surrender of your own voice" },
+      "near": ["increderea", "linistea"],
+      "notSameAs": { "ro": "Acceptarea ≠ supunere (care costă o voce) și ≠ resemnare (care are amărăciune). Acceptarea păstrează alegerea.", "en": "Acceptance ≠ submission (which costs a voice) and ≠ resignation (which has bitterness). Acceptance preserves the choice." },
+      "triggers": { "ro": ["o scuză primită", "o limită recunoscută", "un iertare", "un „mulțumesc” primit cu adevărat"], "en": ["a received apology", "a recognized limitation", "a forgiveness", "a “thank you” truly received"] },
+      "valence": 2, "arousal": -3,
+      "microExercise": { "ro": "Un lucru pe care nu-l poți schimba. Spune-l cu voce tare și adaugă: „și aleg să... (un pas mic al tău)”.", "en": "One thing you cannot change. Say it out loud and add: “and I choose to... (your small step).”" },
+      "research": [
+        { "title": "Acceptance and Commitment Therapy (psychological flexibility)", "year": 1999, "source": "Hayes, Strosahl & Wilson", "status": "verified" },
+        { "title": "Emotion: A Psychoevolutionary Synthesis", "year": 1980, "source": "Robert Plutchik", "status": "verified" }
+      ],
+      "caveat": { "ro": "Acceptarea se confundă ușor cu resemnarea; diferența e prezența alegerii.", "en": "Acceptance is easily confused with resignation; the difference is the presence of choice." },
+      "spectrum": [
+        { "ro": "Acceptare", "en": "Acceptance" }, { "ro": "Încredere", "en": "Trust" }, { "ro": "Credință", "en": "Faith" }, { "ro": "Reverență", "en": "Reverence" },
+        { "ro": "Uimire admirativă", "en": "Awe" }, { "ro": "Erou în mintea ta", "en": "Heroism" }, { "ro": "Supunere", "en": "Submission" }, { "ro": "Adorație", "en": "Adoration" }
+      ]
+    },
+    {
+      "id": "increderea", "family": "trust", "level": 2, "spectrumIndex": 1,
+      "name": { "ro": "Încrederea", "en": "Trust" },
+      "def": { "ro": "A te baza pe cineva sau ceva fără să controlezi fiecare pas: „mă pot aștepta la bunăvoință și predictibilitate”.", "en": "Relying on someone or something without controlling every step: “I can expect goodwill and predictability”." },
+      "body": { "ro": "ochi mai relaxați; postură deschisă; ritmul vorbirii mai lent; senzația de „podea sub picioare”", "en": "more relaxed eyes; open posture; slower speaking rhythm; the feeling of “floor under the feet”" },
+      "thoughts": { "ro": ["„Dacă am nevoie, o să fie acolo.”", "„Pot lăsa lucrul în mâna lui/a ei."], "en": ["“If I need it, they'll be there.”", "“I can leave the thing in his/her hands.”"] },
+      "impulse": { "ro": "mă încred, deleg, mă deschid, vin cu mâinile goale", "en": "trust, delegate, open up, come with empty hands" },
+      "function": { "ro": "adesea semnalează siguranță socială: reduce costul cooperării", "en": "often signals social safety: it reduces the cost of cooperation" },
+      "usefulWhen": { "ro": "proporțional cu dovezile: încrederea se construiește pe fapte mici verificate, nu pe declarații", "en": "proportional to evidence: trust is built on small verified facts, not on declarations" },
+      "heavyWhen": { "ro": "când e dată fără dovezi (idealizare) sau refuzată fără motiv (de la o rană veche) — ambele o vor costa", "en": "when it is given without evidence (idealization) or refused without reason (from an old wound) — both will cost you" },
+      "near": ["acceptarea", "devotamentul", "blend-dragoste"],
+      "notSameAs": { "ro": "Încrederea ≠ naivitate (care ignoră riscul) și ≠ supunere (care pierde alegerile). Încrederea ține cont de risc și totuși alege.", "en": "Trust ≠ naivety (which ignores risk) and ≠ submission (which loses choices). Trust takes risk into account and still chooses." },
+      "triggers": { "ro": ["o promisiune ținută de mai multe ori", "un secret păstrat", "un ajutor venit nechemat"], "en": ["a promise kept several times", "a secret kept", "help that came unasked"] },
+      "valence": 3, "arousal": -1,
+      "microExercise": { "ro": "Un om pe care te bazezi. Scrie 2 fapte mici care ți-au dat acest drept. Dacă nu găsești 2, încrederea e încă o speranță, nu o dovadă.", "en": "One person you rely on. Write 2 small facts that earned this right. If you can't find 2, the trust is still a hope, not evidence." },
+      "research": [
+        { "title": "Emotion Cycles: A Psychoevolutionary Synthesis", "year": 2001, "source": "Robert Plutchik", "status": "verified" }
+      ],
+      "caveat": { "ro": "Încrederea e contextuală: poți avea încredere într-un om și nu într-o situație.", "en": "Trust is contextual: you can trust a person and not a situation." },
+      "spectrum": [
+        { "ro": "Acceptare", "en": "Acceptance" }, { "ro": "Încredere", "en": "Trust" }, { "ro": "Credință", "en": "Faith" }, { "ro": "Reverență", "en": "Reverence" },
+        { "ro": "Uimire admirativă", "en": "Awe" }, { "ro": "Erou în mintea ta", "en": "Heroism" }, { "ro": "Supunere", "en": "Submission" }, { "ro": "Adorație", "en": "Adoration" }
+      ]
+    },
+    {
+      "id": "devotamentul", "family": "trust", "level": 3, "spectrumIndex": 7,
+      "name": { "ro": "Devotamentul", "en": "Devotion" },
+      "def": { "ro": "Încrederea care a trecut de la „bunăvoință” la „angajament”: alegi pe cineva sau ceva și te leagi de el conștient, cu timp și cu preț.", "en": "Trust that has moved from “goodwill” to “commitment”: you choose someone or something and consciously bind yourself to it, with time and with price." },
+      "body": { "ro": "căldură stabilă; atenție prelungită asupra celuilalt; corpul se „orientează” spre obiect; calm în prezență", "en": "stable warmth; prolonged attention on the other; the body “orients” toward the object; calm in presence" },
+      "thoughts": { "ro": ["„Pentru tine/asta — da.”", "„Aici sunt, indiferent de...”"], "en": ["“For you/this — yes.”", "“I'm here, regardless of...”"] },
+      "impulse": { "ro": "mă angajez, stau, apăr, investesc", "en": "commit, stay, defend, invest" },
+      "function": { "ro": "adesea semnalează ce ai ales să fie important: e inelul cel mai „decizional” al familiei încredere", "en": "often signals what you chose to be important: the most “decisional” ring of the trust family" },
+      "usefulWhen": { "ro": "când e conștient (nu o rană de legătură): devotamentul ales e o sursă principală de sens pe termen lung", "en": "when it is conscious (not an attachment wound): chosen devotion is a main source of long-term meaning" },
+      "heavyWhen": { "ro": "când devine fuziune (nu mai există „alți oameni”) sau când rămâne după ce obiectul a încetat să merite", "en": "when it becomes fusion (there are no more “other people”) or when it remains after the object has ceased to be worthy" },
+      "near": ["increderea", "blend-dragoste"],
+      "notSameAs": { "ro": "Devotamentul ≠ dependință (care e frică de pierdere mascată) și ≠ supunere (care e frică de respingere). Devotamentul are un „da” liber.", "en": "Devotion ≠ dependence (which is masked fear of loss) and ≠ submission (which is fear of rejection). Devotion has a free “yes”." },
+      "triggers": { "ro": ["un angajament luat", "o relație longevivă", "o cauză", "un ritual împărtășit"], "en": ["a commitment taken", "a long-lived relationship", "a cause", "a shared ritual"] },
+      "valence": 4, "arousal": -2,
+      "microExercise": { "ro": "La ce/la cine ești devotat? Întrebarea onestă: „Aș mai alege asta știind tot ce știu acum?”", "en": "What/whom are you devoted to? The honest question: “Knowing everything I know now, would I choose this again?”" },
+      "research": [
+        { "title": "The Nature of Emotions (extreme of trust)", "year": 2001, "source": "Robert Plutchik", "status": "verified" }
+      ],
+      "caveat": { "ro": "Devotamentul poate fi o putere sau o captivare; diferența e libertatea alegerii.", "en": "Devotion can be a strength or a captivity; the difference is the freedom of choice." },
+      "spectrum": [
+        { "ro": "Acceptare", "en": "Acceptance" }, { "ro": "Încredere", "en": "Trust" }, { "ro": "Credință", "en": "Faith" }, { "ro": "Reverență", "en": "Reverence" },
+        { "ro": "Uimire admirativă", "en": "Awe" }, { "ro": "Erou în mintea ta", "en": "Heroism" }, { "ro": "Supunere", "en": "Submission" }, { "ro": "Adorație", "en": "Adoration" }
+      ]
+    },
+    {
+      "id": "nelinistea", "family": "fear", "level": 1, "spectrumIndex": 0,
+      "name": { "ro": "Nelinistea", "en": "Apprehension" },
+      "def": { "ro": "Un fundal de „ceva nu ar trebui să fie ok” fără ca amenințarea să fie clară. Ca un motor care ronăie în gol.", "en": "A background of “something isn't supposed to be ok” without the threat being clear. Like an engine idling in an empty." },
+      "body": { "ro": "o ușoară tensiune în stomac; respirație puțin mai scurtă; maxilar încleștat pe jumătate; atenția pe jumătate orientată către ușă", "en": "a slight tension in the stomach; slightly shorter breathing; jaw half-clenched; attention half-oriented toward the door" },
+      "thoughts": { "ro": ["„S-ar putea să...”", "„Trebuie să verific din nou."], "en": ["“It might be that...”", "“I have to check again.”"] },
+      "impulse": { "ro": "verific, re-verific, aștept, nu dorm bine", "en": "check, re-check, wait, don't sleep well" },
+      "function": { "ro": "adesea semnalează incertitudine: mintea caută un pericol pe care nu-l vede încă", "en": "often signals uncertainty: the mind is looking for a danger it doesn't see yet" },
+      "usefulWhen": { "ro": "ca alarmă de fundal în perioade reale de incertitudine (o decizie mare, un rezultat așteptat) — o citești și acționezi proporțional", "en": "as a background alarm in real periods of uncertainty (a big decision, an awaited result) — you read it and act proportionally" },
+      "heavyWhen": { "ro": "când nu mai are obiect (verifici de 5 ori și tot ronăie) sau când te face să eviți viața", "en": "when it no longer has an object (you check 5 times and it still idles) or when it makes you avoid life" },
+      "near": ["frica", "anticiparea", "blend-ingrijorare"],
+      "notSameAs": { "ro": "Nelinistea ≠ frica (care are un obiect) și ≠ anxietatea generalizată (stare clinică, e teren de specialist). Aici e doar o nuanță.", "en": "Apprehension ≠ fear (which has an object) and ≠ generalized anxiety (a clinical state, specialist's territory). Here it is just a nuance." },
+      "triggers": { "ro": ["o decizie amânată", "un mesaj așteptat", "o schimbare în plan", "o informație lipsă"], "en": ["a postponed decision", "an awaited message", "a change in plans", "missing information"] },
+      "valence": -2, "arousal": 2,
+      "microExercise": { "ro": "Numește ce exact s-ar putea întâmpla (1 rând) și cât e șansa reală. Neliniștea fără obiect se oprește când i se dă unul.", "en": "Name exactly what might happen (1 line) and what the real probability is. Apprehension without an object stops when it is given one." },
+      "research": [
+        { "title": "A Circumplex Model of Affect", "year": 1980, "source": "James A. Russell, Journal of Personality and Social Psychology", "status": "verified" },
+        { "title": "Maximizing exposure therapy: an inhibitory learning approach", "year": 2014, "source": "Craske et al., Behaviour Research and Therapy", "status": "verified" }
+      ],
+      "caveat": { "ro": "Nelinistea se confundă ușor cu „stresul normal”; nu e un diagnostic, o nuanță.", "en": "Apprehension is easily confused with “normal stress”; it is not a diagnosis, a nuance." },
+      "spectrum": [
+        { "ro": "Neliniste", "en": "Apprehension" }, { "ro": "Frica", "en": "Fear" }, { "ro": "Groază", "en": "Horror" }, { "ro": "Teroare", "en": "Terror" },
+        { "ro": "Panică", "en": "Panic" }, { "ro": "Desperație", "en": "Despair" }, { "ro": "Agonie", "en": "Anguish" }, { "ro": "Isterie", "en": "Hysteria" }
+      ]
+    },
+    {
+      "id": "frica", "family": "fear", "level": 2, "spectrumIndex": 1,
+      "name": { "ro": "Frica", "en": "Fear" },
+      "def": { "ro": "O reacție clară la un pericol perceput — prezent sau iminent. Corpul se pregătește, mintea caută ieșire.", "en": "A clear reaction to a perceived danger — present or imminent. The body prepares, the mind looks for an exit." },
+      "body": { "ro": "inimă care bate tare; stomac „care cade”; tensiune în umeri și maxilar; transpirație la mâini; atenție îngustată pe pericol", "en": "heart beating hard; stomach that “drops”; tension in shoulders and jaw; sweat in hands; attention narrowed on the danger" },
+      "thoughts": { "ro": ["„Nu voi putea face față.”", "„O să fie rău.”", "„Ce fac dacă...”"], "en": ["“I won't be able to cope.”", "“It's going to be bad.”", "“What do I do if...”"] },
+      "impulse": { "ro": "fug, evit, mă protejez, cer ajutor", "en": "run, avoid, protect myself, ask for help" },
+      "function": { "ro": "adesea semnalează pericol și pregătește o acțiune de supraviețuire: e o alarmă utilă, nu un dușman", "en": "often signals danger and prepares a survival action: it is a useful alarm, not an enemy" },
+      "usefulWhen": { "ro": "proporțional cu pericolul real: frica de mașină, de foc, de un conflict — te protejează și apoi trece", "en": "proportional to real danger: fear of a car, of fire, of a conflict — it protects you and then passes" },
+      "heavyWhen": { "ro": "când e disproporționată (un email pare o amenințare la viață) sau când te face să eviți viața pe o scară largă", "en": "when it is disproportionate (an email seems a life threat) or when it makes you avoid life on a large scale" },
+      "near": ["nelinistea", "groaza", "blend-ingrijorare"],
+      "notSameAs": { "ro": "Frica ≠ anxietate (frică = un pericol clar/prezent; anxietate = anticipat/difuz) și ≠ panică (frică cu senzația acută de pierdere a controlului). Frica are un „față de”.", "en": "Fear ≠ anxiety (fear = a clear/present danger; anxiety = anticipated/diffuse) and ≠ panic (fear with the acute sense of loss of control). Fear has an “of”." },
+      "triggers": { "ro": ["un pericol vizibil", "o situație nouă", "un eșec anticipat", "o critică așteptată", "o respingere posibilă"], "en": ["a visible danger", "a new situation", "an anticipated failure", "an awaited criticism", "a possible rejection"] },
+      "valence": -4, "arousal": 3,
+      "microExercise": { "ro": "Respirație 4-4-4 de 3 ori, apoi: „Ce este cel mai mic lucru pe care îl pot face în 5 minute?”", "en": "4-4-4 breathing 3 times, then: “What is the smallest thing I can do in 5 minutes?”" },
+      "research": [
+        { "title": "Bodily maps of emotions", "year": 2014, "source": "Nummenmaa et al., PNAS", "status": "verified" },
+        { "title": "Optimizing inhibitory learning during exposure therapy", "year": 2008, "source": "Craske et al., Behaviour Research and Therapy", "status": "verified" }
+      ],
+      "caveat": { "ro": "Frica e una dintre cele mai utile emoții și una dintre cele mai greșit interpretate.", "en": "Fear is one of the most useful emotions and one of the most misinterpreted." },
+      "spectrum": [
+        { "ro": "Neliniste", "en": "Apprehension" }, { "ro": "Frica", "en": "Fear" }, { "ro": "Groază", "en": "Horror" }, { "ro": "Teroare", "en": "Terror" },
+        { "ro": "Panică", "en": "Panic" }, { "ro": "Desperație", "en": "Despair" }, { "ro": "Agonie", "en": "Anguish" }, { "ro": "Isterie", "en": "Hysteria" }
+      ]
+    },
+    {
+      "id": "groaza", "family": "fear", "level": 3, "spectrumIndex": 3,
+      "name": { "ro": "Groaza", "en": "Terror" },
+      "def": { "ro": "Frica care a ieșit din controlul obișnuit: pericolul pare total, imediat, iar mintea nu mai poate negocia. E o stare, nu un mod de viață.", "en": "Fear that has exited ordinary control: the danger seems total, immediate, and the mind can no longer negotiate. It is a state, not a way of life." },
+      "body": { "ro": "transpirație rece; mișcare paralizantă sau în fugă; respirație scurtă; „tunel” vizual; voce care dispare; realitatea pare că se diluează", "en": "cold sweat; paralyzing or fleeing movement; short breathing; a visual “tunnel”; a disappearing voice; reality seems to dilute" },
+      "thoughts": { "ro": ["„Nu mai pot.”", "„Acesta e sfârșitul.”", "(gânduri fragmentate: „Nu. Nu. Nu.”)"], "en": ["“I can't anymore.”", "“This is the end.”", "(fragmented thoughts: “No. No. No.”)"] },
+      "impulse": { "ro": "fug total, paralizie, strigăt, comportament de supraviețuire", "en": "total flight, paralysis, scream, survival behavior" },
+      "function": { "ro": "adesea semnalează un pericol grav: e alarma de alarmă — corpul a decis că nu mai e timp de negociere", "en": "often signals a serious danger: it is the alarm of alarms — the body has decided there is no more time to negotiate" },
+      "usefulWhen": { "ro": "rar și scurt: te salvează din pericolul real (un accident, un atac) — apoi corpul are nevoie de liniște și de altcineva lângă", "en": "rare and short: it saves you from real danger (an accident, an attack) — then the body needs calm and someone nearby" },
+      "heavyWhen": { "ro": "când revine în situații fără pericol real (un coșmar repetat, o situație de muncă) sau când e frecventă — aici e clar teren de specialist", "en": "when it returns in situations without real danger (a repeated nightmare, a work situation) or when it is frequent — here it is clearly specialist territory" },
+      "near": ["frica", "blend-panica"],
+      "notSameAs": { "ro": "Groaza ≠ o frică mare (vine cu o prăbușire a controlului) și nu e ceva de „înfruntat” singur, în mod repetat; după un episod puternic: odihnă + suport +, dacă revine, specialist.", "en": "Terror ≠ a big fear (it has a collapse of control) and it is not something to “face” alone repeatedly; after a strong episode: rest + support +, if it returns, specialist." },
+      "triggers": { "ro": ["un pericol real iminent", "o pierdere bruscă", "un accident", "un conflict violent"], "en": ["an imminent real danger", "a sudden loss", "an accident", "a violent conflict"] },
+      "valence": -5, "arousal": 5,
+      "microExercise": { "ro": "Nu se exersează singur. Dacă ești în groază: numește 5 obiecte din cameră, o respirație lentă, și un om de încredere pe telefon.", "en": "It is not practiced alone. If you are in terror: name 5 objects in the room, a slow breath, and a trusted person on the phone." },
+      "research": [
+        { "title": "Maximizing exposure therapy: an inhibitory learning approach", "year": 2014, "source": "Craske et al., Behaviour Research and Therapy", "status": "verified" }
+      ],
+      "caveat": { "ro": "Dacă groaza devine frecventă sau are efecte lungi, e un semnal clar pentru un specialist — nu e un exercițiu de „forță”.", "en": "If terror becomes frequent or has long effects, it is a clear signal for a specialist — it is not an exercise of “strength”." },
+      "spectrum": [
+        { "ro": "Neliniste", "en": "Apprehension" }, { "ro": "Frica", "en": "Fear" }, { "ro": "Groază", "en": "Horror" }, { "ro": "Teroare", "en": "Terror" },
+        { "ro": "Panică", "en": "Panic" }, { "ro": "Desperație", "en": "Despair" }, { "ro": "Agonie", "en": "Anguish" }, { "ro": "Isterie", "en": "Hysteria" }
+      ]
+    },
+    {
+      "id": "distractia", "family": "surprise", "level": 1, "spectrumIndex": 0,
+      "name": { "ro": "Distracția", "en": "Distraction" },
+      "def": { "ro": "Atenția care alunecă: ceva nou te oprește o secundă și te trage altundeva. E surprinderea în doza ei cea mai mică.", "en": "Attention that slips: something new stops you for a second and pulls you elsewhere. It is surprise in its smallest dose." },
+      "body": { "ro": "o pauză mică a mâinii; ochii se îndreaptă către sursă; o respirație care se taie o secundă; capul „către sunet”", "en": "a small pause of the hand; eyes directed toward the source; a breath cut for a second; the head “toward the sound”" },
+      "thoughts": { "ro": ["„Ce?”", "„Uite!”", "„Am auzit eu bine?”"], "en": ["“What?”", "“Look!”", "“Did I hear that right?”"] },
+      "impulse": { "ro": "opresc, privesc, întreb", "en": "stop, look, ask" },
+      "function": { "ro": "adesea semnalează noutate: sistemul caută actualizarea hărții", "en": "often signals novelty: the system is looking for a map update" },
+      "usefulWhen": { "ro": "e motorul învățării și al curiozității — o poți și alege (să fii „distras” de ce contează)", "en": "it is the engine of learning and curiosity — you can also choose it (to be “distracted” by what matters)" },
+      "heavyWhen": { "ro": "când devine o evadare (telefonul la fiecare 30 de secunde) sau când nu te mai poți opri (în învățare, în conversații)", "en": "when it becomes an escape (the phone every 30 seconds) or when you can no longer stop (in learning, in conversations)" },
+      "near": ["surprinderea", "interesul"],
+      "notSameAs": { "ro": "Distracția ≠ plictiseală (care e o lipsă de stimulare, nu o capturare de atenție) și ≠ ADHD (diagnostic). E o micro-stare normală.", "en": "Distraction ≠ boredom (which is a lack of stimulation, not a capture of attention) and ≠ ADHD (a diagnosis). It is a normal micro-state." },
+      "triggers": { "ro": ["un sunet nou", "o notificare", "o față cunoscută", "o informație neașteptată"], "en": ["a new sound", "a notification", "a familiar face", "unexpected information"] },
+      "valence": 0, "arousal": 2,
+      "microExercise": { "ro": "Alege 1 lucru de azi care te „distra” cu adevărat (nu un telefon) și dă-i 5 minute conștiente.", "en": "Choose 1 thing today that truly “distracts” you (not a phone) and give it 5 conscious minutes." },
+      "research": [
+        { "title": "Emotion: A Psychoevolutionary Synthesis (distraction = mild surprise)", "year": 1980, "source": "Robert Plutchik", "status": "verified" }
+      ],
+      "caveat": { "ro": "Distracția e atât de rapidă încât e greu de observat; cartea ei e mai degrabă o oglindă pentru atenție.", "en": "Distraction is so fast that it is hard to observe; its book is more of a mirror for attention." },
+      "spectrum": [
+        { "ro": "Distracție", "en": "Distraction" }, { "ro": "Surprindere", "en": "Surprise" }, { "ro": "Uimire", "en": "Astonishment" }, { "ro": "Uimire profundă", "en": "Amazement" },
+        { "ro": "Stuprare", "en": "Stupefaction" }, { "ro": "Derută", "en": "Bewilderment" }, { "ro": "Nerecunoaștere", "en": "Disbelief" }, { "ro": "Șoc", "en": "Shock" }
+      ]
+    },
+    {
+      "id": "surprinderea", "family": "surprise", "level": 2, "spectrumIndex": 1,
+      "name": { "ro": "Surprinderea", "en": "Surprise" },
+      "def": { "ro": "Oprirea bruscă a hărții interioare: s-a întâmplat ceva ce modelul tău nu prevedea. Nu e „bună” sau „rea” — e o pauză de actualizare.", "en": "The abrupt stopping of the internal map: something happened that your model didn't predict. It's neither “good” nor “bad” — it's a pause for updating." },
+      "body": { "ro": "o respirație care se oprește; sprâncenele ridicate; ochii mari; o pauză de 1-2 secunde înainte de orice reacție", "en": "a breath that stops; raised eyebrows; wide eyes; a pause of 1-2 seconds before any reaction" },
+      "thoughts": { "ro": ["„Cum?”", "„Nu era în plan.”", "„Nu am văzut asta venind."], "en": ["“How?”", "“It wasn't in the plan.”", "“I didn't see that coming.”"] },
+      "impulse": { "ro": "opresc, reculeg informație, aștept ce urmează", "en": "stop, gather information, wait for what follows" },
+      "function": { "ro": "adesea semnalează că modelul tău despre lume e depășit: e o oportunitate de a-l actualiza", "en": "often signals that your model about the world is outdated: it is an opportunity to update it" },
+      "usefulWhen": { "ro": "proporțional: surprinderea care îți actualizează hărțile (despre oameni, despre tine) e cea mai prețioasă", "en": "proportional: the surprise that updates your maps (about people, about you) is the most precious" },
+      "heavyWhen": { "ro": "când trăiești în așteptarea constantă a surprinzerilor (viața devine un salt în gol) sau când surprinderea te parализează", "en": "when you live in the constant expectation of surprises (life becomes a jump into the void) or when the surprise paralyzes you" },
+      "near": ["distractia", "socul", "blend-dezamagire"],
+      "notSameAs": { "ro": "Surprinderea ≠ frică (nu are amenințare) și ≠ bucurie (nu are placere) — e neutră până când mintea o etichetează: „surprindere bună” sau „surprindere rea”.", "en": "Surprise ≠ fear (it has no threat) and ≠ joy (it has no pleasure) — it is neutral until the mind labels it: “good surprise” or “bad surprise”." },
+      "triggers": { "ro": ["o veste neașteptată", "un om pe care nu-l așteptai", "o greșeală care iese la lumină", "o oportunitate bruscă"], "en": ["an unexpected news", "a person you weren't expecting", "a mistake that comes to light", "a sudden opportunity"] },
+      "valence": 0, "arousal": 3,
+      "microExercise": { "ro": "La ultima surprindere de azi: ce s-a actualizat în tine? 1 rând: „Acum știu că...”.", "en": "At the last surprise today: what was updated in you? 1 line: “Now I know that...”." },
+      "research": [
+        { "title": "A Circumplex Model of Affect (surprise: high arousal, valence near 0)", "year": 1980, "source": "James A. Russell, Journal of Personality and Social Psychology", "status": "verified" }
+      ],
+      "caveat": { "ro": "Surprinderea e scurtă; ce contează e ce urmează după (bucurie, frică, dispreț).", "en": "Surprise is short; what matters is what follows (joy, fear, disgust)." },
+      "spectrum": [
+        { "ro": "Distracție", "en": "Distraction" }, { "ro": "Surprindere", "en": "Surprise" }, { "ro": "Uimire", "en": "Astonishment" }, { "ro": "Uimire profundă", "en": "Amazement" },
+        { "ro": "Stuprare", "en": "Stupefaction" }, { "ro": "Derută", "en": "Bewilderment" }, { "ro": "Nerecunoaștere", "en": "Disbelief" }, { "ro": "Șoc", "en": "Shock" }
+      ]
+    },
+    {
+      "id": "socul", "family": "surprise", "level": 3, "spectrumIndex": 7,
+      "name": { "ro": "Șocul", "en": "Shock" },
+      "def": { "ro": "Surprinderea care nu are timp de proces: realitatea se schimbă mai repede decât mintea, și apare o pauză în care nimic nu funcționează.", "en": "Surprise that has no time to process: reality changes faster than the mind, and a pause appears in which nothing works." },
+      "body": { "ro": "îngheț; „tunel” vizual; urechile auzesc dar nu înțeleg; corpul pare pe altcineva; respirația se oprește; slăbiciune în genunchi", "en": "freezing; a visual “tunnel”; ears that hear but don't understand; the body seeming like someone else's; breathing stopping; weakness in the knees" },
+      "thoughts": { "ro": ["(silențiu)", "„Nu se poate.”", "„Ce s-a întâmplat?”"], "en": ["(silence)", "“It can't be.”", "“What happened?”"] },
+      "impulse": { "ro": "paralizie, repetare („nu-i adevărat”), comportament automat, nevoie de altcineva", "en": "paralysis, repetition (“it's not true”), automatic behavior, need for someone" },
+      "function": { "ro": "adesea semnalează o rupere a modelului: mintea are nevoie de timp pentru a construi o nouă hartă", "en": "often signals a rupture of the model: the mind needs time to build a new map" },
+      "usefulWhen": { "ro": "nu are utilitate „de folosit” — e un timp de procesare: în șoc se iau greu decizii bune", "en": "it has no “to be used” utility — it is a processing time: in shock, good decisions are hard to make" },
+      "heavyWhen": { "ro": "când șocul nu trece (zile, săptămâni) sau când revine la fiecare amintire — aici e clar teren de specialist (sprijin, trauma)", "en": "when the shock doesn't pass (days, weeks) or when it returns at every memory — here it is clearly specialist territory (support, trauma)" },
+      "near": ["surprinderea", "groaza"],
+      "notSameAs": { "ro": "Șocul ≠ groază (groaza e frică; șocul poate veni și dintr-o veste bună, de ex. o sarcină neașteptată) și nu e slăbiciune.", "en": "Shock ≠ terror (terror is fear; shock can also come from good news, e.g. an unexpected pregnancy) and it is not weakness." },
+      "triggers": { "ro": ["o veste bruscă (bună sau rea)", "un accident", "o pierdere", "o trădare", "o schimbare majoră neanunțată"], "en": ["a sudden news (good or bad)", "an accident", "a loss", "a betrayal", "a major unannounced change"] },
+      "valence": -1, "arousal": 5,
+      "microExercise": { "ro": "Dacă ești în șoc: nu lua decizii mari, mănâncă/bea, un om de încredere lângă tine, și un singur pas mic (o dușă, un somn).", "en": "If you are in shock: don't make big decisions, eat/drink, a trusted person by your side, and one small step (a shower, a sleep)." },
+      "research": [
+        { "title": "Acute stress reactions (literatura de traumă — teren de specialist)", "year": 2019, "source": "DSM-5, American Psychiatric Association", "status": "to-verify" }
+      ],
+      "caveat": { "ro": "Șocul nu se „înfruntă” și nu se exersează; se trece prin cu sprijin. Dacă rămâne, specialist.", "en": "Shock is not “faced” and not practiced; it is passed through with support. If it remains, specialist." },
+      "spectrum": [
+        { "ro": "Distracție", "en": "Distraction" }, { "ro": "Surprindere", "en": "Surprise" }, { "ro": "Uimire", "en": "Astonishment" }, { "ro": "Uimire profundă", "en": "Amazement" },
+        { "ro": "Stuprare", "en": "Stupefaction" }, { "ro": "Derută", "en": "Bewilderment" }, { "ro": "Nerecunoaștere", "en": "Disbelief" }, { "ro": "Șoc", "en": "Shock" }
+      ]
+    },
+    {
+      "id": "resemnarea", "family": "sadness", "level": 1, "spectrumIndex": 0,
+      "name": { "ro": "Resemnarea", "en": "Pensiveness" },
+      "def": { "ro": "O tristețe blândă, cu un fundal de gânduri care se roteșc: te gândești la un om, la un timp, la o variantă vieții pe care nu-o ai. Are o anumită frumusețe.", "en": "A gentle sadness, with a background of rotating thoughts: you think of a person, of a time, of a version of life you don't have. It has a certain beauty." },
+      "body": { "ro": "o greutate ușoară în piept; ochi „îndepărtați”; o voce mai joasă și mai lentă; uneori o lacrimă care vine și pleacă", "en": "a slight weight in the chest; “distant” eyes; a lower and slower voice; sometimes a tear that comes and goes" },
+      "thoughts": { "ro": ["„Cum era atunci...”", "„Dacă aș fi...”", "„Îl/ O gândesc."], "en": ["“How it was then...”", "“If I had...”", "“I think of him/her.”"] },
+      "impulse": { "ro": "mă opresc, amintesc, ascult muzică, scriu", "en": "stop, remember, listen to music, write" },
+      "function": { "ro": "adesea semnalează pierdere sau distanță față de ce contează: e emoția care te face să prețuiești", "en": "often signals loss or distance from what matters: it is the emotion that makes you value" },
+      "usefulWhen": { "ro": "scurtă și fără evitare: resemnarea e locul în care înțelegi ce îți dorești cu adevărat", "en": "short and without avoidance: pensiveness is the place where you understand what you truly want" },
+      "heavyWhen": { "ro": "când devine locuință (trăiești în amintiri) sau când „amintirea” e de fapt o evadare de la viața prezentă", "en": "when it becomes a dwelling (you live in memories) or when “remembering” is actually an escape from present life" },
+      "near": ["tristetea", "doliul"],
+      "notSameAs": { "ro": "Resemnarea ≠ depresie (care e o durere care nu trece și fură funcția) și ≠ plictiseală. Are un obiect și o anumită frumusețe.", "en": "Pensiveness ≠ depression (which is a pain that doesn't pass and robs function) and ≠ boredom. It has an object and a certain beauty." },
+      "triggers": { "ro": ["ziua de naștere a cuiva absent", "o melodie veche", "un obiect", "o fotografie", "o anumită oră"], "en": ["the birthday of someone absent", "an old song", "an object", "a photograph", "a certain hour"] },
+      "valence": -1, "arousal": -3,
+      "microExercise": { "ro": "Un gând care se rotește. Dă-i un nume de obiect („Gândul cu Anna”) și pune-l pe o „masă” imaginară pentru 10 minute.", "en": "A rotating thought. Give it the name of an object (“The thought with Anna”) and put it on an imaginary “table” for 10 minutes." },
+      "research": [
+        { "title": "Bodily maps of emotions (sadness: decreased limb sensations)", "year": 2014, "source": "Nummenmaa et al., PNAS", "status": "verified" }
+      ],
+      "caveat": { "ro": "Resemnarea se confundă uneori cu „starea de spirit normală”; e normal, dar merită numită.", "en": "Pensiveness is sometimes confused with “normal mood”; it is normal, but it deserves to be named." },
+      "spectrum": [
+        { "ro": "Resemnare", "en": "Pensiveness" }, { "ro": "Tristețe", "en": "Sadness" }, { "ro": "Abătura", "en": "Dejection" }, { "ro": "Dureri", "en": "Sorrow" },
+        { "ro": "Dezumărire", "en": "Despondency" }, { "ro": "Doliu", "en": "Grief" }, { "ro": "Plângere", "en": "Mourning" }, { "ro": "Deprimare", "en": "Depression" }
+      ]
+    },
+    {
+      "id": "tristetea", "family": "sadness", "level": 2, "spectrumIndex": 1,
+      "name": { "ro": "Tristețea", "en": "Sadness" },
+      "def": { "ro": "Dureri de a pierde ceva ce ai avut sau de a nu ajunge la ceva ce voiai. Are un obiect: o pierdere, o distanță, un eșec.", "en": "The pain of losing something you had or of not reaching something you wanted. It has an object: a loss, a distance, a failure." },
+      "body": { "ro": "greutate în piept; „nod” în gât; oboseală; lacrimi; apetit schimbat; vocea care se sparge; o dorință de singurătate temporară", "en": "a weight in the chest; a “knot” in the throat; tiredness; tears; changed appetite; a breaking voice; a temporary desire for solitude" },
+      "thoughts": { "ro": ["„A dispărut.”", "„Nu am putut.”", "„Nu mai e ca înainte."], "en": ["“It's gone.”", "“I couldn't.”", "“It's not like before.”"] },
+      "impulse": { "ro": "mă retrag, plâng, cer liniște, uneori cer ajutor", "en": "withdraw, cry, ask for quiet, sometimes ask for help" },
+      "function": { "ro": "adesea semnalează pierdere și te oprește să procesezi: „aici a murit ceva — nu te duce mai departe fără a o recunoaște”", "en": "often signals loss and stops you to process: “something died here — don't go further without acknowledging it”" },
+      "usefulWhen": { "ro": "proporțional și fără evitarea totală: tristețea procesată e mai scurtă și mai curată decât cea blocată", "en": "proportional and without total avoidance: processed sadness is shorter and cleaner than blocked sadness" },
+      "heavyWhen": { "ro": "când e persistentă fără un obiect clar, când te doboară funcția (nu mai mănânci, nu mai dormi, nu mai poți) sau când durează săptămâni/luni — aici e clar teren de specialist", "en": "when it is persistent without a clear object, when it crushes function (you no longer eat, no longer sleep, can no longer) or when it lasts weeks/months — here it is clearly specialist territory" },
+      "near": ["resemnarea", "doliul", "blend-dezamagire"],
+      "notSameAs": { "ro": "Tristețea ≠ depresie (stare clinică: durată + severitate + funcție) și ≠ vinovăție (care are un „am făcut”). Tristețea are un „am pierdut”.", "en": "Sadness ≠ depression (a clinical state: duration + severity + function) and ≠ guilt (which has a “I did”). Sadness has a “I lost”." },
+      "triggers": { "ro": ["o pierdere", "o despărțire", "un eșec", "o dezamăgire", "o schimbare", "un diagnostic", "o amintire"], "en": ["a loss", "a breakup", "a failure", "a disappointment", "a change", "a diagnosis", "a memory"] },
+      "valence": -3, "arousal": -2,
+      "microExercise": { "ro": "Plânge dacă trebuie (5 minute cronometrate e ok). Apoi 1 lucru de corp: apă, un pas, o dușă. Tristețea merge cu corpul, nu împotriva lui.", "en": "Cry if you need to (5 timed minutes is ok). Then 1 thing for the body: water, a step, a shower. Sadness goes with the body, not against it." },
+      "research": [
+        { "title": "Bodily maps of emotions", "year": 2014, "source": "Nummenmaa et al., PNAS", "status": "verified" },
+        { "title": "Behavioral activation (literatura de depresie)", "year": 2016, "source": "Dimidjian et al.", "status": "to-verify" }
+      ],
+      "caveat": { "ro": "Tristețea nu e „slăbiciune” și nu trebuie „reparată” rapid; dar persistența fără claritate e un semnal de specialist.", "en": "Sadness is not “weakness” and doesn't need to be “fixed” quickly; but persistence without clarity is a specialist signal." },
+      "spectrum": [
+        { "ro": "Resemnare", "en": "Pensiveness" }, { "ro": "Tristețe", "en": "Sadness" }, { "ro": "Abătura", "en": "Dejection" }, { "ro": "Dureri", "en": "Sorrow" },
+        { "ro": "Dezumărire", "en": "Despondency" }, { "ro": "Doliu", "en": "Grief" }, { "ro": "Plângere", "en": "Mourning" }, { "ro": "Deprimare", "en": "Depression" }
+      ]
+    },
+    {
+      "id": "doliul", "family": "sadness", "level": 3, "spectrumIndex": 5,
+      "name": { "ro": "Doliul", "en": "Grief" },
+      "def": { "ro": "Tristețea pentru o pierdere reală și majoră: o persoană, o relație, o viață care s-a terminat, un rol. Are valuri: vine, te ia, pleacă, revine.", "en": "The sadness for a real and major loss: a person, a relationship, a life that has ended, a role. It has waves: it comes, takes you, leaves, returns." },
+      "body": { "ro": "oboseală profundă; durere în piept; pierderea apetitului; somn agitat; amintiri care vin fără chemare; „uitarea” a unor lucruri obișnuite", "en": "deep tiredness; pain in the chest; loss of appetite; disturbed sleep; memories that come unasked; “forgetting” of ordinary things" },
+      "thoughts": { "ro": ["„Nu-l/ o mai am.”", "„Cum va fi fără...?”", "„Ar fi vrut să...”"], "en": ["“I don't have him/her anymore.”", "“How will it be without...?”", "“They would have wanted to...”"] },
+      "impulse": { "ro": "mă retrag, caut, amintesc, uneori evit tot ce amintește, altădată cer prezență", "en": "withdraw, seek, remember, sometimes avoid everything that reminds, other times ask for presence" },
+      "function": { "ro": "adesea semnalează o rupere a lumii: e procesul prin care pierderea intră în viață (nu se „vindecă” ca o rană, se integrează)", "en": "often signals a rupture of the world: it is the process by which loss enters life (it isn't “healed” like a wound, it is integrated)" },
+      "usefulWhen": { "ro": "doliul nu se „folosește” — se trece prin, cu timp și sprijin. Fiecare val procesat o face puțin mai trăibilă", "en": "grief isn't “used” — it is passed through, with time and support. Each processed wave makes it a little more liveable" },
+      "heavyWhen": { "ro": "doliul e în sine greu; semnale de „complicație” (blochează complet viața după mult timp, gânduri de „de ce să trăiesc”, pierderea funcției) = specialist", "en": "grief is in itself heavy; signals of “complication” (completely blocks life after a long time, thoughts of “why live”, loss of function) = specialist" },
+      "near": ["tristetea", "resemnarea"],
+      "notSameAs": { "ro": "Doliul ≠ depresie (deși se suprapun: în depresie dispare și capacitatea de a-ți aminti cel drag cu dragoste) și nu e „față slabă”.", "en": "Grief ≠ depression (though they overlap: in depression the capacity to remember the loved one with love also disappears) and it is not a “weak face”." },
+      "triggers": { "ro": ["o moarte", "o despărțire majoră", "pierderea unui copil", "o boală", "pierderea unui rol"], "en": ["a death", "a major breakup", "the loss of a child", "an illness", "the loss of a role"] },
+      "valence": -5, "arousal": -2,
+      "microExercise": { "ro": "Un ritual simplu pe zi (o lumânare, o fotografie, un loc, o melodie). Dolulul are nevoie de un loc, nu de uitare.", "en": "A simple ritual per day (a candle, a photograph, a place, a song). Grief needs a place, not forgetting." },
+      "research": [
+        { "title": "Grief and depression (distinction in the clinical literature)", "year": 2019, "source": "DSM-5, American Psychiatric Association", "status": "to-verify" }
+      ],
+      "caveat": { "ro": "Nu există un termen corect al doliului. Dacă doliul te blochează sau vine cu gânduri de a nu mai fi, e clar momentul pentru un specialist.", "en": "There is no correct term for grief. If the grief blocks you or comes with thoughts of not being anymore, it is clearly the moment for a specialist." },
+      "spectrum": [
+        { "ro": "Resemnare", "en": "Pensiveness" }, { "ro": "Tristețe", "en": "Sadness" }, { "ro": "Abătura", "en": "Dejection" }, { "ro": "Dureri", "en": "Sorrow" },
+        { "ro": "Dezumărire", "en": "Despondency" }, { "ro": "Doliu", "en": "Grief" }, { "ro": "Plângere", "en": "Mourning" }, { "ro": "Deprimare", "en": "Depression" }
+      ]
+    },
+    {
+      "id": "plictiseala", "family": "disgust", "level": 1, "spectrumIndex": 0,
+      "name": { "ro": "Plictiseala", "en": "Boredom" },
+      "def": { "ro": "Disconfortul „nici nu contează, nici nu-mi place”: mintea caută stimulare și nu o găsește. E disprețul în doza lui cea mai mică și cea mai social acceptată.", "en": "The discomfort “it doesn't matter, nor do I like it”: the mind seeks stimulation and doesn't find it. It is disgust in its smallest and most socially accepted dose." },
+      "body": { "ro": "oboseală difuză; „derapare” a atenției; mâna care caută telefonul; un zâmbet forțat; senzația de timp care merge încet", "en": "diffuse tiredness; attention “slipping”; the hand looking for the phone; a forced smile; the feeling of time moving slowly" },
+      "thoughts": { "ro": ["„Nu e nimic de făcut.”", "„Totul e la fel.”", "„Trebuie să fie altceva."], "en": ["“There's nothing to do.”", "“Everything is the same.”", "“There must be something else.”"] },
+      "impulse": { "ro": "evadare (telefon, știri, mâncare), procrastinare, „sărind” de la lucru la lucru", "en": "escape (phone, news, food), procrastination, “jumping” from task to task" },
+      "function": { "ro": "adesea semnalează un decalaj: ceea ce faci nu corespunde cu ceea ce ai nevoie (sens, provocare, conexiune)", "en": "often signals a gap: what you do doesn't correspond to what you need (meaning, challenge, connection)" },
+      "usefulWhen": { "ro": "ca semnal: plictiseala corect citită spune „aici nu mai crești” — o folosești ca o busolă, nu ca un medicament", "en": "as a signal: correctly read boredom says “you no longer grow here” — you use it as a compass, not a medicine" },
+      "heavyWhen": { "ro": "când „antidotul” e telefonul infinitezabil sau când plictiseala e de fapt o evitare a unui lucru care contează", "en": "when the “antidote” is the infinite phone or when the boredom is actually an avoidance of a thing that matters" },
+      "near": ["dispretul", "distractia"],
+      "notSameAs": { "ro": "Plictiseala ≠ depresie (care nu e „plictiseală de viață” pe care o poți vindeca cu un feed) și ≠ oboseală (care trece cu odihna).", "en": "Boredom ≠ depression (which isn't a “boredom of life” you can cure with a feed) and ≠ tiredness (which passes with rest)." },
+      "triggers": { "ro": ["o rutină lungă", "o sarcină fără sens pentru tine", "o așteptare", "o zi fără evenimente"], "en": ["a long routine", "a task without meaning for you", "a waiting", "a day without events"] },
+      "valence": -1, "arousal": -2,
+      "microExercise": { "ro": "Unde exact e plictiseala? 1 rând: „Nu am stimulare pentru...”. Dacă răspunsul e „pentru orice”, nu e plictiseală, e oboseală (sau mai mult).", "en": "Where exactly is the boredom? 1 line: “I don't have stimulation for...”. If the answer is “for anything”, it's not boredom, it's tiredness (or more)." },
+      "research": [
+        { "title": "Emotion: A Psychoevolutionary Synthesis (boredom = mild disgust)", "year": 1980, "source": "Robert Plutchik", "status": "verified" }
+      ],
+      "caveat": { "ro": "Plictiseala e adesea „vindecată” cu stimulare infinitezabilă, care o agravează.", "en": "Boredom is often “cured” with infinite stimulation, which aggravates it." },
+      "spectrum": [
+        { "ro": "Plictiseală", "en": "Boredom" }, { "ro": "Dispreț", "en": "Disgust" }, { "ro": "Repulsie", "en": "Revulsion" }, { "ro": "Ură adâncă", "en": "Abhorrence" },
+        { "ro": "Aversiune", "en": "Loathing" }, { "ro": "Ură", "en": "Hate" }, { "ro": "Ură extremă", "en": "Detestation" }, { "ro": "Ură neagră", "en": "Hatred" }
+      ]
+    },
+    {
+      "id": "dispretul", "family": "disgust", "level": 2, "spectrumIndex": 1,
+      "name": { "ro": "Disprețul", "en": "Disgust" },
+      "def": { "ro": "Un „nu, nu-mi intra în mine” față de ceva ce pare impur, greșit, sau care încălcează o normă pe care o simți. Corpul se retrage literal.", "en": "A “no, don't come into me” toward something that seems impure, wrong, or that violates a norm you feel. The body literally withdraws." },
+      "body": { "ro": "ridicare a nasului; un „wave” al faței; o contracție a stomacului; retragerea brațelor; uneori o greață reală", "en": "a nose wrinkle; a “wave” of the face; a stomach contraction; the withdrawal of the arms; sometimes a real nausea" },
+      "thoughts": { "ro": ["„Ce deștepturi.”", "„Nu pot să suport.”", "„Ar trebui să fie altfel."], "en": ["“What an abomination.”", "“I can't bear it.”", "“It should be different.”"] },
+      "impulse": { "ro": "retragere, respingere, uneori evitarea totală a sursei", "en": "withdrawal, rejection, sometimes total avoidance of the source" },
+      "function": { "ro": "adesea semnalează o încălcare a ceea ce simți ca normă: e granița ta „ce nu intră în mine” (biologic, moral, estetic)", "en": "often signals a violation of what you feel as a norm: it is your boundary of “what doesn't come into me” (biological, moral, aesthetic)" },
+      "usefulWhen": { "ro": "proporțional: disprețul te protejează (de boală, de încălcarea valorilor) — îl asculți pe corp, dar nu și vocea lui", "en": "proportional: disgust protects you (from illness, from the violation of values) — you listen to the body, but not to its voice" },
+      "heavyWhen": { "ro": "când se mută de la lucruri la oameni (dispreț de categoria de oameni) — atunci devine discriminator și se deconectează de la realitate", "en": "when it moves from things to people (disgust for a category of people) — then it becomes discriminatory and disconnects from reality" },
+      "near": ["plictiseala", "aversiunea", "blend-contopire"],
+      "notSameAs": { "ro": "Dispreț ≠ furie (disprețul te face să te retragi; furia te face să ataci) și ≠ respingere (care e o decizie, nu o reacție corporală). Dispreț e corporal înainte de a fi moral.", "en": "Disgust ≠ anger (disgust makes you withdraw; anger makes you attack) and ≠ rejection (which is a decision, not a bodily reaction). Disgust is bodily before it is moral." },
+      "triggers": { "ro": ["un miros", "o imagine", "o încălcare a unei valori pe care o simți", "o nedreptate văzută", "o „lipsă de igienă” morală"], "en": ["a smell", "an image", "a violation of a value you feel", "a seen injustice", "a moral “lack of hygiene”"] },
+      "valence": -3, "arousal": 1,
+      "microExercise": { "ro": "De ce exact? 1 rând: „Disprețul e pentru [lucru concret]”. Dacă nu poți numi lucrul, disprețul e probabil o altă emoție (furie sau frică) care se costumează.", "en": "For what exactly? 1 line: “The disgust is for [concrete thing]”. If you can't name the thing, the disgust is probably another emotion (anger or fear) in disguise." },
+      "research": [
+        { "title": "Bodily maps of emotions (disgust: digestive system and throat)", "year": 2014, "source": "Nummenmaa et al., PNAS", "status": "verified" }
+      ],
+      "caveat": { "ro": "Disprețul e emoția care se mută cel mai ușor de la „lucru” la „persoană” — de aceea merită o atenție specială.", "en": "Disgust is the emotion that moves most easily from “thing” to “person” — that's why it deserves special attention." },
+      "spectrum": [
+        { "ro": "Plictiseală", "en": "Boredom" }, { "ro": "Dispreț", "en": "Disgust" }, { "ro": "Repulsie", "en": "Revulsion" }, { "ro": "Ură adâncă", "en": "Abhorrence" },
+        { "ro": "Aversiune", "en": "Loathing" }, { "ro": "Ură", "en": "Hate" }, { "ro": "Ură extremă", "en": "Detestation" }, { "ro": "Ură neagră", "en": "Hatred" }
+      ]
+    },
+    {
+      "id": "aversiunea", "family": "disgust", "level": 3, "spectrumIndex": 4,
+      "name": { "ro": "Aversiunea", "en": "Loathing" },
+      "def": { "ro": "Disprețul care a devenit respingere durabilă: nu mai e o reacție, e o poziție. Corpul refuză sursa, mintea construiește argumente.", "en": "Disgust that has become lasting rejection: it's no longer a reaction, it's a position. The body refuses the source, the mind builds arguments." },
+      "body": { "ro": "o tensiune persistentă; o greață ușoară la amintire; retragere fizică (schimbi locul, te ridici); o voce mai aspră", "en": "a persistent tension; a slight nausea at the memory; physical withdrawal (you change place, you stand up); a harsher voice" },
+      "thoughts": { "ro": ["„Nu mai vreau să am de-a face.”", "„E imposibil să trec pe lângă.”", "„Nu-l/ o mai văd."], "en": ["“I don't want to have anything to do with it anymore.”", "“It's impossible to pass by.”", "“I don't see him/her anymore.”"] },
+      "impulse": { "ro": "evitarea totală, excluderea, uneori acțiunea (demisie, despărțire, plângere)", "en": "total avoidance, exclusion, sometimes action (resignation, breakup, complaint)" },
+      "function": { "ro": "adesea semnalează o graniță care a fost încălcată repetat: e disprețul care a decis", "en": "often signals a boundary that was violated repeatedly: it is the disgust that has decided" },
+      "usefulWhen": { "ro": "când e o protecție reală (o relație toxică, un comportament repetat) — aversiunea corectă te face să pleci de la ceea ce te corodează", "en": "when it is real protection (a toxic relationship, a repeated behavior) — correct loathing makes you leave from what corrodes you" },
+      "heavyWhen": { "ro": "când e „prea rapidă” (aversiune la un om dintr-un singur incident) sau când e la o categorie de oameni — atunci nu mai e o graniță, e un zid", "en": "when it is “too fast” (loathing for a person from a single incident) or when it is for a category of people — then it's no longer a boundary, it's a wall" },
+      "near": ["dispretul", "furia-nestemata"],
+      "notSameAs": { "ro": "Aversiunea ≠ ură (care are o dorință de rău; aversiunea vrea doar distanță) și ≠ o decizie rațională (aversiunea e corporal înainte de a fi logică).", "en": "Loathing ≠ hatred (which has a wish for evil; loathing only wants distance) and ≠ a rational decision (loathing is bodily before it is logical)." },
+      "triggers": { "ro": ["o încălcare repetată", "o dezamăgire acumulată", "o trădare", "un comportament toxic văzut de aproape"], "en": ["a repeated violation", "an accumulated disappointment", "a betrayal", "a toxic behavior seen up close"] },
+      "valence": -4, "arousal": 2,
+      "microExercise": { "ro": "1 rând onest: „Aversiunea mea e pentru [comportament] sau pentru [persoană]?”. Prima se poate rezolva. A doua trebuie purtată sau plecată.", "en": "1 honest line: “Is my loathing for [behavior] or for [person]?”. The first can be solved. The second must be carried or left." },
+      "research": [
+        { "title": "Emotion-specific bodily maps (strong disgust)", "year": 2018, "source": "Nummenmaa et al., Scientific Reports", "status": "verified" }
+      ],
+      "caveat": { "ro": "Aversiunea corectă te protejează; aversiunea rapidă te face să pierzi oameni. Diferența: timp + dovezi.", "en": "Correct loathing protects you; fast loathing makes you lose people. The difference: time + evidence." },
+      "spectrum": [
+        { "ro": "Plictiseală", "en": "Boredom" }, { "ro": "Dispreț", "en": "Disgust" }, { "ro": "Repulsie", "en": "Revulsion" }, { "ro": "Ură adâncă", "en": "Abhorrence" },
+        { "ro": "Aversiune", "en": "Loathing" }, { "ro": "Ură", "en": "Hate" }, { "ro": "Ură extremă", "en": "Detestation" }, { "ro": "Ură neagră", "en": "Hatred" }
+      ]
+    },
+    {
+      "id": "enervarea", "family": "anger", "level": 1, "spectrumIndex": 0,
+      "name": { "ro": "Enervarea", "en": "Annoyance" },
+      "def": { "ro": "Frecarea mică a unei granițe: cineva sau ceva a încălcat un așteptare mică, și corpul protestează cu un „nu, nu așa”.", "en": "The small friction of a boundary: someone or something violated a small expectation, and the body protests with a “no, not like that”." },
+      "body": { "ro": "un „puf” în piept; maxilar încleștat; un oftat; mâinile care se încrucișează; ritmul vorbirii care se ascute", "en": "a “puff” in the chest; a clenched jaw; a sigh; hands crossed; the speaking rhythm sharpening" },
+      "thoughts": { "ro": ["„Suficient!”", "„De ce tot timpul?”", "„Nu era greu."], "en": ["“Enough!”", "“Why always?”", "“It wasn't hard.”"] },
+      "impulse": { "ro": "rezist, corectez, pun un limită mică, uneori evadare", "en": "resist, correct, put a small limit, sometimes escape" },
+      "function": { "ro": "adesea semnalează o graniță încălcată: e cel mai mic „nu” al sistemului tău", "en": "often signals a violated boundary: it is the smallest “no” of your system" },
+      "usefulWhen": { "ro": "proporțional: enervarea corect citită spune „aici e o regulă care e încălcată” — o folosești pentru a pune limite mici, clare", "en": "proportional: correctly read annoyance says “there is a rule that is violated here” — you use it to put small, clear limits" },
+      "heavyWhen": { "ro": "când se acumulează (o mie de enervări mici = o furie mare) sau când o direcționezi la oameni care nu au încălcat nimic", "en": "when it accumulates (a thousand small annoyances = one big anger) or when you direct it at people who haven't violated anything" },
+      "near": ["furia", "blend-nerabzare"],
+      "notSameAs": { "ro": "Enervarea ≠ furie (care are o încălcare mare) și ≠ iritabilitate cronică (care e un semnal de oboseală sau de stres). E o micro-emoție utilă.", "en": "Annoyance ≠ anger (which has a big violation) and ≠ chronic irritability (which is a signal of tiredness or stress). It is a useful micro-emotion." },
+      "triggers": { "ro": ["o întârziere", "o promisiune ținută proastă", "un tăiat la rând", "un detaliu repetat", "un „nu am înțeles”"], "en": ["a delay", "a promise poorly kept", "a cutting in line", "a repeated detail", "an “I didn't understand”"] },
+      "valence": -2, "arousal": 1,
+      "microExercise": { "ro": "Ce regulă exact e încălcată? 1 rând: „Mă enervez pentru că am așteptat...”. Enervarea fără regulă e probabil oboseală.", "en": "What rule exactly is violated? 1 line: “I'm annoyed because I expected...”. Annoyance without a rule is probably tiredness." },
+      "research": [
+        { "title": "Bodily maps of emotions (anger: sensations in the upper limbs)", "year": 2014, "source": "Nummenmaa et al., PNAS", "status": "verified" }
+      ],
+      "caveat": { "ro": "Enervarea nu se „stinge” — se traduce. Fie într-o limită pusă, fie într-un altceva.", "en": "Annoyance isn't “extinguished” — it is translated. Either into a boundary put, or into something else." },
+      "spectrum": [
+        { "ro": "Enervare", "en": "Annoyance" }, { "ro": "Furie", "en": "Anger" }, { "ro": "Iritare", "en": "Irritation" }, { "ro": "Indignare", "en": "Indignation" },
+        { "ro": "Outrage", "en": "Outrage" }, { "ro": "Furie (fury)", "en": "Fury" }, { "ro": "Furie nestemată", "en": "Rage" }, { "ro": "Mănie", "en": "Wrath" }
+      ]
+    },
+    {
+      "id": "furia", "family": "anger", "level": 2, "spectrumIndex": 1,
+      "name": { "ro": "Furia", "en": "Anger" },
+      "def": { "ro": "O reacție clară la o încălcare: ceva ce ai considerat important a fost încălcat — o graniță, o valoare, un drept. Are un „față de”.", "en": "A clear reaction to a violation: something you considered important was violated — a boundary, a value, a right. It has an “against”." },
+      "body": { "ro": "căldură în față; inimă care bate tare; umeri care se ridică; pumni încleștați; voce care se ascute; energia care „urcă”", "en": "warmth in the face; heart beating hard; shoulders rising; fists clenched; voice sharpening; energy that “rises”" },
+      "thoughts": { "ro": ["„Nu e drept.”", "„Nu-mi permit asta.”", "„Ar trebui să știe."], "en": ["“It's not fair.”", "“I don't allow this.”", "“He/She should know.”"] },
+      "impulse": { "ro": "confrontez, corectez, apăr, uneori atac", "en": "confront, correct, defend, sometimes attack" },
+      "function": { "ro": "adesea semnalează o încălcare a ceea ce contează: e energia graniței", "en": "often signals a violation of what matters: it is the energy of the boundary" },
+      "usefulWhen": { "ro": "proporțional și directionat: furia corect folosită te face să pui limite și să repari nedreptățile — e combustibil, nu director", "en": "proportional and directed: correctly used anger makes you put limits and repair injustices — it is fuel, not director" },
+      "heavyWhen": { "ro": "când e disproporționată, când se acumulează și explodează pe alții, sau când devine mod de viață (viața e o serie de încălcări) — ultimul e semnal pentru specialist", "en": "when it is disproportionate, when it accumulates and explodes on others, or when it becomes a way of life (life is a series of violations) — the last one is a specialist signal" },
+      "near": ["enervarea", "furia-nestemata", "blend-contopire"],
+      "notSameAs": { "ro": "Furia ≠ ostilitate (care nu are o încălcare reală) și ≠ agresivitate (care e un comportament, nu o emoție). Furia poate fi senzație fără violență.", "en": "Anger ≠ hostility (which has no real violation) and ≠ aggressiveness (which is a behavior, not an emotion). Anger can be a sensation without violence." },
+      "triggers": { "ro": ["o nedreptate", "o încălcare a unei granițe", "o promisiune nerespectată", "o critică nedreaptă", "o putere abuzată"], "en": ["an injustice", "a violation of a boundary", "a promise broken", "an unfair criticism", "an abused power"] },
+      "valence": -4, "arousal": 3,
+      "microExercise": { "ro": "5 minute de mișcare intensă (mers, sărituri) și apoi 1 rând: „Am fost încălcat la...”. Furia care nu are „la” e altceva (frică, durere).", "en": "5 minutes of intense movement (walking, jumping) and then 1 line: “I was violated at...”. Anger that has no “at” is something else (fear, pain)." },
+      "research": [
+        { "title": "Shame and guilt (distinction of anger and shame)", "year": 2004, "source": "Tangney & Dearing, Guilford Press", "status": "verified" }
+      ],
+      "caveat": { "ro": "Furia e adesea „secundară”: deasupra ei e durere, frică sau rușine. A întreba „ce e deasupra?” e util, dar nu e un test.", "en": "Anger is often “secondary”: above it is pain, fear or shame. To ask “what's above?” is useful, but it is not a test." },
+      "spectrum": [
+        { "ro": "Enervare", "en": "Annoyance" }, { "ro": "Furie", "en": "Anger" }, { "ro": "Iritare", "en": "Irritation" }, { "ro": "Indignare", "en": "Indignation" },
+        { "ro": "Outrage", "en": "Outrage" }, { "ro": "Furie (fury)", "en": "Fury" }, { "ro": "Furie nestemată", "en": "Rage" }, { "ro": "Mănie", "en": "Wrath" }
+      ]
+    },
+    {
+      "id": "furia-nestemata", "family": "anger", "level": 3, "spectrumIndex": 6,
+      "name": { "ro": "Furia nestemată", "en": "Rage" },
+      "def": { "ro": "Furia care a ieșit din canal: energia e totală, rațiunea se oprește, apar gânduri care altfel n-ai avea. E o urgență, nu o conversație.", "en": "Anger that has exited the channel: the energy is total, reason stops, thoughts appear that you wouldn't otherwise have. It is an emergency, not a conversation." },
+      "body": { "ro": "căldură care arde; vedere care se îngustează; mușchi încordați; voce care țipă; senzația de forță enormă; uneori o „ceată” pe gânduri", "en": "burning heat; narrowing vision; tense muscles; a screaming voice; a feeling of enormous strength; sometimes a “fog” on thoughts" },
+      "thoughts": { "ro": ["„Vreau să distrug.”", "„N-o să mai suport.”", "(uneori gânduri de a le face rău)"], "en": ["“I want to destroy.”", "“I won't bear it anymore.”", "(sometimes thoughts of hurting them)"] },
+      "impulse": { "ro": "atac, rup, strig, fug, uneori mă rănesc", "en": "attack, tear, scream, flee, sometimes hurt myself" },
+      "function": { "ro": "adesea semnalează o încălcare majoră care nu a mai fost rezolvată: e alarma de alarmă a granițelor", "en": "often signals a major violation that has no longer been solved: it is the alarm of alarms of the boundaries" },
+      "usefulWhen": { "ro": "niciodată „utilă” ca stare: este un semnal că ceva de bază a fost încălcat de multă vreme — o citești după, cu ajutor", "en": "never “useful” as a state: it is a signal that something basic was violated a long time ago — you read it after, with help" },
+      "heavyWhen": { "ro": "furia nestemată e întotdeauna grea: dacă devine frecventă, vine cu gânduri de violență sau de auto-rănire, sau „nu mai poți” — specialist, clar", "en": "rage is always heavy: if it becomes frequent, comes with thoughts of violence or of self-harm, or “you can't anymore” — specialist, clear" },
+      "near": ["furia", "aversiunea"],
+      "notSameAs": { "ro": "Furia nestemată ≠ o furie mare (vine cu o prăbușire a controlului și o „ceată” interioară) și nu e slăbiciune — e o alarmă puternică.", "en": "Rage ≠ a big anger (it has a collapse of control and a “fog”) and it is not weakness — it is an alarm of alarms." },
+      "triggers": { "ro": ["o încălcare majoră", "o umilință publică", "o acumulare de furii mici", "un stres cronic"], "en": ["a major violation", "a public humiliation", "an accumulation of small angers", "a chronic stress"] },
+      "valence": -5, "arousal": 5,
+      "microExercise": { "ro": "Dacă ești în ea: o distanță fizică (ieși din cameră), 10 respirații lungi, un om de încredere. Nu decide nimic. După: ce a fost încălcat?", "en": "If you are in it: a physical distance (leave the room), 10 long breaths, a trusted person. Don't decide anything. After: what was violated?" },
+      "research": [
+        { "title": "Anger and violence risk (clinical literature — specialist territory)", "year": 2019, "source": "DSM-5, American Psychiatric Association", "status": "to-verify" }
+      ],
+      "caveat": { "ro": "Furia nestemată repetată e un semnal serios: specialist. Nu e ceva de „înfruntat” singur.", "en": "Repeated rage is a serious signal: specialist. It is not something to “face” alone." },
+      "spectrum": [
+        { "ro": "Enervare", "en": "Annoyance" }, { "ro": "Furie", "en": "Anger" }, { "ro": "Iritare", "en": "Irritation" }, { "ro": "Indignare", "en": "Indignation" },
+        { "ro": "Outrage", "en": "Outrage" }, { "ro": "Furie (fury)", "en": "Fury" }, { "ro": "Furie nestemată", "en": "Rage" }, { "ro": "Mănie", "en": "Wrath" }
+      ]
+    },
+    {
+      "id": "interesul", "family": "anticipation", "level": 1, "spectrumIndex": 0,
+      "name": { "ro": "Interesul", "en": "Interest" },
+      "def": { "ro": "Atenția care alege de bună-voință un lucru: „vreau să știu mai mult”. E anticiparea în doza ei cea mai mică și cea mai productivă.", "en": "Attention that willingly chooses a thing: “I want to know more”. It is anticipation in its smallest and most productive dose." },
+      "body": { "ro": "o aplecare înainte; ochi care se aprind; o uitare a timpului; un zâmbet ușor; corpul „către obiect”", "en": "a leaning forward; eyes that light up; a forgetting of time; a slight smile; the body “toward the object”" },
+      "thoughts": { "ro": ["„Spune-mi mai multe.”", "„Cum a făcut asta?”", "„Încă."], "en": ["“Tell me more.”", "“How did he do that?”", "“More.”"] },
+      "impulse": { "ro": "mă apropie, explorez, întreb, continui", "en": "approach, explore, ask, continue" },
+      "function": { "ro": "adesea semnalează oportunitate: e poarta către învățare și curaj", "en": "often signals opportunity: it is the door to learning and courage" },
+      "usefulWhen": { "ro": "conștient: interesul e combustibilul cel mai ieftin al creșterii — o poți alege unde e", "en": "consciously: interest is the cheapest fuel of growth — you can choose where it is" },
+      "heavyWhen": { "ro": "când devine dependență (doar anumite tipuri de stimulare te mai „pornește”) sau când „interesul” e de fapt o evadare", "en": "when it becomes addiction (only certain types of stimulation still “start” you) or when “interest” is actually an escape" },
+      "near": ["anticiparea", "distractia"],
+      "notSameAs": { "ro": "Interesul ≠ dependență (care e o nevoie, nu o curiozitate) și ≠ distracție (care e captivare pasivă; interesul e activ).", "en": "Interest ≠ addiction (which is a need, not a curiosity) and ≠ distraction (which is passive capture; interest is active)." },
+      "triggers": { "ro": ["un subiect nou", "o provocare potrivită", "un om care știe", "o problemă de rezolvat"], "en": ["a new subject", "a suitable challenge", "a person who knows", "a problem to solve"] },
+      "valence": 1, "arousal": 1,
+      "microExercise": { "ro": "Un lucru care te interesează dar nu te „prinde”. Dă-i 10 minute de curiozitate conștientă. Interesul se antrenează.", "en": "One thing that interests you but doesn't “catch” you. Give it 10 minutes of conscious curiosity. Interest is trainable." },
+      "research": [
+        { "title": "Emotion: A Psychoevolutionary Synthesis (interest = mild anticipation)", "year": 1980, "source": "Robert Plutchik", "status": "verified" },
+        { "title": "Flow (the research on optimal experience)", "year": 1990, "source": "Mihaly Csikszentmihalyi", "status": "verified" }
+      ],
+      "caveat": { "ro": "Interesul se confundă cu „motivația forțată”; diferența e efortul: interesul e lejer, forța e o luptă.", "en": "Interest is confused with “forced motivation”; the difference is the effort: interest is light, force is a fight." },
+      "spectrum": [
+        { "ro": "Interes", "en": "Interest" }, { "ro": "Anticipare", "en": "Anticipation" }, { "ro": "Așteptare", "en": "Expectation" }, { "ro": "Elan", "en": "Eagerness" },
+        { "ro": "Entuziasm", "en": "Enthusiasm" }, { "ro": "Determinare", "en": "Determination" }, { "ro": "Foc", "en": "Fervor" }, { "ro": "Obsesie", "en": "Obsession" }
+      ]
+    },
+    {
+      "id": "anticiparea", "family": "anticipation", "level": 2, "spectrumIndex": 1,
+      "name": { "ro": "Anticiparea", "en": "Anticipation" },
+      "def": { "ro": "Viața care se mută în viitor: aștepți ceva ce contează, și corpul deja e acolo. Poate fi „așteptare bună” sau „așteptare rea” — aceeași emoție, două direcții.", "en": "Life that moves into the future: you expect something that matters, and the body is already there. It can be “good waiting” or “bad waiting” — the same emotion, two directions." },
+      "body": { "ro": "o tensiune ușoară de „motor pornit”; ore pe ceas; o accelerare a inimii; o energizare; uneori neliniște (dacă e „rea”) sau energie (dacă e „bună”)", "en": "a slight tension of “engine started”; hours on the clock; an acceleration of the heart; an energizing; sometimes anxiety (if “bad”) or energy (if “good”)" },
+      "thoughts": { "ro": ["„Până atunci...”", "„Nu vreau să se termine.”", "„Ce va fi?”"], "en": ["“Until then...”", "“I don't want it to end.”", "“What will it be?”"] },
+      "impulse": { "ro": "mă pregătesc, aștept, planuiesc, uneori amân (ceea ce ar trebui făcut acum)", "en": "prepare, wait, plan, sometimes postpone (what should be done now)" },
+      "function": { "ro": "adesea semnalează un viitor care contează: e motorul planului și al dorinței", "en": "often signals a future that matters: it is the engine of plan and desire" },
+      "usefulWhen": { "ro": "proporțional: anticiparea transformă dorința în plan — o folosești pentru a construi, nu pentru a trăi în „până atunci”", "en": "proportional: anticipation transforms desire into plan — you use it to build, not to live in “until then”" },
+      "heavyWhen": { "ro": "când trăiești constant în „până atunci” (viața prezentă e doar o așteptare) sau când anticiparea e doar teama de un viitor negativ", "en": "when you constantly live in “until then” (present life is just a waiting) or when the anticipation is only the fear of a negative future" },
+      "near": ["interesul", "entuziasmul", "blend-ingrijorare"],
+      "notSameAs": { "ro": "Anticiparea ≠ planificare (care e un act de voință) și ≠ neliniște (care nu are obiect clar). Are un „ce” concret.", "en": "Anticipation ≠ planning (which is an act of will) and ≠ anxiety (which has no clear object). It has a concrete “what”." },
+      "triggers": { "ro": ["o vacanță", "un examen", "un interviu", "o reîntâlnire", "o naștere", "o decizie mare"], "en": ["a vacation", "an exam", "an interview", "a reunion", "a birth", "a big decision"] },
+      "valence": 2, "arousal": 2,
+      "microExercise": { "ro": "Ce anume aștepți? 1 rând: „Aștept [ce] și simt [ce].”. Anticiparea numită se poate direcționa; cea nenumită te direcționează pe tine.", "en": "What exactly are you expecting? 1 line: “I expect [what] and I feel [what]”. Named anticipation can be directed; the unnamed one directs you." },
+      "research": [
+        { "title": "A Circumplex Model of Affect", "year": 1980, "source": "James A. Russell, Journal of Personality and Social Psychology", "status": "verified" }
+      ],
+      "caveat": { "ro": "Anticiparea se confundă cel mai ușor cu „motivația”; nu e același lucru (motivul e o decizie).", "en": "Anticipation is most easily confused with “motivation”; it is not the same thing (the motive is a decision)." },
+      "spectrum": [
+        { "ro": "Interes", "en": "Interest" }, { "ro": "Anticipare", "en": "Anticipation" }, { "ro": "Așteptare", "en": "Expectation" }, { "ro": "Elan", "en": "Eagerness" },
+        { "ro": "Entuziasm", "en": "Enthusiasm" }, { "ro": "Determinare", "en": "Determination" }, { "ro": "Foc", "en": "Fervor" }, { "ro": "Obsesie", "en": "Obsession" }
+      ]
+    },
+    {
+      "id": "entuziasmul", "family": "anticipation", "level": 3, "spectrumIndex": 4,
+      "name": { "ro": "Entuziasmul", "en": "Enthusiasm" },
+      "def": { "ro": "Anticiparea care a devenit energie: vrei, și corpul e deja în mișcare. E anticiparea în doza ei cea mai mare și cea mai contagioasă.", "en": "Anticipation that has become energy: you want, and the body is already in motion. It is anticipation in its biggest and most contagious dose." },
+      "body": { "ro": "o energizare totală; zâmbet larg; vorbire tare și rapidă; mișcare; „foc” în mâini; timpul care pare scurt", "en": "a total energizing; wide smile; loud and fast speech; movement; “fire” in hands; time that seems short" },
+      "thoughts": { "ro": ["„Vreau acum!”", "„Haide!”", "„O să meargă!”"], "en": ["“I want it now!”", "“Let's go!”", "“It's going to work!”"] },
+      "impulse": { "ro": "pornesc, invit, construiesc, acționez acum", "en": "start, invite, build, act now" },
+      "function": { "ro": "adesea semnalează un viitor pe care l-ai ales: e combustibilul acțiunii", "en": "often signals a future you chose: it is the fuel of action" },
+      "usefulWhen": { "ro": "direcționat: entuziasmul + un plan mic = progrese mari; entuziasmul fără plan = coadă de praf", "en": "directed: enthusiasm + a small plan = big progress; enthusiasm without plan = a tail of dust" },
+      "heavyWhen": { "ro": "când e „pe toate” (nu te mai oprești din nimic) sau când e singura stare în care te simți viu (atunci e o fugă de o stare de bază mai grea)", "en": "when it is “on everything” (you no longer stop from anything) or when it is the only state in which you feel alive (then it is a flight from a heavier baseline state)" },
+      "near": ["anticiparea", "bucuria"],
+      "notSameAs": { "ro": "Entuziasmul ≠ impulsivitate (care are o coadă de regret) și ≠ euforie (care e o stare; entuziasmul e un motor). Entuziasmul are un „către”.", "en": "Enthusiasm ≠ impulsiveness (which has a tail of regret) and ≠ euphoria (which is a state; enthusiasm is an engine). Enthusiasm has a “toward”." },
+      "triggers": { "ro": ["o oportunitate nouă", "un scop clar", "o echipă", "o creație pornită", "o promisiune de viitor"], "en": ["a new opportunity", "a clear goal", "a team", "a creation started", "a promise of the future"] },
+      "valence": 3, "arousal": 4,
+      "microExercise": { "ro": "Entuziasmul tău de azi → 1 pas de 5 minute. Entuziasmul fără pas e o energie care se transformă în anxietate.", "en": "Your enthusiasm today → 1 step of 5 minutes. Enthusiasm without a step is an energy that turns into anxiety." },
+      "research": [
+        { "title": "Intrinsic motivation (self-determination theory)", "year": 2000, "source": "Deci & Ryan", "status": "verified" }
+      ],
+      "caveat": { "ro": "Entuziasmul e o stare de start, nu un mod de viață; ciclul normal e: entuziasm → lucru → efort → liniște.", "en": "Enthusiasm is a starting state, not a way of life; the normal cycle is: enthusiasm → work → effort → calm." },
+      "spectrum": [
+        { "ro": "Interes", "en": "Interest" }, { "ro": "Anticipare", "en": "Anticipation" }, { "ro": "Așteptare", "en": "Expectation" }, { "ro": "Elan", "en": "Eagerness" },
+        { "ro": "Entuziasm", "en": "Enthusiasm" }, { "ro": "Determinare", "en": "Determination" }, { "ro": "Foc", "en": "Fervor" }, { "ro": "Obsesie", "en": "Obsession" }
+      ]
+    }
+  ],
+  "blends": [
+    {
+      "id": "blend-dragoste", "blendOf": ["bucuria", "increderea"],
+      "name": { "ro": "Dragoste", "en": "Love" },
+      "def": { "ro": "Bucurie + încredere: te bucuri de cineva și te bazezi pe el/ea. E bucuria care are un „alături”.", "en": "Joy + trust: you rejoice in someone and rely on them. It is the joy that has an “alongside”." },
+      "when": { "ro": "când bucuria și încrederea stau alături de mult timp și se aleg reciproc", "en": "when joy and trust stand together for a long time and choose each other" },
+      "example": { "ro": "partenerul de viață, un prieten vechi, o echipă în care ai încredere totală", "en": "a life partner, an old friend, a team you fully trust" },
+      "valence": 5, "arousal": 0
+    },
+    {
+      "id": "blend-intre-incredere-si-frica", "blendOf": ["increderea", "frica"],
+      "name": { "ro": "Între încredere și frică", "en": "Between trust and fear" },
+      "def": { "ro": "Te bazezi pe cineva, dar te și temi de el/ea (un șef, un partener, un om puternic). Corpul face 2 lucruri în același timp: se apropie și se retrage.", "en": "You rely on someone, but also fear them (a boss, a partner, a powerful person). The body does 2 things at the same time: approaches and withdraws." },
+      "when": { "ro": "când puterea și vulnerabilitatea stau alături în aceeași relație", "en": "when power and vulnerability stand together in the same relationship" },
+      "example": { "ro": "un șef care te protejează și te poate distruge; un părinte puternic; un partener cu care nu poți greși", "en": "a boss who protects you and can destroy you; a powerful parent; a partner with whom you cannot fail" },
+      "valence": -1, "arousal": 2
+    },
+    {
+      "id": "blend-ingrijorare", "blendOf": ["anticiparea", "frica"],
+      "name": { "ro": "Îngrijorare", "en": "Worry" },
+      "def": { "ro": "Așteptarea care a devenit scenariu de risc: „ceva s-ar putea întâmpla, și eu nu voi putea face față”. Are un obiect, dar îl rotește în cap.", "en": "The waiting that has become a risk scenario: “something might happen, and I won't be able to cope”. It has an object, but rotates it in the head." },
+      "when": { "ro": "când anticiparea și frica se amestecă în jurul unui rezultat viitor", "en": "when anticipation and fear mix around a future outcome" },
+      "example": { "ro": "un diagnostic așteptat, un interviu important, sănătatea cuiva drag", "en": "an awaited diagnosis, an important interview, the health of a loved one" },
+      "valence": -2, "arousal": 3
+    },
+    {
+      "id": "blend-panica", "blendOf": ["frica", "surprinderea"],
+      "name": { "ro": "Panică", "en": "Panic" },
+      "def": { "ro": "Frica care nu a avut timp de plan: a apărut brusc, e totală, și mintea blochează. Aici nu e loc de gânduri mari.", "en": "Fear that had no time for a plan: it appeared suddenly, is total, and the mind blocks. There is no room for big thoughts here." },
+      "when": { "ro": "când frica și surprinderea lovesc în aceeași secundă", "en": "when fear and surprise hit in the same second" },
+      "example": { "ro": "un accident, un blackout, un conflict care explodează brusc", "en": "an accident, a blackout, a conflict that suddenly explodes" },
+      "valence": -5, "arousal": 5
+    },
+    {
+      "id": "blend-dezamagire", "blendOf": ["surprinderea", "tristetea"],
+      "name": { "ro": "Dezamăgire", "en": "Disappointment" },
+      "def": { "ro": "A s-a întâmplat altceva decât așteptam, și am pierdut ceva în diferență. Tristețea care are un „aș fi vrut”.", "en": "Something else happened than I expected, and I lost something in the difference. The sadness that has an “I would have liked”." },
+      "when": { "ro": "când surprinderea (un „nu ca în plan”) se toarnă în tristețe", "en": "when surprise (an “not as planned”) pours into sadness" },
+      "example": { "ro": "o promovare pe care nu ai primit-o, un om care nu a mai venit, un rezultat sub așteptări", "en": "a promotion you didn't get, a person who didn't come back, a result below expectations" },
+      "valence": -3, "arousal": -1
+    },
+    {
+      "id": "blend-remuscare", "blendOf": ["tristetea", "dispretul"],
+      "name": { "ro": "Remușcare", "en": "Remorse" },
+      "def": { "ro": "Tristețea pentru ceva ce ai făcut (sau nu) + un dispreț blând față de tine însuți. Vinovăția are acest gust.", "en": "The sadness for something you did (or didn't) + a mild disgust toward yourself. Guilt has this taste." },
+      "when": { "ro": "când tristețea și disprețul se amestecă în jurul unei alegeri tale", "en": "when sadness and disgust mix around one of your choices" },
+      "example": { "ro": "un cuvânt spus prea tare, o scuză nedisculată, o oportunitate lăsată", "en": "a word said too hard, an undiscussed excuse, an opportunity left" },
+      "valence": -4, "arousal": -1
+    },
+    {
+      "id": "blend-contopire", "blendOf": ["dispretul", "furia"],
+      "name": { "ro": "Contopire", "en": "Contempt" },
+      "def": { "ro": "Dispreț care are o încălcare: „nu doar că e greșit, dar e și nedrept”. E emoția care desparte (și deconectează).", "en": "Disgust that has a violation: “not only is it wrong, but it's also unfair”. It is the emotion that separates (and disconnects)." },
+      "when": { "ro": "când disprețul și furia stau alături în fața unei încălcări", "en": "when disgust and anger stand together in front of a violation" },
+      "example": { "ro": "o încălcare a unei promisiuni repetate, o nedreptate văzută, o umilință", "en": "a repeated violation of a promise, a seen injustice, a humiliation" },
+      "valence": -3, "arousal": 2
+    },
+    {
+      "id": "blend-nerabzare", "blendOf": ["furia", "anticiparea"],
+      "name": { "ro": "Nerăbdare", "en": "Impatience" },
+      "def": { "ro": "Furia pe viitor: „ar trebui să fie deja”. E așteptarea care a început să țipe.", "en": "Anger toward the future: “it should already be done”. It is the waiting that has started to scream." },
+      "when": { "ro": "când furia și anticiparea se amestecă în jurul unui timp așteptat", "en": "when anger and anticipation mix around an awaited time" },
+      "example": { "ro": "o coadă, un proiect care nu avansează, un răspuns așteptat", "en": "a queue, a project that doesn't advance, an awaited answer" },
+      "valence": -3, "arousal": 3
+    },
+    {
+      "id": "blend-dor", "blendOf": ["anticiparea", "bucuria"],
+      "name": { "ro": "Dor", "en": "Longing" },
+      "def": { "ro": "O bucurie care trăiește în viitor: un om, un timp, o versiune a vieții. Are o tristețe mică amestecată — de aceea doare frumos.", "en": "A joy that lives in the future: a person, a time, a version of life. It has a small sadness mixed in — that's why it hurts beautifully." },
+      "when": { "ro": "când anticiparea și bucuria se amestecă în jurul unui viitor dorit", "en": "when anticipation and joy mix around a desired future" },
+      "example": { "ro": "o reîntâlnire așteptată, o vacanță, o viață pe care o construiești în minte", "en": "an awaited reunion, a vacation, a life you are building in your mind" },
+      "valence": 0, "arousal": -1
+    },
+    {
+      "id": "blend-usurare", "blendOf": ["frica", "bucuria"],
+      "name": { "ro": "Ușurare", "en": "Relief" },
+      "def": { "ro": "Frica care a dispărut și a lăsat o bucurie de umplutură. „A scăpat”. Are un preț: oboseala de după.", "en": "The fear that disappeared and left a filling joy. “It got past”. It has a price: the tiredness after." },
+      "when": { "ro": "când frica se rezolvă și bucuria de „a scăpat” o ia peste vârf", "en": "when the fear is resolved and the joy of “getting past” takes over" },
+      "example": { "ro": "după un examen dat, un diagnostic bun, un conflict terminat, o noapte trecută", "en": "after an exam passed, a good diagnosis, a conflict ended, a night passed" },
+      "valence": 3, "arousal": -2
+    },
+    {
+      "id": "blend-mandrie", "blendOf": ["bucuria", "anticiparea"],
+      "name": { "ro": "Mândrie", "en": "Pride" },
+      "def": { "ro": "Bucuria pentru ceva ce am făcut eu. Are un „mă văd” în ea: te privești din afară pe ce-ai făcut. Mândria sănătoasă are dovezi; cea bolnavă are nevoie de aplauze.", "en": "The joy for something I did. It has an “I see myself” in it: you look at yourself from the outside at what you did. Healthy pride has evidence; the sick one needs applause." },
+      "when": { "ro": "când bucuria și anticiparea se amestecă în jurul unei reușite personale", "en": "when joy and anticipation mix around a personal success" },
+      "example": { "ro": "un proiect terminat, o conversație dificilă dusă la capăt, un copil care a făcut un pas", "en": "a finished project, a difficult conversation carried to the end, a child who took a step" },
+      "valence": 4, "arousal": 1
+    }
+  ]
+}

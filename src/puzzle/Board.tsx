@@ -861,7 +861,7 @@ export default function Board({
       const by = mobile ? 148 : 108;
       ctx.save();
       ctx.globalAlpha = 0.92;
-      ctx.fillStyle = "#10141f";
+      ctx.fillStyle = "#1b3027";
       ctx.beginPath();
       ctx.roundRect(bx - 8, by - 8, bw + 16, bh + 16, 14);
       ctx.fill();
@@ -1420,7 +1420,7 @@ export default function Board({
         role="img"
         aria-label={`${t(STR.board)}${puzzle.credit ? ` · ${puzzle.credit}` : ""}`}
         className={`board-input block h-full w-full touch-none ${inputEnabled ? "cursor-grab active:cursor-grabbing" : "cursor-move"}`}
-        style={{ backgroundColor: "#0b0e1a", touchAction: "none", overscrollBehavior: "contain" }}
+        style={{ backgroundColor: "#14261f", touchAction: "none", overscrollBehavior: "contain" }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}

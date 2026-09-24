@@ -4,6 +4,7 @@ export type Route =
   | { name: "landing" }
   | { name: "create" }
   | { name: "join" }
+  | { name: "emotions" }
   | { name: "room"; roomId: string };
 
 export function navigate(path: string) {
@@ -15,6 +16,7 @@ export function parseRoute(): Route {
   const path = window.location.pathname;
   if (path === "/create") return { name: "create" };
   if (path === "/join") return { name: "join" };
+  if (path === "/emotii" || path === "/emotions") return { name: "emotions" };
   const m = path.match(/^\/room\/([^/]+)/);
   if (m) return { name: "room", roomId: decodeURIComponent(m[1]) };
   return { name: "landing" };

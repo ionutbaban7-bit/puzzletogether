@@ -126,7 +126,7 @@ ok("participant reconnect receives ordered room history", JSON.stringify(history
 // Snapshot persistence is tested from a separate process so a restart cannot
 // accidentally rely on in-memory room state.
 await wait(900);
-ok("chat is included in the room snapshot", existsSync(path.join(ROOT, ".data", "rooms.json")));
+ok("chat is included in the room snapshot", existsSync(path.join(process.env.DATA_DIR || path.join(ROOT, ".data"), "rooms.json")));
 const secondBase = "http://127.0.0.1:3101";
 const child = spawn(process.execPath, [path.join(ROOT, "src", "server.js")], {
   env: { ...process.env, PORT: "3101", NODE_ENV: "production" },

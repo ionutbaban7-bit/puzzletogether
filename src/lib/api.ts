@@ -12,7 +12,13 @@ async function post<T>(url: string, body: unknown): Promise<T> {
 }
 
 export const api = {
-  fetchCatalog(): Promise<CatalogData> { return fetch("/api/puzzles").then((response) => response.json()); },
+  async fetchCatalog(): Promise<CatalogData> {
+    const response = await fetch("/api/puzzles");
+    if (!response.ok) throw new Error("Activity library unavailable.");
+    const data = await response.json();
+    if (!Array.isArray(data.categories) || !Array.isArray(data.puzzles) || !Array.isArray(data.coaching?.activities)) throw new Error("Invalid activity library.");
+    return data;
+  },
   createRoom(puzzleId: string, difficulty: string, name: string, options: { sessionName?: string; role?: "host" | "spectator"; contentLanguage?: "ro" | "en"; mystery?: boolean; teamMode?: "shared" | "color-teams"; teamCount?: number; customImage?: { url: string; file: string; width: number; height: number; name: string } } = {}) {
     return post<{ room: RoomView; playerId: string }>("/api/rooms", { puzzleId, difficulty, name, ...options });
   },

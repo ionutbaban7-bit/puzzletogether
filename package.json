@@ -1,7 +1,7 @@
 {
   "name": "puzzletogether",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Solve beautiful jigsaw puzzles together, in real time.",
   "type": "module",
   "engines": {
@@ -32,7 +32,11 @@
     "test:claim-lifecycle": "node scripts/claim-lifecycle-test.mjs",
     "test:chat": "node scripts/chat-protocol-test.mjs",
     "test:teams": "node scripts/team-canvas-protocol-test.mjs",
-    "test:catalog-compat": "node scripts/retired-catalog-compat-test.mjs"
+    "test:catalog-compat": "node scripts/retired-catalog-compat-test.mjs",
+    "emotions:audit": "node scripts/emotions-audit.mjs",
+    "test:emotions-protocol": "node scripts/camera-mare-smoke.mjs",
+    "test:emotions-ui": "node scripts/ui-smoke.mjs",
+    "test:workshop": "node scripts/workshop-integrity-test.mjs && node scripts/workshop-ui-test.mjs"
   },
   "dependencies": {
     "express": "^5.2.1",
@@ -47,6 +51,7 @@
     "@vitejs/plugin-react": "^6.1.1",
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
+    "jsdom": "^30.0.1",
     "playwright": "^1.62.1",
     "postcss": "^8.4.45",
     "tailwindcss": "^3.4.10",

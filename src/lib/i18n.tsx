@@ -23,6 +23,8 @@ function initialLanguage(): Lang {
   } catch {
     // Storage can be unavailable in strict private mode.
   }
+  const requested = new URLSearchParams(window.location.search).get("lang");
+  if (requested === "ro" || requested === "en") selected = requested;
   document.documentElement.lang = selected;
   return selected;
 }
@@ -61,7 +63,7 @@ export function LangToggle({ dark = false }: { dark?: boolean }) {
       role="group"
       aria-label="Language"
       className={`inline-flex items-center overflow-hidden rounded-full border p-0.5 text-[11px] font-bold ${
-        dark ? "border-white/15 bg-white/5 text-white" : "border-ink-200 bg-white text-ink-600"
+        dark ? "border-white/15 bg-white/5 text-white" : "border-g-line bg-white text-g-sub"
       }`}
     >
       {(["en", "ro"] as Lang[]).map((l) => (
@@ -74,7 +76,7 @@ export function LangToggle({ dark = false }: { dark?: boolean }) {
             lang === l
               ? dark
                 ? "bg-white/20 text-white shadow-sm"
-                : "bg-ink-900 text-white shadow-sm"
+                : "bg-g-blue-tint text-g-blue-dark shadow-sm"
               : "opacity-60 hover:opacity-100"
           }`}
         >

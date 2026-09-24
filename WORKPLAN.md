@@ -134,3 +134,169 @@ scope. The full evidence and ordered implementation brief are in:
 - [~] **P1/P2 — accessibility, mobile shell, security, resilience, CI, and
   observability:** prioritised in the remediation review rather than implied
   complete by the original structural catalog and protocol passes.
+
+## CARTOGRAF — emotions zone, implemented 2026-09-13
+
+Full execution of `docs/emotions/01–03` (phases 0–8): solo `/emotii` experience
+plus the team "Camera Mare" activity reusing the room infrastructure.
+
+- [x] Content: 24 emotions + 11 blends (8 Plutchik territories × 3 levels,
+  research-anchored with explicit limits), 64 solo + 32 room situations,
+  8 inner-voice archetypes. Audit gate: `npm run emotions:audit` green.
+- [x] Solo zone (`src/emotions/`): emotion wheel (SVG, 24 segments + hub
+  compass), Emotion Book detail (12 sections per emotion, "map, not
+  territory" footer), 7 tabs — Harta, Meteo (daily check-in), Expediții
+  (situation naming + debrief), Frontiera (prediction tracker, inhibitory
+  learning framing), Muzeul (anonymous lines), Locuitorii (archetypes),
+  Atlasul (local summary + honest "what it can/cannot do" + JSON export +
+  reset). All data local-only (localStorage).
+- [x] Team Camera Mare (`src/puzzle/EmotionsActivity.tsx` + server
+  `emotions*` protocol): private votes (1–3 emotions + intensity 0–10 +
+  optional archetype, or anonymous Pass), 4 round kinds (weather-start,
+  situation, museum, weather-end), anonymous aggregate reveal
+  ("Aceeași situație. N ceruri diferite."), host facilitator controls,
+  host safety word → participant trigger → board lock + calm pause overlay
+  (112 + ARPS resources), export JSON/HTML includes rounds, reset clears.
+- [x] Wiring: `/emotii` route, landing CARTOGRAF section, CreateRoom
+  category + activity card, GamePage mode branch, FacilitatorPanel
+  compatibility, RO/EN throughout.
+- [x] QA (this sandbox, no Chromium available — jsdom + real-protocol harness):
+  - `npm run typecheck` and `npm run build` pass.
+  - `node scripts/camera-mare-smoke.mjs` — **44/44** live-server protocol
+    checks: create/join, lobby gates, round kinds, dedupe/clamp/truncate,
+    private confirm, anonymous aggregate (counts/passed/intensity/archetypes),
+    history preserved across rounds, reveal-once, museum lines, safety word
+    (case-insensitive, board lock, safetyPause), exports, reset.
+  - `node scripts/ui-smoke.mjs` — **50/50** jsdom render checks: all 7 solo
+    tabs + interactions (meteo log, frontier prediction + resolution, museum
+    line, atlas), wheel 24 segments, Emotion Book + blend detail, room
+    participant/host flows (vote → reveal → safety overlay), landing section,
+    CreateRoom catalog card.
+- [x] Bugs found and fixed during QA: round start wiping session history,
+  votedCount excluding Pass answers, VotePanel local state persisting across
+    rounds (per-round key), blend cards mapping blend-of ids through the wrong
+    table, family legend `rings` type misuse, missing `.chip` styles.
+
+## Google-style light redesign — 2026-09-13 (same-day follow-up)
+
+User directive: whole app look "super clear, elegant, simplu", inspired by
+learning.google/work/; main page presents the 3 categories (Clarity Express,
+Emoții, Puzzle) clean; footer signature "by Ionut Baban" removed *for now*.
+
+- [x] New `g` palette in `tailwind.config.js` (Google blues/greens/reds +
+  `g-ink #202124`, `g-sub #5f6368`, `g-line #dadce0`, `g-soft #f8f9fa`).
+- [x] `src/index.css`: `.marketing-page`/`.landing-page` → white canvas;
+  `.setup-page` → soft gray `#f8f9fa` with light card/input overrides; dark
+  setup overrides + `.footer-signature`/`.signature-script` removed; focus
+  ring → Google blue; `.chip` → light pill.
+- [x] `LandingPage` rewritten: centered hero (Jucați. Vorbiți. Alegeți.),
+  3 equal category cards — 🧩 Puzzle → /create, 🗺️ Emoții/CARTOGRAF →
+  /emotii, 💬 Clarity Express → external hub — then 3-step flow, privacy/use
+  cards, minimal footer (© 2026 PuzzleTogether · Privacy · Terms — no
+  signature, no LinkedIn).
+- [x] CARTOGRAF zone light conversion: `Wheel.tsx` (white/`#f8f9fa` field,
+  white segment gaps, ink hub + labels, blue selection), `Compass.tsx`
+  (white plot, Google-colored quadrants), `EmotionsPage` + all 7 tabs +
+  Emotion Book drawer + CalmScreen (white cards, `g-line` borders, one blue
+  accent; green/yellow/red status colors from the `g` palette).
+- [x] Create/Join room pages: light (removed dark `Logo`/`LangToggle`/
+  `btn-dark` variants + marketing orbs).
+- [x] Deliberate exception: the live in-room game stage stays deep navy —
+  it is the "projector" surface where the white board and colored pieces
+  read best (white app chrome, dark stage, like a video player).
+- [x] RO wording pass: "Burla lumii tale" → "Busola lumii tale"
+  (EmotionsPage + Compass caption), "Burla valență × intensitate" → "Busola…",
+  InhabitantsTab "vorbesc în toată lumea" → "vorbesc în fiecare dintre noi",
+  MeteoTab "o hărta meteo" → "o hartă meteo", taxonomy JSON: "durere
+  anumbită" → "durere difuză, fără cauză clară", "un prăbușire" → "o
+  prăbușire" (×2), "o „cețură"…alarmă de alarmă" → "o „ceată" interioară…
+  alarmă puternică".
+- [x] QA: `tsc --noEmit` clean; `npm run build` clean; `camera-mare-smoke`
+  44/44; `ui-smoke` ALL PASSED (Section D updated to the new landing: hero,
+  3 category cards, CARTOGRAF CTA, and an explicit "signature removed"
+  assertion).
+
+## Premium landing redesign — 2026-09-13 (v2, same-day)
+
+User directive: make the main page a premium, memorable, interactive
+experience (Google/Microsoft *principles*, not their interfaces) — "wow →
+clarity → curiosity → click", editorial illustration identity, subtle
+micro-interactions, mobile-first, no functional changes.
+
+- [x] 4 original editorial illustrations (AI-generated, consistent identity:
+  sophisticated lightly-caricatured figures, blue→indigo→violet, off-white):
+  `server/public/images/landing/{hero,puzzle,emotions,clarity}.png` — hero
+  (4 people + 3D puzzle + speech bubbles + idea bulb + connection nodes),
+  Puzzle (team building a giant glowing puzzle, high-five), Emoții (calm
+  figure inside a violet inner-map orbit), Clarity Express (futuristic metro
+  with people conversing, speech bubbles, motion).
+- [x] `LandingPage` v2: sticky translucent header; two-column hero with
+  headline "Conectează oamenii. Pornește conversația. Descoperă ce se
+  întâmplă între voi." (gradient third line), curiosity CTAs ("Începe o
+  experiență →" gradient primary / "Explorează zonele" outline) + microcopy;
+  3 premium zone cards ("Alege cum vrei să înceapă conversația.") with
+  illustrations occupying the top 35–40%, tagline/description/CTA
+  ("Pornește jocul", "Explorează harta", "Descoperă întrebarea");
+  "Începe cu joaca. Ajungi la conversație." section with PLAY → CONNECT →
+  REFLECT → ACT flow tiles (custom SVG glyphs); "De la primul click la un
+  insight real." 3-step cards (01 Intră / 02 Explorează / 03 Capturează);
+  human trust section "Creat pentru oameni. Gândit cu grijă."; minimalist
+  footer (logo + "Play. Connect. Reflect. Act." + links + © 2026).
+- [x] Micro-interactions (all subtle, reduced-motion safe): IntersectionObserver
+  scroll reveals (`Reveal` component with jsdom guard), card hover lift −5px +
+  shadow + per-zone gradient glow (`--pt-glow`), illustration scale 1.035,
+  slow-panning gradient text (9s), floating accent dots + hero info chips
+  (7–9s), gradient-primary button with position shift, smooth anchor scroll.
+- [x] Typography: landing-scoped Inter/Manrope/Geist preference with system
+  fallback (keeps the no-webfont CSP-safe approach); headings 600–800 with
+  negative tracking; body ≤ ~70ch, dark gray not pure black.
+- [x] QA: `tsc` clean; build clean (73 kB CSS); ui-smoke Section D rewritten
+  (12 assertions: hero/CTAs/microcopy/zones/curiosity CTAs/4 illustrations/
+  flow/steps/trust/footer tagline/signature removed/no dark tokens) — ALL
+  PASSED; `camera-mare-smoke` 44/44; all 4 images 200 on :4173.
+
+## Consulting audit + Waves 1–3 — 2026-09-13 (same-day, user-approved)
+
+10-consultant critique (identity, product, interaction, a11y, motion,
+mobile, data-viz, performance) produced a P0–P2 findings list; the user
+approved ALL three waves.
+
+- [x] Wave 1 — unified design system:
+  - `brand` scale remapped from azure/cyan onto the blue identity
+    (#1a73e8 primary, #8ab4f8 dark-stage accent) — the whole in-room stage,
+    lobby, focus rings and Create/Join upgrade with zero class churn;
+    `cp.purple` aligned to violet #8b5cf6 with the full scale (200/400/600
+    were referenced but undefined — now generated); `cp.azure` follows brand.
+  - Typography unified: Manrope (display) + Inter (body) with system
+    fallback across the app (Poppins retired); CSP-safe (no webfonts).
+  - Logo: mark gradient → #1a73e8→#7c3aed; wordmark "Together" →
+    signature gradient (`.pt-wordmark`).
+  - a11y contrast: `g.faint` #9aa0a6 (2.5:1, WCAG fail) → #70757a (4.6:1).
+  - Landing images: 4 PNGs (5.6 MB) → WebP q82 (200 KB, −96%); hero gets
+    width/height + `fetchPriority="high"`; new stats chips row under hero
+    (Echipe 2–20 · 15–45 min · RO/EN · din browser).
+- [x] Wave 2 — major interaction changes:
+  - **Triple door** in CreateRoom ("Unde începem?"): 3 starter cards
+    mirroring the landing zones (Puzzle → featured catalog puzzle, Emoții →
+    Camera Mare, Clarity Express → external hub), preselect + jump straight
+    to the lobby step; pending-starter race handled for async catalog;
+    full catalog kept below a "sau alege din catalog" divider.
+  - **CARTOGRAF first-run** (`src/emotions/FirstRun.tsx`): 3-step dismissible
+    coach (wheel → emotion book → weather invite), once via localStorage,
+    non-blocking (pointer-events only on the card), auto-advances when the
+    user opens the book, CTA switches tab to Meteo.
+  - Lobby copy per role (host: "Pornește sesiunea…" / participant:
+    "Facilitatorul pornește…").
+  - Puzzle reset: `window.confirm` anti-pattern → styled confirm modal.
+- [x] Wave 3 — product depth:
+  - **Session postcard** in HarvestBoard: white gradient-identity card at
+    the end of every session (name, activity, date, people, rounds,
+    "Play. Connect. Reflect. Act.") with copy-to-clipboard summary — the
+    keepable moment.
+  - Route-level code-split (`App.tsx` lazy): initial bundle 580 kB →
+    175 kB (landing eager; CreateRoom/JoinRoom/RoomRoute/EmotionsPage
+    on-demand chunks).
+  - Tabs affordance: scroll-snap + right-edge mask fade on the 7-tab bar.
+- [x] QA: `tsc` clean; build clean (4 lazy chunks); ui-smoke ALL PASSED
+  (new: triple-door + catalog-divider assertions in Section E);
+  `camera-mare-smoke` 44/44; `emotions:audit` OK; all WebP 200 on :4173.
