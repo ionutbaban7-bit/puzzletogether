@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../lib/api";
+import { difficultyName } from "../lib/difficulty";
 import { CategoryGlyph, Modal, Spinner } from "./ui";
 import { T, useLang } from "../lib/i18n";
 import type { CatalogData, RoomView } from "../types";
@@ -234,7 +235,7 @@ export default function PuzzlePicker({
                           : "border-white/10 bg-white/5 text-ink-200 hover:bg-white/10"
                       }`}
                     >
-                      <span className="text-[13px] font-bold">{d.name}</span>
+                      <span className="text-[13px] font-bold">{difficultyName(d.id, d.name, lang)}</span>
                       <span className="ml-1.5 text-[11px] text-ink-300">{d.pieces}p</span>
                     </button>
                   ))}

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { api } from "../lib/api";
 import { navigate } from "../lib/router";
 import { getSession, saveSession } from "../lib/session";
+import { difficultyName } from "../lib/difficulty";
 import { LangToggle, pick, T, useLang } from "../lib/i18n";
 import { CategoryGlyph, Logo, Spinner } from "../components/ui";
 import type { CatalogData, CoachingActivity, Difficulty, PuzzleInfo } from "../types";
@@ -217,7 +218,7 @@ export default function CreateRoom() {
             <h1 className="font-display mt-5 text-2xl font-bold text-ink-900"><T value={{ ro: "Pregătește camera", en: "Set up the room" }} /></h1>
             <div className="mt-5 flex items-center gap-4 rounded-xl border border-g-line p-3" aria-label={lang === "ro" ? "Selecția ta" : "Your selection"}>
               {(upload || selectedPuzzle) && <img src={upload?.url || selectedPuzzle?.thumbnail || selectedPuzzle?.image} alt="" className="h-20 w-24 rounded object-contain" />}
-              <div className="min-w-0"><p className="font-semibold">{selectedActivity ? pick(selectedActivity.name, lang) : upload ? uploadName : lang === "ro" ? selectedPuzzle?.nameRo || selectedPuzzle?.name : selectedPuzzle?.name}</p>{isJigsaw && <p className="mt-1 text-sm text-g-sub">{selectedDifficulty?.pieces} {lang === "ro" ? "piese" : "pieces"} · {selectedDifficulty?.name}</p>}<button className="mt-2 text-sm text-brand-600 underline" onClick={() => setStep(1)}>{lang === "ro" ? "Schimbă imaginea sau opțiunile" : "Change image or options"}</button></div>
+              <div className="min-w-0"><p className="font-semibold">{selectedActivity ? pick(selectedActivity.name, lang) : upload ? uploadName : lang === "ro" ? selectedPuzzle?.nameRo || selectedPuzzle?.name : selectedPuzzle?.name}</p>{isJigsaw && <p className="mt-1 text-sm text-g-sub">{selectedDifficulty?.pieces} {lang === "ro" ? "piese" : "pieces"} · {difficultyName(difficulty, selectedDifficulty?.name || difficulty, lang)}</p>}<button className="mt-2 text-sm text-brand-600 underline" onClick={() => setStep(1)}>{lang === "ro" ? "Schimbă imaginea sau opțiunile" : "Change image or options"}</button></div>
             </div>
             <p className="mt-2 text-sm leading-relaxed text-ink-600"><T value={{ ro: "Invitații așteaptă Start. Timpul nu pornește înainte.", en: "Guests wait for Start. Time does not start early." }} /></p>
             <label className="mt-6 block text-sm font-semibold text-ink-700" htmlFor="session-name"><T value={{ ro: "Numele sesiunii", en: "Session name" }} /></label>
@@ -265,6 +266,6 @@ function ActivityCard({ activity, selected, onSelect, lang }: { activity: Coachi
 }
 function DifficultyCard({ difficulty, selected, onSelect, lang, canvas = false }: { difficulty: Difficulty; selected: boolean; onSelect: () => void; lang: "ro" | "en"; canvas?: boolean }) {
   const meta = DIFFICULTY_META[difficulty.id];
-  return <button onClick={onSelect} aria-pressed={selected} className={`rounded-2xl border p-4 text-left transition ${selected ? "border-brand-600 bg-brand-50 ring-4 ring-brand-600/15" : "border-brand-100 bg-white hover:border-brand-400"}`}><b className={selected ? "text-brand-700" : "text-ink-900"}>{difficulty.name}</b><div className="mt-1 text-xs text-ink-500">{difficulty.pieces === 0 ? (lang === "ro" ? "nelimitat" : "unlimited") : `${difficulty.pieces} ${canvas ? (lang === "ro" ? "cărți" : "tiles") : lang === "ro" ? "piese" : "pieces"}`}</div><div className="mt-2 text-[11px] text-ink-400">⏱ {meta?.minutes} · 👥 {meta?.people}</div></button>;
+  return <button onClick={onSelect} aria-pressed={selected} className={`rounded-2xl border p-4 text-left transition ${selected ? "border-brand-600 bg-brand-50 ring-4 ring-brand-600/15" : "border-brand-100 bg-white hover:border-brand-400"}`}><b className={selected ? "text-brand-700" : "text-ink-900"}>{difficultyName(difficulty.id, difficulty.name, lang)}</b><div className="mt-1 text-xs text-ink-500">{difficulty.pieces === 0 ? (lang === "ro" ? "nelimitat" : "unlimited") : `${difficulty.pieces} ${canvas ? (lang === "ro" ? "cărți" : "tiles") : lang === "ro" ? "piese" : "pieces"}`}</div><div className="mt-2 text-[11px] text-ink-400">⏱ {meta?.minutes} · 👥 {meta?.people}</div></button>;
 }
 function ErrorBox({ children }: { children: React.ReactNode }) { return <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">{children}</div>; }
