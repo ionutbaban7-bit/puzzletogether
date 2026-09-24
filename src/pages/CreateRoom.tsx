@@ -24,6 +24,7 @@ const CLARITY_EXPRESS_URL = "https://coaching-hub-1.onrender.com/";
 
 export default function CreateRoom() {
   const { lang } = useLang();
+  const focusedPuzzle = new URLSearchParams(window.location.search).get("activity") === "puzzle";
   const [catalog, setCatalog] = useState<CatalogData | null>(null);
   const [step, setStep] = useState<1 | 2>(1);
   const [name, setName] = useState(() => getSession().name || "");
@@ -134,17 +135,17 @@ export default function CreateRoom() {
         </header>
 
         <div className="mx-auto my-8 flex max-w-lg items-center gap-3">
-          {[1, 2].map((value) => <div key={value} className="flex flex-1 items-center gap-2"><span className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${step >= value ? "bg-brand-600 text-white" : "border border-ink-200 bg-white text-ink-400"}`}>{step > value ? "✓" : value}</span><span className={`text-sm font-semibold ${step === value ? "text-ink-900" : "text-ink-400"}`}>{value === 1 ? (lang === "ro" ? "Alege activitatea" : "Choose activity") : (lang === "ro" ? "Pregătește sesiunea" : "Set up session")}</span>{value === 1 && <span className="h-px flex-1 bg-ink-200" />}</div>)}
+          {[1, 2].map((value) => <div key={value} className="flex flex-1 items-center gap-2"><span className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${step >= value ? "bg-brand-600 text-white" : "border border-ink-200 bg-white text-ink-400"}`}>{step > value ? "✓" : value}</span><span className={`text-sm font-semibold ${step === value ? "text-ink-900" : "text-ink-400"}`}>{value === 1 ? (focusedPuzzle ? lang === "ro" ? "Alege puzzle-ul" : "Choose puzzle" : lang === "ro" ? "Alege activitatea" : "Choose activity") : (lang === "ro" ? "Pregătește camera" : "Set up room")}</span>{value === 1 && <span className="h-px flex-1 bg-ink-200" />}</div>)}
         </div>
 
         {step === 1 ? (
           <div className="space-y-7 animate-fade-up">
             <div>
-              <h1 className="font-display text-3xl font-extrabold text-ink-900"><T value={{ ro: "Unde începem?", en: "Where do we begin?" }} /></h1>
-              <p className="mt-2 text-ink-600"><T value={{ ro: "Alege o activitate. Apoi pregătești sesiunea și inviți echipa.", en: "Choose an activity, set up the session and invite your team." }} /></p>
+              <h1 className="font-display text-3xl font-extrabold text-ink-900">{focusedPuzzle ? <T value={{ ro: "Alege un puzzle", en: "Choose a puzzle" }} /> : <T value={{ ro: "Unde începem?", en: "Where do we begin?" }} />}</h1>
+              <p className="mt-2 text-ink-600">{focusedPuzzle ? <T value={{ ro: "Alege imaginea și numărul de piese. Apoi inviți prietenii.", en: "Choose a picture and piece count. Then invite your friends." }} /> : <T value={{ ro: "Alege o activitate. Apoi pregătești sesiunea și inviți echipa.", en: "Choose an activity, set up the session and invite your team." }} />}</p>
             </div>
 
-            <section aria-label="quick starts">
+            {!focusedPuzzle && <section aria-label="quick starts">
               <div className="grid gap-3 sm:grid-cols-3">
                 <button
                   type="button"
@@ -176,19 +177,19 @@ export default function CreateRoom() {
                   <span className="mt-2.5 inline-flex items-center gap-1 text-[13px] font-bold text-cp-purple-600"><T value={{ ro: "Deschide hub-ul", en: "Open the hub" }} /><span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">↗</span></span>
                 </a>
               </div>
-            </section>
+            </section>}
 
-            <div className="flex items-center gap-3" aria-hidden>
+            {!focusedPuzzle && <div className="flex items-center gap-3" aria-hidden>
               <span className="h-px flex-1 bg-g-line" />
               <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-g-faint"><T value={{ ro: "sau alege din catalog", en: "or pick from the catalog" }} /></span>
               <span className="h-px flex-1 bg-g-line" />
-            </div>
+            </div>}
 
             <section>
               <div className="flex flex-wrap gap-2">
-                {catalog?.categories.map((item) => <CategoryButton key={item.id} id={item.id} active={category === item.id} onClick={() => { setCategory(item.id); setPuzzleId(null); setUpload(null); setDifficulty(CANVAS_CATEGORIES.has(item.id) ? "sandbox" : "medium"); }} lang={lang} />)}
-                {catalog?.coaching && <CategoryButton id="coaching" active={category === "coaching"} onClick={() => { setCategory("coaching"); setPuzzleId(null); setDifficulty("medium"); }} lang={lang} coaching />}
-                {catalog?.emotions && <CategoryButton id="emotions" active={category === "emotions"} onClick={() => { setCategory("emotions"); setPuzzleId(null); setDifficulty("medium"); }} lang={lang} coaching />}
+                {catalog?.categories.filter(item => !focusedPuzzle || !CANVAS_CATEGORIES.has(item.id)).map((item) => <CategoryButton key={item.id} id={item.id} active={category === item.id} onClick={() => { setCategory(item.id); setPuzzleId(null); setUpload(null); setDifficulty(CANVAS_CATEGORIES.has(item.id) ? "sandbox" : "medium"); }} lang={lang} />)}
+                {!focusedPuzzle && catalog?.coaching && <CategoryButton id="coaching" active={category === "coaching"} onClick={() => { setCategory("coaching"); setPuzzleId(null); setDifficulty("medium"); }} lang={lang} coaching />}
+                {!focusedPuzzle && catalog?.emotions && <CategoryButton id="emotions" active={category === "emotions"} onClick={() => { setCategory("emotions"); setPuzzleId(null); setDifficulty("medium"); }} lang={lang} coaching />}
               </div>
             </section>
 
@@ -208,7 +209,7 @@ export default function CreateRoom() {
             {isCanvas && <section><h2 className="font-display text-lg font-bold text-ink-900"><T value={{ ro: "Limba conținutului", en: "Content language" }} /></h2><p className="mt-1 text-sm text-ink-600"><T value={{ ro: "Separată de limba interfeței.", en: "Separate from the interface language." }} /></p><div className="mt-3 grid grid-cols-2 gap-3 sm:max-w-sm"><button onClick={() => setContentLanguage("ro")} className={`rounded-2xl border p-4 text-left transition ${contentLanguage === "ro" ? "border-brand-600 bg-brand-50 ring-4 ring-brand-600/15" : "border-brand-100 bg-white hover:border-brand-400"}`}><b className={contentLanguage === "ro" ? "text-brand-700" : "text-ink-900"}>RO · Română</b><div className="mt-1 text-xs text-ink-500">A B C … Z Ă Â Î Ș Ț</div></button><button onClick={() => setContentLanguage("en")} className={`rounded-2xl border p-4 text-left transition ${contentLanguage === "en" ? "border-brand-600 bg-brand-50 ring-4 ring-brand-600/15" : "border-brand-100 bg-white hover:border-brand-400"}`}><b className={contentLanguage === "en" ? "text-brand-700" : "text-ink-900"}>EN · English</b><div className="mt-1 text-xs text-ink-500">A B C … Z</div></button></div></section>}
 
             {error && <ErrorBox>{error}</ErrorBox>}
-            <div className="sticky bottom-4 flex items-center justify-between gap-4 rounded-2xl border border-ink-200 bg-white/95 p-4 shadow-pop backdrop-blur"><div className="min-w-0 text-sm text-ink-500">{selectionReady ? <><b className="text-ink-900">{selectedActivity ? pick(selectedActivity.name, lang) : selectedPuzzle?.name}</b>{selectedActivity ? ` · ${selectedActivity.duration}` : isCanvas ? ` · ${selectedDifficulty?.pieces === 0 ? (lang === "ro" ? "nelimitat" : "unlimited") : `${selectedDifficulty?.pieces} ${lang === "ro" ? "cărți" : "tiles"}`}` : ` · ${selectedDifficulty?.pieces} ${lang === "ro" ? "piese" : "pieces"}`}</> : <T value={{ ro: "Selectează o activitate", en: "Select an activity" }} />}</div><button className="btn-primary shrink-0" disabled={!selectionReady} onClick={() => setStep(2)}><T value={{ ro: "Continuă", en: "Continue" }} /> →</button></div>
+            <div className="sticky bottom-4 flex items-center justify-between gap-4 rounded-2xl border border-ink-200 bg-white/95 p-4 shadow-pop backdrop-blur"><div className="min-w-0 text-sm text-ink-500">{selectionReady ? <><b className="text-ink-900">{selectedActivity ? pick(selectedActivity.name, lang) : lang === "ro" ? selectedPuzzle?.nameRo || selectedPuzzle?.name : selectedPuzzle?.name}</b>{selectedActivity ? ` · ${selectedActivity.duration}` : isCanvas ? ` · ${selectedDifficulty?.pieces === 0 ? (lang === "ro" ? "nelimitat" : "unlimited") : `${selectedDifficulty?.pieces} ${lang === "ro" ? "cărți" : "tiles"}`}` : ` · ${selectedDifficulty?.pieces} ${lang === "ro" ? "piese" : "pieces"}`}</> : <T value={{ ro: "Selectează o activitate", en: "Select an activity" }} />}</div><button className="btn-primary shrink-0" disabled={!selectionReady} onClick={() => setStep(2)}><T value={{ ro: "Continuă", en: "Continue" }} /> →</button></div>
           </div>
         ) : (
           <div className="card mx-auto max-w-xl p-6 animate-fade-up sm:p-8">
@@ -223,7 +224,7 @@ export default function CreateRoom() {
             <input id="session-name" className="input mt-2" maxLength={80} value={sessionName} onChange={(e) => setSessionName(e.target.value)} placeholder={lang === "ro" ? "ex. Seara de puzzle · opțional" : "e.g. Puzzle night · optional"} />
             <label className="mt-5 block text-sm font-semibold text-ink-700" htmlFor="display-name"><T value={{ ro: "Numele tău", en: "Your display name" }} /></label>
             <input id="display-name" className="input mt-2" maxLength={24} value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Ana" autoFocus />
-            <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-2xl border border-brand-100 bg-brand-50 p-4"><input type="checkbox" className="mt-1 h-4 w-4 accent-brand-600" checked={facilitatorOnly} onChange={(e) => setFacilitatorOnly(e.target.checked)} /><span><b className="block text-sm text-ink-900"><T value={{ ro: "Facilitez, nu joc", en: "I facilitate, I don't play" }} /></b><span className="mt-1 block text-xs leading-relaxed text-ink-600"><T value={{ ro: "Vezi, dar nu muți piese sau carduri.", en: "Watch, but do not move pieces or cards." }} /></span></span></label>
+            <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-2xl border border-brand-100 bg-brand-50 p-4"><input type="checkbox" className="mt-1 h-4 w-4 accent-brand-600" checked={facilitatorOnly} onChange={(e) => setFacilitatorOnly(e.target.checked)} /><span><b className="block text-sm text-ink-900">{isJigsaw ? <T value={{ ro: "Privesc, nu mut piese", en: "Watch without moving pieces" }} /> : <T value={{ ro: "Facilitez, nu joc", en: "I facilitate, I don't play" }} />}</b><span className="mt-1 block text-xs leading-relaxed text-ink-600">{isJigsaw ? <T value={{ ro: "Poți găzdui și invita prieteni fără să joci.", en: "You can host and invite friends without playing." }} /> : <T value={{ ro: "Vezi, dar nu muți piese sau carduri.", en: "Watch, but do not move pieces or cards." }} />}</span></span></label>
             {isCanvas && <section className="mt-5 rounded-2xl border border-cp-purple-200 bg-cp-purple-50 p-4">
               <div className="text-sm font-bold text-ink-900"><T value={{ ro: "Cum colaborați?", en: "How will you collaborate?" }} /></div>
               <p className="mt-1 text-xs leading-relaxed text-ink-600"><T value={{ ro: "Alegeți acum sau reconfigurați în lobby. Echipele colorate au și simboluri/nume, nu doar culori.", en: "Choose now or reconfigure in the lobby. Colour teams also have markers/names, not colour alone." }} /></p>
@@ -257,7 +258,7 @@ function PuzzleCard({ puzzle, selected, onSelect, lang }: { puzzle: PuzzleInfo; 
     if (imageSrc === puzzle.image || event.currentTarget.dataset.fullFallback === "true") return;
     event.currentTarget.dataset.fullFallback = "true";
     event.currentTarget.src = puzzle.image;
-  }} className="h-full w-full object-cover transition group-hover:scale-105" /></div><div className="p-3"><div className="truncate text-sm font-semibold text-ink-900">{lang === "ro" ? puzzle.nameRo || puzzle.name : puzzle.name}</div><div className="mt-1 truncate text-[11px] text-ink-400">{puzzle.credit} · {puzzle.license}</div></div></button>;
+  }} className="h-full w-full object-cover transition group-hover:scale-105" /></div><div className="p-3"><div className="truncate text-sm font-semibold text-ink-900">{lang === "ro" ? puzzle.nameRo || puzzle.name : puzzle.name}</div><div className="mt-1 truncate text-[11px] text-ink-400">{puzzle.credit}</div></div></button>;
 }
 function ActivityCard({ activity, selected, onSelect, lang }: { activity: CoachingActivity; selected: boolean; onSelect: () => void; lang: "ro" | "en" }) {
   return <button onClick={onSelect} aria-pressed={selected} className={`overflow-hidden rounded-2xl border bg-white text-left shadow-sm transition ${selected ? "border-emerald-600 ring-4 ring-emerald-600/15" : "border-ink-200 hover:-translate-y-0.5 hover:shadow-card"}`}><div className="flex"><img src={activity.cover} alt="" className="h-36 w-36 shrink-0 object-cover" /><div className="min-w-0 p-4"><div className="flex flex-wrap gap-2"><span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${activity.mode === "emotions" ? "bg-cp-purple-100 text-cp-purple-700" : "bg-emerald-100 text-emerald-700"}`}>{activity.mode === "ranking" ? "Team ranking" : activity.mode === "emotions" ? "🗺️ Camera Mare" : "Compass"}</span><span className="text-xs text-ink-400">⏱ {activity.duration}</span></div><h3 className="font-display mt-2 font-bold text-ink-900"><T value={activity.name} /></h3><p className="mt-1 line-clamp-3 text-xs leading-relaxed text-ink-500"><T value={activity.description} /></p><div className="mt-2 text-[11px] font-medium text-ink-400">{activity.mode === "ranking" ? (lang === "ro" ? "Ranking liber · reveal ghidat · debrief" : "Free ranking · guided reveal · debrief") : activity.mode === "emotions" ? (lang === "ro" ? "Vot privat · reveal anonim · cuvânt de siguranță" : "Private vote · anonymous reveal · safety word") : (lang === "ro" ? "Răspunsuri private · sumar de echipă" : "Private answers · team summary")}</div></div></div></button>;

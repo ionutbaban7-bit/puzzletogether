@@ -435,7 +435,7 @@ export default function GamePage() {
                         ? `${pick(CANVAS_MODE_LABELS[room.difficulty] || { ro: room.difficulty, en: room.difficulty }, lang)} · ${puzzle.contentLanguage?.toUpperCase() || ""}${
                             puzzle.category ? ` · ${CATEGORY_ICON[puzzle.category] || ""} ${getCategoryLabel(puzzle.category)}` : ""
                           }`
-                        : `${getDifficultyLabel(room.difficulty)} · ${total} pieces${
+                        : `${getDifficultyLabel(room.difficulty)} · ${total} ${lang === "ro" ? "piese" : "pieces"}${
                             puzzle.category ? ` · ${CATEGORY_ICON[puzzle.category] || ""} ${getCategoryLabel(puzzle.category)}` : ""
                           }`}
                   </div>
@@ -474,7 +474,7 @@ export default function GamePage() {
                         ? `${tileCount} ${lang === "ro" ? "cărți · banca echipei" : "tiles · team bank"}`
                         : `${tileCount} / ${total} ${lang === "ro" ? "cărți din inventar" : "tiles from inventory"}`
                       : `${tileCount} ${canvas?.teamInventory && room.teamMode === "color-teams" ? (lang === "ro" ? "cărți · alege echipa" : "tiles · choose a team") : (lang === "ro" ? "cărți · sandbox nelimitat" : "tiles · unlimited sandbox")}`
-                    : `${locked} / ${total} pieces`}
+                    : `${locked} / ${total} ${lang === "ro" ? "piese" : "pieces"}`}
                 </div>
               </div>
             )}
@@ -640,7 +640,7 @@ export default function GamePage() {
       )}
       {protocolError && <button className="absolute bottom-5 left-1/2 z-40 max-w-md -translate-x-1/2 rounded-xl border border-rose-400/30 bg-rose-950/95 px-4 py-2 text-sm text-rose-100" onClick={() => store.clearError()}>{protocolError} · ✕</button>}
       {room.retiredCatalog && <div className="pointer-events-none absolute inset-x-3 bottom-5 z-30 mx-auto max-w-xl rounded-2xl border border-amber-300/30 bg-amber-950/90 px-4 py-2.5 text-center text-xs leading-relaxed text-amber-100 shadow-pop"><T value={{ ro: "Această cameră existentă folosește o imagine retrasă din catalog. Runda rămâne disponibilă; alege o activitate revizuită pentru următoarea rundă.", en: "This existing room uses an image retired from the catalog. This round remains available; choose a reviewed activity for the next round." }} /></div>}
-      {room.startedAt && room.stage !== "lobby" && (
+      {room.startedAt && room.stage !== "lobby" && !isJigsaw && (
         <div className="pointer-events-none absolute left-1/2 top-3 z-20 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-ink-900/85 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white backdrop-blur sm:flex">
           <span>{room.boardLocked ? "🔒" : "●"}</span><span>{room.stage}</span>{room.timerEndsAt && <span className="font-mono text-amber-200">{formatClock(Math.max(0, room.timerEndsAt - now))}</span>}
         </div>

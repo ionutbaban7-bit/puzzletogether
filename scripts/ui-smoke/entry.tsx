@@ -183,7 +183,7 @@ async function main() {
   window.history.replaceState({}, "", "/create?activity=puzzle");
   const rootPuzzle = await renderProbe(<LanguageProvider><CreateRoom /></LanguageProvider>);
   await act(async () => { await waitMs(500); });
-  check("direct puzzle link opens image selection", hasText(document.body, "Alege imaginea") && !hasText(document.body, "Numele tău"));
+  check("direct puzzle link opens image selection", hasText(document.body, "Alege imaginea") && !hasText(document.body, "Numele tău") && !hasText(document.body,"Clarity Express"));
   const mona = document.querySelector<HTMLImageElement>('img[alt="Mona Lisa"]')?.closest("button");
   click(mona);
   const hard = [...document.querySelectorAll("button")].find(b => b.textContent?.includes("100 piese"));
