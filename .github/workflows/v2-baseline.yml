@@ -45,6 +45,10 @@ jobs:
         run: node scripts/security-regression-test.mjs
       - name: Authenticated multiplayer puzzle layout
         run: npm run test:layout
+      - name: Image upload negative tests
+        run: node scripts/upload-guard-test.mjs
+      - name: Authenticated recovery after isolated process restart
+        run: node scripts/p0-restart-test.mjs
       - name: Stop isolated room server
         if: always()
         shell: bash
