@@ -119,7 +119,7 @@ export default function CreateRoom() {
           customImage: upload ? { url: upload.url, file: upload.file, width: upload.width, height: upload.height, name: uploadName } : undefined,
         } : {}),
       });
-      saveSession({ name: name.trim(), pid: response.playerId, roomId: response.room.id });
+      saveSession({ name: name.trim(), pid: response.playerId, roomId: response.room.id, credential: response.credential });
       navigate(`/room/${response.room.id}`);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : lang === "ro" ? "Camera nu a putut fi creată." : "Could not create the room.");
