@@ -7,8 +7,11 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
-  build-and-core:
+  build-security-and-core:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -20,12 +23,35 @@ jobs:
       - run: npm ci
       - name: Typecheck and production build
         run: npm run build
-      - name: Puzzle geometry
-        run: npm run test:layout
       - name: Render regression contracts
         run: npm run test:render-contract
       - name: Catalog audit
         run: npm run catalog:audit
-  # Security tests become a required CI gate only with the credential
-  # implementation PR. They are deliberately NOT marked passing here:
-  # scripts/security-regression-test.mjs documents the currently open P0.
+      - name: Start isolated room server
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/pt-test-data"
+          DATA_DIR="$RUNNER_TEMP/pt-test-data" NODE_ENV=production HOST=127.0.0.1 PORT=3000 node src/server.js > "$RUNNER_TEMP/pt-server.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/pt-server.pid"
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:3000/api/health > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/pt-server.log"
+          exit 1
+      - name: Reject unauthorized access and verify legitimate sessions
+        run: node scripts/security-regression-test.mjs
+      - name: Authenticated multiplayer puzzle layout
+        run: npm run test:layout
+      - name: Stop isolated room server
+        if: always()
+        shell: bash
+        run: |
+          if test -f "$RUNNER_TEMP/pt-server.pid"; then
+            kill "$(cat "$RUNNER_TEMP/pt-server.pid")" || true
+          fi
+          if test -f "$RUNNER_TEMP/pt-server.log"; then
+            tail -n 50 "$RUNNER_TEMP/pt-server.log"
+          fi
