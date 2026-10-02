@@ -2478,7 +2478,29 @@ function applyCanvasOp(room, playerId, msg, ws) {
 
 const app = express();
 app.disable("x-powered-by");
+// Set TRUST_PROXY=1 only behind a reverse proxy that strips untrusted
+// X-Forwarded-For values. Default IP limiting never trusts user-supplied IPs.
+if (process.env.TRUST_PROXY === "1") app.set("trust proxy", 1);
 app.use(express.json({ limit: "64kb" }));
+
+// Single-process limits fit the current one-instance architecture. Deploying
+// multiple replicas requires replacing these counters with shared storage.
+const requestBuckets = new Map();
+function rateLimit(scope, maxRequests, windowMs) {
+  return (req, res, next) => {
+    const now = Date.now();
+    const key = `${scope}:${req.ip || req.socket.remoteAddress || "unknown"}`;
+    const current = requestBuckets.get(key);
+    const bucket = current && current.expiresAt > now ? current : { count: 0, expiresAt: now + windowMs };
+    bucket.count += 1;
+    requestBuckets.set(key, bucket);
+    if (bucket.count > maxRequests) {
+      res.setHeader("Retry-After", String(Math.max(1, Math.ceil((bucket.expiresAt - now) / 1000))));
+      return res.status(429).json({ error: "Too many requests. Please try again later.", code: "rate_limited" });
+    }
+    next();
+  };
+}
 
 app.get("/api/health", (_req, res) => {
   const memory = process.memoryUsage();
@@ -2509,7 +2531,7 @@ app.get("/api/emotions", (_req, res) => res.json({
   archetypes: emotionsArchetypes,
 }));
 
-app.post("/api/rooms", (req, res) => {
+app.post("/api/rooms", rateLimit("create", 12, 60 * 60_000), (req, res) => {
   const { puzzleId, difficulty, name, sessionName, role, contentLanguage, mystery, customImage, teamMode, teamCount } = req.body || {};
   if (typeof name !== "string" || !name.trim()) return res.status(400).json({ error: "A display name is required." });
   try {
@@ -2550,7 +2572,7 @@ app.post("/api/rooms", (req, res) => {
   }
 });
 
-app.post("/api/rooms/:id/join", (req, res) => {
+app.post("/api/rooms/:id/join", rateLimit("join", 60, 10 * 60_000), (req, res) => {
   const room = findRoom(req.params.id);
   if (!room || room.stage === "closed") return res.status(404).json({ error: "Room not found.", code: "room_missing" });
   const { name, pid, code } = req.body || {};
@@ -2743,7 +2765,14 @@ app.get("/api/retired-images/:id", (req, res) => {
 
 // Custom image uploads (room-scoped). The file is stored under .data/uploads
 // (never in the public bundle) and deleted when its room is reaped.
-app.post("/api/uploads", express.raw({ type: "*/*", limit: "10mb" }), (req, res) => {
+function matchesImageSignature(type, body) {
+  if (type === "image/jpeg") return body.length >= 3 && body[0] === 0xff && body[1] === 0xd8 && body[2] === 0xff;
+  if (type === "image/png") return body.length >= 8 && body.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+  if (type === "image/webp") return body.length >= 12 && body.toString("ascii", 0, 4) === "RIFF" && body.toString("ascii", 8, 12) === "WEBP";
+  return false;
+}
+
+app.post("/api/uploads", rateLimit("upload", 6, 60 * 60_000), express.raw({ type: "*/*", limit: "10mb" }), (req, res) => {
   const type = String(req.headers["content-type"] || "").split(";")[0].trim().toLowerCase();
   if (!["image/jpeg", "image/png", "image/webp"].includes(type)) {
     return res.status(415).json({ error: "Only JPEG, PNG or WebP images are allowed." });
@@ -2755,39 +2784,47 @@ app.post("/api/uploads", express.raw({ type: "*/*", limit: "10mb" }), (req, res)
   if (body.length > 9 * 1024 * 1024) {
     return res.status(413).json({ error: "Image is too large (max 9 MB)." });
   }
+  if (!matchesImageSignature(type, body)) {
+    return res.status(415).json({ error: "Image content does not match its declared file type." });
+  }
+  let tmp = null;
+  let dest = null;
   try {
     fs.mkdirSync(uploadsDir, { recursive: true });
     const file = `${crypto.randomUUID()}.webp`;
-    const dest = path.join(uploadsDir, file);
-    // Validate it really is an image and read dimensions via ImageMagick.
-    const tmp = path.join(uploadsDir, `${crypto.randomUUID()}.in`);
-    fs.writeFileSync(tmp, body);
+    dest = path.join(uploadsDir, file);
+    tmp = path.join(uploadsDir, `${crypto.randomUUID()}.in`);
+    fs.writeFileSync(tmp, body, { flag: "wx", mode: 0o600 });
     let dims = null;
     try {
-      const out = execFileSync("identify", ["-format", "%w %h", tmp], { encoding: "utf8", stdio: "pipe" }).trim().split(/\s+/);
+      const out = execFileSync("identify", ["-limit", "memory", "64MiB", "-limit", "map", "128MiB", "-limit", "disk", "256MiB", "-format", "%w %h", `${tmp}[0]`], { encoding: "utf8", stdio: "pipe", timeout: 8_000, maxBuffer: 64 * 1024 }).trim().split(/\s+/);
       const w = parseInt(out[0], 10);
       const h = parseInt(out[1], 10);
-      if (Number.isFinite(w) && Number.isFinite(h) && w >= 200 && h >= 200 && w <= 6000 && h <= 6000) dims = { w, h };
+      if (Number.isFinite(w) && Number.isFinite(h) && w >= 200 && h >= 200 && w <= 6000 && h <= 6000 && w * h <= 16_000_000) dims = { w, h };
     } catch { /* not an image */ }
     if (!dims) {
       try { fs.unlinkSync(tmp); } catch {}
-      return res.status(400).json({ error: "Could not read a valid image (200–6000px per side)." });
+      return res.status(400).json({ error: "Could not read a valid image (200–6000px per side and max 16 megapixels)." });
     }
     // Re-encode to WebP, capped at 2200px, so the room image is optimized.
     const maxEdge = Math.max(dims.w, dims.h) > 2200 ? 2200 : null;
-    const args = [tmp];
+    const args = ["-limit", "memory", "64MiB", "-limit", "map", "128MiB", "-limit", "disk", "256MiB", `${tmp}[0]`];
     if (maxEdge) args.push("-resize", `${maxEdge}x${maxEdge}>`);
     args.push("-quality", "82", dest);
-    execFileSync("convert", args, { stdio: "pipe" });
+    execFileSync("convert", args, { stdio: "pipe", timeout: 12_000, maxBuffer: 64 * 1024 });
     try { fs.unlinkSync(tmp); } catch {}
     let outDims = dims;
     try {
-      const out2 = execFileSync("identify", ["-format", "%w %h", dest], { encoding: "utf8", stdio: "pipe" }).trim().split(/\s+/);
+      const out2 = execFileSync("identify", ["-format", "%w %h", dest], { encoding: "utf8", stdio: "pipe", timeout: 5_000, maxBuffer: 64 * 1024 }).trim().split(/\s+/);
       outDims = { w: parseInt(out2[0], 10), h: parseInt(out2[1], 10) };
     } catch {}
     return res.json({ url: `/uploads/${file}`, file, width: outDims.w, height: outDims.h });
   } catch (err) {
     return res.status(500).json({ error: "Could not process the image." });
+  } finally {
+    if (tmp) { try { fs.unlinkSync(tmp); } catch { /* may already be removed */ } }
+    // A failed conversion should never leave a publicly served partial file.
+    if (dest && !res.headersSent) { try { fs.unlinkSync(dest); } catch {} }
   }
 });
 
@@ -3082,7 +3119,8 @@ wss.on("connection", (ws) => {
 
 /** Remove a room and any user-uploaded image file that belonged to it. */
 function reapRoom(room) {
-  if (room.customImageFile) {
+  if (room.customImageFile && ![...rooms.values()].some((other) =>
+    other !== room && other.customImageFile === room.customImageFile)) {
     try {
       const file = path.join(uploadsDir, path.basename(room.customImageFile));
       if (file.startsWith(uploadsDir + path.sep) && fs.existsSync(file)) fs.unlinkSync(file);
@@ -3092,6 +3130,21 @@ function reapRoom(room) {
   codeIndex.delete(room.code);
   stopCursorRelay(room);
   scheduleSnapshot();
+}
+
+/** Uploads are initially unattached, so clean abandoned uploads on a TTL. */
+function cleanOrphanUploads(now = Date.now()) {
+  try {
+    const referenced = new Set([...rooms.values()].map((room) => room.customImageFile).filter(Boolean));
+    for (const entry of fs.readdirSync(uploadsDir, { withFileTypes: true })) {
+      if (!entry.isFile() || referenced.has(entry.name) || !/^(?:[0-9a-f-]{36})\.(?:webp|in)$/i.test(entry.name)) continue;
+      const file = path.join(uploadsDir, entry.name);
+      const age = now - fs.statSync(file).mtimeMs;
+      if (age > (entry.name.endsWith(".in") ? 15 : 30) * 60_000) fs.unlinkSync(file);
+    }
+  } catch (error) {
+    if (error?.code !== "ENOENT") console.warn("Upload cleanup failed", error.message);
+  }
 }
 
 // Claim expiration must not wait for the liveness heartbeat (30 seconds).
@@ -3120,6 +3173,8 @@ setInterval(() => {
     for (const [, conn] of room.conns) { send(conn.ws, { t: "closed", code: "room_expired", message: "This room expired after 24 hours of inactivity." }); try { conn.ws.close(); } catch {} }
     reapRoom(room); logEvent("room_expired", room);
   }
+  for (const [key, bucket] of requestBuckets) if (bucket.expiresAt < now) requestBuckets.delete(key);
+  cleanOrphanUploads(now);
   saveSnapshots();
 }, 5 * 60_000).unref();
 
