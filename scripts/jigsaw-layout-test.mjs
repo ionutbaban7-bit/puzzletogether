@@ -24,12 +24,12 @@ async function post(path, body) {
   return { status: response.status, data: await response.json().catch(() => ({})) };
 }
 
-function connect(roomId, playerId) {
+function connect(roomId, playerId, credential) {
   return new Promise((resolve, reject) => {
     const ws = new WebSocket(WS_URL);
     const queue = [];
     const waiters = [];
-    ws.on("open", () => ws.send(JSON.stringify({ t: "hello", v: 2, roomId, playerId })));
+    ws.on("open", () => ws.send(JSON.stringify({ t: "hello", v: 2, roomId, playerId, credential })));
     ws.on("message", (raw) => {
       const message = JSON.parse(raw.toString());
       const index = waiters.findIndex((entry) => entry.type === message.t && entry.predicate(message));
@@ -81,9 +81,9 @@ const joinA = await post(`/api/rooms/${roomId}/join`, { name: "Ana", code });
 const joinB = await post(`/api/rooms/${roomId}/join`, { name: "Bogdan", code });
 ok("creates a host plus two participants", created.status === 200 && joinA.status === 200 && joinB.status === 200);
 
-const host = await connect(roomId, hostId);
-const ana = await connect(roomId, joinA.data.playerId);
-const bogdan = await connect(roomId, joinB.data.playerId);
+const host = await connect(roomId, hostId, created.data.credential);
+const ana = await connect(roomId, joinA.data.playerId, joinA.data.credential);
+const bogdan = await connect(roomId, joinB.data.playerId, joinB.data.credential);
 const initHost = await host.waitFor("init");
 const initAna = await ana.waitFor("init");
 const initBogdan = await bogdan.waitFor("init");
@@ -168,7 +168,7 @@ ok("layout is ignored while the board is locked", lockedBoardRejected.code === "
 
 // Reconnect must receive the real positions, not a client-computed tray.
 ana.close();
-const anaReconnected = await connect(roomId, joinA.data.playerId);
+const anaReconnected = await connect(roomId, joinA.data.playerId, joinA.data.credential);
 const reconnectInit = await anaReconnected.waitFor("init");
 const reconnectMap = positions(reconnectInit.pieces);
 ok(
