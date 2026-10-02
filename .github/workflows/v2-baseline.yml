@@ -1,0 +1,31 @@
+name: V2 baseline checks
+on:
+  push:
+    branches:
+      - "v2/**"
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Typecheck and production build
+        run: npm run build
+      - name: Puzzle geometry
+        run: npm run test:layout
+      - name: Render regression contracts
+        run: npm run test:render-contract
+      - name: Catalog audit
+        run: npm run catalog:audit
+  # Security tests become a required CI gate only with the credential
+  # implementation PR. They are deliberately NOT marked passing here:
+  # scripts/security-regression-test.mjs documents the currently open P0.
