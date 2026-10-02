@@ -1313,6 +1313,7 @@ function persistableRoom(room) {
       jokers: room.canvas.jokers ? [...room.canvas.jokers.entries()] : null,
     } : null,
     ratings: [...room.ratings], scores: [...room.scores],
+    // Auth verifiers survive a process restart; the browser retains its secret.
     knownPlayers: [...room.knownPlayers], createdAt: room.createdAt, startedAt: room.startedAt,
     pausedAt: room.pausedAt, pausedDurationMs: room.pausedDurationMs, timerEndsAt: room.timerEndsAt,
     timerDurationMs: room.timerDurationMs, lastActivityAt: room.lastActivityAt, stage: room.stage,
@@ -1397,6 +1398,10 @@ function restoreSnapshots() {
     const now = Date.now();
     for (const raw of saved) {
       if (!raw?.id || now - raw.lastActivityAt > ROOM_TTL_MS) continue;
+      // Legacy snapshots carried only public UUIDs. Do not resurrect insecure
+      // sessions which can be impersonated; users create fresh V2 rooms.
+      if (!Array.isArray(raw.knownPlayers) || raw.knownPlayers.some((pair) =>
+        !Array.isArray(pair) || !/^[0-9a-f]{64}$/.test(pair[1]?.authHash || ""))) continue;
       try {
         // A custom-upload room whose image file was deleted can no longer be served.
         if (raw.config?.customImage && !fs.existsSync(path.join(uploadsDir, path.basename(String(raw.config.customImage.file || ""))))) continue;
@@ -1594,6 +1599,48 @@ function checkCompletion(room) {
     logEvent("complete", room, { durationMs: room.completedInMs });
     touch(room);
   }
+}
+
+/**
+ * Public player UUIDs identify avatars; they are NEVER proof of membership.
+ * Store only the SHA-256 verifier. A room-scoped random credential remains in
+ * the joining browser and is supplied via Bearer or the WS hello handshake.
+ */
+function newPlayerCredential() {
+  const credential = crypto.randomBytes(32).toString("base64url");
+  return { credential, authHash: crypto.createHash("sha256").update(credential).digest("hex") };
+}
+
+function credentialMatches(hash, candidate) {
+  if (typeof hash !== "string" || !/^[0-9a-f]{64}$/.test(hash) ||
+      typeof candidate !== "string" || !/^[A-Za-z0-9_-]{43}$/.test(candidate)) return false;
+  const expected = Buffer.from(hash, "hex");
+  const actual = crypto.createHash("sha256").update(candidate).digest();
+  return crypto.timingSafeEqual(expected, actual);
+}
+
+function playerAuthenticated(room, pid, credential) {
+  if (typeof pid !== "string" || !room.knownPlayers.has(pid)) return false;
+  return credentialMatches(room.knownPlayers.get(pid).authHash, credential);
+}
+
+function bearerCredential(req) {
+  const match = /^Bearer ([A-Za-z0-9_-]{43})$/.exec(String(req.headers.authorization || ""));
+  return match ? match[1] : "";
+}
+
+/** Resolve session identity from the secret, never from req.body.pid. */
+function authenticatedPlayer(room, req) {
+  const credential = bearerCredential(req);
+  if (!credential) return null;
+  for (const [pid, player] of room.knownPlayers) {
+    if (credentialMatches(player.authHash, credential)) return pid;
+  }
+  return null;
+}
+
+function hostAuthorized(room, req) {
+  return authenticatedPlayer(room, req) === room.hostId;
 }
 
 function isHost(room, playerId) {
@@ -2489,13 +2536,15 @@ app.post("/api/rooms", (req, res) => {
       { sessionName },
     );
     const playerId = crypto.randomUUID();
-    const info = { name: name.trim().slice(0, 24), color: null, role: role === "spectator" ? "spectator" : "host", teamId: null };
+    const { credential, authHash } = newPlayerCredential();
+    const info = { name: name.trim().slice(0, 24), color: null, role: role === "spectator" ? "spectator" : "host", teamId: null, authHash };
     room.hostId = playerId;
     room.knownPlayers.set(playerId, info);
     room.pending.set(playerId, { ...info, expiresAt: Date.now() + PENDING_TTL_MS });
     touch(room);
     logEvent("room_create", room);
-    res.json({ room: roomView(room), playerId, roomCode: room.code });
+    res.setHeader("Cache-Control", "no-store");
+    res.json({ room: roomView(room), playerId, credential, roomCode: room.code });
   } catch (error) {
     res.status(400).json({ error: error.message || "Could not create room." });
   }
@@ -2506,7 +2555,15 @@ app.post("/api/rooms/:id/join", (req, res) => {
   if (!room || room.stage === "closed") return res.status(404).json({ error: "Room not found.", code: "room_missing" });
   const { name, pid, code } = req.body || {};
   if (typeof name !== "string" || !name.trim()) return res.status(400).json({ error: "A display name is required." });
-  if (pid && room.knownPlayers.has(pid)) return res.json({ room: roomView(room), playerId: pid, returning: true });
+  // Returning players must prove their own session. Knowing a player UUID
+  // or the room's access code never grants ownership of an existing avatar.
+  if (pid) {
+    if (!playerAuthenticated(room, pid, bearerCredential(req))) {
+      return res.status(403).json({ error: "Your saved session is no longer valid. Rejoin with the room code.", code: "session_invalid" });
+    }
+    res.setHeader("Cache-Control", "no-store");
+    return res.json({ room: roomView(room), playerId: pid, returning: true });
+  }
 
   const refIsCode = String(req.params.id).trim().toUpperCase() === room.code;
   const providedCode = typeof code === "string" ? code.trim().toUpperCase() : "";
@@ -2516,15 +2573,17 @@ app.post("/api/rooms/:id/join", (req, res) => {
   if (room.players.size + room.pending.size >= MAX_PLAYERS) return res.status(409).json({ error: `This room is full (${MAX_PLAYERS} players max).`, code: "room_full" });
 
   const playerId = crypto.randomUUID();
+  const { credential, authHash } = newPlayerCredential();
   const cleanName = name.trim().slice(0, 24);
   const activeNames = [...room.players.values(), ...room.pending.values()].map((player) => player.name.toLocaleLowerCase());
   if (activeNames.includes(cleanName.toLocaleLowerCase())) return res.status(409).json({ error: "That display name is already in this room.", code: "duplicate_name" });
-  const info = { name: cleanName, color: null, role: "player", teamId: null };
+  const info = { name: cleanName, color: null, role: "player", teamId: null, authHash };
   room.knownPlayers.set(playerId, info);
   room.pending.set(playerId, { ...info, expiresAt: Date.now() + PENDING_TTL_MS });
   touch(room);
   logEvent("join_reserved", room);
-  res.json({ room: roomView(room), playerId });
+  res.setHeader("Cache-Control", "no-store");
+  res.json({ room: roomView(room), playerId, credential });
 });
 
 app.get("/api/rooms/:id", (req, res) => {
@@ -2535,9 +2594,9 @@ app.get("/api/rooms/:id", (req, res) => {
 
 app.post("/api/rooms/:id/takeover", (req, res) => {
   const room = findRoom(req.params.id);
-  const pid = req.body?.pid;
   if (!room) return res.status(404).json({ error: "Room not found.", code: "room_missing" });
-  if (!pid || !room.players.has(pid)) return res.status(403).json({ error: "Active room membership required.", code: "not_member" });
+  const pid = authenticatedPlayer(room, req);
+  if (!pid || !room.players.has(pid)) return res.status(403).json({ error: "Verified active room membership required.", code: "not_member" });
   if (room.conns.has(room.hostId)) return res.status(409).json({ error: "The facilitator is still connected.", code: "host_present" });
   room.hostId = pid;
   const known = room.knownPlayers.get(pid);
@@ -2574,7 +2633,7 @@ app.post("/api/rooms/:id/puzzle", (req, res) => {
   const room = findRoom(req.params.id);
   if (!room) return res.status(404).json({ error: "Room not found.", code: "room_missing" });
   const { puzzleId, difficulty, pid, contentLanguage, mystery } = req.body || {};
-  if (!pid || pid !== room.hostId) return res.status(403).json({ error: "Only the facilitator can change the activity.", code: "not_host" });
+  if (!hostAuthorized(room, req)) return res.status(403).json({ error: "Only the facilitator can change the activity.", code: "not_host" });
   try { applyPuzzleToRoom(room, { puzzleId, difficulty, contentLanguage, mystery: typeof mystery === "boolean" ? mystery : !!room.config.mystery }); } catch { return res.status(400).json({ error: "Unknown puzzle or activity." }); }
   touch(room);
   broadcast(room, { t: "puzzle", room: roomView(room), puzzle: puzzleView(room), pieces: room.pieces.map(serializePiece), ratings: [], canvas: canvasSnapshot(room) });
@@ -2585,7 +2644,7 @@ app.post("/api/rooms/:id/puzzle", (req, res) => {
 app.post("/api/rooms/:id/reset", (req, res) => {
   const room = findRoom(req.params.id);
   if (!room) return res.status(404).json({ error: "Room not found.", code: "room_missing" });
-  if (!req.body?.pid || req.body.pid !== room.hostId) return res.status(403).json({ error: "Only the facilitator can reset the session.", code: "not_host" });
+  if (!hostAuthorized(room, req)) return res.status(403).json({ error: "Only the facilitator can reset the session.", code: "not_host" });
   if (room.pieces.length) scatterPieces(room);
   resetWorkshopState(room, { lobby: true });
   touch(room);
@@ -2601,7 +2660,7 @@ app.post("/api/rooms/:id/reset", (req, res) => {
 app.post("/api/rooms/:id/puzzle-reset", (req, res) => {
   const room = findRoom(req.params.id);
   if (!room) return res.status(404).json({ error: "Room not found.", code: "room_missing" });
-  if (!req.body?.pid || req.body.pid !== room.hostId) return res.status(403).json({ error: "Only the facilitator can reset this puzzle.", code: "not_host" });
+  if (!hostAuthorized(room, req)) return res.status(403).json({ error: "Only the facilitator can reset this puzzle.", code: "not_host" });
   if (!isJigsawRoom(room)) return res.status(400).json({ error: "This reset is only available for jigsaw rooms.", code: "not_jigsaw" });
   if (room.stage !== "play") return res.status(409).json({ error: "The puzzle can be reset only during play.", code: "not_playing" });
 
@@ -2640,7 +2699,8 @@ app.post("/api/rooms/:id/puzzle-reset", (req, res) => {
 app.get("/api/rooms/:id/export", (req, res) => {
   const room = findRoom(req.params.id);
   if (!room) return res.status(404).json({ error: "Room not found." });
-  if (String(req.query.pid || "") !== room.hostId) return res.status(403).json({ error: "Only the facilitator can export this session." });
+  if (!hostAuthorized(room, req)) return res.status(403).json({ error: "Only the facilitator can export this session." });
+  res.setHeader("Cache-Control", "no-store");
   const payload = exportPayload(room);
   if (req.query.format !== "html") {
     res.setHeader("Content-Disposition", `attachment; filename="puzzletogether-${room.id.slice(0, 8)}.json"`);
@@ -2761,7 +2821,12 @@ wss.on("connection", (ws) => {
         const room = findRoom(String(msg.roomId || ""));
         if (!room || room.stage === "closed") { send(ws, { t: "deny", code: "room_missing", message: "This room has expired or no longer exists." }); return ws.close(); }
         const pid = String(msg.playerId || "");
-        if (!pid || !(room.knownPlayers.has(pid) || room.pending.has(pid))) { send(ws, { t: "deny", code: "room_missing", message: "Session lost. Please rejoin the room." }); return ws.close(); }
+        // Authenticate BEFORE touching an existing player socket: a public
+        // UUID must never let a stranger evict or impersonate a player.
+        if (!playerAuthenticated(room, pid, msg.credential)) {
+          send(ws, { t: "deny", code: "session_invalid", message: "Invalid or expired player session. Please rejoin." });
+          return ws.close();
+        }
         if (room.conns.has(pid)) { try { room.conns.get(pid).ws.close(); } catch {} room.conns.delete(pid); }
         if (!room.players.has(pid)) {
           const info = room.pending.get(pid) || room.knownPlayers.get(pid) || {};
