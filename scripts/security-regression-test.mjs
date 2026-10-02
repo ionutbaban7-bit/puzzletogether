@@ -96,6 +96,59 @@ await check("Unauthenticated ID cannot seize room when original host is offline"
   const { status } = await post(`/api/rooms/${id}/takeover`, { pid: guestId });
   assert.equal(status, 403, "A known participant UUID is not proof of participation");
 });
+
+await check("Create and join issue independent high-entropy private credentials", async () => {
+  assert.match(created.body.credential || "", /^[A-Za-z0-9_-]{43}$/);
+  assert.match(joined.body.credential || "", /^[A-Za-z0-9_-]{43}$/);
+  assert.notEqual(created.body.credential, joined.body.credential);
+  assert.equal(JSON.stringify(created.body.room).includes(created.body.credential), false);
+  assert.equal(JSON.stringify(joined.body.room).includes(joined.body.credential), false);
+});
+await check("Valid host credential alone permits host reset", async () => {
+  const { status, body } = await post(`/api/rooms/${id}/reset`, {},
+    { Authorization: `Bearer ${created.body.credential}` });
+  assert.equal(status, 200, JSON.stringify(body));
+});
+await check("Guest credential can never authorize host export, even with host UUID", async () => {
+  const { status } = await get(`/api/rooms/${id}/export?pid=${encodeURIComponent(hostId)}`,
+    { Authorization: `Bearer ${joined.body.credential}` });
+  assert.equal(status, 403);
+});
+await check("Legitimate host can request private export without supplying their UUID", async () => {
+  const { status, body } = await get(`/api/rooms/${id}/export`,
+    { Authorization: `Bearer ${created.body.credential}` });
+  assert.equal(status, 200);
+  assert.equal(body.schemaVersion, 1);
+});
+await check("Legitimate guest can reconnect without repeating a room code", async () => {
+  const { status, body } = await post(`/api/rooms/${id}/join`,
+    { name: "SecurityGuest", pid: guestId },
+    { Authorization: `Bearer ${joined.body.credential}` });
+  assert.equal(status, 200);
+  assert.equal(body.returning, true);
+  assert.equal(body.playerId, guestId);
+});
+await check("Invalid returning identity cannot claim an existing guest", async () => {
+  const { status } = await post(`/api/rooms/${id}/join`,
+    { name: "SecurityGuest", pid: guestId, code },
+    { Authorization: `Bearer ${created.body.credential}` });
+  assert.equal(status, 403);
+});
+await check("Correctly authenticated host and guest can both open a WS room", async () => {
+  const [host, guest] = await Promise.all([
+    hello(id, hostId, created.body.credential),
+    hello(id, guestId, joined.body.credential),
+  ]);
+  assert.equal(host.t, "init", JSON.stringify(host));
+  assert.equal(guest.t, "init", JSON.stringify(guest));
+  assert.equal(host.you, hostId);
+  assert.equal(guest.you, guestId);
+});
+await check("An authenticated guest cannot impersonate the host over WS", async () => {
+  const message = await hello(id, hostId, joined.body.credential);
+  assert.notEqual(message.t, "init");
+});
+
 const failures = checks.filter((c) => !c.pass);
 console.log(`\n${checks.length - failures.length}/${checks.length} security checks passed`);
 if (failures.length) process.exitCode = 1;
