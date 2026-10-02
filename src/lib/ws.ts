@@ -16,6 +16,7 @@ export class RoomSocket {
   private ws: WebSocket | null = null;
   private roomId = "";
   private playerId = "";
+  private credential = "";
   private handlers: Handlers;
   private closedByUser = false;
   private attempts = 0;
@@ -27,11 +28,12 @@ export class RoomSocket {
     this.handlers = handlers;
   }
 
-  connect(roomId: string, playerId: string) {
+  connect(roomId: string, playerId: string, credential: string) {
     this.closedByUser = false;
     this.manuallyClosed = false;
     this.roomId = roomId;
     this.playerId = playerId;
+    this.credential = credential;
     this.open();
   }
 
@@ -52,7 +54,7 @@ export class RoomSocket {
       this.attempts = 0;
       this.handlers.onStatus(true, 0);
       ws.send(
-        JSON.stringify({ t: "hello", v: 2, roomId: this.roomId, playerId: this.playerId }),
+        JSON.stringify({ t: "hello", v: 2, roomId: this.roomId, playerId: this.playerId, credential: this.credential }),
       );
       this.pingTimer = setInterval(() => {
         if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ t: "ping" }));
