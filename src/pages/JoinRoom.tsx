@@ -34,7 +34,9 @@ export default function JoinRoom() {
     try {
       const existing = getSession();
       const result = await api.joinRoom(roomRef, name.trim(), existing.roomId === parsedRef ? existing.pid : undefined, code.trim() || undefined);
-      saveSession({ name: name.trim(), pid: result.playerId, roomId: result.room.id });
+      const credential = result.credential || (result.returning ? existing.credential : undefined);
+      if (!credential) throw new Error("Missing verified player session. Please join again.");
+      saveSession({ name: name.trim(), pid: result.playerId, roomId: result.room.id, credential });
       navigate(`/room/${result.room.id}`);
     } catch (reason) {
       const typed = reason as Error & { code?: string };
@@ -43,6 +45,7 @@ export default function JoinRoom() {
         bad_code: { ro: "Codul de acces este greșit.", en: "That access code is incorrect." },
         code_required: { ro: "Cere codul de acces facilitatorului.", en: "Ask the facilitator for the access code." },
         room_full: { ro: "Camera este plină.", en: "This room is full." },
+        session_invalid: { ro: "Sesiunea veche a expirat. Intră din nou prin codul camerei.", en: "Your saved session expired. Join again with the room code." },
         duplicate_name: { ro: "Acest nume este deja folosit în cameră. Alege altul.", en: "That name is already in the room. Choose another one." },
       };
       setError(typed.code && messages[typed.code] ? pick(messages[typed.code], lang) : typed.message);
