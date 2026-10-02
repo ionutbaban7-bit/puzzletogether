@@ -223,9 +223,9 @@ function handleMessage(msg: { t: string; [key: string]: unknown }) {
 export const store = {
   getState: (): StoreState => state,
   subscribe(listener: () => void) { listeners.add(listener); return () => listeners.delete(listener); },
-  joinRoom(roomId: string, playerId: string) {
+  joinRoom(roomId: string, playerId: string, credential: string) {
     set({ ...initialState, status: "connecting" });
-    socket.connect(roomId, playerId);
+    socket.connect(roomId, playerId, credential);
   },
   /**
    * Commit a normal piece frame, or explicitly release a claimed piece after
