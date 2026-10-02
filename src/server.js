@@ -2789,6 +2789,7 @@ app.post("/api/uploads", rateLimit("upload", 6, 60 * 60_000), express.raw({ type
   }
   let tmp = null;
   let dest = null;
+  let converted = false;
   try {
     fs.mkdirSync(uploadsDir, { recursive: true });
     const file = `${crypto.randomUUID()}.webp`;
@@ -2818,13 +2819,14 @@ app.post("/api/uploads", rateLimit("upload", 6, 60 * 60_000), express.raw({ type
       const out2 = execFileSync("identify", ["-format", "%w %h", dest], { encoding: "utf8", stdio: "pipe", timeout: 5_000, maxBuffer: 64 * 1024 }).trim().split(/\s+/);
       outDims = { w: parseInt(out2[0], 10), h: parseInt(out2[1], 10) };
     } catch {}
+    converted = true;
     return res.json({ url: `/uploads/${file}`, file, width: outDims.w, height: outDims.h });
   } catch (err) {
     return res.status(500).json({ error: "Could not process the image." });
   } finally {
     if (tmp) { try { fs.unlinkSync(tmp); } catch { /* may already be removed */ } }
     // A failed conversion should never leave a publicly served partial file.
-    if (dest && !res.headersSent) { try { fs.unlinkSync(dest); } catch {} }
+    if (dest && !converted) { try { fs.unlinkSync(dest); } catch {} }
   }
 });
 
