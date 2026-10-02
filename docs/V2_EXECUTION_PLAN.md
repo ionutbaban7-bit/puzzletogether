@@ -4,6 +4,14 @@ Status: Phase 0 IN PROGRESS
 Base: main @ fa299124e5e9cd32e8f0c9ce5727c7487dbac6c0
 Branch: v2/phase-0-security-foundation
 
+## Verified progress (2026-10-02)
+
+- **P0-A implemented and passing targeted CI:** per-player random credentials, persisted SHA-256 verifiers, authorization for privileged HTTP paths and returning join / WS hello; corresponding browser routes migrated. Anonymous room metadata no longer exposes the host UUID.
+- **P0-B partial and passing targeted CI:** request limits, image MIME signatures, size and processing limits, abandoned-upload cleanup; tested denial and throttling. Isolated process-restart regression confirms session verifiers survive restart. **Live Render persistent volume, valid upload handling and asset privacy are NOT verified.**
+- **P0-C partial and passing targeted CI:** GitHub Actions runs build, static contracts, catalog, negative/positive security, authenticated multiplayer layout, upload-abuse negatives and isolated restart. Example successful run: https://github.com/ionutbaban7-bit/puzzletogether/actions/runs/36999555692 . **Full older protocol and Playwright suites are not yet migrated/rerun; `main` is not protected.**
+- **Still release-blocking:** WS Origin, credential revocation/rotation, one-link invite capabilities, full legacy test migration, real-device and Render deployment testing, plus upload privacy / synchronous processor review.
+
+
 ## Product contract
 One standalone realtime collaborative jigsaw for family, friends, colleagues and workshops. No accounts. Core loop: choose image → create room → invite with one secure link → play together → shared finish / replay in the same room. Workshop use is a light host choice, **not** another product or employee evaluation.
 
@@ -12,11 +20,11 @@ One standalone realtime collaborative jigsaw for family, friends, colleagues and
 ## Critical path (deliverable / acceptance gate)
 
 ### P0-A: Authenticate participants and authorize host actions — RELEASE BLOCKER
-**Observed defect:** public `GET /api/rooms/:id` currently exposes `hostId`; HTTP host endpoints accept this public ID as if it were secret, and WS `hello` can impersonate any known player ID.
-- [ ] First commit tests proving public metadata, host export/reset/puzzle endpoints, WS impersonation, returning-join and guest permissions are safe. Tests MUST fail on vulnerable baseline and pass after fix.
-- [ ] Mint cryptographically random, independent **per-participant session credentials** during create/join; IDs remain display identifiers, never credentials. Store only hashes/server-verifiable bindings and restore them securely with rooms.
-- [ ] Require session proof for **every** returning join and WS `hello`; never allow known ID alone to authenticate; reject/expire incompatible legacy sessions safely.
-- [ ] Authenticate all privileged HTTP operations from verified session identity and current role, never trusting a caller-supplied `pid`. Include export (HTML/JSON), puzzle changes, reset and takeover.
+**Baseline defect (fixed on the V2 branch, NOT yet deployed):** anonymous `GET /api/rooms/:id` exposed `hostId`, the HTTP host endpoints accepted the UUID as authority and WS `hello` allowed UUID-only impersonation.
+- [x] First commit tests proving public metadata, host export/reset/puzzle endpoints, WS impersonation, returning-join and guest permissions are safe. Tests MUST fail on vulnerable baseline and pass after fix.
+- [x] Mint cryptographically random, independent **per-participant session credentials** during create/join; IDs remain display identifiers, never credentials. Store only hashes/server-verifiable bindings and restore them securely with rooms.
+- [x] Require session proof for **every** returning join and WS `hello`; never allow known ID alone to authenticate; reject/expire incompatible legacy sessions safely.
+- [x] Authenticate all privileged HTTP operations from verified session identity and current role, never trusting a caller-supplied `pid`. Include export (HTML/JSON), puzzle changes, reset and takeover.
 - [ ] Do not expose session secrets through room views, public API, player lists, shared links, logs, exports or error messages. Use room-scoped short-lived invite capability in the *one-click* link, separate from host/member credentials.
 - [ ] Add origin/CSRF safeguards appropriate for same-origin HTTP/WS; rate-limit join/create attempts and sensitive operations; rotate/expire compromised credentials.
 - [ ] Review all participant payloads for private notes and questionnaire data exposure.
