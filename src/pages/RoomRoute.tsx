@@ -39,12 +39,13 @@ export default function RoomRoute({ roomId }: { roomId: string }) {
       if (
         session.name &&
         session.pid &&
+        session.credential &&
         (session.roomId === realRoomId || session.roomId === ref)
       ) {
         try {
           const res = await api.joinRoom(ref, session.name, session.pid);
           if (res.returning) {
-            start(session.name, session.pid);
+            start(session.name, session.pid, session.credential);
             return;
           }
         } catch {
@@ -56,11 +57,11 @@ export default function RoomRoute({ roomId }: { roomId: string }) {
       setPhase({ kind: "need_access" });
     })().catch(() => setPhase({ kind: "error", message: "Could not reach the room server.", full: true }));
 
-    function start(name: string, pid: string) {
+    function start(name: string, pid: string, credential: string) {
       if (startedRef.current) return;
       startedRef.current = true;
-      saveSession({ name, pid, roomId: realRoomId || ref });
-      store.joinRoom(ref, pid);
+      saveSession({ name, pid, roomId: realRoomId || ref, credential });
+      store.joinRoom(ref, pid, credential);
       setPhase({ kind: "playing" });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,12 +81,12 @@ export default function RoomRoute({ roomId }: { roomId: string }) {
   if (phase.kind === "need_access") {
     return (
       <AccessGateModal
-        onJoin={(name, pid, realRoomId) => {
+        onJoin={(name, pid, credential, realRoomId) => {
           const ref = roomId || extractRoomRef(window.location.href) || "";
           if (startedRef.current) return;
           startedRef.current = true;
-          saveSession({ name, pid, roomId: realRoomId || ref });
-          store.joinRoom(ref, pid);
+          saveSession({ name, pid, roomId: realRoomId || ref, credential });
+          store.joinRoom(ref, pid, credential);
           setPhase({ kind: "playing" });
         }}
       />
@@ -124,7 +125,7 @@ export default function RoomRoute({ roomId }: { roomId: string }) {
 function AccessGateModal({
   onJoin,
 }: {
-  onJoin: (name: string, pid: string, realRoomId?: string) => void;
+  onJoin: (name: string, pid: string, credential: string, realRoomId?: string) => void;
 }) {
   const [name, setName] = useState(() => getSession().name || "");
   const [code, setCode] = useState("");
@@ -145,8 +146,9 @@ function AccessGateModal({
     const ref = extractRoomRef(window.location.href);
     if (!ref) return;
     try {
-      const { room, playerId } = await api.joinRoom(ref, name.trim(), undefined, code.trim());
-      onJoin(name.trim(), playerId, room.id);
+      const { room, playerId, credential } = await api.joinRoom(ref, name.trim(), undefined, code.trim());
+      if (!credential) throw new Error("The room did not issue a player session.");
+      onJoin(name.trim(), playerId, credential, room.id);
     } catch (e) {
       const errCode = (e as Error & { code?: string }).code;
       if (errCode === "bad_code") {
