@@ -1,9 +1,9 @@
-# V2 security acceptance contract — PHASE 0 / NOT YET PASSED
+# V2 security acceptance contract — TARGETED TESTS PASSED; FULL P0 STILL OPEN
 
 This is a blocker, not an enhancement. It applies to all REST + WebSocket paths, including legacy modes retained on the V2 development branch until they are archived. A cosmetic omission of `hostId` from the anonymous route does **not** repair authentication.
 
 ## Regression tests created
-`scripts/security-regression-test.mjs` models separate unauthenticated clients with known user UUIDs. It intentionally includes tests that **will fail on the current server** until credential-bound authentication is implemented. The file is a contract, not evidence that security is fixed.
+`scripts/security-regression-test.mjs` models separate unauthenticated clients with known user UUIDs. Those tests demonstrated the initial defect and now pass on the V2 branch, together with positive tests for authenticated hosts and guests. A passing targeted suite is **not** evidence that every old test, production environment and threat model is complete.
 
 ## Required implementation and test evidence
 1. Create room + join returns a fresh, high-entropy per-client **secret** separately from the public `playerId`; do not put credentials in shared links, public room response, exports or logs. Existing sessions need an explicit transition strategy.
@@ -26,4 +26,4 @@ npm run test:protocol
 npm run build
 ```
 
-**Do not declare this phase complete if the security regression suite is red.** The first minimal code change merely stops exposing `hostId` via the anonymous room metadata route; HTTP and WS authorization are still vulnerable while this contract is incomplete.
+**Targeted GitHub CI evidence:** https://github.com/ionutbaban7-bit/puzzletogether/actions/runs/36999555692 (security, layout, image negative tests and isolated restart all passed). Still open: legacy test suite migration, verification on Render, WS Origin/CSRF posture, credential rotation/revocation, invitation flow, custom-image URL access and full device/browser testing. Do not merge before these release blockers have been resolved or explicitly scoped out.
