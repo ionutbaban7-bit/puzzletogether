@@ -733,6 +733,10 @@ function roomView(room) {
 
 function publicRoomView(room) {
   const view = roomView(room);
+  // The room host's public identifier must not be exposed by anonymous
+  // metadata endpoints. NOTE: this is defence in depth, NOT authentication:
+  // privileged REST routes and WS reconnect still need session-bound proof.
+  delete view.hostId;
   delete view.code;
   delete view.insights;
   delete view.debriefNotes;
