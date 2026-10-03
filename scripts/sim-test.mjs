@@ -6,18 +6,21 @@ const results = [];
 function ok(name, condition, extra = "") { results.push(!!condition); console.log(`${condition ? "✅" : "❌"} ${name}${extra ? ` — ${extra}` : ""}`); }
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const credentials = new Map();
 async function post(path, body) {
-  const response = await fetch(BASE + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-  return { status: response.status, data: await response.json().catch(() => ({})) };
+  const response = await fetch(BASE + path, { method: "POST", headers: { "Content-Type": "application/json", ...(credentials.has(body?.pid) ? { Authorization: `Bearer ${credentials.get(body.pid)}` } : {}) }, body: JSON.stringify(body) });
+  const data = await response.json().catch(() => ({}));
+  if (data.credential) credentials.set(data.playerId, data.credential);
+  return { status: response.status, data };
 }
-async function get(path) { const response = await fetch(BASE + path); return { status: response.status, data: await response.json() }; }
+async function get(path, credential) { const response = await fetch(BASE + path, { headers: credential ? { Authorization: `Bearer ${credential}` } : {} }); return { status: response.status, data: await response.json() }; }
 
 function connect(roomId, playerId) {
   return new Promise((resolve, reject) => {
     const ws = new WebSocket(WS_URL);
     const queue = [];
     const waiters = [];
-    ws.on("open", () => ws.send(JSON.stringify({ t: "hello", v: 2, roomId, playerId })));
+    ws.on("open", () => ws.send(JSON.stringify({ t: "hello", v: 2, roomId, playerId, credential: credentials.get(playerId) })));
     ws.on("message", (raw) => {
       const message = JSON.parse(raw.toString());
       const index = waiters.findIndex((entry) => entry.type === message.t && entry.predicate(message));
@@ -38,7 +41,7 @@ function connect(roomId, playerId) {
 const health = await get("/api/health");
 ok("health exposes operations metrics", health.data.ok && health.data.protocolVersion === 2 && typeof health.data.heapUsedMb === "number");
 const catalog = await get("/api/puzzles");
-ok("catalog keeps eight reviewed supported categories", catalog.data.categories.length === 8 && !catalog.data.categories.some((c) => ["words", "isometric-worlds", "abstract-geometry", "blueprint-architecture"].includes(c.id)) && ["letter-canvas", "sentence-canvas", "inspiration"].every((id) => catalog.data.categories.some((category) => category.id === id)));
+ok("catalog exposes only six jigsaw categories", catalog.data.categories.length === 6 && !catalog.data.categories.some(c => ["letter-canvas", "sentence-canvas", "coaching", "emotions"].includes(c.id)));
 ok("catalog contains only attributed images", catalog.data.puzzles.every((p) => p.credit && p.license && p.source !== "Web"), `${catalog.data.puzzles.length} entries`);
 ok("trademarked puzzle id was removed", !catalog.data.puzzles.some((p) => /scrabble/i.test(p.id + p.name)));
 
@@ -107,8 +110,8 @@ ok("scores account for every piece", completion.scores.reduce((sum, score) => su
 
 const publicRoom = await get(`/api/rooms/${roomId}`);
 ok("public room view never leaks access code", publicRoom.data.room.code === undefined);
-const hostExport = await get(`/api/rooms/${roomId}/export?pid=${hostId}`);
-const guestExport = await get(`/api/rooms/${roomId}/export?pid=${joined.data.playerId}`);
+const hostExport = await get(`/api/rooms/${roomId}/export`, created.data.credential);
+const guestExport = await get(`/api/rooms/${roomId}/export`, joined.data.credential);
 ok("host can export structured recap", hostExport.status === 200 && hostExport.data.schemaVersion === 1);
 ok("participant cannot export facilitator-private notes", guestExport.status === 403);
 

@@ -1,15 +1,15 @@
 name: V2 baseline checks
 on:
-  push:
-    branches:
-      - "v2/**"
   pull_request:
-    branches:
-      - main
-
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
 permissions:
   contents: read
-
+concurrency:
+  group: v2-checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
   build-security-and-core:
     runs-on: ubuntu-latest
@@ -23,39 +23,33 @@ jobs:
       - run: npm ci
       - name: Typecheck and production build
         run: npm run build
-      - name: Render regression contracts
-        run: npm run test:render-contract
-      - name: Catalog audit
+      - name: Renderer and image geometry
+        run: |
+          npm run test:render-contract
+          npm run test:image-scaling
+      - name: Catalog structural audit
         run: npm run catalog:audit
-      - name: Start isolated room server
+      - name: Credentials, invites, revoked access and disabled uploads
+        run: npm run test:security
+      - name: Authenticated multiplayer protocol
+        run: npm run test:protocol
+      - name: Recovery after process restart
+        run: npm run test:restart
+      - name: Configure Chromium
         shell: bash
         run: |
-          mkdir -p "$RUNNER_TEMP/pt-test-data"
-          DATA_DIR="$RUNNER_TEMP/pt-test-data" NODE_ENV=production HOST=127.0.0.1 PORT=3000 node src/server.js > "$RUNNER_TEMP/pt-server.log" 2>&1 &
-          echo $! > "$RUNNER_TEMP/pt-server.pid"
-          for attempt in $(seq 1 30); do
-            if curl --fail --silent http://127.0.0.1:3000/api/health > /dev/null; then
-              exit 0
-            fi
-            sleep 1
-          done
-          cat "$RUNNER_TEMP/pt-server.log"
-          exit 1
-      - name: Reject unauthorized access and verify legitimate sessions
-        run: node scripts/security-regression-test.mjs
-      - name: Authenticated multiplayer puzzle layout
-        run: npm run test:layout
-      - name: Image upload negative tests
-        run: node scripts/upload-guard-test.mjs
-      - name: Authenticated recovery after isolated process restart
-        run: node scripts/p0-restart-test.mjs
-      - name: Stop isolated room server
+          browser_path=$(command -v google-chrome || command -v chromium || true)
+          if test -n "$browser_path"; then
+            echo "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=$browser_path" >> "$GITHUB_ENV"
+          else
+            npx playwright install --with-deps chromium
+          fi
+      - name: Desktop, mobile and keyboard game flow
+        run: npm run test:e2e
+      - name: Preserve browser evidence
         if: always()
-        shell: bash
-        run: |
-          if test -f "$RUNNER_TEMP/pt-server.pid"; then
-            kill "$(cat "$RUNNER_TEMP/pt-server.pid")" || true
-          fi
-          if test -f "$RUNNER_TEMP/pt-server.log"; then
-            tail -n 50 "$RUNNER_TEMP/pt-server.log"
-          fi
+        uses: actions/upload-artifact@v4
+        with:
+          name: v2-browser-evidence
+          path: test-artifacts/
+          if-no-files-found: ignore

@@ -115,6 +115,8 @@ export interface CanvasState {
 }
 
 export interface RoomView {
+  inviteToken?: string;
+  inviteExpiresAt?: number;
   id: string;
   code?: string;
   sessionName: string;

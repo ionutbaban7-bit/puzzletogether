@@ -43,6 +43,11 @@
   ],
   "difficulties": [
     {
+      "id": "kids",
+      "name": "Quick",
+      "pieces": 12
+    },
+    {
       "id": "easy",
       "name": "Easy",
       "pieces": 25

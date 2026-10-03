@@ -63,7 +63,9 @@ export class RoomSocket {
 
     ws.onmessage = (ev) => {
       try {
-        this.handlers.onMessage(JSON.parse(ev.data as string) as ServerMessage);
+        const message = JSON.parse(ev.data as string) as ServerMessage;
+        if (message.t === "deny" || message.t === "closed") { this.closedByUser = true; ws.close(); }
+        this.handlers.onMessage(message);
       } catch {
         /* ignore malformed frames */
       }

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, type RefObject } from "react";
 import type { PuzzleView } from "../types";
 
 export interface Camera {
@@ -34,7 +34,7 @@ export function canvasRenderScale(): number {
   return Math.min(window.devicePixelRatio || 1, coarse ? 1.5 : 2);
 }
 
-export function useViewport() {
+export function useViewport(surface?: RefObject<HTMLCanvasElement | null>) {
   const [camera, setCameraState] = useState<Camera>({ x: 0, y: 0, scale: 0.55 });
   const cameraRef = useRef(camera);
 
@@ -61,17 +61,17 @@ export function useViewport() {
 
   const zoomBy = useCallback(
     (factor: number) => {
-      zoomAt(window.innerWidth / 2, window.innerHeight / 2, factor);
+      zoomAt((surface?.current?.clientWidth || window.innerWidth) / 2, (surface?.current?.clientHeight || window.innerHeight) / 2, factor);
     },
-    [zoomAt],
+    [zoomAt, surface],
   );
 
   /** Fit the target plus caller-supplied authoritative piece bounds. */
   const fit = useCallback(
     (puzzle: PuzzleView | null, bounds?: WorldBounds, opts?: { minScale?: number; inset?: { top?: number; bottom?: number; left?: number; right?: number } }) => {
       if (!puzzle) return;
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
+      const vw = surface?.current?.clientWidth || window.innerWidth;
+      const vh = surface?.current?.clientHeight || window.innerHeight;
       const mobile = vw < 640;
       const b = bounds || { x0: 0, y0: 0, x1: puzzle.width, y1: puzzle.height };
       // Screen-pixel insets reserve room for the HUD chrome (top session bar,
@@ -103,7 +103,7 @@ export function useViewport() {
         scale,
       });
     },
-    [setCamera],
+    [setCamera, surface],
   );
 
   return { camera, cameraRef, setCamera, zoomAt, zoomBy, fit };

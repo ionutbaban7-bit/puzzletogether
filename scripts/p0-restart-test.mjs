@@ -63,6 +63,21 @@ function websocketHello(roomId, playerId, credential) {
     });
   });
 }
+async function placeBeforeRestart(roomId, playerId, credential) {
+  const ws = new WebSocket(`ws://127.0.0.1:${port}/ws`);
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => { ws.terminate(); reject(new Error("Progress setup timed out")); }, 3000);
+    let piece;
+    ws.on("error", reject);
+    ws.on("open", () => ws.send(JSON.stringify({ t: "hello", roomId, playerId, credential })));
+    ws.on("message", raw => {
+      const msg = JSON.parse(String(raw));
+      if (msg.t === "init") { piece = msg.pieces[0]; ws.send(JSON.stringify({ t: "control", action: "start" })); }
+      if (msg.t === "room" && msg.room.stage === "play") ws.send(JSON.stringify({ t: "piece", id: piece.id, x: piece.correctX, y: piece.correctY, drag: false }));
+      if (msg.t === "pieces" && msg.list.some(p => p.id === piece.id && p.locked)) { clearTimeout(timer); ws.close(); resolve(); }
+    });
+  });
+}
 try {
   await spawnServer();
   const created = await post("/api/rooms", { puzzleId: "starry-night", difficulty: "easy", name: "RestoreHost" });
@@ -73,6 +88,7 @@ try {
   const credential = created.body.credential;
   const joined = await post(`/api/rooms/${roomId}/join`, { name: "RestoreGuest", code: created.body.room.code });
   assert.equal(joined.status, 200);
+  await placeBeforeRestart(roomId, playerId, credential);
   await stopServer();
 
   const snapshot = fs.readFileSync(path.join(dataDir, "rooms.json"), "utf8");
@@ -89,6 +105,9 @@ try {
   const room = (await visible.json()).room;
   assert.equal(room.hostId, undefined);
 
+  const restored = await websocketHello(roomId, playerId, credential);
+  assert.equal(restored.pieces[0].locked, true, "Placed piece survives restart");
+  assert.equal(restored.room.inviteToken, created.body.room.inviteToken, "Invitation survives restart");
   const withoutAuth = await post(`/api/rooms/${roomId}/reset`, { pid: playerId });
   assert.equal(withoutAuth.status, 403);
   const withAuth = await post(`/api/rooms/${roomId}/reset`, {}, credential);
@@ -100,7 +119,7 @@ try {
   assert.equal(connected.t, "init");
   assert.equal(connected.you, playerId);
   console.log("PASS: snapshot contains verifier hashes but no plaintext player secrets");
-  console.log("PASS: host authorization, guest return and WS reconnect survive real restart");
+  console.log("PASS: placed piece, invitation, host authorization, guest return and WS reconnect survive real restart");
 } finally {
   try { await stopServer(); } catch (error) { console.error(error.message); }
   fs.rmSync(dataDir, { recursive: true, force: true });

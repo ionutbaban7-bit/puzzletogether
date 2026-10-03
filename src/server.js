@@ -129,8 +129,8 @@ function playerTeamId(room, playerId) {
   return room.players.get(playerId)?.teamId || room.knownPlayers.get(playerId)?.teamId || null;
 }
 
-const PUZZLES = puzzlesData.puzzles;
-const CATEGORIES = puzzlesData.categories;
+const PUZZLES = puzzlesData.puzzles.filter(p => !["letter-canvas", "sentence-canvas"].includes(p.category));
+const CATEGORIES = puzzlesData.categories.filter(c => !["letter-canvas", "sentence-canvas"].includes(c.id));
 const DIFFICULTIES = puzzlesData.difficulties;
 const CANVAS_MODES = new Map((puzzlesData.canvasModes || []).map((m) => [m.id, m.tiles]));
 const COACHING = coachingData;
@@ -696,6 +696,8 @@ function roomView(room) {
   return {
     id: room.id,
     code: room.code,
+    inviteToken: room.inviteToken,
+    inviteExpiresAt: room.inviteExpiresAt,
     sessionName: room.sessionName,
     hostId: room.hostId,
     puzzleId: room.config.puzzleId,
@@ -738,6 +740,9 @@ function publicRoomView(room) {
   // privileged REST routes and WS reconnect still need session-bound proof.
   delete view.hostId;
   delete view.code;
+  delete view.inviteToken;
+  delete view.inviteExpiresAt;
+  delete view.completionPlayers;
   delete view.insights;
   delete view.debriefNotes;
   delete view.actions;
@@ -1014,6 +1019,7 @@ function serializeCanvasTile(t) {
 }
 
 function buildPuzzleSetup(config) {
+  if (config.customImage || !PUZZLES.some(p => p.id === config.puzzleId)) throw new Error("Choose an available jigsaw image.");
   let puzzle = puzzleById.get(config.puzzleId) || null;
   const coachingActivity = !puzzle ? activityById.get(config.puzzleId) : null;
   // Custom user-uploaded image (room-scoped; the file is deleted when the
@@ -1234,6 +1240,8 @@ function createRoom(config, creator = {}) {
   const room = {
     id: crypto.randomUUID(),
     code: generateCode(),
+    inviteToken: crypto.randomBytes(32).toString("base64url"),
+    inviteExpiresAt: now + ROOM_TTL_MS,
     sessionName: String(creator.sessionName || "").trim().slice(0, 80) || "Team session",
     hostId: null,
     teamMode: normalizeTeamMode(config.teamMode),
@@ -1298,7 +1306,7 @@ function scheduleSnapshot() {
 
 function persistableRoom(room) {
   return {
-    id: room.id, code: room.code, sessionName: room.sessionName, hostId: room.hostId,
+    id: room.id, code: room.code, inviteToken: room.inviteToken, inviteExpiresAt: room.inviteExpiresAt, sessionName: room.sessionName, hostId: room.hostId,
     teamMode: room.teamMode, teams: room.teams,
     config: room.config, pieces: room.pieces.map(serializePiece),
     jigsawGeometry: isJigsawRoom(room) ? Object.fromEntries(["width", "height", "cols", "rows", "pieceW", "pieceH"].map(key => [key, room.puzzle[key]])) : null,
@@ -1333,7 +1341,7 @@ function saveSnapshots() {
     fs.mkdirSync(dataDir, { recursive: true });
     const payload = [...rooms.values()].map(persistableRoom);
     const temp = `${snapshotFile}.tmp`;
-    fs.writeFileSync(temp, JSON.stringify(payload));
+    fs.writeFileSync(temp, JSON.stringify(payload), { mode: 0o600 });
     fs.renameSync(temp, snapshotFile);
   } catch (error) {
     console.error("Could not persist room snapshots", error);
@@ -1425,6 +1433,8 @@ function restoreSnapshots() {
         codeIndex.delete(room.code);
       room.id = raw.id;
       room.code = raw.code;
+      room.inviteToken = raw.inviteToken || room.inviteToken;
+      room.inviteExpiresAt = raw.inviteExpiresAt || 0;
       room.hostId = raw.hostId;
       room.teamMode = normalizeTeamMode(raw.teamMode);
       room.teams = Array.isArray(raw.teams) ? raw.teams : [];
@@ -1631,6 +1641,7 @@ function bearerCredential(req) {
 
 /** Resolve session identity from the secret, never from req.body.pid. */
 function authenticatedPlayer(room, req) {
+  if (room.stage === "closed" || Date.now() - room.lastActivityAt > ROOM_TTL_MS) return null;
   const credential = bearerCredential(req);
   if (!credential) return null;
   for (const [pid, player] of room.knownPlayers) {
@@ -1705,6 +1716,7 @@ function applyTeamAction(room, playerId, msg, ws) {
 function applyControl(room, playerId, msg, ws) {
   if (!requireHostSocket(room, playerId, ws)) return;
   const now = Date.now();
+  if (!["start", "lock", "kick", "close"].includes(msg.action)) return send(ws, { t: "error", code: "activity_archived", message: "Control unavailable." });
   switch (msg.action) {
     case "ackPause":
       room.pauseRequested = false;
@@ -1859,6 +1871,7 @@ function applyControl(room, playerId, msg, ws) {
       const conn = room.conns.get(target);
       if (conn) send(conn.ws, { t: "closed", code: "removed", message: "The facilitator removed you from this session." });
       room.knownPlayers.delete(target);
+      rotateInvitation(room);
       room.pending.delete(target);
       dropPlayerConnection(room, target);
       break;
@@ -2481,6 +2494,23 @@ app.disable("x-powered-by");
 // Set TRUST_PROXY=1 only behind a reverse proxy that strips untrusted
 // X-Forwarded-For values. Default IP limiting never trusts user-supplied IPs.
 if (process.env.TRUST_PROXY === "1") app.set("trust proxy", 1);
+function allowedOrigin(req) {
+  const origin = req.headers.origin;
+  if (!origin) return true; // Non-browser clients must still prove membership.
+  const configured = process.env.PUBLIC_ORIGIN;
+  if (configured) return origin === configured;
+  try { const url = new URL(origin); return ["http:", "https:"].includes(url.protocol) && url.host === req.headers.host; } catch { return false; }
+}
+app.use((req, res, next) => {
+  res.setHeader("Referrer-Policy", "no-referrer");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  if (req.path.startsWith("/api/")) res.setHeader("Cache-Control", "no-store");
+  if (!["GET", "HEAD", "OPTIONS"].includes(req.method) && !allowedOrigin(req)) return res.status(403).json({ error: "Origin denied." });
+  next();
+});
+// Uploads and their files remain disabled until room-scoped async processing is verified.
+app.use(["/api/uploads", "/uploads"], (_req, res) => res.status(403).json({ error: "Photo uploads are temporarily unavailable.", code: "uploads_disabled" }));
 app.use(express.json({ limit: "64kb" }));
 
 // Single-process limits fit the current one-instance architecture. Deploying
@@ -2493,6 +2523,7 @@ function rateLimit(scope, maxRequests, windowMs) {
     const current = requestBuckets.get(key);
     const bucket = current && current.expiresAt > now ? current : { count: 0, expiresAt: now + windowMs };
     bucket.count += 1;
+    if (requestBuckets.size >= 10000 && !current) return res.status(429).json({ error: "Server busy. Try later." });
     requestBuckets.set(key, bucket);
     if (bucket.count > maxRequests) {
       res.setHeader("Retry-After", String(Math.max(1, Math.ceil((bucket.expiresAt - now) / 1000))));
@@ -2502,6 +2533,34 @@ function rateLimit(scope, maxRequests, windowMs) {
   };
 }
 
+setInterval(() => { for (const [key, value] of requestBuckets) if (value.expiresAt < Date.now()) requestBuckets.delete(key); }, 60000).unref();
+app.use("/api/rooms/:id", rateLimit("room", 600, 60000));
+function rotateInvitation(room) {
+  codeIndex.delete(room.code);
+  room.code = generateCode();
+  codeIndex.set(room.code, room.id);
+  room.inviteToken = crypto.randomBytes(32).toString("base64url");
+  room.inviteExpiresAt = Date.now() + ROOM_TTL_MS;
+  touch(room);
+}
+app.post("/api/rooms/:id/invite", (req, res) => {
+  const room = findRoom(req.params.id);
+  if (!room || !hostAuthorized(room, req)) return res.status(403).json({ error: "Host required." });
+  rotateInvitation(room);
+  broadcastRoom(room);
+  res.json({ room: roomView(room) });
+});
+app.post("/api/rooms/:id/session/rotate", (req, res) => {
+  const room = findRoom(req.params.id);
+  const pid = room && authenticatedPlayer(room, req);
+  if (!pid || room.stage === "closed") return res.status(403).json({ error: "Session required." });
+  const { credential, authHash } = newPlayerCredential();
+  room.knownPlayers.get(pid).authHash = authHash;
+  if (room.pending.has(pid)) room.pending.get(pid).authHash = authHash;
+  dropPlayerConnection(room, pid);
+  touch(room);
+  res.json({ credential });
+});
 app.get("/api/health", (_req, res) => {
   const memory = process.memoryUsage();
   res.json({ ok: true, protocolVersion: PROTOCOL_VERSION, rooms: rooms.size, players: [...rooms.values()].reduce((n, r) => n + r.players.size, 0), wsConnections: wss?.clients?.size || 0, uptimeSeconds: Math.floor(process.uptime()), heapUsedMb: Math.round(memory.heapUsed / 1024 / 1024) });
@@ -2517,19 +2576,10 @@ app.get("/api/puzzles", (_req, res) => res.json({
   categories: CATEGORIES,
   difficulties: DIFFICULTIES,
   puzzles: PUZZLES.map((p) => ({ ...p })),
-  canvasModes: puzzlesData.canvasModes || [],
-  letterSets: CANVAS_LETTER_SETS,
-  sentencePacks: { ro: sentenceVocab.ro, en: sentenceVocab.en },
-  coaching: publicCoachingCatalog(),
-  emotions: { category: { id: "emotions", name: "Emotions", icon: "🗺️" }, activities: [{ ...EMOTIONS_ACTIVITY, situations: undefined }] },
   maxPlayers: MAX_PLAYERS,
 }));
-app.get("/api/coaching", (_req, res) => res.json(publicCoachingCatalog()));
-app.get("/api/emotions", (_req, res) => res.json({
-  taxonomy: emotionsTaxonomy,
-  situations: emotionsSituations,
-  archetypes: emotionsArchetypes,
-}));
+app.get("/api/coaching", (_req, res) => res.status(410).json({ error: "Activity archived." }));
+app.get("/api/emotions", (_req, res) => res.status(410).json({ error: "Activity archived." }));
 
 app.post("/api/rooms", rateLimit("create", 12, 60 * 60_000), (req, res) => {
   const { puzzleId, difficulty, name, sessionName, role, contentLanguage, mystery, customImage, teamMode, teamCount } = req.body || {};
@@ -2575,7 +2625,7 @@ app.post("/api/rooms", rateLimit("create", 12, 60 * 60_000), (req, res) => {
 app.post("/api/rooms/:id/join", rateLimit("join", 60, 10 * 60_000), (req, res) => {
   const room = findRoom(req.params.id);
   if (!room || room.stage === "closed") return res.status(404).json({ error: "Room not found.", code: "room_missing" });
-  const { name, pid, code } = req.body || {};
+  const { name, pid, code, invite } = req.body || {};
   if (typeof name !== "string" || !name.trim()) return res.status(400).json({ error: "A display name is required." });
   // Returning players must prove their own session. Knowing a player UUID
   // or the room's access code never grants ownership of an existing avatar.
@@ -2589,10 +2639,11 @@ app.post("/api/rooms/:id/join", rateLimit("join", 60, 10 * 60_000), (req, res) =
 
   const refIsCode = String(req.params.id).trim().toUpperCase() === room.code;
   const providedCode = typeof code === "string" ? code.trim().toUpperCase() : "";
-  if (!refIsCode && providedCode !== room.code) {
+  const validInvite = typeof invite === "string" && /^[A-Za-z0-9_-]{43}$/.test(invite) && Date.now() < room.inviteExpiresAt && crypto.timingSafeEqual(Buffer.from(invite), Buffer.from(room.inviteToken));
+  if (!validInvite && !refIsCode && providedCode !== room.code) {
     return res.status(403).json({ error: providedCode ? "That access code is incorrect." : "This room requires an access code.", code: providedCode ? "bad_code" : "code_required" });
   }
-  if (room.players.size + room.pending.size >= MAX_PLAYERS) return res.status(409).json({ error: `This room is full (${MAX_PLAYERS} players max).`, code: "room_full" });
+  if (room.knownPlayers.size >= 200 || room.players.size + room.pending.size >= MAX_PLAYERS) return res.status(409).json({ error: `This room is full (${MAX_PLAYERS} players max).`, code: "room_full" });
 
   const playerId = crypto.randomUUID();
   const { credential, authHash } = newPlayerCredential();
@@ -2620,6 +2671,8 @@ app.post("/api/rooms/:id/takeover", (req, res) => {
   const pid = authenticatedPlayer(room, req);
   if (!pid || !room.players.has(pid)) return res.status(403).json({ error: "Verified active room membership required.", code: "not_member" });
   if (room.conns.has(room.hostId)) return res.status(409).json({ error: "The facilitator is still connected.", code: "host_present" });
+  const oldHost = room.knownPlayers.get(room.hostId);
+  if (oldHost && oldHost.role === "host") oldHost.role = "player";
   room.hostId = pid;
   const known = room.knownPlayers.get(pid);
   if (known) known.role = "host";
@@ -2844,15 +2897,25 @@ app.use(express.static(publicDir, { maxAge: IS_PROD ? "7d" : 0 }));
 // ---------------------------------------------------------------------------
 
 const httpServer = http.createServer(app);
-const wss = new WebSocketServer({ server: httpServer, path: "/ws", maxPayload: 64 * 1024 });
+const wss = new WebSocketServer({ server: httpServer, path: "/ws", maxPayload: 64 * 1024, verifyClient: ({ req }) => allowedOrigin(req) });
 
 wss.on("connection", (ws) => {
   ws.alive = true;
   let attached = null;
+  let messageCount = 0, messageWindow = Date.now();
+  const helloTimer = setTimeout(() => { if (!attached) ws.close(1008, "Authentication required"); }, 10000);
+  helloTimer.unref();
+  ws.on("close", () => clearTimeout(helloTimer));
   ws.on("pong", () => { ws.alive = true; });
   ws.on("message", (raw) => {
+    if (Date.now() - messageWindow >= 1000) { messageCount = 0; messageWindow = Date.now(); }
+    if (++messageCount > 180) return ws.close(1008, "Message limit");
+    if (attached && (attached.room.stage === "closed" || !rooms.has(attached.room.id) || !attached.room.knownPlayers.has(attached.playerId) || attached.room.conns.get(attached.playerId)?.ws !== ws)) return ws.close(1008, "Session revoked");
     let msg;
     try { msg = JSON.parse(raw.toString()); } catch { return send(ws, { t: "error", code: "bad_json", message: "Malformed message." }); }
+    if (!msg || typeof msg !== "object" || Array.isArray(msg)) return ws.close(1008, "Invalid message");
+    if (attached && msg.t === "hello") return ws.close(1008, "Already authenticated");
+    if (attached && !["piece", "layout", "cursor", "control", "ping"].includes(msg.t)) return send(ws, { t: "error", code: "activity_archived", message: "This is a jigsaw room." });
     if (!attached && msg.t !== "hello") return send(ws, { t: "deny", code: "bad_request", message: "Hello first." });
 
     switch (msg.t) {
@@ -2866,7 +2929,8 @@ wss.on("connection", (ws) => {
           send(ws, { t: "deny", code: "session_invalid", message: "Invalid or expired player session. Please rejoin." });
           return ws.close();
         }
-        if (room.conns.has(pid)) { try { room.conns.get(pid).ws.close(); } catch {} room.conns.delete(pid); }
+        if (!room.players.has(pid) && room.players.size >= MAX_PLAYERS) return ws.close(1008, "Room full");
+        if (room.conns.has(pid)) { send(room.conns.get(pid).ws, { t: "closed", code: "session_replaced", message: "This game was opened in another tab. Reload to resume here." }); try { room.conns.get(pid).ws.close(); } catch {} room.conns.delete(pid); }
         if (!room.players.has(pid)) {
           const info = room.pending.get(pid) || room.knownPlayers.get(pid) || {};
           room.players.set(pid, { id: pid, name: info.name || "Player", color: info.color || null, role: info.role || "player", teamId: info.teamId || null, joinedAt: Date.now(), lastSeenAt: Date.now() });

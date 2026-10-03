@@ -19,13 +19,16 @@ const ok = (name, condition, extra = "") => {
 };
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const credentials = new Map();
 async function post(path, body) {
   const response = await fetch(BASE + path, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...(credentials.has(body?.pid) ? { Authorization: `Bearer ${credentials.get(body.pid)}` } : {}) },
     body: JSON.stringify(body),
   });
-  return { status: response.status, data: await response.json().catch(() => ({})) };
+  const data = await response.json().catch(() => ({}));
+  if (data.credential) credentials.set(data.playerId, data.credential);
+  return { status: response.status, data };
 }
 
 function connect(roomId, playerId) {
@@ -33,7 +36,7 @@ function connect(roomId, playerId) {
     const ws = new WebSocket(WS_URL);
     const queue = [];
     const waiters = [];
-    ws.on("open", () => ws.send(JSON.stringify({ t: "hello", v: 2, roomId, playerId })));
+    ws.on("open", () => ws.send(JSON.stringify({ t: "hello", v: 2, roomId, playerId, credential: credentials.get(playerId) })));
     ws.on("message", (raw) => {
       const message = JSON.parse(raw.toString());
       const index = waiters.findIndex((entry) => entry.type === message.t && entry.predicate(message));

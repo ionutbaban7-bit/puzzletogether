@@ -1,46 +1,19 @@
 # PuzzleTogether
 
-**Play together. Leave with a decision.**
+One puzzle. Together.
 
-PuzzleTogether is a realtime team workshop game. A facilitator can warm a team up with a collaborative jigsaw, run a survival-ranking exercise or Team Compass, freeze the room for discussion, and capture insights and owned actions without moving the group to a second tool.
+A standalone collaborative jigsaw for family, friends and teams. Choose a picture, create a room and share one invitation link. Guests enter a display name; no accounts are required.
 
-## What ships
+## Product
 
-### Play
+- Shared, server-authoritative jigsaw with concurrent piece claims.
+- 12, 25, 64 and 100 pieces; 144 and 192 under advanced options.
+- Phone and desktop controls, zoom, pan, reference image and optional piece sorting.
+- Keyboard/tap alternative: select a piece, choose a row and column, confirm.
+- Shared lobby/start, optional observer host, team completion and replay with the same group.
+- RO/EN. Photo uploads are temporarily disabled, including file access.
 
-- Deterministic jigsaw pieces, zoom/pan/pinch and same-origin WebSockets
-- Authoritative piece claims (`heldBy`) so two people cannot drag the same piece
-- Free team ranking: every card can occupy every rank and can be reordered until lock
-- Team Compass with private raw answers and shared final profile codes
-- Letter-tile **jigsaws** (not yet a free word-building game; the UI says this explicitly)
-
-### Facilitate
-
-- Locked waiting lobby, share code and explicit synchronized Start
-- Coaching stages: lobby → brief → play → reveal → debrief → harvest
-- Host-only board lock, timer, reveal, reset, activity change, kick and close
-- Facilitator-as-spectator role
-- Explicit host takeover when the original facilitator is disconnected
-- Private facilitator notes
-- Team-first celebration by default; individual contribution podium is opt-in
-
-### Harvest
-
-- Captured debrief responses
-- Observed / Learned / Try next insight board
-- Action items with owner, due date and status
-- Host-only JSON export and print-ready HTML/PDF view
-- Small JSON room snapshots in `.data/` so sessions survive a Node restart
-
-## Architecture
-
-- React 18, TypeScript, Vite and Tailwind
-- Node/Express and `ws` on one origin
-- Protocol v2; server-authoritative rooms, roles, stages, claims and coaching results
-- No participant accounts or external runtime services
-- Rooms expire after 24 hours of inactivity; empty rooms wait 30 minutes before reaping
-
-Room snapshots are designed for a single process and modest workshop volume. Multi-instance deployment still requires shared persistence and pub/sub.
+V1 coaching, CARTOGRAF, chat and letter/sentence activities are not available in V2. Their source is preserved on `archive/v1-before-focused-jigsaw`. Some unreachable legacy server helpers remain for later internal cleanup; they are not enabled product features.
 
 ## Run
 
@@ -49,42 +22,33 @@ npm ci
 npm run dev
 ```
 
-The server binds to `0.0.0.0:${PORT:-3000}`.
+Production uses `npm run build` followed by `npm start`. One Node process serves the React app, API, catalog images and WebSocket endpoint on the same origin.
 
-Production:
+## Verify
 
 ```bash
 npm run build
-npm start
-```
-
-## Test
-
-With the development server running:
-
-```bash
-npm run typecheck
-npm run build
+npm run test:render-contract
+npm run test:image-scaling
+npm run catalog:audit
+npm run test:security
 npm run test:protocol
-npm run test:load
-```
-
-Browser tests use Playwright:
-
-```bash
-npx playwright install chromium
+npm run test:restart
 npm run test:e2e
 ```
 
-The protocol suite covers access codes, host authorization, lobby freeze, claiming conflicts, completion, free ranking destinations, reveal gating, exports and questionnaire privacy.
+The retained protocol suites run on fresh local instances. The browser suite requires Chromium: install it with `npx playwright install chromium` or set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to a compatible installed binary. Screenshots and failure evidence go to ignored `test-artifacts/`.
 
-## Privacy and content notes
+Legacy activity tests are preserved in Git history; they are intentionally outside the focused V2 test commands. Browser phone emulation is not physical-device certification or a full screen-reader audit.
 
-- Raw Team Compass answers are returned only to their owner. Other participants receive `done` and `profileCode`.
-- Team Compass is an educational reflection activity, not a validated psychometric or medical assessment.
-- The public puzzle catalog includes only entries with an explicit creator/source and license. Original SVG content is labeled as such.
-- Facilitator notes are private and available only through host-authenticated room export.
+## Security and hosting
 
-## Commercial use
+Public player IDs are never credentials. Each player receives an independent random secret; only its verifier is saved. Host actions, returning joins and WebSocket connections require proof of membership. Invitations are separate, room-scoped admission capabilities and expire after 24 hours. Removing a player revokes their membership and changes the invitation and fallback code.
 
-The repository remains under the terms in [`LICENSE`](./LICENSE). The product positioning does not override those terms. Commercial use requires the copyright holder's explicit written permission.
+Room snapshots require a writable, persistent `DATA_DIR`. The default `.data/` supports local restarts; an ephemeral hosting filesystem does not guarantee survival across redeploys. Use one instance; shared storage and pub/sub are required before horizontal scaling.
+
+Set `PUBLIC_ORIGIN` to the exact public origin when deploying. Set `TRUST_PROXY=1` only after verifying the hosting proxy's forwarding behavior. Keep secrets and room snapshots out of Git, backups public links and logs.
+
+Inactive rooms expire after 24 hours; empty rooms expire after 30 minutes. The project license remains the repository's existing [LICENSE](LICENSE); catalog credits do not grant rights beyond each image's stated license.
+
+Implementation and evidence: [V2 execution plan](docs/V2_EXECUTION_PLAN.md). Hosting and release checks: [V2 release notes](docs/V2_RELEASE_NOTES.md).

@@ -20,9 +20,9 @@ async function post<T>(url: string, body: unknown): Promise<T> {
 export const api = {
   async fetchCatalog(): Promise<CatalogData> {
     const response = await fetch("/api/puzzles");
-    if (!response.ok) throw new Error("Activity library unavailable.");
+    if (!response.ok) throw new Error("Puzzle library unavailable.");
     const data = await response.json();
-    if (!Array.isArray(data.categories) || !Array.isArray(data.puzzles) || !Array.isArray(data.coaching?.activities)) throw new Error("Invalid activity library.");
+    if (!Array.isArray(data.categories) || !Array.isArray(data.puzzles) || !Array.isArray(data.difficulties)) throw new Error("Invalid puzzle library.");
     return data;
   },
   createRoom(puzzleId: string, difficulty: string, name: string, options: { sessionName?: string; role?: "host" | "spectator"; contentLanguage?: "ro" | "en"; mystery?: boolean; teamMode?: "shared" | "color-teams"; teamCount?: number; customImage?: { url: string; file: string; width: number; height: number; name: string } } = {}) {
@@ -34,8 +34,8 @@ export const api = {
     if (!response.ok || !data) throw new Error(data?.error || "Upload failed.");
     return data;
   },
-  joinRoom(ref: string, name: string, pid?: string, code?: string) {
-    return post<{ room: RoomView; playerId: string; credential?: string; returning?: boolean }>(`/api/rooms/${encodeURIComponent(ref)}/join`, { name, pid, code });
+  joinRoom(ref: string, name: string, pid?: string, code?: string, invite?: string) {
+    return post<{ room: RoomView; playerId: string; credential?: string; returning?: boolean }>(`/api/rooms/${encodeURIComponent(ref)}/join`, { name, pid, code, invite });
   },
   changePuzzle(ref: string, puzzleId: string, difficulty: string, pid: string, contentLanguage?: "ro" | "en", mystery?: boolean) {
     return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/puzzle`, { puzzleId, difficulty, pid, contentLanguage, mystery });

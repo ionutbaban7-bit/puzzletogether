@@ -12,7 +12,7 @@ try {
  for(const id of ['mona-lisa','great-wave','the-kiss','water-lilies']){
   const img=await loadImage(`server/public/images/full/${id}.webp`);
   assert.deepEqual(manifest[id+'.webp'],{w:img.width,h:img.height},'manifest must describe delivered pixels');
-  for(const multiplier of [1,1.73])for(const [cols,rows] of [[5,5],[8,8],[10,10],[12,12],[12,16]]){
+  for(const multiplier of [1,1.73])for(const [cols,rows] of [[4,3],[3,4],[5,5],[8,8],[10,10],[12,12],[12,16]]){
    const width=img.width*multiplier,height=img.height*multiplier,pw=width/cols,ph=height/rows,scale=500/Math.max(width,height);
    const ref=createCanvas(Math.ceil(width*scale),Math.ceil(height*scale));ref.getContext('2d').drawImage(img,0,0,width*scale,height*scale);
    const edges=buildEdgeMap(cols,rows,1234);
@@ -34,5 +34,5 @@ try {
  for(const [w,h] of [[1476,2200],[2200,1476],[2000,2000]])for(const [mw,mh] of [[168,132],[124,100]]){
   const r=containImage(w,h,mw,mh);assert.ok(r.width<=mw+.001&&r.height<=mh+.001);assert.ok(Math.abs(r.width/r.height-w/h)<.00001);
  }
- console.log(`PASS ${sprites} clipped sprites across 40 image/difficulty/legacy combinations; desktop/mobile reference ratios preserved`);
+ console.log(`PASS ${sprites} clipped sprites across 56 image/difficulty/legacy combinations; desktop/mobile reference ratios preserved`);
 }finally{await vite.close();}

@@ -1,4 +1,4 @@
-# V2 security acceptance contract — TARGETED TESTS PASSED; FULL P0 STILL OPEN
+# V2 security acceptance contract — IMPLEMENTED; OPERATIONAL RELEASE CHECKS OPEN
 
 This is a blocker, not an enhancement. It applies to all REST + WebSocket paths, including legacy modes retained on the V2 development branch until they are archived. A cosmetic omission of `hostId` from the anonymous route does **not** repair authentication.
 
@@ -26,4 +26,4 @@ npm run test:protocol
 npm run build
 ```
 
-**Targeted GitHub CI evidence:** https://github.com/ionutbaban7-bit/puzzletogether/actions/runs/36999555692 (security, layout, image negative tests and isolated restart all passed). Still open: legacy test suite migration, verification on Render, WS Origin/CSRF posture, credential rotation/revocation, invitation flow, custom-image URL access and full device/browser testing. Do not merge before these release blockers have been resolved or explicitly scoped out.
+**Current evidence and release limits:** see `V2_EXECUTION_PLAN.md` and the latest PR #10 Actions run. Local baseline, V2 security, retained jigsaw protocol, browser flow and real process-restart tests pass. Photos and archived activities are disabled. Render redeploy durability, branch rules, physical devices and user pilots still require evidence before production.
