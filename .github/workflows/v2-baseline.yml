@@ -27,8 +27,10 @@ jobs:
         run: |
           npm run test:render-contract
           npm run test:image-scaling
-      - name: Catalog structural audit
-        run: npm run catalog:audit
+      - name: Catalog audit, image delivery and new puzzle geometry
+        run: |
+          npm run catalog:audit
+          npm run test:catalog-serve
       - name: Configure photo processor
         run: |
           if ! command -v convert >/dev/null || ! command -v identify >/dev/null; then
@@ -41,6 +43,10 @@ jobs:
         run: npm run test:photos
       - name: Authenticated multiplayer protocol
         run: npm run test:protocol
+      - name: Fair podium, team timer and 25 players plus facilitator
+        run: |
+          npm run test:gamification
+          npm run test:load
       - name: Recovery after process restart
         run: npm run test:restart
       - name: Configure Chromium

@@ -182,7 +182,8 @@
         0.5,
         0.42
       ],
-      "thumbnail": "/images/thumbs/mona-lisa.webp"
+      "thumbnail": "/images/thumbs/mona-lisa.webp",
+      "anchor": true
     },
     {
       "id": "starry-night",
@@ -208,7 +209,8 @@
         0.5,
         0.45
       ],
-      "thumbnail": "/images/thumbs/starry-night.webp"
+      "thumbnail": "/images/thumbs/starry-night.webp",
+      "anchor": true
     },
     {
       "id": "great-wave",
@@ -234,7 +236,332 @@
         0.35,
         0.55
       ],
-      "thumbnail": "/images/thumbs/great-wave.webp"
+      "thumbnail": "/images/thumbs/great-wave.webp",
+      "anchor": true
+    },
+    {
+      "id": "sunflowers-vangogh",
+      "category": "paintings",
+      "name": "Sunflowers",
+      "image": "/images/full/sunflowers-vangogh.webp",
+      "anchor": true,
+      "thumbnail": "/images/thumbs/sunflowers-vangogh.webp",
+      "nameRo": "Floarea-soarelui",
+      "alt": {
+        "ro": "Floarea-soarelui — Vincent van Gogh",
+        "en": "Sunflowers — Vincent van Gogh"
+      },
+      "attribution": "Vincent van Gogh · Public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vincent_van_Gogh_-_Sunflowers_(1888,_National_Gallery_London).jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "Orientation normalized; resized to 2200px maximum; metadata stripped; optimized WebP board image; complete composition fitted within the 480×360 thumbnail.",
+      "originalFilename": "Vincent van Gogh - Sunflowers (1888, National Gallery London).jpg",
+      "checksum": "sha256:678cdcd28bb07225f9b336643bbb6ae907d00b9a0a385192c500c9e0e60cd224",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "credit": "Vincent van Gogh · Public domain",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "creation-of-adam",
+      "category": "paintings",
+      "name": "The Creation of Adam",
+      "image": "/images/full/creation-of-adam.webp",
+      "anchor": true,
+      "thumbnail": "/images/thumbs/creation-of-adam.webp",
+      "nameRo": "Crearea lui Adam",
+      "alt": {
+        "ro": "Crearea lui Adam — Michelangelo",
+        "en": "The Creation of Adam — Michelangelo"
+      },
+      "attribution": "Michelangelo · Public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Creation_of_Adam_perspective_fix.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "Orientation normalized; resized to 2200px maximum; metadata stripped; optimized WebP board image; complete composition fitted within the 480×360 thumbnail.",
+      "originalFilename": "The Creation of Adam perspective fix.jpg",
+      "checksum": "sha256:ff1e26a530509ccf2b42f5c5e25203f14bc319b0e6a3053121bc9bfb73293893",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "credit": "Michelangelo · Public domain",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "birth-of-venus",
+      "category": "paintings",
+      "name": "The Birth of Venus",
+      "image": "/images/full/birth-of-venus.webp",
+      "anchor": true,
+      "thumbnail": "/images/thumbs/birth-of-venus.webp",
+      "nameRo": "Nașterea lui Venus",
+      "alt": {
+        "ro": "Nașterea lui Venus — Sandro Botticelli",
+        "en": "The Birth of Venus — Sandro Botticelli"
+      },
+      "attribution": "Sandro Botticelli · Public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "Downloaded provider raster; archival JPEG resized to a maximum edge of 2200px with metadata stripped. Board WebP preserves the image ratio; 4:3 selector thumbnail cropped around the focal point. No generative edits.",
+      "originalFilename": "Sandro Botticelli - La nascita di Venere - Google Art Project - edited.jpg",
+      "checksum": "sha256:10145692a02cbd2c9b0c384b7820cd813a6d2b6bc7e3dc0c8173f7707133823e",
+      "focalPoint": [
+        0.52,
+        0.48
+      ],
+      "credit": "Sandro Botticelli · Public domain",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "liberty-leading-people",
+      "category": "paintings",
+      "name": "Liberty Leading the People",
+      "image": "/images/full/liberty-leading-people.webp",
+      "anchor": true,
+      "thumbnail": "/images/thumbs/liberty-leading-people.webp",
+      "nameRo": "Libertatea conducând poporul",
+      "alt": {
+        "ro": "Libertatea conducând poporul — Eugène Delacroix",
+        "en": "Liberty Leading the People — Eugène Delacroix"
+      },
+      "attribution": "Eugène Delacroix · Public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Eug%C3%A8ne_Delacroix_-_La_libert%C3%A9_guidant_le_peuple.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "Downloaded provider raster; archival JPEG resized to a maximum edge of 2200px with metadata stripped. Board WebP preserves the image ratio; 4:3 selector thumbnail cropped around the focal point. No generative edits.",
+      "originalFilename": "Eugène Delacroix - La liberté guidant le peuple.jpg",
+      "checksum": "sha256:38afe25855de573c46952f0420d59b377c59dd6e882ea71b9ccc94d91c796a2b",
+      "focalPoint": [
+        0.53,
+        0.45
+      ],
+      "credit": "Eugène Delacroix · Public domain",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "american-gothic",
+      "category": "paintings",
+      "name": "American Gothic",
+      "image": "/images/full/american-gothic.webp",
+      "anchor": true,
+      "thumbnail": "/images/thumbs/american-gothic.webp",
+      "nameRo": "Gotic american",
+      "alt": {
+        "ro": "Gotic american — Grant Wood",
+        "en": "American Gothic — Grant Wood"
+      },
+      "attribution": "Grant Wood · Public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Grant_Wood_-_American_Gothic_-_Google_Art_Project.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "Orientation normalized; resized to 2200px maximum; metadata stripped; optimized WebP board image; complete composition fitted within the 480×360 thumbnail.",
+      "originalFilename": "Grant Wood - American Gothic - Google Art Project.jpg",
+      "checksum": "sha256:2a5cfb7c02a12445edb89170da43c184413127fbea8c7e0f4524366ffe940601",
+      "focalPoint": [
+        0.5,
+        0.4
+      ],
+      "credit": "Grant Wood · Public domain",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "wanderer-sea-fog",
+      "category": "paintings",
+      "name": "Wanderer above the Sea of Fog",
+      "image": "/images/full/wanderer-sea-fog.webp",
+      "anchor": true,
+      "thumbnail": "/images/thumbs/wanderer-sea-fog.webp",
+      "nameRo": "Călător deasupra mării de ceață",
+      "alt": {
+        "ro": "Călător deasupra mării de ceață — Caspar David Friedrich",
+        "en": "Wanderer above the Sea of Fog — Caspar David Friedrich"
+      },
+      "attribution": "Caspar David Friedrich · Public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "Orientation normalized; resized to 2200px maximum; metadata stripped; optimized WebP board image; complete composition fitted within the 480×360 thumbnail.",
+      "originalFilename": "Caspar David Friedrich - Wanderer above the sea of fog.jpg",
+      "checksum": "sha256:6e7cf4fbc1d1441fc8dffa183dd2f7c69969499175b5e1210df6f3a2a7d42679",
+      "focalPoint": [
+        0.5,
+        0.4
+      ],
+      "credit": "Caspar David Friedrich · Public domain",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "bedroom-arles",
+      "category": "paintings",
+      "name": "Bedroom in Arles",
+      "image": "/images/full/bedroom-arles.webp",
+      "anchor": true,
+      "thumbnail": "/images/thumbs/bedroom-arles.webp",
+      "nameRo": "Dormitorul din Arles",
+      "alt": {
+        "ro": "Dormitorul din Arles — Vincent van Gogh",
+        "en": "Bedroom in Arles — Vincent van Gogh"
+      },
+      "attribution": "Vincent van Gogh · Public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vincent_van_Gogh_-_Van_Gogh%27s_Bedroom_in_Arles_-_Google_Art_Project.jpg",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "changesMade": "Downloaded provider raster; archival JPEG resized to a maximum edge of 2200px with metadata stripped. Board WebP preserves the image ratio; 4:3 selector thumbnail cropped around the focal point. No generative edits.",
+      "originalFilename": "Vincent van Gogh - Van Gogh's Bedroom in Arles - Google Art Project.jpg",
+      "checksum": "sha256:8b416fd2eb624b7e2667ee77d0af0de8f0ea5d0799a1bfd00c990b5729218a17",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "credit": "Vincent van Gogh · Public domain",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "red-fuji",
+      "category": "paintings",
+      "name": "Red Fuji",
+      "image": "/images/full/red-fuji.webp",
+      "anchor": true,
+      "thumbnail": "/images/thumbs/red-fuji.webp",
+      "nameRo": "Fuji roșu",
+      "alt": {
+        "ro": "Fuji roșu — Katsushika Hokusai",
+        "en": "Red Fuji — Katsushika Hokusai"
+      },
+      "attribution": "Katsushika Hokusai · CC0 · Public domain",
+      "sourceName": "The Metropolitan Museum of Art",
+      "sourceUrl": "https://www.metmuseum.org/art/collection/search/55736",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Downloaded provider raster; archival JPEG resized to a maximum edge of 2200px with metadata stripped. Board WebP preserves the image ratio; 4:3 selector thumbnail cropped around the focal point. No generative edits.",
+      "originalFilename": "DP141053.jpg",
+      "checksum": "sha256:4befea6cf2eab0f28c5a3015b7813a8b149b68c64b429e32af18c4c612cf6206",
+      "focalPoint": [
+        0.6,
+        0.5
+      ],
+      "credit": "Katsushika Hokusai · CC0 · Public domain",
+      "license": "CC0 · Public domain",
+      "source": "The Metropolitan Museum of Art"
+    },
+    {
+      "id": "the-thinker",
+      "category": "inspiration",
+      "name": "The Thinker",
+      "image": "/images/full/the-thinker.webp",
+      "anchor": true,
+      "thumbnail": "/images/thumbs/the-thinker.webp",
+      "nameRo": "Gânditorul",
+      "alt": {
+        "ro": "Gânditorul — Auguste Rodin",
+        "en": "The Thinker — Auguste Rodin"
+      },
+      "attribution": "Auguste Rodin · CC0 · Public domain",
+      "sourceName": "The Metropolitan Museum of Art",
+      "sourceUrl": "https://www.metmuseum.org/art/collection/search/191811",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changesMade": "Orientation normalized; resized to 2200px maximum; metadata stripped; optimized WebP board image; complete composition fitted within the 480×360 thumbnail.",
+      "originalFilename": "DP-13618-012.jpg",
+      "checksum": "sha256:a2758abb627ff797447b67cbac80dde62e95d10688e764a7f0f1ea9406eae8fe",
+      "focalPoint": [
+        0.5,
+        0.45
+      ],
+      "credit": "Auguste Rodin · CC0 · Public domain",
+      "license": "CC0 · Public domain",
+      "source": "The Metropolitan Museum of Art"
+    },
+    {
+      "id": "earthrise-apollo8",
+      "category": "inspiration",
+      "name": "Earthrise · Apollo 8",
+      "image": "/images/full/earthrise-apollo8.webp",
+      "anchor": true,
+      "thumbnail": "/images/thumbs/earthrise-apollo8.webp",
+      "nameRo": "Răsăritul Pământului · Apollo 8",
+      "alt": {
+        "ro": "Răsăritul Pământului · Apollo 8 — NASA",
+        "en": "Earthrise · Apollo 8 — NASA"
+      },
+      "attribution": "NASA / William Anders · Public domain",
+      "sourceName": "NASA",
+      "sourceUrl": "https://www.nasa.gov/image-article/apollo-8-earthrise/",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "changesMade": "Downloaded provider raster; archival JPEG resized to a maximum edge of 2200px with metadata stripped. Board WebP preserves the image ratio; 4:3 selector thumbnail cropped around the focal point. No generative edits.",
+      "originalFilename": "as08-14-2383~large.jpg",
+      "checksum": "sha256:1a797ca72a1d5ea25755fd118783ff00e58eff7d4b62e46acd7db1076d919c6b",
+      "focalPoint": [
+        0.5,
+        0.45
+      ],
+      "credit": "NASA / William Anders · Public domain",
+      "license": "Public domain",
+      "source": "NASA"
+    },
+    {
+      "id": "moon-footprint",
+      "category": "inspiration",
+      "name": "Footprint on the Moon · Apollo 11",
+      "image": "/images/full/moon-footprint.webp",
+      "anchor": true,
+      "thumbnail": "/images/thumbs/moon-footprint.webp",
+      "nameRo": "Urma pe Lună · Apollo 11",
+      "alt": {
+        "ro": "Urma pe Lună · Apollo 11 — NASA",
+        "en": "Footprint on the Moon · Apollo 11 — NASA"
+      },
+      "attribution": "NASA / Buzz Aldrin · Public domain",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Apollo_11_bootprint.jpg",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "changesMade": "Downloaded provider raster; archival JPEG resized to a maximum edge of 2200px with metadata stripped. Board WebP preserves the image ratio; 4:3 selector thumbnail cropped around the focal point. No generative edits.",
+      "originalFilename": "Apollo 11 bootprint.jpg",
+      "checksum": "sha256:1e62d14623728b2ba01c0b542e418e3a92700025c94d2ece41a0a1c78bc8ec87",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "credit": "NASA / Buzz Aldrin · Public domain",
+      "license": "Public domain",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "id": "wright-first-flight",
+      "category": "inspiration",
+      "name": "First Flight · Wright Brothers",
+      "image": "/images/full/wright-first-flight.webp",
+      "anchor": true,
+      "thumbnail": "/images/thumbs/wright-first-flight.webp",
+      "nameRo": "Primul zbor · Frații Wright",
+      "alt": {
+        "ro": "Primul zbor · Frații Wright — John T. Daniels",
+        "en": "First Flight · Wright Brothers — John T. Daniels"
+      },
+      "attribution": "John T. Daniels / Library of Congress · Public domain",
+      "sourceName": "Library of Congress",
+      "sourceUrl": "https://www.loc.gov/item/00652085/",
+      "licenseUrl": "https://www.loc.gov/collections/wright-brothers-negatives/about-this-collection/rights-and-access/",
+      "changesMade": "Downloaded provider raster; archival JPEG resized to a maximum edge of 2200px with metadata stripped. Board WebP preserves the image ratio; 4:3 selector thumbnail cropped around the focal point. No generative edits.",
+      "originalFilename": "00626v.jpg",
+      "checksum": "sha256:dd9619e6019ae7a81a1de1e9e64abbb2e0daa63ec8a97f5f821569636bd6ffb9",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "credit": "John T. Daniels / Library of Congress · Public domain",
+      "license": "Public domain",
+      "source": "Library of Congress"
     },
     {
       "id": "girl-pearl-earring",
@@ -260,7 +587,8 @@
         0.5,
         0.38
       ],
-      "thumbnail": "/images/thumbs/girl-pearl-earring.webp"
+      "thumbnail": "/images/thumbs/girl-pearl-earring.webp",
+      "anchor": true
     },
     {
       "id": "sunrise",
@@ -312,7 +640,8 @@
         0.5,
         0.4
       ],
-      "thumbnail": "/images/thumbs/the-kiss.webp"
+      "thumbnail": "/images/thumbs/the-kiss.webp",
+      "anchor": true
     },
     {
       "id": "the-scream",
@@ -338,7 +667,8 @@
         0.5,
         0.45
       ],
-      "thumbnail": "/images/thumbs/the-scream.webp"
+      "thumbnail": "/images/thumbs/the-scream.webp",
+      "anchor": true
     },
     {
       "id": "water-lilies",
@@ -520,7 +850,8 @@
         0.5,
         0.4
       ],
-      "thumbnail": "/images/thumbs/eiffel-tower.webp"
+      "thumbnail": "/images/thumbs/eiffel-tower.webp",
+      "anchor": true
     },
     {
       "id": "machu-picchu",
@@ -572,7 +903,8 @@
         0.5,
         0.5
       ],
-      "thumbnail": "/images/thumbs/taj-mahal.webp"
+      "thumbnail": "/images/thumbs/taj-mahal.webp",
+      "anchor": true
     },
     {
       "id": "colosseum",
@@ -624,7 +956,8 @@
         0.5,
         0.35
       ],
-      "thumbnail": "/images/thumbs/statue-of-liberty.webp"
+      "thumbnail": "/images/thumbs/statue-of-liberty.webp",
+      "anchor": true
     },
     {
       "id": "vatican",
@@ -754,7 +1087,8 @@
         0.5,
         0.45
       ],
-      "thumbnail": "/images/thumbs/golden-gate.webp"
+      "thumbnail": "/images/thumbs/golden-gate.webp",
+      "anchor": true
     },
     {
       "id": "paris-louvre",
@@ -962,7 +1296,8 @@
       ],
       "credit": "NASA/Apollo 17 crew; taken by either Harrison Schmitt or Ron Evans · Public domain",
       "license": "Public domain",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "anchor": true
     },
     {
       "id": "grand-canyon-hopi",
@@ -1040,7 +1375,8 @@
       ],
       "credit": "Calatorinlume · CC0",
       "license": "CC0",
-      "source": "Wikimedia Commons"
+      "source": "Wikimedia Commons",
+      "anchor": true
     },
     {
       "id": "sibiu-piata-mare",

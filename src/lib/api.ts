@@ -26,7 +26,7 @@ export const api = {
     if (!Array.isArray(data.categories) || !Array.isArray(data.puzzles) || !Array.isArray(data.difficulties)) throw new Error("Invalid puzzle library.");
     return data;
   },
-  createRoom(puzzleId: string, difficulty: string, name: string, options: { sessionName?: string; role?: "host" | "spectator"; contentLanguage?: "ro" | "en"; mystery?: boolean; teamMode?: "shared" | "color-teams"; teamCount?: number; customImage?: PhotoUpload } = {}) {
+  createRoom(puzzleId: string, difficulty: string, name: string, options: { sessionName?: string; role?: "host" | "spectator"; podiumEnabled?: boolean; contentLanguage?: "ro" | "en"; mystery?: boolean; teamMode?: "shared" | "color-teams"; teamCount?: number; customImage?: PhotoUpload } = {}) {
     return post<{ room: RoomView; playerId: string; credential: string }>("/api/rooms", { puzzleId, difficulty, name, ...options });
   },
   async uploadImage(file: File): Promise<PhotoUpload> {
@@ -55,6 +55,7 @@ export const api = {
   },
   resetRoom(ref: string, pid: string) { return post<{ ok: boolean }>(`/api/rooms/${encodeURIComponent(ref)}/reset`, { pid }); },
   resetPuzzle(ref: string, pid: string) { return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/puzzle-reset`, { pid }); },
+  replay(ref: string) { return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/replay`, {}); },
   async exportSession(ref: string, format: "json" | "html" = "json") {
     const response = await fetch(`/api/rooms/${encodeURIComponent(ref)}/export?format=${format}`, {
       headers: authHeaders(),

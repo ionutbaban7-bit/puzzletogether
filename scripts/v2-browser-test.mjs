@@ -39,6 +39,28 @@ try {
   await host
     .getByRole("button", { name: "Create a puzzle", exact: true })
     .click();
+  await host.getByLabel("Collection", { exact: true }).waitFor();
+  await host.locator('input[name="picture"][value="sunflowers-vangogh"]').waitFor();
+  assert.equal(await host.locator('input[name="picture"]:not([value="custom-upload"])').count(), 24);
+  await host.getByLabel("Collection", { exact: true }).selectOption("landscapes");
+  assert.equal(await host.locator('input[name="picture"][value="sunflowers-vangogh"]').count(), 0);
+  assert.equal(await host.locator('input[name="picture"]:checked').count(), 1);
+  await host.getByLabel("Collection", { exact: true }).selectOption("all");
+  assert.equal(await host.locator('input[name="picture"]:not([value="custom-upload"])').count(), 48);
+  await host.getByLabel("Collection", { exact: true }).selectOption("anchors");
+  await host.getByRole("button", { name: "ro", exact: true }).click();
+  await host.getByRole("radio", { name: "Floarea-soarelui", exact: true }).check();
+  const flower = host.locator('label').filter({ has: host.locator('input[value="sunflowers-vangogh"]') }).locator('img');
+  await flower.scrollIntoViewIfNeeded();
+  await flower.evaluate(img => img.decode());
+  assert.equal(await flower.evaluate(img => img.naturalWidth), 480);
+  await host.screenshot({ path: "test-artifacts/catalog-anchors-desktop.png", fullPage: true });
+  await host.setViewportSize({ width: 390, height: 844 });
+  assert.ok(await host.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+  await host.screenshot({ path: "test-artifacts/catalog-anchors-phone.png", fullPage: true });
+  await host.setViewportSize({ width: 1440, height: 900 });
+  await host.getByRole("button", { name: "en", exact: true }).click();
+  console.log("PASS curated icons, 48-image catalog, category selection and Romanian picture names on desktop/phone");
   await host.locator('input[name="picture"][value="mona-lisa"]').check();
   await host.getByRole("radio", { name: "12 pieces", exact: true }).check();
   await host.getByLabel("3. Your name").fill("Host");

@@ -95,7 +95,7 @@ ok(
   "in-play reset clears completion and current-board scores without changing players",
   !resetState.room.completed && resetState.room.completedAt == null && resetState.room.completedInMs == null &&
     Array.isArray(resetState.room.completionPlayers) && resetState.room.completionPlayers.length === 0 &&
-    resetState.scores.length === 0,
+    resetState.scores.length === 2 && resetState.scores.every(score => score.placed === 0 && score.rank === null),
 );
 
 // Finish the easy board, then reset once more. This proves completion data is

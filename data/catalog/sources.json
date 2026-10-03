@@ -1,7 +1,7 @@
 {
   "$schema": "./sources.schema.json",
   "version": 1,
-  "notes": "Catalog metadata for every asset served from server/public/images. Statuses: verified = source page confirmed via Wikimedia Commons API in this session (2026-09-03); unverified = provenance could not be established (no EXIF, no reverse-image search available in sandbox); flagged = concrete compliance violation found. downloadedAt is the first repository commit date (2026-09-03) — the original download date is unknown for all assets.",
+  "notes": "Catalog metadata for every asset served from server/public/images. Statuses: verified = source page confirmed via Wikimedia Commons API in this session (2026-09-03); unverified = provenance could not be established (no EXIF, no reverse-image search available in sandbox); flagged = concrete compliance violation found. downloadedAt is the first repository commit date (2026-09-03) — the original download date is unknown for all assets. New recognizable-anchor imports on 2026-10-03 have a known download date and item-specific source confirmation recorded in public-domain-anchors.json.",
   "entries": [
     {
       "asset": "/images/mona-lisa.jpg",
@@ -37,7 +37,8 @@
       "fullImage": "/images/full/mona-lisa.webp",
       "thumbnail": "/images/thumbs/mona-lisa.webp",
       "puzzleId": "mona-lisa",
-      "verifiedAt": "2026-09-24"
+      "verifiedAt": "2026-09-24",
+      "anchor": true
     },
     {
       "asset": "/images/starry-night.jpg",
@@ -73,7 +74,8 @@
       "fullImage": "/images/full/starry-night.webp",
       "thumbnail": "/images/thumbs/starry-night.webp",
       "puzzleId": "starry-night",
-      "verifiedAt": "2026-09-24"
+      "verifiedAt": "2026-09-24",
+      "anchor": true
     },
     {
       "asset": "/images/great-wave.jpg",
@@ -109,7 +111,8 @@
       "fullImage": "/images/full/great-wave.webp",
       "thumbnail": "/images/thumbs/great-wave.webp",
       "puzzleId": "great-wave",
-      "verifiedAt": "2026-09-24"
+      "verifiedAt": "2026-09-24",
+      "anchor": true
     },
     {
       "asset": "/images/girl-pearl-earring.jpg",
@@ -145,7 +148,8 @@
       "fullImage": "/images/full/girl-pearl-earring.webp",
       "thumbnail": "/images/thumbs/girl-pearl-earring.webp",
       "puzzleId": "girl-pearl-earring",
-      "verifiedAt": "2026-09-24"
+      "verifiedAt": "2026-09-24",
+      "anchor": true
     },
     {
       "asset": "/images/sunrise.jpg",
@@ -217,7 +221,8 @@
       "fullImage": "/images/full/the-kiss.webp",
       "thumbnail": "/images/thumbs/the-kiss.webp",
       "puzzleId": "the-kiss",
-      "verifiedAt": "2026-09-24"
+      "verifiedAt": "2026-09-24",
+      "anchor": true
     },
     {
       "asset": "/images/the-scream.jpg",
@@ -253,7 +258,8 @@
       "fullImage": "/images/full/the-scream.webp",
       "thumbnail": "/images/thumbs/the-scream.webp",
       "puzzleId": "the-scream",
-      "verifiedAt": "2026-09-24"
+      "verifiedAt": "2026-09-24",
+      "anchor": true
     },
     {
       "asset": "/images/water-lilies.jpg",
@@ -505,7 +511,8 @@
       "fullImage": "/images/full/eiffel-tower.webp",
       "thumbnail": "/images/thumbs/eiffel-tower.webp",
       "puzzleId": "eiffel-tower",
-      "verifiedAt": "2026-09-24"
+      "verifiedAt": "2026-09-24",
+      "anchor": true
     },
     {
       "asset": "/images/machu-picchu.jpg",
@@ -577,7 +584,8 @@
       "fullImage": "/images/full/taj-mahal.webp",
       "thumbnail": "/images/thumbs/taj-mahal.webp",
       "puzzleId": "taj-mahal",
-      "verifiedAt": "2026-09-24"
+      "verifiedAt": "2026-09-24",
+      "anchor": true
     },
     {
       "asset": "/images/colosseum.jpg",
@@ -649,7 +657,8 @@
       "fullImage": "/images/full/statue-of-liberty.webp",
       "thumbnail": "/images/thumbs/statue-of-liberty.webp",
       "puzzleId": "statue-of-liberty",
-      "verifiedAt": "2026-09-24"
+      "verifiedAt": "2026-09-24",
+      "anchor": true
     },
     {
       "asset": "/images/vatican.jpg",
@@ -829,7 +838,8 @@
       "fullImage": "/images/full/golden-gate.webp",
       "thumbnail": "/images/thumbs/golden-gate.webp",
       "puzzleId": "golden-gate",
-      "verifiedAt": "2026-09-24"
+      "verifiedAt": "2026-09-24",
+      "anchor": true
     },
     {
       "asset": "/images/paris-louvre.jpg",
@@ -1327,7 +1337,8 @@
       "width": 2598,
       "height": 2600,
       "fullImage": "/images/full/earth-apollo17.webp",
-      "thumbnail": "/images/thumbs/earth-apollo17.webp"
+      "thumbnail": "/images/thumbs/earth-apollo17.webp",
+      "anchor": true
     },
     {
       "asset": "/images/grand-canyon-hopi.jpg",
@@ -1435,7 +1446,8 @@
       "width": 1972,
       "height": 1479,
       "fullImage": "/images/full/bran-castle-photo.webp",
-      "thumbnail": "/images/thumbs/bran-castle-photo.webp"
+      "thumbnail": "/images/thumbs/bran-castle-photo.webp",
+      "anchor": true
     },
     {
       "asset": "/images/sibiu-piata-mare.jpg",
@@ -1543,6 +1555,460 @@
       "puzzleId": null,
       "width": 480,
       "height": 360
+    },
+    {
+      "asset": "/images/sunflowers-vangogh.jpg",
+      "category": "paintings",
+      "puzzleId": "sunflowers-vangogh",
+      "activityId": null,
+      "name": {
+        "ro": "Floarea-soarelui",
+        "en": "Sunflowers"
+      },
+      "alt": {
+        "ro": "Floarea-soarelui — Vincent van Gogh",
+        "en": "Sunflowers — Vincent van Gogh"
+      },
+      "creator": "Vincent van Gogh",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vincent_van_Gogh_-_Sunflowers_(1888,_National_Gallery_London).jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Vincent van Gogh · Public domain",
+      "changesMade": "Orientation normalized; resized to 2200px maximum; metadata stripped; optimized WebP board image; complete composition fitted within the 480×360 thumbnail.",
+      "downloadedAt": "2026-10-03",
+      "originalFilename": "Vincent van Gogh - Sunflowers (1888, National Gallery London).jpg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "verifiedAt": "2026-10-03",
+      "issues": [],
+      "anchor": true,
+      "width": 1730,
+      "height": 2200,
+      "checksum": "sha256:678cdcd28bb07225f9b336643bbb6ae907d00b9a0a385192c500c9e0e60cd224",
+      "fullImage": "/images/full/sunflowers-vangogh.webp",
+      "thumbnail": "/images/thumbs/sunflowers-vangogh.webp",
+      "thumbnailFit": "contain",
+      "processedThumbnailFit": "contain"
+    },
+    {
+      "asset": "/images/creation-of-adam.jpg",
+      "category": "paintings",
+      "puzzleId": "creation-of-adam",
+      "activityId": null,
+      "name": {
+        "ro": "Crearea lui Adam",
+        "en": "The Creation of Adam"
+      },
+      "alt": {
+        "ro": "Crearea lui Adam — Michelangelo",
+        "en": "The Creation of Adam — Michelangelo"
+      },
+      "creator": "Michelangelo",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Creation_of_Adam_perspective_fix.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Michelangelo · Public domain",
+      "changesMade": "Orientation normalized; resized to 2200px maximum; metadata stripped; optimized WebP board image; complete composition fitted within the 480×360 thumbnail.",
+      "downloadedAt": "2026-10-03",
+      "originalFilename": "The Creation of Adam perspective fix.jpg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "verifiedAt": "2026-10-03",
+      "issues": [],
+      "anchor": true,
+      "width": 2200,
+      "height": 1024,
+      "checksum": "sha256:ff1e26a530509ccf2b42f5c5e25203f14bc319b0e6a3053121bc9bfb73293893",
+      "fullImage": "/images/full/creation-of-adam.webp",
+      "thumbnail": "/images/thumbs/creation-of-adam.webp",
+      "thumbnailFit": "contain",
+      "processedThumbnailFit": "contain"
+    },
+    {
+      "asset": "/images/birth-of-venus.jpg",
+      "category": "paintings",
+      "puzzleId": "birth-of-venus",
+      "activityId": null,
+      "name": {
+        "ro": "Nașterea lui Venus",
+        "en": "The Birth of Venus"
+      },
+      "alt": {
+        "ro": "Nașterea lui Venus — Sandro Botticelli",
+        "en": "The Birth of Venus — Sandro Botticelli"
+      },
+      "creator": "Sandro Botticelli",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Sandro Botticelli · Public domain",
+      "changesMade": "Downloaded provider raster; archival JPEG resized to a maximum edge of 2200px with metadata stripped. Board WebP preserves the image ratio; 4:3 selector thumbnail cropped around the focal point. No generative edits.",
+      "downloadedAt": "2026-10-03",
+      "originalFilename": "Sandro Botticelli - La nascita di Venere - Google Art Project - edited.jpg",
+      "focalPoint": [
+        0.52,
+        0.48
+      ],
+      "status": "verified",
+      "verifiedAt": "2026-10-03",
+      "issues": [],
+      "anchor": true,
+      "width": 2200,
+      "height": 1382,
+      "checksum": "sha256:10145692a02cbd2c9b0c384b7820cd813a6d2b6bc7e3dc0c8173f7707133823e",
+      "fullImage": "/images/full/birth-of-venus.webp",
+      "thumbnail": "/images/thumbs/birth-of-venus.webp"
+    },
+    {
+      "asset": "/images/liberty-leading-people.jpg",
+      "category": "paintings",
+      "puzzleId": "liberty-leading-people",
+      "activityId": null,
+      "name": {
+        "ro": "Libertatea conducând poporul",
+        "en": "Liberty Leading the People"
+      },
+      "alt": {
+        "ro": "Libertatea conducând poporul — Eugène Delacroix",
+        "en": "Liberty Leading the People — Eugène Delacroix"
+      },
+      "creator": "Eugène Delacroix",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Eug%C3%A8ne_Delacroix_-_La_libert%C3%A9_guidant_le_peuple.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Eugène Delacroix · Public domain",
+      "changesMade": "Downloaded provider raster; archival JPEG resized to a maximum edge of 2200px with metadata stripped. Board WebP preserves the image ratio; 4:3 selector thumbnail cropped around the focal point. No generative edits.",
+      "downloadedAt": "2026-10-03",
+      "originalFilename": "Eugène Delacroix - La liberté guidant le peuple.jpg",
+      "focalPoint": [
+        0.53,
+        0.45
+      ],
+      "status": "verified",
+      "verifiedAt": "2026-10-03",
+      "issues": [],
+      "anchor": true,
+      "width": 2200,
+      "height": 1741,
+      "checksum": "sha256:38afe25855de573c46952f0420d59b377c59dd6e882ea71b9ccc94d91c796a2b",
+      "fullImage": "/images/full/liberty-leading-people.webp",
+      "thumbnail": "/images/thumbs/liberty-leading-people.webp"
+    },
+    {
+      "asset": "/images/american-gothic.jpg",
+      "category": "paintings",
+      "puzzleId": "american-gothic",
+      "activityId": null,
+      "name": {
+        "ro": "Gotic american",
+        "en": "American Gothic"
+      },
+      "alt": {
+        "ro": "Gotic american — Grant Wood",
+        "en": "American Gothic — Grant Wood"
+      },
+      "creator": "Grant Wood",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Grant_Wood_-_American_Gothic_-_Google_Art_Project.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Grant Wood · Public domain",
+      "changesMade": "Orientation normalized; resized to 2200px maximum; metadata stripped; optimized WebP board image; complete composition fitted within the 480×360 thumbnail.",
+      "downloadedAt": "2026-10-03",
+      "originalFilename": "Grant Wood - American Gothic - Google Art Project.jpg",
+      "focalPoint": [
+        0.5,
+        0.4
+      ],
+      "status": "verified",
+      "verifiedAt": "2026-10-03",
+      "issues": [],
+      "anchor": true,
+      "width": 1823,
+      "height": 2200,
+      "checksum": "sha256:2a5cfb7c02a12445edb89170da43c184413127fbea8c7e0f4524366ffe940601",
+      "fullImage": "/images/full/american-gothic.webp",
+      "thumbnail": "/images/thumbs/american-gothic.webp",
+      "thumbnailFit": "contain",
+      "processedThumbnailFit": "contain"
+    },
+    {
+      "asset": "/images/wanderer-sea-fog.jpg",
+      "category": "paintings",
+      "puzzleId": "wanderer-sea-fog",
+      "activityId": null,
+      "name": {
+        "ro": "Călător deasupra mării de ceață",
+        "en": "Wanderer above the Sea of Fog"
+      },
+      "alt": {
+        "ro": "Călător deasupra mării de ceață — Caspar David Friedrich",
+        "en": "Wanderer above the Sea of Fog — Caspar David Friedrich"
+      },
+      "creator": "Caspar David Friedrich",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Caspar David Friedrich · Public domain",
+      "changesMade": "Orientation normalized; resized to 2200px maximum; metadata stripped; optimized WebP board image; complete composition fitted within the 480×360 thumbnail.",
+      "downloadedAt": "2026-10-03",
+      "originalFilename": "Caspar David Friedrich - Wanderer above the sea of fog.jpg",
+      "focalPoint": [
+        0.5,
+        0.4
+      ],
+      "status": "verified",
+      "verifiedAt": "2026-10-03",
+      "issues": [],
+      "anchor": true,
+      "width": 1718,
+      "height": 2200,
+      "checksum": "sha256:6e7cf4fbc1d1441fc8dffa183dd2f7c69969499175b5e1210df6f3a2a7d42679",
+      "fullImage": "/images/full/wanderer-sea-fog.webp",
+      "thumbnail": "/images/thumbs/wanderer-sea-fog.webp",
+      "thumbnailFit": "contain",
+      "processedThumbnailFit": "contain"
+    },
+    {
+      "asset": "/images/bedroom-arles.jpg",
+      "category": "paintings",
+      "puzzleId": "bedroom-arles",
+      "activityId": null,
+      "name": {
+        "ro": "Dormitorul din Arles",
+        "en": "Bedroom in Arles"
+      },
+      "alt": {
+        "ro": "Dormitorul din Arles — Vincent van Gogh",
+        "en": "Bedroom in Arles — Vincent van Gogh"
+      },
+      "creator": "Vincent van Gogh",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vincent_van_Gogh_-_Van_Gogh%27s_Bedroom_in_Arles_-_Google_Art_Project.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "attribution": "Vincent van Gogh · Public domain",
+      "changesMade": "Downloaded provider raster; archival JPEG resized to a maximum edge of 2200px with metadata stripped. Board WebP preserves the image ratio; 4:3 selector thumbnail cropped around the focal point. No generative edits.",
+      "downloadedAt": "2026-10-03",
+      "originalFilename": "Vincent van Gogh - Van Gogh's Bedroom in Arles - Google Art Project.jpg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "verifiedAt": "2026-10-03",
+      "issues": [],
+      "anchor": true,
+      "width": 2200,
+      "height": 1706,
+      "checksum": "sha256:8b416fd2eb624b7e2667ee77d0af0de8f0ea5d0799a1bfd00c990b5729218a17",
+      "fullImage": "/images/full/bedroom-arles.webp",
+      "thumbnail": "/images/thumbs/bedroom-arles.webp"
+    },
+    {
+      "asset": "/images/red-fuji.jpg",
+      "category": "paintings",
+      "puzzleId": "red-fuji",
+      "activityId": null,
+      "name": {
+        "ro": "Fuji roșu",
+        "en": "Red Fuji"
+      },
+      "alt": {
+        "ro": "Fuji roșu — Katsushika Hokusai",
+        "en": "Red Fuji — Katsushika Hokusai"
+      },
+      "creator": "Katsushika Hokusai",
+      "sourceName": "The Metropolitan Museum of Art",
+      "sourceUrl": "https://www.metmuseum.org/art/collection/search/55736",
+      "license": "CC0 · Public domain",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "Katsushika Hokusai · CC0 · Public domain",
+      "changesMade": "Downloaded provider raster; archival JPEG resized to a maximum edge of 2200px with metadata stripped. Board WebP preserves the image ratio; 4:3 selector thumbnail cropped around the focal point. No generative edits.",
+      "downloadedAt": "2026-10-03",
+      "originalFilename": "DP141053.jpg",
+      "focalPoint": [
+        0.6,
+        0.5
+      ],
+      "status": "verified",
+      "verifiedAt": "2026-10-03",
+      "issues": [],
+      "anchor": true,
+      "width": 2200,
+      "height": 1506,
+      "checksum": "sha256:4befea6cf2eab0f28c5a3015b7813a8b149b68c64b429e32af18c4c612cf6206",
+      "fullImage": "/images/full/red-fuji.webp",
+      "thumbnail": "/images/thumbs/red-fuji.webp"
+    },
+    {
+      "asset": "/images/the-thinker.jpg",
+      "category": "inspiration",
+      "puzzleId": "the-thinker",
+      "activityId": null,
+      "name": {
+        "ro": "Gânditorul",
+        "en": "The Thinker"
+      },
+      "alt": {
+        "ro": "Gânditorul — Auguste Rodin",
+        "en": "The Thinker — Auguste Rodin"
+      },
+      "creator": "Auguste Rodin",
+      "sourceName": "The Metropolitan Museum of Art",
+      "sourceUrl": "https://www.metmuseum.org/art/collection/search/191811",
+      "license": "CC0 · Public domain",
+      "licenseClass": "cc0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "Auguste Rodin · CC0 · Public domain",
+      "changesMade": "Orientation normalized; resized to 2200px maximum; metadata stripped; optimized WebP board image; complete composition fitted within the 480×360 thumbnail.",
+      "downloadedAt": "2026-10-03",
+      "originalFilename": "DP-13618-012.jpg",
+      "focalPoint": [
+        0.5,
+        0.45
+      ],
+      "status": "verified",
+      "verifiedAt": "2026-10-03",
+      "issues": [],
+      "anchor": true,
+      "width": 1727,
+      "height": 2200,
+      "checksum": "sha256:a2758abb627ff797447b67cbac80dde62e95d10688e764a7f0f1ea9406eae8fe",
+      "fullImage": "/images/full/the-thinker.webp",
+      "thumbnail": "/images/thumbs/the-thinker.webp",
+      "thumbnailFit": "contain",
+      "processedThumbnailFit": "contain"
+    },
+    {
+      "asset": "/images/earthrise-apollo8.jpg",
+      "category": "inspiration",
+      "puzzleId": "earthrise-apollo8",
+      "activityId": null,
+      "name": {
+        "ro": "Răsăritul Pământului · Apollo 8",
+        "en": "Earthrise · Apollo 8"
+      },
+      "alt": {
+        "ro": "Răsăritul Pământului · Apollo 8 — NASA",
+        "en": "Earthrise · Apollo 8 — NASA"
+      },
+      "creator": "NASA / William Anders",
+      "sourceName": "NASA",
+      "sourceUrl": "https://www.nasa.gov/image-article/apollo-8-earthrise/",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "attribution": "NASA / William Anders · Public domain",
+      "changesMade": "Downloaded provider raster; archival JPEG resized to a maximum edge of 2200px with metadata stripped. Board WebP preserves the image ratio; 4:3 selector thumbnail cropped around the focal point. No generative edits.",
+      "downloadedAt": "2026-10-03",
+      "originalFilename": "as08-14-2383~large.jpg",
+      "focalPoint": [
+        0.5,
+        0.45
+      ],
+      "status": "verified",
+      "verifiedAt": "2026-10-03",
+      "issues": [],
+      "anchor": true,
+      "width": 1920,
+      "height": 1920,
+      "checksum": "sha256:1a797ca72a1d5ea25755fd118783ff00e58eff7d4b62e46acd7db1076d919c6b",
+      "fullImage": "/images/full/earthrise-apollo8.webp",
+      "thumbnail": "/images/thumbs/earthrise-apollo8.webp"
+    },
+    {
+      "asset": "/images/moon-footprint.jpg",
+      "category": "inspiration",
+      "puzzleId": "moon-footprint",
+      "activityId": null,
+      "name": {
+        "ro": "Urma pe Lună · Apollo 11",
+        "en": "Footprint on the Moon · Apollo 11"
+      },
+      "alt": {
+        "ro": "Urma pe Lună · Apollo 11 — NASA",
+        "en": "Footprint on the Moon · Apollo 11 — NASA"
+      },
+      "creator": "NASA / Buzz Aldrin",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Apollo_11_bootprint.jpg",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "attribution": "NASA / Buzz Aldrin · Public domain",
+      "changesMade": "Downloaded provider raster; archival JPEG resized to a maximum edge of 2200px with metadata stripped. Board WebP preserves the image ratio; 4:3 selector thumbnail cropped around the focal point. No generative edits.",
+      "downloadedAt": "2026-10-03",
+      "originalFilename": "Apollo 11 bootprint.jpg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "verifiedAt": "2026-10-03",
+      "issues": [],
+      "anchor": true,
+      "width": 2181,
+      "height": 2200,
+      "checksum": "sha256:1e62d14623728b2ba01c0b542e418e3a92700025c94d2ece41a0a1c78bc8ec87",
+      "fullImage": "/images/full/moon-footprint.webp",
+      "thumbnail": "/images/thumbs/moon-footprint.webp"
+    },
+    {
+      "asset": "/images/wright-first-flight.jpg",
+      "category": "inspiration",
+      "puzzleId": "wright-first-flight",
+      "activityId": null,
+      "name": {
+        "ro": "Primul zbor · Frații Wright",
+        "en": "First Flight · Wright Brothers"
+      },
+      "alt": {
+        "ro": "Primul zbor · Frații Wright — John T. Daniels",
+        "en": "First Flight · Wright Brothers — John T. Daniels"
+      },
+      "creator": "John T. Daniels / Library of Congress",
+      "sourceName": "Library of Congress",
+      "sourceUrl": "https://www.loc.gov/item/00652085/",
+      "license": "Public domain",
+      "licenseClass": "pd",
+      "licenseUrl": "https://www.loc.gov/collections/wright-brothers-negatives/about-this-collection/rights-and-access/",
+      "attribution": "John T. Daniels / Library of Congress · Public domain",
+      "changesMade": "Downloaded provider raster; archival JPEG resized to a maximum edge of 2200px with metadata stripped. Board WebP preserves the image ratio; 4:3 selector thumbnail cropped around the focal point. No generative edits.",
+      "downloadedAt": "2026-10-03",
+      "originalFilename": "00626v.jpg",
+      "focalPoint": [
+        0.5,
+        0.5
+      ],
+      "status": "verified",
+      "verifiedAt": "2026-10-03",
+      "issues": [],
+      "anchor": true,
+      "width": 1024,
+      "height": 738,
+      "checksum": "sha256:dd9619e6019ae7a81a1de1e9e64abbb2e0daa63ec8a97f5f821569636bd6ffb9",
+      "fullImage": "/images/full/wright-first-flight.webp",
+      "thumbnail": "/images/thumbs/wright-first-flight.webp"
     }
   ],
   "stage5ImportedAt": "2026-09-03",
@@ -1558,5 +2024,6 @@
       "reason": "Repeated shared loops/polygons/grid/arch recipe across nominally distinct abstracts."
     }
   },
-  "curatedPublicImagesReviewedAt": "2026-09-24"
+  "curatedPublicImagesReviewedAt": "2026-09-24",
+  "publicDomainAnchorsReviewedAt": "2026-10-03"
 }

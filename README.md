@@ -10,7 +10,10 @@ A standalone collaborative jigsaw for family, friends and teams. Choose a pictur
 - 12, 25, 64 and 100 pieces; 144 and 192 under advanced options.
 - Phone and desktop controls, zoom, pan, reference image and optional piece sorting.
 - Keyboard/tap alternative: select a piece, choose a row and column, confirm.
-- Shared lobby/start, optional observer host, team completion and replay with the same group.
+- Up to 25 players plus one observing facilitator; a playing host uses one of the 25 player seats.
+- Shared progress and team time, facilitator start/pause/resume, team completion and replay with a fresh clock and the same group.
+- Optional final podium, chosen before play: one correctly placed piece = one point, equal scores share a rank. The observer is excluded; disconnected players keep their round contributions.
+- 48 catalog images, with 24 familiar cultural/historical anchors and category filters. Twelve new public-domain/CC0 additions have documented source checks; picture names are bilingual. [Catalog choices and sources](docs/PUBLIC_DOMAIN_ANCHORS.md).
 - RO/EN. Personal JPG/PNG/WebP photos, without accounts; private to the invited group and automatically deleted one hour after upload. Choosing another image or closing the room deletes the photo sooner.
 
 V1 coaching, CARTOGRAF, chat and letter/sentence activities are not available in V2. Their source is preserved on `archive/v1-before-focused-jigsaw`. Some unreachable legacy server helpers remain for later internal cleanup; they are not enabled product features.
@@ -31,8 +34,11 @@ npm run build
 npm run test:render-contract
 npm run test:image-scaling
 npm run catalog:audit
+npm run test:catalog-serve
 npm run test:security
 npm run test:protocol
+npm run test:gamification
+npm run test:load
 npm run test:restart
 npm run test:photos
 npm run test:e2e
@@ -54,4 +60,4 @@ Set `PUBLIC_ORIGIN` to the exact public origin when deploying. Set `TRUST_PROXY=
 
 Inactive rooms expire after 24 hours; empty rooms expire after 30 minutes. The project license remains the repository's existing [LICENSE](LICENSE); catalog credits do not grant rights beyond each image's stated license.
 
-Implementation and evidence: [V2 execution plan](docs/V2_EXECUTION_PLAN.md). Hosting and release checks: [V2 release notes](docs/V2_RELEASE_NOTES.md).
+Product research and scoring rules: [Gamification decisions](docs/GAMIFICATION_DECISIONS.md). Implementation and evidence: [V2 execution plan](docs/V2_EXECUTION_PLAN.md). Hosting and release checks: [V2 release notes](docs/V2_RELEASE_NOTES.md).

@@ -7,7 +7,7 @@
  *   2. move the original out of the public bundle (data/catalog/originals/)
  *   3. generate optimized WebP full images (server/public/images/full/)
  *      and 480x360 WebP thumbnails (server/public/images/thumbs/),
- *      cropping thumbnails around the entry's focal point
+ *      cropping around the focal point or fitting the whole composition
  *   4. merge full catalog metadata into shared/puzzles.json
  *      (name.ro/en, alt, creator, source, license, attribution,
  *       changesMade, checksum, width, height, thumbnail, focalPoint)
@@ -122,6 +122,7 @@ for (const e of catalog.entries) {
   const upToDate =
     !force &&
     recorded === `sha256:${hash}` &&
+    (e.thumbnailFit || "crop") === (e.processedThumbnailFit || "crop") &&
     fs.existsSync(fullDest) &&
     fs.statSync(fullDest).size > 0 &&
     fs.existsSync(thumbDest) &&
@@ -142,7 +143,7 @@ for (const e of catalog.entries) {
         "-quality", String(FULL_Q),
         fullDest,
       ], fullDest);
-      // 3) thumbnail: crop a 4:3 window around the focal point, then downscale
+      // 3) thumbnail: preserve a selected composition or crop around its focal point
       const [fx, fy] = Array.isArray(e.focalPoint) ? e.focalPoint : [0.5, 0.5];
       const imgW = dims.w;
       const imgH = dims.h;
@@ -152,7 +153,14 @@ for (const e of catalog.entries) {
       else { cw = imgW; ch = Math.min(imgH, Math.round(imgW / targetAspect)); }
       const x0 = Math.max(0, Math.min(imgW - cw, Math.round(imgW * fx - cw / 2)));
       const y0 = Math.max(0, Math.min(imgH - ch, Math.round(imgH * fy - ch / 2)));
-      convert([
+      convert(e.thumbnailFit === "contain" ? [
+        sourceFile,
+        "-resize", `${THUMB_W}x${THUMB_H}`,
+        "-background", "#f3f0e7", "-gravity", "center",
+        "-extent", `${THUMB_W}x${THUMB_H}`,
+        "-quality", String(THUMB_Q),
+        thumbDest,
+      ] : [
         sourceFile,
         "-crop", `${cw}x${ch}+${x0}+${y0}`,
         "+repage",
@@ -165,6 +173,7 @@ for (const e of catalog.entries) {
       e.checksum = `sha256:${hash}`;
       e.fullImage = `/images/full/${id}.webp`;
       e.thumbnail = `/images/thumbs/${id}.webp`;
+      if (e.thumbnailFit || e.processedThumbnailFit) e.processedThumbnailFit = e.thumbnailFit || "crop";
       summary.converted++;
       log(`  ✓ conv  ${e.asset} → full/${id}.webp + thumbs/${id}.webp  ${dims ? dims.w + "x" + dims.h : "?"}  ${hash.slice(0, 12)}…`);
     } catch (err) {
@@ -205,6 +214,7 @@ for (const p of puzzles.puzzles) {
   // leave cards blank or late on slower/mobile connections.
   p.thumbnail = e.thumbnail || e.fullImage || p.image;
   p.nameRo = e.name.ro;
+  if (e.anchor) p.anchor = true;
   p.alt = e.alt;
   p.attribution = e.attribution;
   p.sourceName = e.sourceName;

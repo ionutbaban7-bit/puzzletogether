@@ -1,0 +1,286 @@
+{
+  "reviewedAt": "2026-10-03",
+  "entries": [
+    {
+      "puzzleId": "sunflowers-vangogh",
+      "nameRo": "Floarea-soarelui",
+      "anchorMeaning": "Bucurie și vitalitate",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vincent_van_Gogh_-_Sunflowers_(1888,_National_Gallery_London).jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Vincent_van_Gogh_-_Sunflowers_%281888%2C_National_Gallery_London%29.jpg/3840px-Vincent_van_Gogh_-_Sunflowers_%281888%2C_National_Gallery_London%29.jpg",
+      "verifiedAt": "2026-10-03",
+      "license": "Public domain",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "archivalSize": [
+        1730,
+        2200
+      ],
+      "archivalSha256": "678cdcd28bb07225f9b336643bbb6ae907d00b9a0a385192c500c9e0e60cd224",
+      "confirmation": {
+        "provider": "Wikimedia Commons",
+        "copyrighted": "False",
+        "licenseShortName": "Public domain",
+        "sourceSize": [
+          4719,
+          6000
+        ]
+      }
+    },
+    {
+      "puzzleId": "creation-of-adam",
+      "nameRo": "Crearea lui Adam",
+      "anchorMeaning": "Legătură și creație",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Creation_of_Adam_perspective_fix.jpg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/2/29/The_Creation_of_Adam_perspective_fix.jpg",
+      "verifiedAt": "2026-10-03",
+      "license": "Public domain",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "archivalSize": [
+        2200,
+        1024
+      ],
+      "archivalSha256": "ff1e26a530509ccf2b42f5c5e25203f14bc319b0e6a3053121bc9bfb73293893",
+      "confirmation": {
+        "provider": "Wikimedia Commons",
+        "copyrighted": "False",
+        "licenseShortName": "Public domain",
+        "sourceSize": [
+          3572,
+          1663
+        ]
+      }
+    },
+    {
+      "puzzleId": "birth-of-venus",
+      "nameRo": "Nașterea lui Venus",
+      "anchorMeaning": "Frumusețe și început",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg/3840px-Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg",
+      "verifiedAt": "2026-10-03",
+      "license": "Public domain",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "archivalSize": [
+        2200,
+        1382
+      ],
+      "archivalSha256": "10145692a02cbd2c9b0c384b7820cd813a6d2b6bc7e3dc0c8173f7707133823e",
+      "confirmation": {
+        "provider": "Wikimedia Commons",
+        "copyrighted": "False",
+        "licenseShortName": "Public domain",
+        "sourceSize": [
+          30000,
+          18840
+        ]
+      }
+    },
+    {
+      "puzzleId": "liberty-leading-people",
+      "nameRo": "Libertatea conducând poporul",
+      "anchorMeaning": "Libertate și curaj",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Eug%C3%A8ne_Delacroix_-_La_libert%C3%A9_guidant_le_peuple.jpg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Eug%C3%A8ne_Delacroix_-_La_libert%C3%A9_guidant_le_peuple.jpg",
+      "verifiedAt": "2026-10-03",
+      "license": "Public domain",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "archivalSize": [
+        2200,
+        1741
+      ],
+      "archivalSha256": "38afe25855de573c46952f0420d59b377c59dd6e882ea71b9ccc94d91c796a2b",
+      "confirmation": {
+        "provider": "Wikimedia Commons",
+        "copyrighted": "False",
+        "licenseShortName": "Public domain",
+        "sourceSize": [
+          3133,
+          2480
+        ]
+      }
+    },
+    {
+      "puzzleId": "american-gothic",
+      "nameRo": "Gotic american",
+      "anchorMeaning": "Identitate și rădăcini",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Grant_Wood_-_American_Gothic_-_Google_Art_Project.jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Grant_Wood_-_American_Gothic_-_Google_Art_Project.jpg/3840px-Grant_Wood_-_American_Gothic_-_Google_Art_Project.jpg",
+      "verifiedAt": "2026-10-03",
+      "license": "Public domain",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "archivalSize": [
+        1823,
+        2200
+      ],
+      "archivalSha256": "2a5cfb7c02a12445edb89170da43c184413127fbea8c7e0f4524366ffe940601",
+      "confirmation": {
+        "provider": "Wikimedia Commons",
+        "copyrighted": "False",
+        "licenseShortName": "Public domain",
+        "sourceSize": [
+          4973,
+          6001
+        ],
+        "rightsBasis": "Public domain in the US since 1958 due to non-renewal, confirmed by Duke Center for the Study of the Public Domain and its linked AIC archive. Author died 1942; life-plus-80 term expired. AIC API is_public_domain remains false; no AIC CC0 claim.",
+        "rightsSource": "https://cspd.law.duke.edu/publicdomainday/2026"
+      }
+    },
+    {
+      "puzzleId": "wanderer-sea-fog",
+      "nameRo": "Călător deasupra mării de ceață",
+      "anchorMeaning": "Perspectivă și necunoscut",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b9/Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg",
+      "verifiedAt": "2026-10-03",
+      "license": "Public domain",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "archivalSize": [
+        1718,
+        2200
+      ],
+      "archivalSha256": "6e7cf4fbc1d1441fc8dffa183dd2f7c69969499175b5e1210df6f3a2a7d42679",
+      "confirmation": {
+        "provider": "Wikimedia Commons",
+        "copyrighted": "False",
+        "licenseShortName": "Public domain",
+        "sourceSize": [
+          2327,
+          2980
+        ]
+      }
+    },
+    {
+      "puzzleId": "bedroom-arles",
+      "nameRo": "Dormitorul din Arles",
+      "anchorMeaning": "Acasă și odihnă",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vincent_van_Gogh_-_Van_Gogh%27s_Bedroom_in_Arles_-_Google_Art_Project.jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/77/Vincent_van_Gogh_-_Van_Gogh%27s_Bedroom_in_Arles_-_Google_Art_Project.jpg/3840px-Vincent_van_Gogh_-_Van_Gogh%27s_Bedroom_in_Arles_-_Google_Art_Project.jpg",
+      "verifiedAt": "2026-10-03",
+      "license": "Public domain",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "archivalSize": [
+        2200,
+        1706
+      ],
+      "archivalSha256": "8b416fd2eb624b7e2667ee77d0af0de8f0ea5d0799a1bfd00c990b5729218a17",
+      "confirmation": {
+        "provider": "Wikimedia Commons",
+        "copyrighted": "False",
+        "licenseShortName": "Public domain",
+        "sourceSize": [
+          4056,
+          3144
+        ]
+      }
+    },
+    {
+      "puzzleId": "red-fuji",
+      "nameRo": "Fuji roșu",
+      "anchorMeaning": "Natură și stabilitate",
+      "sourceUrl": "https://www.metmuseum.org/art/collection/search/55736",
+      "downloadUrl": "https://images.metmuseum.org/CRDImages/as/original/DP141053.jpg",
+      "verifiedAt": "2026-10-03",
+      "license": "CC0 · Public domain",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "archivalSize": [
+        2200,
+        1506
+      ],
+      "archivalSha256": "4befea6cf2eab0f28c5a3015b7813a8b149b68c64b429e32af18c4c612cf6206",
+      "confirmation": {
+        "provider": "The Metropolitan Museum of Art",
+        "objectId": 55736,
+        "isPublicDomain": true,
+        "openAccessPolicy": "https://www.metmuseum.org/hubs/open-access"
+      }
+    },
+    {
+      "puzzleId": "the-thinker",
+      "nameRo": "Gânditorul",
+      "anchorMeaning": "Reflecție",
+      "sourceUrl": "https://www.metmuseum.org/art/collection/search/191811",
+      "downloadUrl": "https://images.metmuseum.org/CRDImages/es/original/DP-13618-012.jpg",
+      "verifiedAt": "2026-10-03",
+      "license": "CC0 · Public domain",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "archivalSize": [
+        1727,
+        2200
+      ],
+      "archivalSha256": "a2758abb627ff797447b67cbac80dde62e95d10688e764a7f0f1ea9406eae8fe",
+      "confirmation": {
+        "provider": "The Metropolitan Museum of Art",
+        "objectId": 191811,
+        "isPublicDomain": true,
+        "openAccessPolicy": "https://www.metmuseum.org/hubs/open-access"
+      }
+    },
+    {
+      "puzzleId": "earthrise-apollo8",
+      "nameRo": "Răsăritul Pământului · Apollo 8",
+      "anchorMeaning": "Perspectivă și planeta comună",
+      "sourceUrl": "https://www.nasa.gov/image-article/apollo-8-earthrise/",
+      "downloadUrl": "https://images-assets.nasa.gov/image/as08-14-2383/as08-14-2383~large.jpg",
+      "verifiedAt": "2026-10-03",
+      "license": "Public domain",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "archivalSize": [
+        1920,
+        1920
+      ],
+      "archivalSha256": "1a797ca72a1d5ea25755fd118783ff00e58eff7d4b62e46acd7db1076d919c6b",
+      "confirmation": {
+        "provider": "NASA",
+        "nasaId": "as08-14-2383",
+        "createdAt": "1968-12-24T00:00:00Z",
+        "rightsBasis": "Apollo 8 photograph made by NASA astronaut in the course of official US government duties; no logo, endorsement or identifiable person depicted."
+      }
+    },
+    {
+      "puzzleId": "moon-footprint",
+      "nameRo": "Urma pe Lună · Apollo 11",
+      "anchorMeaning": "Primul pas și explorare",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Apollo_11_bootprint.jpg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/8/89/Apollo_11_bootprint.jpg",
+      "verifiedAt": "2026-10-03",
+      "license": "Public domain",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "archivalSize": [
+        2181,
+        2200
+      ],
+      "archivalSha256": "1e62d14623728b2ba01c0b542e418e3a92700025c94d2ece41a0a1c78bc8ec87",
+      "confirmation": {
+        "provider": "Wikimedia Commons",
+        "copyrighted": "False",
+        "licenseShortName": "Public domain",
+        "sourceSize": [
+          2349,
+          2369
+        ]
+      }
+    },
+    {
+      "puzzleId": "wright-first-flight",
+      "nameRo": "Primul zbor · Frații Wright",
+      "anchorMeaning": "Îndrăzneală și inovație",
+      "sourceUrl": "https://www.loc.gov/item/00652085/",
+      "downloadUrl": "https://tile.loc.gov/storage-services/service/pnp/ppprs/00600/00626v.jpg",
+      "verifiedAt": "2026-10-03",
+      "license": "Public domain",
+      "licenseUrl": "https://www.loc.gov/collections/wright-brothers-negatives/about-this-collection/rights-and-access/",
+      "archivalSize": [
+        1024,
+        738
+      ],
+      "archivalSha256": "dd9619e6019ae7a81a1de1e9e64abbb2e0daa63ec8a97f5f821569636bd6ffb9",
+      "confirmation": {
+        "provider": "Library of Congress",
+        "rightsInformation": "No known restrictions on publication.",
+        "createdPublished": [
+          "[1903 Dec. 17]"
+        ],
+        "rightsBasis": "1903 photograph by John T. Daniels (died 1948): historical published work; life-plus-70 term also expired. Original photograph held by Library of Congress.",
+        "rightsSource": "https://commons.wikimedia.org/wiki/File:First_flight2.jpg"
+      }
+    }
+  ]
+}

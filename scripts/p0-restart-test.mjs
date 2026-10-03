@@ -80,7 +80,7 @@ async function placeBeforeRestart(roomId, playerId, credential) {
 }
 try {
   await spawnServer();
-  const created = await post("/api/rooms", { puzzleId: "starry-night", difficulty: "easy", name: "RestoreHost" });
+  const created = await post("/api/rooms", { puzzleId: "starry-night", difficulty: "easy", name: "RestoreHost", podiumEnabled: true });
   assert.equal(created.status, 200);
   assert.match(created.body.credential || "", /^[A-Za-z0-9_-]{43}$/);
   const roomId = created.body.room.id;
@@ -97,6 +97,8 @@ try {
   const raw = JSON.parse(snapshot)[0];
   assert.equal(raw.id, roomId);
   assert.equal(raw.knownPlayers.length, 2);
+  assert.equal(raw.podiumEnabled, true);
+  assert.deepEqual(raw.roundPlayers.map(([pid, p]) => [pid, p.name]), [[playerId, "RestoreHost"]]);
   assert.ok(raw.knownPlayers.every(([pid, p]) => /^[a-f0-9]{64}$/.test(p.authHash)));
 
   await spawnServer();
@@ -107,6 +109,8 @@ try {
 
   const restored = await websocketHello(roomId, playerId, credential);
   assert.equal(restored.pieces[0].locked, true, "Placed piece survives restart");
+  assert.equal(restored.room.podiumEnabled, true, "Chosen mode survives restart");
+  assert.deepEqual(restored.scores.map(s => [s.playerId, s.placed, s.rank]), [[playerId, 1, 1]], "Contribution and rank survive restart");
   assert.equal(restored.room.inviteToken, created.body.room.inviteToken, "Invitation survives restart");
   const withoutAuth = await post(`/api/rooms/${roomId}/reset`, { pid: playerId });
   assert.equal(withoutAuth.status, 403);

@@ -4,6 +4,10 @@ This branch changes PuzzleTogether from a workshop activity collection into a fo
 
 The client now offers one-link admission, short create/join flows, 12-piece games, team completion and replay. Keyboard/tap controls are an alternative to dragging. The existing jigsaw renderer, geometry and authoritative piece claims are retained.
 
+Core gamification now supports 25 players plus a separate observing facilitator, shared progress/time and direct pause/resume controls. The host can opt into a final podium before play. Only newly locked pieces earn points; ties share a place, observers are excluded and offline contributions remain. Replay starts a new clock and scores in the same room. [Research and rules](GAMIFICATION_DECISIONS.md) explain the choices.
+
+The active catalog now has 48 images, with a 24-image familiar-icons collection and category filters. Twelve new public-domain/CC0 images include Sunflowers, The Creation of Adam, The Thinker, Earthrise and the Wright brothers' first flight. Sources and rights evidence are documented, portrait/panoramic thumbnails preserve selected compositions, and picture names follow the RO/EN setting. [Catalog details](PUBLIC_DOMAIN_ANCHORS.md).
+
 Security uses separate player credentials and admission capabilities. Kick/session rotation invalidate compromised access; websocket replacement cannot leave a stale connection authorized. API caching and cross-origin requests are constrained. Personal photos use one-use attachment credentials and separate private image capabilities; anonymous room metadata omits their URLs. Photos expire exactly one hour after upload, including after restart, and are removed sooner on another image or room closure. Expiry returns the same group to the lobby with a library image.
 
 ## Before production
@@ -12,7 +16,7 @@ Security uses separate player credentials and admission capabilities. Kick/sessi
 2. Confirm the actual Render service branch and auto-deploy setting. This branch must not auto-deploy to the production service.
 3. Mount persistent storage and set `DATA_DIR` to its writable directory. One instance only. Set `PUBLIC_ORIGIN` to the service's exact origin, including `https://`; verify custom-domain routing and proxy behavior before enabling `TRUST_PROXY=1`.
 4. Start a two-player game, place pieces, redeploy, refresh both clients and verify progress, membership and host controls. Record the result. An ephemeral plan needs an explicit session-loss limitation instead of a durability promise.
-5. Run physical iPhone/Android and assistive-technology checks and small user pilots. Emulated phone events are already tested, but do not replace physical device testing.
+5. Run physical iPhone/Android and assistive-technology checks and small user pilots, then a 25-person session on different networks. Local 25-player protocol load and emulated phone events are already tested, but do not establish real hosting latency or replace physical device testing.
 
 ## Rollback
 

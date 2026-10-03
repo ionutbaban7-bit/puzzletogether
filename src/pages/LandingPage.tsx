@@ -38,8 +38,8 @@ export default function LandingPage() {
         </div>
         <p className="mt-6 text-sm text-ink-500">
           {ro
-            ? "Fără cont · Telefon și desktop"
-            : "No account · Phone and desktop"}
+            ? "Fără cont · Până la 25 de jucători · Telefon și desktop"
+            : "No account · Up to 25 players · Phone and desktop"}
         </p>
       </section>
       <footer className="mx-auto max-w-3xl border-t border-ink-200 py-6 text-sm text-ink-600">

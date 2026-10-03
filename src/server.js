@@ -42,7 +42,8 @@ const IS_PROD = process.env.NODE_ENV === "production";
 const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || "0.0.0.0";
 const PROTOCOL_VERSION = 2;
-const MAX_PLAYERS = 20;
+const MAX_PLAYERS = 25;
+const MAX_OBSERVERS = 1;
 const ROOM_TTL_MS = 24 * 60 * 60 * 1000;
 const EMPTY_ROOM_TTL_MS = 30 * 60 * 1000;
 const PENDING_TTL_MS = 60 * 1000;
@@ -636,6 +637,28 @@ function findRoom(ref) {
   return rooms.get(key) || rooms.get(codeIndex.get(key.toUpperCase())) || null;
 }
 
+// Reservations count towards capacity; an observing host has a separate seat.
+function roomIsFull(room, role = "player", exceptId = null) {
+  const reserved = new Map([...room.pending].filter(([, p]) => p.expiresAt > Date.now()));
+  for (const [id, player] of room.players) reserved.set(id, player);
+  reserved.delete(exceptId);
+  const members = [...reserved.values()];
+  return role === "spectator"
+    ? members.filter(p => p.role === "spectator").length >= MAX_OBSERVERS
+    : members.filter(p => p.role !== "spectator").length >= MAX_PLAYERS;
+}
+
+function trackRoundPlayer(room, id) {
+  const player = room.players.get(id) || room.knownPlayers.get(id);
+  if (player && player.role !== "spectator" && !room.roundPlayers.has(id))
+    room.roundPlayers.set(id, { name: player.name, color: player.color || "#94a3b8" });
+}
+
+function beginRoundParticipants(room) {
+  room.roundPlayers.clear();
+  for (const id of room.players.keys()) trackRoundPlayer(room, id);
+}
+
 function hashString(s) {
   let h = 0;
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
@@ -721,6 +744,9 @@ function roomView(room) {
     canvasVersion: room.canvas?.version || undefined,
     retiredCatalog: !!room.retiredCatalog,
     maxPlayers: MAX_PLAYERS,
+    maxObservers: MAX_OBSERVERS,
+    podiumEnabled: !!room.podiumEnabled,
+    elapsedMs: elapsedMs(room),
     createdAt: room.createdAt,
     startedAt: room.startedAt,
     pausedAt: room.pausedAt,
@@ -858,10 +884,12 @@ function activePlayerList(room) {
 }
 
 function scoreList(room) {
-  return [...room.scores.entries()].map(([pid, placed]) => {
-    const p = room.players.get(pid) || room.knownPlayers.get(pid) || {};
-    return { playerId: pid, name: p.name || "Player", color: p.color || "#94a3b8", placed };
-  }).sort((a, b) => b.placed - a.placed || a.name.localeCompare(b.name));
+  const ids = new Set([...room.roundPlayers.keys(), ...room.scores.keys()]);
+  const rows = [...ids].map(pid => {
+    const p = room.roundPlayers.get(pid) || room.knownPlayers.get(pid) || {};
+    return { playerId: pid, name: p.name || "Player", color: p.color || "#94a3b8", placed: room.scores.get(pid) || 0 };
+  }).sort((a, b) => b.placed - a.placed || a.name.localeCompare(b.name) || a.playerId.localeCompare(b.playerId));
+  return rows.map(row => ({ ...row, rank: row.placed ? rows.findIndex(other => other.placed === row.placed) + 1 : null }));
 }
 
 function computeProfileCode(activity, answers) {
@@ -1185,6 +1213,7 @@ function resetWorkshopState(room, { lobby = true } = {}) {
   room.pauseRequested = false;
   room.ratings.clear();
   room.scores.clear();
+  room.roundPlayers.clear();
   if (room.canvas) resetCanvasState(room);
   room.completed = false;
   room.completedAt = null;
@@ -1255,6 +1284,7 @@ function createRoom(config, creator = {}) {
     inviteExpiresAt: now + ROOM_TTL_MS,
     sessionName: String(creator.sessionName || "").trim().slice(0, 80) || "Team session",
     hostId: null,
+    podiumEnabled: config.podiumEnabled === true,
     teamMode: normalizeTeamMode(config.teamMode),
     teams: buildTeams(config.teamMode, config.teamCount),
     config: null,
@@ -1266,6 +1296,7 @@ function createRoom(config, creator = {}) {
     pieces: [],
     ratings: new Map(),
     scores: new Map(),
+    roundPlayers: new Map(),
     players: new Map(),
     knownPlayers: new Map(),
     pending: new Map(),
@@ -1331,7 +1362,7 @@ function persistableRoom(room) {
       teamInventory: room.canvas.teamInventory ? [...room.canvas.teamInventory.entries()].map(([teamId, inventory]) => [teamId, inventory ? [...inventory] : null]) : null,
       jokers: room.canvas.jokers ? [...room.canvas.jokers.entries()] : null,
     } : null,
-    ratings: [...room.ratings], scores: [...room.scores],
+    ratings: [...room.ratings], scores: [...room.scores], roundPlayers: [...room.roundPlayers], podiumEnabled: !!room.podiumEnabled,
     // Auth verifiers survive a process restart; the browser retains its secret.
     knownPlayers: [...room.knownPlayers], createdAt: room.createdAt, startedAt: room.startedAt,
     pausedAt: room.pausedAt, pausedDurationMs: room.pausedDurationMs, timerEndsAt: room.timerEndsAt,
@@ -1452,6 +1483,8 @@ function restoreSnapshots() {
       room.teamMode = normalizeTeamMode(raw.teamMode);
       room.teams = Array.isArray(raw.teams) ? raw.teams : [];
       room.knownPlayers = new Map(raw.knownPlayers || []);
+      room.podiumEnabled = raw.podiumEnabled === true;
+      room.roundPlayers = new Map(raw.roundPlayers || []);
       ensureTeamState(room);
       room.pieces = ((!expiredPhoto && raw.pieces) || room.pieces).map((p) => ({ ...p, heldBy: null, heldAt: null, drag: false }));
       if (room.canvas && raw.canvas) {
@@ -1622,7 +1655,7 @@ function checkCompletion(room) {
     room.completedAt = Date.now();
     room.completedInMs = elapsedMs(room, room.completedAt);
     room.boardLocked = true;
-    room.completionPlayers = activePlayerList(room).filter((p) => p.role !== "spectator").map((p) => p.name);
+    room.completionPlayers = [...room.roundPlayers.values()].map(p => p.name);
     broadcast(room, { t: "completion", room: roomView(room), players: room.completionPlayers, scores: scoreList(room) });
     logEvent("complete", room, { durationMs: room.completedInMs });
     touch(room);
@@ -1773,6 +1806,8 @@ function applyControl(room, playerId, msg, ws) {
       break;
     }
     case "start":
+      if (room.stage !== "lobby" || room.completed) return send(ws, { t: "error", code: "already_started", message: "This round is already started." });
+      beginRoundParticipants(room);
       ensureTeamState(room);
       if (room.teamMode === TEAM_MODE_COLOR) {
         const unassigned = [...room.players.values()].filter((player) => player.role !== "spectator" && !player.teamId);
@@ -1791,6 +1826,7 @@ function applyControl(room, playerId, msg, ws) {
       break;
     }
     case "lock": {
+      if (room.stage !== "play" || room.completed) return send(ws, { t: "error", code: "not_playing", message: "Pause is available during play." });
       const next = msg.locked !== false;
       room.boardLocked = next;
       if (next && !room.pausedAt && room.stage === "play") room.pausedAt = now;
@@ -2594,12 +2630,13 @@ app.get("/api/puzzles", (_req, res) => res.json({
   difficulties: DIFFICULTIES,
   puzzles: PUZZLES.map((p) => ({ ...p })),
   maxPlayers: MAX_PLAYERS,
+  maxObservers: MAX_OBSERVERS,
 }));
 app.get("/api/coaching", (_req, res) => res.status(410).json({ error: "Activity archived." }));
 app.get("/api/emotions", (_req, res) => res.status(410).json({ error: "Activity archived." }));
 
 app.post("/api/rooms", rateLimit("create", 12, 60 * 60_000), (req, res) => {
-  const { puzzleId, difficulty, name, sessionName, role, contentLanguage, mystery, customImage, teamMode, teamCount } = req.body || {};
+  const { puzzleId, difficulty, name, sessionName, role, podiumEnabled, contentLanguage, mystery, customImage, teamMode, teamCount } = req.body || {};
   if (typeof name !== "string" || !name.trim()) return res.status(400).json({ error: "A display name is required." });
   try {
     const ci = customImage ? validatedCustomPhoto(customImage) : null;
@@ -2611,6 +2648,7 @@ app.post("/api/rooms", rateLimit("create", 12, 60 * 60_000), (req, res) => {
         mystery: !!mystery,
         teamMode: normalizeTeamMode(teamMode),
         teamCount: normalizeTeamCount(teamCount),
+        podiumEnabled,
         customImage: ci || undefined,
       },
       { sessionName },
@@ -2642,6 +2680,8 @@ app.post("/api/rooms/:id/join", rateLimit("join", 60, 10 * 60_000), (req, res) =
     if (!playerAuthenticated(room, pid, bearerCredential(req))) {
       return res.status(403).json({ error: "Your saved session is no longer valid. Rejoin with the room code.", code: "session_invalid" });
     }
+    const role = room.knownPlayers.get(pid)?.role;
+    if (roomIsFull(room, role, pid)) return res.status(409).json({ error: "This room is full (25 players and one observer).", code: "room_full" });
     res.setHeader("Cache-Control", "no-store");
     return res.json({ room: roomView(room), playerId: pid, returning: true });
   }
@@ -2652,7 +2692,7 @@ app.post("/api/rooms/:id/join", rateLimit("join", 60, 10 * 60_000), (req, res) =
   if (!validInvite && !refIsCode && providedCode !== room.code) {
     return res.status(403).json({ error: providedCode ? "That access code is incorrect." : "This room requires an access code.", code: providedCode ? "bad_code" : "code_required" });
   }
-  if (room.knownPlayers.size >= 200 || room.players.size + room.pending.size >= MAX_PLAYERS) return res.status(409).json({ error: `This room is full (${MAX_PLAYERS} players max).`, code: "room_full" });
+  if (room.knownPlayers.size >= 200 || roomIsFull(room)) return res.status(409).json({ error: `This room is full (${MAX_PLAYERS} players max).`, code: "room_full" });
 
   const playerId = crypto.randomUUID();
   const { credential, authHash } = newPlayerCredential();
@@ -2770,6 +2810,7 @@ app.post("/api/rooms/:id/puzzle-reset", (req, res) => {
   room.completedAt = null;
   room.completedInMs = null;
   room.completionPlayers = [];
+  beginRoundParticipants(room);
   // Explicitly preserve all timer fields in case this endpoint is maintained
   // near future reset code that changes scatterPieces.
   room.startedAt = startedAt;
@@ -2786,6 +2827,19 @@ app.post("/api/rooms/:id/puzzle-reset", (req, res) => {
     scores: scoreList(room),
   });
   logEvent("puzzle_reset", room, { stage: room.stage });
+  res.json({ ok: true, room: roomView(room) });
+});
+
+app.post("/api/rooms/:id/replay", (req, res) => {
+  const room = findRoom(req.params.id);
+  if (!room) return res.status(404).json({ error: "Room not found.", code: "room_missing" });
+  if (!hostAuthorized(room, req)) return res.status(403).json({ error: "Only the host can replay.", code: "not_host" });
+  if (!room.completed || room.stage !== "play") return res.status(409).json({ error: "Finish this round before replaying.", code: "not_complete" });
+  resetWorkshopState(room, { lobby: false });
+  scatterPieces(room);
+  beginRoundParticipants(room);
+  touch(room);
+  broadcast(room, { t: "puzzleReset", room: roomView(room), puzzle: puzzleView(room), pieces: room.pieces.map(serializePiece), scores: scoreList(room) });
   res.json({ ok: true, room: roomView(room) });
 });
 
@@ -2959,7 +3013,7 @@ wss.on("connection", (ws) => {
           send(ws, { t: "deny", code: "session_invalid", message: "Invalid or expired player session. Please rejoin." });
           return ws.close();
         }
-        if (!room.players.has(pid) && room.players.size >= MAX_PLAYERS) return ws.close(1008, "Room full");
+        if (roomIsFull(room, room.knownPlayers.get(pid)?.role, pid)) { send(ws, { t: "deny", code: "room_full", message: "This room is full (25 players and one observer)." }); return ws.close(1008, "Room full"); }
         if (room.conns.has(pid)) { send(room.conns.get(pid).ws, { t: "closed", code: "session_replaced", message: "This game was opened in another tab. Reload to resume here." }); try { room.conns.get(pid).ws.close(); } catch {} room.conns.delete(pid); }
         if (!room.players.has(pid)) {
           const info = room.pending.get(pid) || room.knownPlayers.get(pid) || {};
@@ -2972,6 +3026,7 @@ wss.on("connection", (ws) => {
         const known = room.knownPlayers.get(pid);
         if (known) { known.color = player.color; known.role = player.role; known.teamId = player.teamId || null; }
         room.conns.set(pid, { ws, playerId: pid, cursor: { x: 0, y: 0, dirty: false } });
+        if (room.stage === "play" && !room.completed) trackRoundPlayer(room, pid);
         attached = { room, playerId: pid };
         startCursorRelay(room);
         touch(room);
@@ -3048,6 +3103,7 @@ wss.on("connection", (ws) => {
             const distance = Math.hypot(x - piece.correctX, y - piece.correctY);
             if (distance <= snapDistance(room.puzzle.pieceW, room.puzzle.pieceH)) {
               piece.x = piece.correctX; piece.y = piece.correctY; piece.locked = true;
+              trackRoundPlayer(room, playerId);
               room.scores.set(playerId, (room.scores.get(playerId) || 0) + 1);
               broadcast(room, { t: "scores", list: scoreList(room) });
             }

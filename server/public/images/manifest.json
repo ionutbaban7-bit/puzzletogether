@@ -170,5 +170,53 @@
   "camera-mare.svg": {
     "w": 480,
     "h": 360
+  },
+  "sunflowers-vangogh.webp": {
+    "w": 1730,
+    "h": 2200
+  },
+  "creation-of-adam.webp": {
+    "w": 2200,
+    "h": 1024
+  },
+  "birth-of-venus.webp": {
+    "w": 2200,
+    "h": 1382
+  },
+  "liberty-leading-people.webp": {
+    "w": 2200,
+    "h": 1741
+  },
+  "american-gothic.webp": {
+    "w": 1823,
+    "h": 2200
+  },
+  "wanderer-sea-fog.webp": {
+    "w": 1718,
+    "h": 2200
+  },
+  "bedroom-arles.webp": {
+    "w": 2200,
+    "h": 1706
+  },
+  "red-fuji.webp": {
+    "w": 2200,
+    "h": 1506
+  },
+  "the-thinker.webp": {
+    "w": 1727,
+    "h": 2200
+  },
+  "earthrise-apollo8.webp": {
+    "w": 1920,
+    "h": 1920
+  },
+  "moon-footprint.webp": {
+    "w": 2181,
+    "h": 2200
+  },
+  "wright-first-flight.webp": {
+    "w": 1024,
+    "h": 738
   }
 }
