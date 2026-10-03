@@ -10,7 +10,9 @@ import http from "node:http";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import { execFileSync } from "node:child_process";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+import { PhotoStore } from "./photoStore.js";
 import { fileURLToPath } from "node:url";
 import { WebSocketServer } from "ws";
 
@@ -40,7 +42,8 @@ const IS_PROD = process.env.NODE_ENV === "production";
 const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || "0.0.0.0";
 const PROTOCOL_VERSION = 2;
-const MAX_PLAYERS = 20;
+const MAX_PLAYERS = 25;
+const MAX_OBSERVERS = 1;
 const ROOM_TTL_MS = 24 * 60 * 60 * 1000;
 const EMPTY_ROOM_TTL_MS = 30 * 60 * 1000;
 const PENDING_TTL_MS = 60 * 1000;
@@ -129,8 +132,8 @@ function playerTeamId(room, playerId) {
   return room.players.get(playerId)?.teamId || room.knownPlayers.get(playerId)?.teamId || null;
 }
 
-const PUZZLES = puzzlesData.puzzles;
-const CATEGORIES = puzzlesData.categories;
+const PUZZLES = puzzlesData.puzzles.filter(p => !["letter-canvas", "sentence-canvas"].includes(p.category));
+const CATEGORIES = puzzlesData.categories.filter(c => !["letter-canvas", "sentence-canvas"].includes(c.id));
 const DIFFICULTIES = puzzlesData.difficulties;
 const CANVAS_MODES = new Map((puzzlesData.canvasModes || []).map((m) => [m.id, m.tiles]));
 const COACHING = coachingData;
@@ -614,6 +617,14 @@ function reconstructCanvasText(tiles, opts = {}) {
 
 const rooms = new Map();
 const codeIndex = new Map();
+const photoStore = new PhotoStore(uploadsDir, { onExpire: (photo) => {
+  const room = rooms.get(photo.roomId);
+  if (!room || room.customImageFile !== photo.file || room.stage === "closed") return;
+  applyPuzzleToRoom(room, { puzzleId: PUZZLES[0].id, difficulty: room.config.difficulty });
+  room.photoExpiredAt = Date.now();
+  touch(room);
+  broadcast(room, { t: "puzzle", room: roomView(room), puzzle: puzzleView(room), pieces: room.pieces.map(serializePiece), ratings: [] });
+} });
 const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 const PLAYER_COLORS = ["#6366f1", "#0ea5e9", "#10b981", "#f59e0b", "#f43f5e", "#8b5cf6", "#14b8a6", "#f97316", "#84cc16", "#ec4899", "#06b6d4", "#a855f7"];
 
@@ -624,6 +635,28 @@ function logEvent(event, room, extra = {}) {
 function findRoom(ref) {
   const key = String(ref || "");
   return rooms.get(key) || rooms.get(codeIndex.get(key.toUpperCase())) || null;
+}
+
+// Reservations count towards capacity; an observing host has a separate seat.
+function roomIsFull(room, role = "player", exceptId = null) {
+  const reserved = new Map([...room.pending].filter(([, p]) => p.expiresAt > Date.now()));
+  for (const [id, player] of room.players) reserved.set(id, player);
+  reserved.delete(exceptId);
+  const members = [...reserved.values()];
+  return role === "spectator"
+    ? members.filter(p => p.role === "spectator").length >= MAX_OBSERVERS
+    : members.filter(p => p.role !== "spectator").length >= MAX_PLAYERS;
+}
+
+function trackRoundPlayer(room, id) {
+  const player = room.players.get(id) || room.knownPlayers.get(id);
+  if (player && player.role !== "spectator" && !room.roundPlayers.has(id))
+    room.roundPlayers.set(id, { name: player.name, color: player.color || "#94a3b8" });
+}
+
+function beginRoundParticipants(room) {
+  room.roundPlayers.clear();
+  for (const id of room.players.keys()) trackRoundPlayer(room, id);
 }
 
 function hashString(s) {
@@ -696,7 +729,11 @@ function roomView(room) {
   return {
     id: room.id,
     code: room.code,
+    inviteToken: room.inviteToken,
+    inviteExpiresAt: room.inviteExpiresAt,
     sessionName: room.sessionName,
+    photoExpiresAt: room.config.customImage?.expiresAt || null,
+    photoExpiredAt: room.photoExpiredAt || null,
     hostId: room.hostId,
     puzzleId: room.config.puzzleId,
     difficulty: room.config.difficulty,
@@ -707,6 +744,9 @@ function roomView(room) {
     canvasVersion: room.canvas?.version || undefined,
     retiredCatalog: !!room.retiredCatalog,
     maxPlayers: MAX_PLAYERS,
+    maxObservers: MAX_OBSERVERS,
+    podiumEnabled: !!room.podiumEnabled,
+    elapsedMs: elapsedMs(room),
     createdAt: room.createdAt,
     startedAt: room.startedAt,
     pausedAt: room.pausedAt,
@@ -733,12 +773,20 @@ function roomView(room) {
 
 function publicRoomView(room) {
   const view = roomView(room);
+  // The room host's public identifier must not be exposed by anonymous
+  // metadata endpoints. NOTE: this is defence in depth, NOT authentication:
+  // privileged REST routes and WS reconnect still need session-bound proof.
+  delete view.hostId;
   delete view.code;
+  delete view.inviteToken;
+  delete view.inviteExpiresAt;
+  delete view.completionPlayers;
   delete view.insights;
   delete view.debriefNotes;
   delete view.actions;
   delete view.emotions;
   delete view.pauseRequested;
+  if (room.customImageFile) view.sessionName = "Personal photo";
   return view;
 }
 
@@ -836,10 +884,12 @@ function activePlayerList(room) {
 }
 
 function scoreList(room) {
-  return [...room.scores.entries()].map(([pid, placed]) => {
-    const p = room.players.get(pid) || room.knownPlayers.get(pid) || {};
-    return { playerId: pid, name: p.name || "Player", color: p.color || "#94a3b8", placed };
-  }).sort((a, b) => b.placed - a.placed || a.name.localeCompare(b.name));
+  const ids = new Set([...room.roundPlayers.keys(), ...room.scores.keys()]);
+  const rows = [...ids].map(pid => {
+    const p = room.roundPlayers.get(pid) || room.knownPlayers.get(pid) || {};
+    return { playerId: pid, name: p.name || "Player", color: p.color || "#94a3b8", placed: room.scores.get(pid) || 0 };
+  }).sort((a, b) => b.placed - a.placed || a.name.localeCompare(b.name) || a.playerId.localeCompare(b.playerId));
+  return rows.map(row => ({ ...row, rank: row.placed ? rows.findIndex(other => other.placed === row.placed) + 1 : null }));
 }
 
 function computeProfileCode(activity, answers) {
@@ -1010,30 +1060,26 @@ function serializeCanvasTile(t) {
 }
 
 function buildPuzzleSetup(config) {
+  if ((config.customImage && config.puzzleId !== "custom-upload") || (!config.customImage && !PUZZLES.some(p => p.id === config.puzzleId))) throw new Error("Choose an available jigsaw image.");
   let puzzle = puzzleById.get(config.puzzleId) || null;
   const coachingActivity = !puzzle ? activityById.get(config.puzzleId) : null;
-  // Custom user-uploaded image (room-scoped; the file is deleted when the
-  // room is reaped — see reapRoom cleanup).
-  if (!puzzle && !coachingActivity && config.customImage) {
+  // Validated private photo; fixed deadline is independent of room lifetime.
+  if (config.customImage) {
     const ci = config.customImage;
-    if (typeof ci.url !== "string" || !ci.url.startsWith("/uploads/")) {
-      throw new Error("Invalid custom image.");
-    }
-    if (typeof ci.file !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.webp$/i.test(ci.file)) {
-      throw new Error("Invalid custom image file.");
-    }
+    const stored = photoStore.get(ci.file);
+    if (!stored || ci.url !== photoStore.url(stored) || ci.expiresAt !== stored.expiresAt) throw new Error("Photo unavailable. Upload it again.");
     puzzle = {
       id: "custom-upload",
       category: "custom",
       image: ci.url,
-      name: typeof ci.name === "string" && ci.name.trim() ? ci.name.trim().slice(0, 60) : "Imagine personalizată",
-      nameRo: "Imagine personalizată",
-      credit: `Upload local — ${typeof ci.by === "string" && ci.by.trim() ? ci.by.trim().slice(0, 24) : "echipa"}`,
-      license: "Personal upload (doar pentru această cameră)",
-      source: "Upload local (șters la închiderea camerei)",
-      attribution: "Imagine încărcată local pentru această sesiune — nu este stocată decât pentru camera curentă.",
-      width: Math.min(4096, Math.max(300, Math.round(ci.width) || 1600)),
-      height: Math.min(4096, Math.max(300, Math.round(ci.height) || 1000)),
+      name: "Your photo",
+      nameRo: "Fotografia ta",
+      credit: "",
+      license: "Personal photo",
+      source: "Deleted one hour after upload",
+      attribution: "",
+      width: stored.width,
+      height: stored.height,
     };
   }
   if (!puzzle && !coachingActivity) throw new Error("Unknown puzzle or activity.");
@@ -1167,6 +1213,7 @@ function resetWorkshopState(room, { lobby = true } = {}) {
   room.pauseRequested = false;
   room.ratings.clear();
   room.scores.clear();
+  room.roundPlayers.clear();
   if (room.canvas) resetCanvasState(room);
   room.completed = false;
   room.completedAt = null;
@@ -1188,6 +1235,8 @@ function resetWorkshopState(room, { lobby = true } = {}) {
 
 function applyPuzzleToRoom(room, config) {
   const setup = buildPuzzleSetup(config);
+  const previousPhoto = room.customImageFile;
+  room.photoExpiredAt = null;
   // Any host-selected activity comes from the reviewed active catalog.
   room.retiredCatalog = false;
   room.config = setup.config;
@@ -1212,6 +1261,7 @@ function applyPuzzleToRoom(room, config) {
     setup.puzzleMeta && setup.puzzleMeta.image && setup.puzzleMeta.image.startsWith("/uploads/")
       ? path.basename(config.customImage?.file || "")
       : null;
+  if (previousPhoto && previousPhoto !== room.customImageFile) photoStore.remove(previousPhoto);
   if (room.pieces.length) scatterPieces(room);
   resetWorkshopState(room, { lobby: true });
 }
@@ -1230,8 +1280,11 @@ function createRoom(config, creator = {}) {
   const room = {
     id: crypto.randomUUID(),
     code: generateCode(),
+    inviteToken: crypto.randomBytes(32).toString("base64url"),
+    inviteExpiresAt: now + ROOM_TTL_MS,
     sessionName: String(creator.sessionName || "").trim().slice(0, 80) || "Team session",
     hostId: null,
+    podiumEnabled: config.podiumEnabled === true,
     teamMode: normalizeTeamMode(config.teamMode),
     teams: buildTeams(config.teamMode, config.teamCount),
     config: null,
@@ -1243,6 +1296,7 @@ function createRoom(config, creator = {}) {
     pieces: [],
     ratings: new Map(),
     scores: new Map(),
+    roundPlayers: new Map(),
     players: new Map(),
     knownPlayers: new Map(),
     pending: new Map(),
@@ -1294,7 +1348,7 @@ function scheduleSnapshot() {
 
 function persistableRoom(room) {
   return {
-    id: room.id, code: room.code, sessionName: room.sessionName, hostId: room.hostId,
+    id: room.id, code: room.code, inviteToken: room.inviteToken, inviteExpiresAt: room.inviteExpiresAt, sessionName: room.sessionName, hostId: room.hostId, photoExpiredAt: room.photoExpiredAt || null,
     teamMode: room.teamMode, teams: room.teams,
     config: room.config, pieces: room.pieces.map(serializePiece),
     jigsawGeometry: isJigsawRoom(room) ? Object.fromEntries(["width", "height", "cols", "rows", "pieceW", "pieceH"].map(key => [key, room.puzzle[key]])) : null,
@@ -1308,7 +1362,8 @@ function persistableRoom(room) {
       teamInventory: room.canvas.teamInventory ? [...room.canvas.teamInventory.entries()].map(([teamId, inventory]) => [teamId, inventory ? [...inventory] : null]) : null,
       jokers: room.canvas.jokers ? [...room.canvas.jokers.entries()] : null,
     } : null,
-    ratings: [...room.ratings], scores: [...room.scores],
+    ratings: [...room.ratings], scores: [...room.scores], roundPlayers: [...room.roundPlayers], podiumEnabled: !!room.podiumEnabled,
+    // Auth verifiers survive a process restart; the browser retains its secret.
     knownPlayers: [...room.knownPlayers], createdAt: room.createdAt, startedAt: room.startedAt,
     pausedAt: room.pausedAt, pausedDurationMs: room.pausedDurationMs, timerEndsAt: room.timerEndsAt,
     timerDurationMs: room.timerDurationMs, lastActivityAt: room.lastActivityAt, stage: room.stage,
@@ -1328,7 +1383,7 @@ function saveSnapshots() {
     fs.mkdirSync(dataDir, { recursive: true });
     const payload = [...rooms.values()].map(persistableRoom);
     const temp = `${snapshotFile}.tmp`;
-    fs.writeFileSync(temp, JSON.stringify(payload));
+    fs.writeFileSync(temp, JSON.stringify(payload), { mode: 0o600 });
     fs.renameSync(temp, snapshotFile);
   } catch (error) {
     console.error("Could not persist room snapshots", error);
@@ -1393,19 +1448,25 @@ function restoreSnapshots() {
     const now = Date.now();
     for (const raw of saved) {
       if (!raw?.id || now - raw.lastActivityAt > ROOM_TTL_MS) continue;
+      // Legacy snapshots carried only public UUIDs. Do not resurrect insecure
+      // sessions which can be impersonated; users create fresh V2 rooms.
+      if (!Array.isArray(raw.knownPlayers) || raw.knownPlayers.some((pair) =>
+        !Array.isArray(pair) || !/^[0-9a-f]{64}$/.test(pair[1]?.authHash || ""))) continue;
       try {
-        // A custom-upload room whose image file was deleted can no longer be served.
-        if (raw.config?.customImage && !fs.existsSync(path.join(uploadsDir, path.basename(String(raw.config.customImage.file || ""))))) continue;
+        const storedPhoto = raw.config?.customImage ? photoStore.get(raw.config.customImage.file) : null;
+        const expiredPhoto = !!raw.config?.customImage && (!storedPhoto || storedPhoto.roomId !== raw.id);
         const retiredPuzzle = retiredPuzzleById.get(raw.config?.puzzleId);
         // Bootstrap the generic room machinery with a reviewed item, then
         // restore the retired item metadata/pieces below without publishing it.
         const fallbackPuzzle = PUZZLES.find((puzzle) => !isCanvasPuzzle(puzzle)) || PUZZLES[0];
-        const bootstrapConfig = retiredPuzzle
+        const bootstrapConfig = expiredPhoto
+          ? { puzzleId: fallbackPuzzle.id, difficulty: raw.config.difficulty }
+          : retiredPuzzle
           ? { ...raw.config, puzzleId: fallbackPuzzle.id, difficulty: raw.config?.difficulty || "easy" }
           : raw.config;
         const room = createRoom(bootstrapConfig, { sessionName: raw.sessionName });
         if (retiredPuzzle) applyRetiredSnapshotPuzzle(room, raw, retiredPuzzle);
-        if (isJigsawRoom(room)) {
+        if (isJigsawRoom(room) && !expiredPhoto) {
           const geometry = restoredJigsawGeometry(raw);
           if (geometry) {
             Object.assign(room.puzzle, geometry);
@@ -1416,12 +1477,16 @@ function restoreSnapshots() {
         codeIndex.delete(room.code);
       room.id = raw.id;
       room.code = raw.code;
+      room.inviteToken = raw.inviteToken || room.inviteToken;
+      room.inviteExpiresAt = raw.inviteExpiresAt || 0;
       room.hostId = raw.hostId;
       room.teamMode = normalizeTeamMode(raw.teamMode);
       room.teams = Array.isArray(raw.teams) ? raw.teams : [];
       room.knownPlayers = new Map(raw.knownPlayers || []);
+      room.podiumEnabled = raw.podiumEnabled === true;
+      room.roundPlayers = new Map(raw.roundPlayers || []);
       ensureTeamState(room);
-      room.pieces = (raw.pieces || room.pieces).map((p) => ({ ...p, heldBy: null, heldAt: null, drag: false }));
+      room.pieces = ((!expiredPhoto && raw.pieces) || room.pieces).map((p) => ({ ...p, heldBy: null, heldAt: null, drag: false }));
       if (room.canvas && raw.canvas) {
         room.canvas.tiles = new Map((raw.canvas.tiles || []).map((t) => [t.id, { ...t, heldBy: null, heldAt: null }]));
         // Explicit v1 migration: do not reshuffle a lived-in legacy blank sheet.
@@ -1456,6 +1521,11 @@ function restoreSnapshots() {
         : null;
       rooms.set(room.id, room);
       codeIndex.set(room.code, room.id);
+      room.photoExpiredAt = raw.photoExpiredAt || null;
+      if (expiredPhoto && raw.stage !== "closed") {
+        resetWorkshopState(room, { lobby: true });
+        room.photoExpiredAt = Date.now();
+      }
       } catch (err) {
         // One unrestorable snapshot must never block the rest.
         console.error("Skipping unrestorable room snapshot", raw?.id, err?.message || err);
@@ -1585,11 +1655,54 @@ function checkCompletion(room) {
     room.completedAt = Date.now();
     room.completedInMs = elapsedMs(room, room.completedAt);
     room.boardLocked = true;
-    room.completionPlayers = activePlayerList(room).filter((p) => p.role !== "spectator").map((p) => p.name);
+    room.completionPlayers = [...room.roundPlayers.values()].map(p => p.name);
     broadcast(room, { t: "completion", room: roomView(room), players: room.completionPlayers, scores: scoreList(room) });
     logEvent("complete", room, { durationMs: room.completedInMs });
     touch(room);
   }
+}
+
+/**
+ * Public player UUIDs identify avatars; they are NEVER proof of membership.
+ * Store only the SHA-256 verifier. A room-scoped random credential remains in
+ * the joining browser and is supplied via Bearer or the WS hello handshake.
+ */
+function newPlayerCredential() {
+  const credential = crypto.randomBytes(32).toString("base64url");
+  return { credential, authHash: crypto.createHash("sha256").update(credential).digest("hex") };
+}
+
+function credentialMatches(hash, candidate) {
+  if (typeof hash !== "string" || !/^[0-9a-f]{64}$/.test(hash) ||
+      typeof candidate !== "string" || !/^[A-Za-z0-9_-]{43}$/.test(candidate)) return false;
+  const expected = Buffer.from(hash, "hex");
+  const actual = crypto.createHash("sha256").update(candidate).digest();
+  return crypto.timingSafeEqual(expected, actual);
+}
+
+function playerAuthenticated(room, pid, credential) {
+  if (typeof pid !== "string" || !room.knownPlayers.has(pid)) return false;
+  return credentialMatches(room.knownPlayers.get(pid).authHash, credential);
+}
+
+function bearerCredential(req) {
+  const match = /^Bearer ([A-Za-z0-9_-]{43})$/.exec(String(req.headers.authorization || ""));
+  return match ? match[1] : "";
+}
+
+/** Resolve session identity from the secret, never from req.body.pid. */
+function authenticatedPlayer(room, req) {
+  if (room.stage === "closed" || Date.now() - room.lastActivityAt > ROOM_TTL_MS) return null;
+  const credential = bearerCredential(req);
+  if (!credential) return null;
+  for (const [pid, player] of room.knownPlayers) {
+    if (credentialMatches(player.authHash, credential)) return pid;
+  }
+  return null;
+}
+
+function hostAuthorized(room, req) {
+  return authenticatedPlayer(room, req) === room.hostId;
 }
 
 function isHost(room, playerId) {
@@ -1654,6 +1767,7 @@ function applyTeamAction(room, playerId, msg, ws) {
 function applyControl(room, playerId, msg, ws) {
   if (!requireHostSocket(room, playerId, ws)) return;
   const now = Date.now();
+  if (!["start", "lock", "kick", "close"].includes(msg.action)) return send(ws, { t: "error", code: "activity_archived", message: "Control unavailable." });
   switch (msg.action) {
     case "ackPause":
       room.pauseRequested = false;
@@ -1692,6 +1806,8 @@ function applyControl(room, playerId, msg, ws) {
       break;
     }
     case "start":
+      if (room.stage !== "lobby" || room.completed) return send(ws, { t: "error", code: "already_started", message: "This round is already started." });
+      beginRoundParticipants(room);
       ensureTeamState(room);
       if (room.teamMode === TEAM_MODE_COLOR) {
         const unassigned = [...room.players.values()].filter((player) => player.role !== "spectator" && !player.teamId);
@@ -1710,6 +1826,7 @@ function applyControl(room, playerId, msg, ws) {
       break;
     }
     case "lock": {
+      if (room.stage !== "play" || room.completed) return send(ws, { t: "error", code: "not_playing", message: "Pause is available during play." });
       const next = msg.locked !== false;
       room.boardLocked = next;
       if (next && !room.pausedAt && room.stage === "play") room.pausedAt = now;
@@ -1808,11 +1925,13 @@ function applyControl(room, playerId, msg, ws) {
       const conn = room.conns.get(target);
       if (conn) send(conn.ws, { t: "closed", code: "removed", message: "The facilitator removed you from this session." });
       room.knownPlayers.delete(target);
+      rotateInvitation(room);
       room.pending.delete(target);
       dropPlayerConnection(room, target);
       break;
     }
     case "close":
+      if (room.customImageFile) photoStore.remove(room.customImageFile);
       room.stage = "closed";
       room.boardLocked = true;
       for (const [pid, conn] of [...room.conns]) {
@@ -2427,8 +2546,74 @@ function applyCanvasOp(room, playerId, msg, ws) {
 
 const app = express();
 app.disable("x-powered-by");
+// Set TRUST_PROXY=1 only behind a reverse proxy that strips untrusted
+// X-Forwarded-For values. Default IP limiting never trusts user-supplied IPs.
+if (process.env.TRUST_PROXY === "1") app.set("trust proxy", 1);
+function allowedOrigin(req) {
+  const origin = req.headers.origin;
+  if (!origin) return true; // Non-browser clients must still prove membership.
+  const configured = process.env.PUBLIC_ORIGIN;
+  if (configured) return origin === configured;
+  try { const url = new URL(origin); return ["http:", "https:"].includes(url.protocol) && url.host === req.headers.host; } catch { return false; }
+}
+app.use((req, res, next) => {
+  res.setHeader("Referrer-Policy", "no-referrer");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  if (req.path.startsWith("/api/") || req.path.startsWith("/uploads")) res.setHeader("Cache-Control", "no-store");
+  if (!["GET", "HEAD", "OPTIONS"].includes(req.method) && !allowedOrigin(req)) return res.status(403).json({ error: "Origin denied." });
+  next();
+});
 app.use(express.json({ limit: "64kb" }));
 
+// Single-process limits fit the current one-instance architecture. Deploying
+// multiple replicas requires replacing these counters with shared storage.
+const requestBuckets = new Map();
+function rateLimit(scope, maxRequests, windowMs) {
+  return (req, res, next) => {
+    const now = Date.now();
+    const key = `${scope}:${req.ip || req.socket.remoteAddress || "unknown"}`;
+    const current = requestBuckets.get(key);
+    const bucket = current && current.expiresAt > now ? current : { count: 0, expiresAt: now + windowMs };
+    bucket.count += 1;
+    if (requestBuckets.size >= 10000 && !current) return res.status(429).json({ error: "Server busy. Try later." });
+    requestBuckets.set(key, bucket);
+    if (bucket.count > maxRequests) {
+      res.setHeader("Retry-After", String(Math.max(1, Math.ceil((bucket.expiresAt - now) / 1000))));
+      return res.status(429).json({ error: "Too many requests. Please try again later.", code: "rate_limited" });
+    }
+    next();
+  };
+}
+
+setInterval(() => { for (const [key, value] of requestBuckets) if (value.expiresAt < Date.now()) requestBuckets.delete(key); }, 60000).unref();
+app.use("/api/rooms/:id", rateLimit("room", 600, 60000));
+function rotateInvitation(room) {
+  codeIndex.delete(room.code);
+  room.code = generateCode();
+  codeIndex.set(room.code, room.id);
+  room.inviteToken = crypto.randomBytes(32).toString("base64url");
+  room.inviteExpiresAt = Date.now() + ROOM_TTL_MS;
+  touch(room);
+}
+app.post("/api/rooms/:id/invite", (req, res) => {
+  const room = findRoom(req.params.id);
+  if (!room || !hostAuthorized(room, req)) return res.status(403).json({ error: "Host required." });
+  rotateInvitation(room);
+  broadcastRoom(room);
+  res.json({ room: roomView(room) });
+});
+app.post("/api/rooms/:id/session/rotate", (req, res) => {
+  const room = findRoom(req.params.id);
+  const pid = room && authenticatedPlayer(room, req);
+  if (!pid || room.stage === "closed") return res.status(403).json({ error: "Session required." });
+  const { credential, authHash } = newPlayerCredential();
+  room.knownPlayers.get(pid).authHash = authHash;
+  if (room.pending.has(pid)) room.pending.get(pid).authHash = authHash;
+  dropPlayerConnection(room, pid);
+  touch(room);
+  res.json({ credential });
+});
 app.get("/api/health", (_req, res) => {
   const memory = process.memoryUsage();
   res.json({ ok: true, protocolVersion: PROTOCOL_VERSION, rooms: rooms.size, players: [...rooms.values()].reduce((n, r) => n + r.players.size, 0), wsConnections: wss?.clients?.size || 0, uptimeSeconds: Math.floor(process.uptime()), heapUsedMb: Math.round(memory.heapUsed / 1024 / 1024) });
@@ -2444,25 +2629,17 @@ app.get("/api/puzzles", (_req, res) => res.json({
   categories: CATEGORIES,
   difficulties: DIFFICULTIES,
   puzzles: PUZZLES.map((p) => ({ ...p })),
-  canvasModes: puzzlesData.canvasModes || [],
-  letterSets: CANVAS_LETTER_SETS,
-  sentencePacks: { ro: sentenceVocab.ro, en: sentenceVocab.en },
-  coaching: publicCoachingCatalog(),
-  emotions: { category: { id: "emotions", name: "Emotions", icon: "🗺️" }, activities: [{ ...EMOTIONS_ACTIVITY, situations: undefined }] },
   maxPlayers: MAX_PLAYERS,
+  maxObservers: MAX_OBSERVERS,
 }));
-app.get("/api/coaching", (_req, res) => res.json(publicCoachingCatalog()));
-app.get("/api/emotions", (_req, res) => res.json({
-  taxonomy: emotionsTaxonomy,
-  situations: emotionsSituations,
-  archetypes: emotionsArchetypes,
-}));
+app.get("/api/coaching", (_req, res) => res.status(410).json({ error: "Activity archived." }));
+app.get("/api/emotions", (_req, res) => res.status(410).json({ error: "Activity archived." }));
 
-app.post("/api/rooms", (req, res) => {
-  const { puzzleId, difficulty, name, sessionName, role, contentLanguage, mystery, customImage, teamMode, teamCount } = req.body || {};
+app.post("/api/rooms", rateLimit("create", 12, 60 * 60_000), (req, res) => {
+  const { puzzleId, difficulty, name, sessionName, role, podiumEnabled, contentLanguage, mystery, customImage, teamMode, teamCount } = req.body || {};
   if (typeof name !== "string" || !name.trim()) return res.status(400).json({ error: "A display name is required." });
   try {
-    const ci = customImage && typeof customImage === "object" ? customImage : null;
+    const ci = customImage ? validatedCustomPhoto(customImage) : null;
     const room = createRoom(
       {
         puzzleId,
@@ -2471,70 +2648,82 @@ app.post("/api/rooms", (req, res) => {
         mystery: !!mystery,
         teamMode: normalizeTeamMode(teamMode),
         teamCount: normalizeTeamCount(teamCount),
-        customImage: ci
-          ? {
-              url: String(ci.url || "").slice(0, 200),
-              file: String(ci.file || "").slice(0, 64),
-              width: Number(ci.width),
-              height: Number(ci.height),
-              name: String(ci.name || "").slice(0, 60),
-              by: name.trim().slice(0, 24),
-            }
-          : undefined,
+        podiumEnabled,
+        customImage: ci || undefined,
       },
       { sessionName },
     );
+    if (ci) photoStore.bind(ci.file, room.id);
     const playerId = crypto.randomUUID();
-    const info = { name: name.trim().slice(0, 24), color: null, role: role === "spectator" ? "spectator" : "host", teamId: null };
+    const { credential, authHash } = newPlayerCredential();
+    const info = { name: name.trim().slice(0, 24), color: null, role: role === "spectator" ? "spectator" : "host", teamId: null, authHash };
     room.hostId = playerId;
     room.knownPlayers.set(playerId, info);
     room.pending.set(playerId, { ...info, expiresAt: Date.now() + PENDING_TTL_MS });
     touch(room);
     logEvent("room_create", room);
-    res.json({ room: roomView(room), playerId, roomCode: room.code });
+    res.setHeader("Cache-Control", "no-store");
+    res.json({ room: roomView(room), playerId, credential, roomCode: room.code });
   } catch (error) {
     res.status(400).json({ error: error.message || "Could not create room." });
   }
 });
 
-app.post("/api/rooms/:id/join", (req, res) => {
+app.post("/api/rooms/:id/join", rateLimit("join", 60, 10 * 60_000), (req, res) => {
   const room = findRoom(req.params.id);
   if (!room || room.stage === "closed") return res.status(404).json({ error: "Room not found.", code: "room_missing" });
-  const { name, pid, code } = req.body || {};
+  const { name, pid, code, invite } = req.body || {};
   if (typeof name !== "string" || !name.trim()) return res.status(400).json({ error: "A display name is required." });
-  if (pid && room.knownPlayers.has(pid)) return res.json({ room: roomView(room), playerId: pid, returning: true });
+  // Returning players must prove their own session. Knowing a player UUID
+  // or the room's access code never grants ownership of an existing avatar.
+  if (pid) {
+    if (!playerAuthenticated(room, pid, bearerCredential(req))) {
+      return res.status(403).json({ error: "Your saved session is no longer valid. Rejoin with the room code.", code: "session_invalid" });
+    }
+    const role = room.knownPlayers.get(pid)?.role;
+    if (roomIsFull(room, role, pid)) return res.status(409).json({ error: "This room is full (25 players and one observer).", code: "room_full" });
+    res.setHeader("Cache-Control", "no-store");
+    return res.json({ room: roomView(room), playerId: pid, returning: true });
+  }
 
   const refIsCode = String(req.params.id).trim().toUpperCase() === room.code;
   const providedCode = typeof code === "string" ? code.trim().toUpperCase() : "";
-  if (!refIsCode && providedCode !== room.code) {
+  const validInvite = typeof invite === "string" && /^[A-Za-z0-9_-]{43}$/.test(invite) && Date.now() < room.inviteExpiresAt && crypto.timingSafeEqual(Buffer.from(invite), Buffer.from(room.inviteToken));
+  if (!validInvite && !refIsCode && providedCode !== room.code) {
     return res.status(403).json({ error: providedCode ? "That access code is incorrect." : "This room requires an access code.", code: providedCode ? "bad_code" : "code_required" });
   }
-  if (room.players.size + room.pending.size >= MAX_PLAYERS) return res.status(409).json({ error: `This room is full (${MAX_PLAYERS} players max).`, code: "room_full" });
+  if (room.knownPlayers.size >= 200 || roomIsFull(room)) return res.status(409).json({ error: `This room is full (${MAX_PLAYERS} players max).`, code: "room_full" });
 
   const playerId = crypto.randomUUID();
+  const { credential, authHash } = newPlayerCredential();
   const cleanName = name.trim().slice(0, 24);
   const activeNames = [...room.players.values(), ...room.pending.values()].map((player) => player.name.toLocaleLowerCase());
   if (activeNames.includes(cleanName.toLocaleLowerCase())) return res.status(409).json({ error: "That display name is already in this room.", code: "duplicate_name" });
-  const info = { name: cleanName, color: null, role: "player", teamId: null };
+  const info = { name: cleanName, color: null, role: "player", teamId: null, authHash };
   room.knownPlayers.set(playerId, info);
   room.pending.set(playerId, { ...info, expiresAt: Date.now() + PENDING_TTL_MS });
   touch(room);
   logEvent("join_reserved", room);
-  res.json({ room: roomView(room), playerId });
+  res.setHeader("Cache-Control", "no-store");
+  res.json({ room: roomView(room), playerId, credential });
 });
 
 app.get("/api/rooms/:id", (req, res) => {
   const room = findRoom(req.params.id);
   if (!room || room.stage === "closed") return res.status(404).json({ error: "Room not found.", code: "room_missing" });
-  res.json({ room: publicRoomView(room), puzzle: { ...puzzleView(room), activity: undefined }, playerCount: room.players.size + room.pending.size });
+  res.json({ room: publicRoomView(room), puzzle: room.customImageFile
+    ? { name: "Personal photo", category: "custom", image: "", activity: undefined }
+    : { ...puzzleView(room), activity: undefined }, playerCount: room.players.size + room.pending.size });
 });
 
 app.post("/api/rooms/:id/takeover", (req, res) => {
   const room = findRoom(req.params.id);
-  const pid = req.body?.pid;
   if (!room) return res.status(404).json({ error: "Room not found.", code: "room_missing" });
-  if (!pid || !room.players.has(pid)) return res.status(403).json({ error: "Active room membership required.", code: "not_member" });
+  const pid = authenticatedPlayer(room, req);
+  if (!pid || !room.players.has(pid)) return res.status(403).json({ error: "Verified active room membership required.", code: "not_member" });
   if (room.conns.has(room.hostId)) return res.status(409).json({ error: "The facilitator is still connected.", code: "host_present" });
+  const oldHost = room.knownPlayers.get(room.hostId);
+  if (oldHost && oldHost.role === "host") oldHost.role = "player";
   room.hostId = pid;
   const known = room.knownPlayers.get(pid);
   if (known) known.role = "host";
@@ -2569,9 +2758,13 @@ function canvasSnapshot(room) {
 app.post("/api/rooms/:id/puzzle", (req, res) => {
   const room = findRoom(req.params.id);
   if (!room) return res.status(404).json({ error: "Room not found.", code: "room_missing" });
-  const { puzzleId, difficulty, pid, contentLanguage, mystery } = req.body || {};
-  if (!pid || pid !== room.hostId) return res.status(403).json({ error: "Only the facilitator can change the activity.", code: "not_host" });
-  try { applyPuzzleToRoom(room, { puzzleId, difficulty, contentLanguage, mystery: typeof mystery === "boolean" ? mystery : !!room.config.mystery }); } catch { return res.status(400).json({ error: "Unknown puzzle or activity." }); }
+  const { puzzleId, difficulty, pid, contentLanguage, mystery, customImage } = req.body || {};
+  if (!hostAuthorized(room, req)) return res.status(403).json({ error: "Only the facilitator can change the activity.", code: "not_host" });
+  try {
+    const ci = customImage ? validatedCustomPhoto(customImage) : undefined;
+    applyPuzzleToRoom(room, { puzzleId, difficulty, contentLanguage, customImage: ci, mystery: typeof mystery === "boolean" ? mystery : !!room.config.mystery });
+    if (ci) photoStore.bind(ci.file, room.id);
+  } catch { return res.status(400).json({ error: "Image unavailable. Choose a picture or upload again." }); }
   touch(room);
   broadcast(room, { t: "puzzle", room: roomView(room), puzzle: puzzleView(room), pieces: room.pieces.map(serializePiece), ratings: [], canvas: canvasSnapshot(room) });
   logEvent("puzzle_change", room);
@@ -2581,7 +2774,7 @@ app.post("/api/rooms/:id/puzzle", (req, res) => {
 app.post("/api/rooms/:id/reset", (req, res) => {
   const room = findRoom(req.params.id);
   if (!room) return res.status(404).json({ error: "Room not found.", code: "room_missing" });
-  if (!req.body?.pid || req.body.pid !== room.hostId) return res.status(403).json({ error: "Only the facilitator can reset the session.", code: "not_host" });
+  if (!hostAuthorized(room, req)) return res.status(403).json({ error: "Only the facilitator can reset the session.", code: "not_host" });
   if (room.pieces.length) scatterPieces(room);
   resetWorkshopState(room, { lobby: true });
   touch(room);
@@ -2597,7 +2790,7 @@ app.post("/api/rooms/:id/reset", (req, res) => {
 app.post("/api/rooms/:id/puzzle-reset", (req, res) => {
   const room = findRoom(req.params.id);
   if (!room) return res.status(404).json({ error: "Room not found.", code: "room_missing" });
-  if (!req.body?.pid || req.body.pid !== room.hostId) return res.status(403).json({ error: "Only the facilitator can reset this puzzle.", code: "not_host" });
+  if (!hostAuthorized(room, req)) return res.status(403).json({ error: "Only the facilitator can reset this puzzle.", code: "not_host" });
   if (!isJigsawRoom(room)) return res.status(400).json({ error: "This reset is only available for jigsaw rooms.", code: "not_jigsaw" });
   if (room.stage !== "play") return res.status(409).json({ error: "The puzzle can be reset only during play.", code: "not_playing" });
 
@@ -2606,6 +2799,9 @@ app.post("/api/rooms/:id/puzzle-reset", (req, res) => {
   const timerDurationMs = room.timerDurationMs;
   const pausedAt = room.pausedAt;
   const pausedDurationMs = room.pausedDurationMs;
+  // Completion locks the board. Replaying must reopen it; an intentional
+  // mid-game pause still keeps its existing lock and clock state.
+  if (room.completed) room.boardLocked = false;
   scatterPieces(room);
   // Scores belong to the current board attempt. Do not use resetWorkshopState:
   // it would also reset the stage, clock, people and coaching workshop data.
@@ -2614,6 +2810,7 @@ app.post("/api/rooms/:id/puzzle-reset", (req, res) => {
   room.completedAt = null;
   room.completedInMs = null;
   room.completionPlayers = [];
+  beginRoundParticipants(room);
   // Explicitly preserve all timer fields in case this endpoint is maintained
   // near future reset code that changes scatterPieces.
   room.startedAt = startedAt;
@@ -2633,10 +2830,24 @@ app.post("/api/rooms/:id/puzzle-reset", (req, res) => {
   res.json({ ok: true, room: roomView(room) });
 });
 
+app.post("/api/rooms/:id/replay", (req, res) => {
+  const room = findRoom(req.params.id);
+  if (!room) return res.status(404).json({ error: "Room not found.", code: "room_missing" });
+  if (!hostAuthorized(room, req)) return res.status(403).json({ error: "Only the host can replay.", code: "not_host" });
+  if (!room.completed || room.stage !== "play") return res.status(409).json({ error: "Finish this round before replaying.", code: "not_complete" });
+  resetWorkshopState(room, { lobby: false });
+  scatterPieces(room);
+  beginRoundParticipants(room);
+  touch(room);
+  broadcast(room, { t: "puzzleReset", room: roomView(room), puzzle: puzzleView(room), pieces: room.pieces.map(serializePiece), scores: scoreList(room) });
+  res.json({ ok: true, room: roomView(room) });
+});
+
 app.get("/api/rooms/:id/export", (req, res) => {
   const room = findRoom(req.params.id);
   if (!room) return res.status(404).json({ error: "Room not found." });
-  if (String(req.query.pid || "") !== room.hostId) return res.status(403).json({ error: "Only the facilitator can export this session." });
+  if (!hostAuthorized(room, req)) return res.status(403).json({ error: "Only the facilitator can export this session." });
+  res.setHeader("Cache-Control", "no-store");
   const payload = exportPayload(room);
   if (req.query.format !== "html") {
     res.setHeader("Content-Disposition", `attachment; filename="puzzletogether-${room.id.slice(0, 8)}.json"`);
@@ -2677,58 +2888,87 @@ app.get("/api/retired-images/:id", (req, res) => {
   res.type("jpeg").sendFile(original);
 });
 
-// Custom image uploads (room-scoped). The file is stored under .data/uploads
-// (never in the public bundle) and deleted when its room is reaped.
-app.post("/api/uploads", express.raw({ type: "*/*", limit: "10mb" }), (req, res) => {
+// Photos are capabilities, not public assets. Only the uploader can attach a
+// derivative, and admitted participants receive its separate private read URL.
+function validatedCustomPhoto(input) {
+  if (!input || typeof input.file !== "string" || typeof input.token !== "string") throw new Error("Invalid photo upload.");
+  const stored = photoStore.claim(input.file, input.token);
+  return { file: stored.file, url: photoStore.url(stored), width: stored.width, height: stored.height, expiresAt: stored.expiresAt };
+}
+function matchesImageSignature(type, body) {
+  if (type === "image/jpeg") return body.length >= 3 && body[0] === 0xff && body[1] === 0xd8 && body[2] === 0xff;
+  if (type === "image/png") return body.length >= 8 && body.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+  if (type === "image/webp") return body.length >= 12 && body.toString("ascii", 0, 4) === "RIFF" && body.toString("ascii", 8, 12) === "WEBP";
+  return false;
+}
+const runImageCommand = promisify(execFile);
+const imageLimits = ["-limit", "thread", "1", "-limit", "memory", "64MiB", "-limit", "map", "128MiB", "-limit", "disk", "256MiB", "-limit", "time", "15"];
+const imageOptions = { encoding: "utf8", timeout: 15_000, killSignal: "SIGKILL", maxBuffer: 64 * 1024 };
+let uploadsInFlight = 0;
+function uploadSlot(_req, res, next) {
+  // Bound both incoming buffers and child processes, including abandoned requests.
+  if (uploadsInFlight >= 2 || photoStore.photos.size >= 200) return res.status(503).json({ error: "Image processing is busy. Try again shortly." });
+  uploadsInFlight++;
+  let released = false;
+  res.locals.releaseUpload = () => { if (!released) { released = true; uploadsInFlight--; } };
+  const releaseUnlessProcessing = () => { if (!res.locals.processing) res.locals.releaseUpload(); };
+  res.once("finish", releaseUnlessProcessing);
+  res.once("close", releaseUnlessProcessing);
+  next();
+}
+app.post("/api/uploads", rateLimit("upload", 12, 60 * 60_000), uploadSlot, express.raw({ type: "*/*", limit: "9mb" }), async (req, res) => {
   const type = String(req.headers["content-type"] || "").split(";")[0].trim().toLowerCase();
-  if (!["image/jpeg", "image/png", "image/webp"].includes(type)) {
-    return res.status(415).json({ error: "Only JPEG, PNG or WebP images are allowed." });
-  }
+  const coder = { "image/jpeg": "JPEG", "image/png": "PNG", "image/webp": "WEBP" }[type];
+  if (!coder) return res.status(415).json({ error: "Choose a JPG, PNG or WebP photo." });
   const body = req.body;
-  if (!Buffer.isBuffer(body) || body.length < 1024) {
-    return res.status(400).json({ error: "Upload is empty or too small (min 1 KB)." });
-  }
-  if (body.length > 9 * 1024 * 1024) {
-    return res.status(413).json({ error: "Image is too large (max 9 MB)." });
-  }
+  if (!Buffer.isBuffer(body) || !body.length) return res.status(400).json({ error: "Choose a photo." });
+  if (!matchesImageSignature(type, body)) return res.status(415).json({ error: "The file is not a valid photo of this type." });
+  let tmp, dest, file, processingDir;
+  let registered = false;
+  const createdAt = Date.now();
+  res.locals.processing = true;
   try {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-    const file = `${crypto.randomUUID()}.webp`;
-    const dest = path.join(uploadsDir, file);
-    // Validate it really is an image and read dimensions via ImageMagick.
-    const tmp = path.join(uploadsDir, `${crypto.randomUUID()}.in`);
-    fs.writeFileSync(tmp, body);
-    let dims = null;
-    try {
-      const out = execFileSync("identify", ["-format", "%w %h", tmp], { encoding: "utf8", stdio: "pipe" }).trim().split(/\s+/);
-      const w = parseInt(out[0], 10);
-      const h = parseInt(out[1], 10);
-      if (Number.isFinite(w) && Number.isFinite(h) && w >= 200 && h >= 200 && w <= 6000 && h <= 6000) dims = { w, h };
-    } catch { /* not an image */ }
-    if (!dims) {
-      try { fs.unlinkSync(tmp); } catch {}
-      return res.status(400).json({ error: "Could not read a valid image (200–6000px per side)." });
+    file = `${crypto.randomUUID()}.webp`;
+    dest = path.join(uploadsDir, file);
+    processingDir = path.join(uploadsDir, `processing-${crypto.randomUUID()}`);
+    await fs.promises.mkdir(processingDir, { mode: 0o700 });
+    tmp = path.join(processingDir, "original.in");
+    const jobOptions = { ...imageOptions, cwd: processingDir, env: { ...process.env, MAGICK_TEMPORARY_PATH: processingDir } };
+    await fs.promises.writeFile(tmp, body, { flag: "wx", mode: 0o600 });
+    const input = `${coder}:${tmp}[0]`;
+    const { stdout } = await runImageCommand("identify", [...imageLimits, "-ping", "-format", "%w %h", input], jobOptions);
+    const [width, height] = stdout.trim().split(/\s+/).map(Number);
+    if (!Number.isInteger(width) || !Number.isInteger(height) || width < 200 || height < 200 || width > 6000 || height > 6000 || width * height > 16_000_000) {
+      return res.status(400).json({ error: "Photo dimensions must be 200–6000 px, up to 16 megapixels." });
     }
-    // Re-encode to WebP, capped at 2200px, so the room image is optimized.
-    const maxEdge = Math.max(dims.w, dims.h) > 2200 ? 2200 : null;
-    const args = [tmp];
-    if (maxEdge) args.push("-resize", `${maxEdge}x${maxEdge}>`);
-    args.push("-quality", "82", dest);
-    execFileSync("convert", args, { stdio: "pipe" });
-    try { fs.unlinkSync(tmp); } catch {}
-    let outDims = dims;
-    try {
-      const out2 = execFileSync("identify", ["-format", "%w %h", dest], { encoding: "utf8", stdio: "pipe" }).trim().split(/\s+/);
-      outDims = { w: parseInt(out2[0], 10), h: parseInt(out2[1], 10) };
-    } catch {}
-    return res.json({ url: `/uploads/${file}`, file, width: outDims.w, height: outDims.h });
-  } catch (err) {
-    return res.status(500).json({ error: "Could not process the image." });
+    await runImageCommand("convert", [...imageLimits, input, "-auto-orient", "-strip", "-resize", "2200x2200>", "-quality", "82", dest], jobOptions);
+    await fs.promises.chmod(dest, 0o600);
+    const converted = await runImageCommand("identify", [...imageLimits, "-format", "%w %h", `WEBP:${dest}`], jobOptions);
+    const [outWidth, outHeight] = converted.stdout.trim().split(/\s+/).map(Number);
+    if (!Number.isInteger(outWidth) || !Number.isInteger(outHeight) || outWidth < 1 || outHeight < 1 || outWidth > 2200 || outHeight > 2200) throw new Error("Invalid derivative");
+    await fs.promises.rm(processingDir, { recursive: true, force: true });
+    processingDir = null;
+    if (res.destroyed) return;
+    const result = photoStore.add(file, outWidth, outHeight, createdAt);
+    registered = true;
+    return res.json(result);
+  } catch (error) {
+    if (!res.destroyed) return res.status(error.code === "ENOENT" ? 503 : 400).json({ error: error.code === "ENOENT" ? "Photo processing is temporarily unavailable." : "Could not read this photo. Try a different JPG, PNG or WebP." });
+  } finally {
+    if (processingDir) { try { await fs.promises.rm(processingDir, { recursive: true, force: true }); } catch {} }
+    if (dest && !registered) { try { await fs.promises.unlink(dest); } catch {} }
+    res.locals.releaseUpload();
   }
 });
-
-// Serve room uploads (no long cache — they are room-scoped and short-lived).
-app.use("/uploads", express.static(uploadsDir, { maxAge: 0, immutable: false, fallthrough: false }));
+app.get("/uploads/:file", (req, res) => {
+  const photo = photoStore.canRead(req.params.file, req.query.key);
+  const room = photo && rooms.get(photo.roomId);
+  if (!photo || !room || room.stage === "closed" || room.customImageFile !== photo.file) return res.status(404).json({ error: "Photo unavailable." });
+  res.setHeader("Cache-Control", "private, no-store");
+  res.type("webp").sendFile(path.join(uploadsDir, photo.file));
+});
+// Prevent directory access and SPA fallbacks from exposing upload storage.
+app.use("/uploads", (_req, res) => res.status(404).json({ error: "Photo unavailable." }));
 
 // Catalog images are a closed public bundle. A missing derivative must answer
 // promptly with a real 404 rather than falling into Vite's SPA/proxy handling
@@ -2741,15 +2981,25 @@ app.use(express.static(publicDir, { maxAge: IS_PROD ? "7d" : 0 }));
 // ---------------------------------------------------------------------------
 
 const httpServer = http.createServer(app);
-const wss = new WebSocketServer({ server: httpServer, path: "/ws", maxPayload: 64 * 1024 });
+const wss = new WebSocketServer({ server: httpServer, path: "/ws", maxPayload: 64 * 1024, verifyClient: ({ req }) => allowedOrigin(req) });
 
 wss.on("connection", (ws) => {
   ws.alive = true;
   let attached = null;
+  let messageCount = 0, messageWindow = Date.now();
+  const helloTimer = setTimeout(() => { if (!attached) ws.close(1008, "Authentication required"); }, 10000);
+  helloTimer.unref();
+  ws.on("close", () => clearTimeout(helloTimer));
   ws.on("pong", () => { ws.alive = true; });
   ws.on("message", (raw) => {
+    if (Date.now() - messageWindow >= 1000) { messageCount = 0; messageWindow = Date.now(); }
+    if (++messageCount > 180) return ws.close(1008, "Message limit");
+    if (attached && (attached.room.stage === "closed" || !rooms.has(attached.room.id) || !attached.room.knownPlayers.has(attached.playerId) || attached.room.conns.get(attached.playerId)?.ws !== ws)) return ws.close(1008, "Session revoked");
     let msg;
     try { msg = JSON.parse(raw.toString()); } catch { return send(ws, { t: "error", code: "bad_json", message: "Malformed message." }); }
+    if (!msg || typeof msg !== "object" || Array.isArray(msg)) return ws.close(1008, "Invalid message");
+    if (attached && msg.t === "hello") return ws.close(1008, "Already authenticated");
+    if (attached && !["piece", "layout", "cursor", "control", "ping"].includes(msg.t)) return send(ws, { t: "error", code: "activity_archived", message: "This is a jigsaw room." });
     if (!attached && msg.t !== "hello") return send(ws, { t: "deny", code: "bad_request", message: "Hello first." });
 
     switch (msg.t) {
@@ -2757,8 +3007,14 @@ wss.on("connection", (ws) => {
         const room = findRoom(String(msg.roomId || ""));
         if (!room || room.stage === "closed") { send(ws, { t: "deny", code: "room_missing", message: "This room has expired or no longer exists." }); return ws.close(); }
         const pid = String(msg.playerId || "");
-        if (!pid || !(room.knownPlayers.has(pid) || room.pending.has(pid))) { send(ws, { t: "deny", code: "room_missing", message: "Session lost. Please rejoin the room." }); return ws.close(); }
-        if (room.conns.has(pid)) { try { room.conns.get(pid).ws.close(); } catch {} room.conns.delete(pid); }
+        // Authenticate BEFORE touching an existing player socket: a public
+        // UUID must never let a stranger evict or impersonate a player.
+        if (!playerAuthenticated(room, pid, msg.credential)) {
+          send(ws, { t: "deny", code: "session_invalid", message: "Invalid or expired player session. Please rejoin." });
+          return ws.close();
+        }
+        if (roomIsFull(room, room.knownPlayers.get(pid)?.role, pid)) { send(ws, { t: "deny", code: "room_full", message: "This room is full (25 players and one observer)." }); return ws.close(1008, "Room full"); }
+        if (room.conns.has(pid)) { send(room.conns.get(pid).ws, { t: "closed", code: "session_replaced", message: "This game was opened in another tab. Reload to resume here." }); try { room.conns.get(pid).ws.close(); } catch {} room.conns.delete(pid); }
         if (!room.players.has(pid)) {
           const info = room.pending.get(pid) || room.knownPlayers.get(pid) || {};
           room.players.set(pid, { id: pid, name: info.name || "Player", color: info.color || null, role: info.role || "player", teamId: info.teamId || null, joinedAt: Date.now(), lastSeenAt: Date.now() });
@@ -2770,6 +3026,7 @@ wss.on("connection", (ws) => {
         const known = room.knownPlayers.get(pid);
         if (known) { known.color = player.color; known.role = player.role; known.teamId = player.teamId || null; }
         room.conns.set(pid, { ws, playerId: pid, cursor: { x: 0, y: 0, dirty: false } });
+        if (room.stage === "play" && !room.completed) trackRoundPlayer(room, pid);
         attached = { room, playerId: pid };
         startCursorRelay(room);
         touch(room);
@@ -2846,6 +3103,7 @@ wss.on("connection", (ws) => {
             const distance = Math.hypot(x - piece.correctX, y - piece.correctY);
             if (distance <= snapDistance(room.puzzle.pieceW, room.puzzle.pieceH)) {
               piece.x = piece.correctX; piece.y = piece.correctY; piece.locked = true;
+              trackRoundPlayer(room, playerId);
               room.scores.set(playerId, (room.scores.get(playerId) || 0) + 1);
               broadcast(room, { t: "scores", list: scoreList(room) });
             }
@@ -3013,12 +3271,7 @@ wss.on("connection", (ws) => {
 
 /** Remove a room and any user-uploaded image file that belonged to it. */
 function reapRoom(room) {
-  if (room.customImageFile) {
-    try {
-      const file = path.join(uploadsDir, path.basename(room.customImageFile));
-      if (file.startsWith(uploadsDir + path.sep) && fs.existsSync(file)) fs.unlinkSync(file);
-    } catch { /* best effort */ }
-  }
+  if (room.customImageFile) photoStore.remove(room.customImageFile);
   rooms.delete(room.id);
   codeIndex.delete(room.code);
   stopCursorRelay(room);
@@ -3051,6 +3304,7 @@ setInterval(() => {
     for (const [, conn] of room.conns) { send(conn.ws, { t: "closed", code: "room_expired", message: "This room expired after 24 hours of inactivity." }); try { conn.ws.close(); } catch {} }
     reapRoom(room); logEvent("room_expired", room);
   }
+  for (const [key, bucket] of requestBuckets) if (bucket.expiresAt < now) requestBuckets.delete(key);
   saveSnapshots();
 }, 5 * 60_000).unref();
 

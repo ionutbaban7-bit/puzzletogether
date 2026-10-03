@@ -235,3 +235,17 @@ textarea:focus-visible {
     -webkit-backdrop-filter: blur(10px);
   }
 }
+
+/* Focused V2: board stays large; support panels reflow below it on phones. */
+.game-v2 { height: 100dvh; display:flex; flex-direction:column; background:#14261f; color:#f4f8f5; padding-top:env(safe-area-inset-top); }
+.game-v2-header { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.5rem; padding:.65rem max(.75rem, env(safe-area-inset-right)) .65rem max(.75rem, env(safe-area-inset-left)); }
+.game-v2-content { display:flex; flex:1; min-height:0; }
+.game-v2-board { flex:1; min-width:0; min-height:0; }
+.game-v2-panel { width:360px; max-width:100%; overflow:auto; background:#f6f8f5; color:#172b23; padding:1.1rem 1.1rem max(1.1rem, env(safe-area-inset-bottom)); }
+.game-v2-panel section + section { margin-top:1.5rem; padding-top:1.2rem; border-top:1px solid #cad8ce; }
+.game-v2-panel h2 { font-size:1.1rem; font-weight:700; }
+.game-v2-notice { display:flex; justify-content:space-between; gap:1rem; background:#fff6d7; color:#433b20; padding:.5rem 1rem; }
+.game-v2 button, .game-v2 select { min-height:44px; }
+:focus-visible { outline:3px solid #19865c; outline-offset:3px; }
+@media(max-width:700px) { .game-v2-content { flex-direction:column; overflow:auto; } .game-v2-board { flex:none; height:58dvh; min-height:300px; } .game-v2-panel { width:100%; overflow:visible; } .game-v2-content:not(:has(.game-v2-panel)) .game-v2-board { height:100%; } }
+@media(prefers-reduced-motion:reduce) { *, *::before, *::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } }

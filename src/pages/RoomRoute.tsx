@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import GamePage from "./GamePage";
 import { api } from "../lib/api";
-import { extractRoomRef } from "../lib/format";
+import { extractRoomRef, extractInvite } from "../lib/format";
 import { navigate } from "../lib/router";
 import { getSession, saveSession } from "../lib/session";
 import { store } from "../store";
-import { Logo, Modal, Spinner } from "../components/ui";
-import { T } from "../lib/i18n";
+import { Logo, Spinner } from "../components/ui";
+import { useLang } from "../lib/i18n";
 
 type Phase =
   | { kind: "fetching" }
@@ -15,10 +15,14 @@ type Phase =
   | { kind: "error"; message: string; full?: boolean };
 
 export default function RoomRoute({ roomId }: { roomId: string }) {
+  const { lang } = useLang();
+  const ro = lang === "ro";
   const [phase, setPhase] = useState<Phase>({ kind: "fetching" });
   const startedRef = useRef(false);
 
   useEffect(() => {
+    let cancelled = false;
+    startedRef.current = false;
     const session = getSession();
     const ref = roomId || extractRoomRef(window.location.href) || "";
     if (!ref) {
@@ -34,17 +38,19 @@ export default function RoomRoute({ roomId }: { roomId: string }) {
         // The room might still be reachable; the join call below will surface errors.
       }
 
+      if (cancelled) return;
       // Returning player from THIS room (same tab session): reconnect without
       // asking for the code again — their seat is verified server-side.
       if (
         session.name &&
         session.pid &&
+        session.credential &&
         (session.roomId === realRoomId || session.roomId === ref)
       ) {
         try {
           const res = await api.joinRoom(ref, session.name, session.pid);
           if (res.returning) {
-            start(session.name, session.pid);
+            start(session.name, session.pid, session.credential);
             return;
           }
         } catch {
@@ -53,16 +59,27 @@ export default function RoomRoute({ roomId }: { roomId: string }) {
       }
 
       // Everyone else must pass the access gate: display name + room code.
-      setPhase({ kind: "need_access" });
-    })().catch(() => setPhase({ kind: "error", message: "Could not reach the room server.", full: true }));
+      if (!cancelled) setPhase({ kind: "need_access" });
+    })().catch(() =>
+      setPhase({
+        kind: "error",
+        message: "Could not reach the room server.",
+        full: true,
+      }),
+    );
 
-    function start(name: string, pid: string) {
-      if (startedRef.current) return;
+    function start(name: string, pid: string, credential: string) {
+      if (cancelled || startedRef.current) return;
       startedRef.current = true;
-      saveSession({ name, pid, roomId: realRoomId || ref });
-      store.joinRoom(ref, pid);
+      window.history.replaceState({}, "", window.location.pathname);
+      saveSession({ name, pid, roomId: realRoomId || ref, credential });
+      store.joinRoom(ref, pid, credential);
       setPhase({ kind: "playing" });
     }
+    return () => {
+      cancelled = true;
+      store.leaveRoom();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
@@ -71,7 +88,9 @@ export default function RoomRoute({ roomId }: { roomId: string }) {
       <div className="flex min-h-screen items-center justify-center bg-ink-950">
         <div className="text-center">
           <Spinner className="mx-auto h-8 w-8 text-brand-500" />
-          <div className="mt-4 text-sm text-ink-400">Finding the room…</div>
+          <div className="mt-4 text-sm text-ink-400">
+            {ro ? "Se conectează…" : "Connecting…"}
+          </div>
         </div>
       </div>
     );
@@ -80,12 +99,13 @@ export default function RoomRoute({ roomId }: { roomId: string }) {
   if (phase.kind === "need_access") {
     return (
       <AccessGateModal
-        onJoin={(name, pid, realRoomId) => {
+        onJoin={(name, pid, credential, realRoomId) => {
           const ref = roomId || extractRoomRef(window.location.href) || "";
           if (startedRef.current) return;
           startedRef.current = true;
-          saveSession({ name, pid, roomId: realRoomId || ref });
-          store.joinRoom(ref, pid);
+          window.history.replaceState({}, "", window.location.pathname);
+      saveSession({ name, pid, roomId: realRoomId || ref, credential });
+          store.joinRoom(ref, pid, credential);
           setPhase({ kind: "playing" });
         }}
       />
@@ -97,16 +117,24 @@ export default function RoomRoute({ roomId }: { roomId: string }) {
       <div className="flex min-h-screen items-center justify-center bg-ink-950 p-6">
         <div className="card mx-auto w-full max-w-md p-8 text-center">
           <div className="text-4xl">🧩</div>
-          <h1 className="font-display mt-4 text-xl font-bold text-ink-900">Room not found</h1>
+          <h1 className="font-display mt-4 text-xl font-bold text-ink-900">
+            {ro ? "Joc indisponibil" : "Game unavailable"}
+          </h1>
           <p className="mt-2 text-sm leading-relaxed text-ink-500">
-            {phase.message} Rooms expire after 24 hours of inactivity.
+            {phase.message}
           </p>
           <div className="mt-6 flex justify-center gap-3">
-            <button className="btn-secondary btn-sm" onClick={() => navigate("/")}>
-              Back home
+            <button
+              className="btn-secondary btn-sm"
+              onClick={() => navigate("/")}
+            >
+              {ro ? "Acasă" : "Home"}
             </button>
-            <button className="btn-primary btn-sm" onClick={() => navigate("/create")}>
-              Create a new room
+            <button
+              className="btn-primary btn-sm"
+              onClick={() => navigate("/create")}
+            >
+              {ro ? "Creează un puzzle" : "Create a puzzle"}
             </button>
           </div>
         </div>
@@ -117,116 +145,125 @@ export default function RoomRoute({ roomId }: { roomId: string }) {
   return <GamePage />;
 }
 
-/**
- * Access gate for people arriving via a shared /room link: the display name
- * AND the room's access code are both mandatory before entering the game.
- */
+/** Join with a separate invitation capability or the manual room code. */
 function AccessGateModal({
   onJoin,
 }: {
-  onJoin: (name: string, pid: string, realRoomId?: string) => void;
+  onJoin: (
+    name: string,
+    pid: string,
+    credential: string,
+    realRoomId?: string,
+  ) => void;
 }) {
+  const { lang } = useLang();
+  const ro = lang === "ro";
   const [name, setName] = useState(() => getSession().name || "");
   const [code, setCode] = useState("");
+  const [invite, setInvite] = useState(() =>
+    extractInvite(window.location.href),
+  );
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-
   async function submit() {
-    if (!name.trim()) {
-      setError("Te rugăm să introduci un nume. / Please enter a display name.");
-      return;
-    }
-    if (!code.trim()) {
-      setError("Codul de acces este obligatoriu. / The access code is required.");
-      return;
-    }
+    if (busy) return;
+    if (!name.trim())
+      return setError(ro ? "Introdu numele tău." : "Enter your name.");
+    if (!code.trim() && !invite)
+      return setError(ro ? "Introdu codul jocului." : "Enter the game code.");
+    const ref = extractRoomRef(window.location.href);
+    if (!ref) return setError(ro ? "Link invalid." : "Invalid link.");
     setBusy(true);
     setError("");
-    const ref = extractRoomRef(window.location.href);
-    if (!ref) return;
     try {
-      const { room, playerId } = await api.joinRoom(ref, name.trim(), undefined, code.trim());
-      onJoin(name.trim(), playerId, room.id);
+      const result = await api.joinRoom(
+        ref,
+        name.trim(),
+        undefined,
+        code.trim(),
+        invite,
+      );
+      if (!result.credential)
+        throw new Error(ro ? "Încearcă din nou." : "Please retry.");
+      window.history.replaceState({}, "", window.location.pathname);
+      onJoin(name.trim(), result.playerId, result.credential, result.room.id);
     } catch (e) {
-      const errCode = (e as Error & { code?: string }).code;
-      if (errCode === "bad_code") {
-        setError("Cod de acces greșit — verifică-l cu gazda. / Wrong access code — check it with the host.");
-      } else if (errCode === "code_required") {
-        setError("Codul de acces este obligatoriu. / The access code is required.");
-      } else if (errCode === "room_full") {
-        setError((e as Error).message);
-      } else if (errCode === "room_missing") {
-        setError("Camera nu mai există. / This room no longer exists. Rooms expire after 24 hours of inactivity.");
-      } else {
-        setError(e instanceof Error ? e.message : "Could not join this room.");
-      }
+      const err = e as Error & { code?: string };
+      if (invite && ["bad_code", "code_required"].includes(err.code || "")) {
+        setInvite("");
+        setError(
+          ro
+            ? "Invitația a expirat. Cere un link nou sau codul jocului."
+            : "Invitation expired. Ask for a new link or the game code.",
+        );
+      } else if (err.code === "room_missing")
+        setError(ro ? "Jocul a expirat." : "Game expired.");
+      else setError(err.message);
       setBusy(false);
     }
   }
-
   return (
-    <div className="flex min-h-screen items-center justify-center bg-ink-950 p-6">
-      <Modal dismissable={false}>
-        <div className="overlay-card max-h-[calc(100dvh-1.5rem)] w-[400px] max-w-full overflow-y-auto p-7">
-          <div className="mb-5 flex justify-center">
-            <Logo dark size={32} />
-          </div>
-          <h1 className="font-display text-center text-xl font-bold text-white">
-            <T value={{ ro: "Intră în cameră", en: "Enter the room" }} />
-          </h1>
-          <p className="mt-1.5 text-center text-sm text-ink-300">
-            <T
-              value={{
-                ro: "Ai nevoie de codul de acces primit de la gazdă.",
-                en: "You need the access code shared by the host.",
-              }}
+    <main className="marketing-page setup-page flex min-h-dvh items-center justify-center p-4">
+      <form
+        className="card w-full max-w-sm p-7"
+        onSubmit={(e) => {
+          e.preventDefault();
+          submit();
+        }}
+      >
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          aria-label="PuzzleTogether"
+        >
+          <Logo />
+        </button>
+        <h1 className="mt-6 text-2xl font-bold">
+          {ro ? "Intră în joc" : "Join game"}
+        </h1>
+        <label
+          htmlFor="invite-name"
+          className="mt-5 block text-sm font-semibold"
+        >
+          {ro ? "Numele tău" : "Your name"}
+        </label>
+        <input
+          id="invite-name"
+          className="input mt-2"
+          maxLength={24}
+          required
+          value={name}
+          autoComplete="nickname"
+          autoFocus
+          onChange={(e) => setName(e.target.value)}
+        />
+        {!invite && (
+          <>
+            <label
+              htmlFor="invite-code"
+              className="mt-4 block text-sm font-semibold"
+            >
+              {ro ? "Codul jocului" : "Game code"}
+            </label>
+            <input
+              id="invite-code"
+              className="input mt-2 font-mono uppercase"
+              maxLength={6}
+              required
+              value={code}
+              onChange={(e) => setCode(e.target.value.toUpperCase())}
             />
+          </>
+        )}
+        {error && (
+          <p className="mt-3 text-sm text-red-700" role="alert">
+            {error}
           </p>
-
-          <label className="mt-5 block text-xs font-bold uppercase tracking-wider text-ink-400">
-            <T value={{ ro: "Numele tău", en: "Your name" }} />
-          </label>
-          <input
-            className="input mt-1.5 !border-white/10 !bg-white/5 !text-white placeholder:!text-ink-500"
-            placeholder="e.g. Maria"
-            maxLength={24}
-            value={name}
-            autoFocus={!name}
-            onChange={(e) => setName(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && submit()}
-          />
-
-          <label className="mt-4 block text-xs font-bold uppercase tracking-wider text-ink-400">
-            <T value={{ ro: "Cod de acces", en: "Access code" }} />
-          </label>
-          <input
-            className="input mt-1.5 !border-white/10 !bg-white/5 text-center font-mono text-lg font-bold uppercase tracking-[0.35em] !text-white placeholder:!text-ink-500 placeholder:tracking-normal"
-            placeholder="K7F2MX"
-            maxLength={12}
-            value={code}
-            autoFocus={!!name}
-            onChange={(e) => setCode(e.target.value.toUpperCase())}
-            onKeyDown={(e) => e.key === "Enter" && submit()}
-          />
-
-          {error && (
-            <div className="mt-3 rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-2.5 text-sm text-rose-200">
-              {error}
-            </div>
-          )}
-          <button className="btn-primary mt-5 w-full" disabled={busy} onClick={submit}>
-            {busy ? <Spinner /> : <T value={{ ro: "Intră în joc", en: "Join the Puzzle" }} />}
-          </button>
-          <div className="mt-3 text-center text-[11px] text-ink-500">
-            <T
-              value={{
-                ro: "Nu ai codul? Cere-l persoanei care a creat camera.",
-                en: "No code? Ask the person who created the room.",
-              }}
-            />
-          </div>
-        </div>
-      </Modal>
-    </div>
+        )}
+        <button className="btn-primary mt-6 w-full" disabled={busy}>
+          {busy ? <Spinner /> : ro ? "Intră în joc" : "Join game"}
+        </button>
+      </form>
+    </main>
   );
 }

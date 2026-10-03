@@ -33,8 +33,8 @@ export function extractRoomRef(input: string): string | null {
   return null;
 }
 
-export function inviteUrl(room: { id: string }): string {
-  return `${window.location.origin}/room/${room.id}`;
+export function inviteUrl(room: { id: string; inviteToken?: string }): string {
+  return `${window.location.origin}/room/${room.id}${room.inviteToken ? `#invite=${room.inviteToken}` : ""}`;
 }
 
 export async function copyToClipboard(text: string): Promise<boolean> {
@@ -56,4 +56,8 @@ export async function copyToClipboard(text: string): Promise<boolean> {
       return false;
     }
   }
+}
+
+export function extractInvite(input: string): string {
+  try { return new URLSearchParams(new URL(input, window.location.origin).hash.slice(1)).get("invite") || ""; } catch { return ""; }
 }

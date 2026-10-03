@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-24T17:19:14.983Z",
+  "generatedAt": "2026-10-03T10:47:10.770Z",
   "thresholds": {
     "MIN_LONG_EDGE": 900,
     "MIN_SHORT_EDGE": 600,
@@ -350,6 +350,102 @@
       "category": "coaching",
       "status": "verified",
       "license": "All rights reserved — in-house work",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/sunflowers-vangogh.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/creation-of-adam.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/birth-of-venus.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/liberty-leading-people.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/american-gothic.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/wanderer-sea-fog.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/bedroom-arles.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/red-fuji.jpg",
+      "category": "paintings",
+      "status": "verified",
+      "license": "CC0 · Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/the-thinker.jpg",
+      "category": "inspiration",
+      "status": "verified",
+      "license": "CC0 · Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/earthrise-apollo8.jpg",
+      "category": "inspiration",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/moon-footprint.jpg",
+      "category": "inspiration",
+      "status": "verified",
+      "license": "Public domain",
+      "ok": true,
+      "problems": []
+    },
+    {
+      "asset": "/images/wright-first-flight.jpg",
+      "category": "inspiration",
+      "status": "verified",
+      "license": "Public domain",
       "ok": true,
       "problems": []
     }

@@ -8,7 +8,7 @@ import LandingPage from "./pages/LandingPage";
 const CreateRoom = lazy(() => import("./pages/CreateRoom"));
 const JoinRoom = lazy(() => import("./pages/JoinRoom"));
 const RoomRoute = lazy(() => import("./pages/RoomRoute"));
-const EmotionsPage = lazy(() => import("./pages/EmotionsPage"));
+
 
 function PageLoader() {
   return (
@@ -41,11 +41,9 @@ export default function App() {
       page = <JoinRoom />;
       break;
     case "room":
-      page = <RoomRoute roomId={route.roomId} />;
+      page = <RoomRoute key={route.roomId} roomId={route.roomId} />;
       break;
-    case "emotions":
-      page = <EmotionsPage />;
-      break;
+
     default:
       page = <LandingPage />;
   }

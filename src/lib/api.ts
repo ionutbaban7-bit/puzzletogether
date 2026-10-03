@@ -1,7 +1,14 @@
 import type { CatalogData, RoomView } from "../types";
+import { getSession } from "./session";
+export interface PhotoUpload { file: string; token: string; width: number; height: number; expiresAt: number }
+
+function authHeaders(): Record<string, string> {
+  const credential = getSession().credential;
+  return credential ? { Authorization: `Bearer ${credential}` } : {};
+}
 
 async function post<T>(url: string, body: unknown): Promise<T> {
-  const response = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const response = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json", ...authHeaders() }, body: JSON.stringify(body) });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
     const error = new Error((data as { error?: string }).error || "Request failed") as Error & { code?: string };
@@ -14,25 +21,25 @@ async function post<T>(url: string, body: unknown): Promise<T> {
 export const api = {
   async fetchCatalog(): Promise<CatalogData> {
     const response = await fetch("/api/puzzles");
-    if (!response.ok) throw new Error("Activity library unavailable.");
+    if (!response.ok) throw new Error("Puzzle library unavailable.");
     const data = await response.json();
-    if (!Array.isArray(data.categories) || !Array.isArray(data.puzzles) || !Array.isArray(data.coaching?.activities)) throw new Error("Invalid activity library.");
+    if (!Array.isArray(data.categories) || !Array.isArray(data.puzzles) || !Array.isArray(data.difficulties)) throw new Error("Invalid puzzle library.");
     return data;
   },
-  createRoom(puzzleId: string, difficulty: string, name: string, options: { sessionName?: string; role?: "host" | "spectator"; contentLanguage?: "ro" | "en"; mystery?: boolean; teamMode?: "shared" | "color-teams"; teamCount?: number; customImage?: { url: string; file: string; width: number; height: number; name: string } } = {}) {
-    return post<{ room: RoomView; playerId: string }>("/api/rooms", { puzzleId, difficulty, name, ...options });
+  createRoom(puzzleId: string, difficulty: string, name: string, options: { sessionName?: string; role?: "host" | "spectator"; podiumEnabled?: boolean; contentLanguage?: "ro" | "en"; mystery?: boolean; teamMode?: "shared" | "color-teams"; teamCount?: number; customImage?: PhotoUpload } = {}) {
+    return post<{ room: RoomView; playerId: string; credential: string }>("/api/rooms", { puzzleId, difficulty, name, ...options });
   },
-  async uploadImage(file: File): Promise<{ url: string; file: string; width: number; height: number }> {
+  async uploadImage(file: File): Promise<PhotoUpload> {
     const response = await fetch("/api/uploads", { method: "POST", headers: { "Content-Type": file.type || "application/octet-stream" }, body: file });
     const data = await response.json().catch(() => null);
     if (!response.ok || !data) throw new Error(data?.error || "Upload failed.");
     return data;
   },
-  joinRoom(ref: string, name: string, pid?: string, code?: string) {
-    return post<{ room: RoomView; playerId: string; returning?: boolean }>(`/api/rooms/${encodeURIComponent(ref)}/join`, { name, pid, code });
+  joinRoom(ref: string, name: string, pid?: string, code?: string, invite?: string) {
+    return post<{ room: RoomView; playerId: string; credential?: string; returning?: boolean }>(`/api/rooms/${encodeURIComponent(ref)}/join`, { name, pid, code, invite });
   },
-  changePuzzle(ref: string, puzzleId: string, difficulty: string, pid: string, contentLanguage?: "ro" | "en", mystery?: boolean) {
-    return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/puzzle`, { puzzleId, difficulty, pid, contentLanguage, mystery });
+  changePuzzle(ref: string, puzzleId: string, difficulty: string, pid: string, contentLanguage?: "ro" | "en", mystery?: boolean, customImage?: PhotoUpload) {
+    return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/puzzle`, { puzzleId, difficulty, pid, contentLanguage, mystery, customImage });
   },
   takeover(ref: string, pid: string) { return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/takeover`, { pid }); },
   getRoom(ref: string) {
@@ -48,7 +55,22 @@ export const api = {
   },
   resetRoom(ref: string, pid: string) { return post<{ ok: boolean }>(`/api/rooms/${encodeURIComponent(ref)}/reset`, { pid }); },
   resetPuzzle(ref: string, pid: string) { return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/puzzle-reset`, { pid }); },
-  exportUrl(ref: string, pid: string, format: "json" | "html" = "json") {
-    return `/api/rooms/${encodeURIComponent(ref)}/export?pid=${encodeURIComponent(pid)}&format=${format}`;
+  replay(ref: string) { return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/replay`, {}); },
+  async exportSession(ref: string, format: "json" | "html" = "json") {
+    const response = await fetch(`/api/rooms/${encodeURIComponent(ref)}/export?format=${format}`, {
+      headers: authHeaders(),
+      cache: "no-store",
+    });
+    if (!response.ok) throw new Error("Private recap is unavailable. Rejoin as the host and retry.");
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `puzzletogether-${ref.slice(0, 8)}.${format}`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    // Keep the object URL valid until the browser has begun saving the file.
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   },
 };

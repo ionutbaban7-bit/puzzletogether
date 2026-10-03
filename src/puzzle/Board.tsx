@@ -10,6 +10,7 @@ import { store } from "../store";
 import { containImage, drawPuzzleImage } from "./imageGeometry";
 
 interface BoardProps {
+  toolsOpen?: boolean;
   puzzle: PuzzleView;
   pieces: Record<number, Piece>;
   cursors: Record<string, CursorView>;
@@ -114,6 +115,7 @@ function boundsForPieces(puzzle: PuzzleView, values: Piece[], includeTarget: boo
 }
 
 export default function Board({
+  toolsOpen = false,
   puzzle,
   pieces,
   cursors,
@@ -127,14 +129,14 @@ export default function Board({
   layoutMode = "scatter",
 }: BoardProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const { camera, cameraRef, zoomAt, zoomBy, fit } = useViewport();
+  const { camera, cameraRef, zoomAt, zoomBy, fit } = useViewport(canvasRef);
 
   // The session bar (top) and camera/zoom controls (bottom) overlay the board;
   // every programmatic fit must frame inside that safe area, not the raw
   // viewport, or the top tray row lands under the header.
   const fitInset = () => {
     const mobile = typeof window !== "undefined" && window.innerWidth < 640;
-    return mobile ? { top: 72, bottom: 96 } : { top: 84, bottom: 88 };
+    return mobile ? { top: 16, bottom: 84 } : { top: 16, bottom: 64 };
   };
 
   // Live refs for the draw loop
@@ -165,7 +167,7 @@ export default function Board({
       fit(currentPuzzle, { x0: 0, y0: 0, x1: currentPuzzle.width, y1: currentPuzzle.height + 240 }, { minScale: MIN_SCALE, inset: fitInset() });
       return;
     }
-    fit(currentPuzzle, boundsForPieces(currentPuzzle, unplaced, true), { inset: fitInset() });
+    fit(currentPuzzle, boundsForPieces(currentPuzzle, unplaced, true), { minScale: MIN_SCALE, inset: fitInset() });
   }, [fit]);
 
   // Gesture state is mutable so an active touch never causes a React render.
@@ -258,11 +260,14 @@ export default function Board({
       const dpr = canvasRenderScale();
       canvas.width = Math.round(canvas.clientWidth * dpr);
       canvas.height = Math.round(canvas.clientHeight * dpr);
+      fitBoard();
       schedule();
     };
     resize();
+    const observer = new ResizeObserver(resize);
+    observer.observe(canvas);
     window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
+    return () => { observer.disconnect(); window.removeEventListener("resize", resize); };
   }, []);
 
   // Initial fit once puzzle geometry is known
@@ -380,6 +385,7 @@ export default function Board({
   // Keyboard: escape cancels a drag / hides reference, arrows pan, + - zoom
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement)?.closest("input, select, textarea, button, [contenteditable=true]")) return;
       switch (e.key) {
         case "Escape":
           if (grab.current || pendingGrab.current) {
@@ -1446,7 +1452,7 @@ export default function Board({
       />
 
       {/* Piece filters */}
-      <div
+      {toolsOpen && <div
         className="absolute left-1/2 top-[64px] flex -translate-x-1/2 gap-0.5 rounded-xl border border-white/10 bg-ink-900/85 p-1 shadow-chip backdrop-blur"
         role="group"
         aria-label={t(STR.filterAll)}
@@ -1467,6 +1473,7 @@ export default function Board({
         ))}
       </div>
 
+      }
       {/* Zoom controls */}
       <div className="safe-bottom absolute bottom-4 left-3 flex flex-col items-center gap-2 sm:bottom-5 sm:left-5">
         {zoomControls(1.25, STR.zoomIn)}
@@ -1481,7 +1488,7 @@ export default function Board({
       </div>
 
       {/* Camera + server-authoritative layouts */}
-      <div className="absolute bottom-4 left-1/2 flex max-w-[calc(100vw-6rem)] -translate-x-1/2 flex-wrap justify-center gap-2 sm:bottom-5">
+      {toolsOpen && <div className="absolute bottom-4 left-1/2 flex max-w-[calc(100vw-6rem)] -translate-x-1/2 flex-wrap justify-center gap-2 sm:bottom-5">
         <button
           className="btn btn-dark btn-sm !px-3 sm:!px-4"
           onClick={fitBoard}
@@ -1516,6 +1523,7 @@ export default function Board({
         </button>
       </div>
 
+      }
       {/* Reference image toggle (mystery mode reveals it at 50% placed) */}
       <button
         className={`btn btn-dark btn-sm absolute right-3 top-[104px] !px-2.5 sm:right-5 sm:top-16 sm:!px-4 ${

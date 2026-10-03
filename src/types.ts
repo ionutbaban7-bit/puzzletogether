@@ -115,9 +115,13 @@ export interface CanvasState {
 }
 
 export interface RoomView {
+  inviteToken?: string;
+  inviteExpiresAt?: number;
   id: string;
   code?: string;
   sessionName: string;
+  photoExpiresAt?: number | null;
+  photoExpiredAt?: number | null;
   hostId?: string | null;
   puzzleId: string;
   difficulty: string;
@@ -130,6 +134,9 @@ export interface RoomView {
   /** A short-lived legacy room whose delisted image is served from archive. */
   retiredCatalog?: boolean;
   maxPlayers: number;
+  maxObservers: number;
+  podiumEnabled: boolean;
+  elapsedMs: number;
   createdAt: number;
   startedAt: number | null;
   pausedAt: number | null;
@@ -315,6 +322,7 @@ export interface ScoreView {
   name: string;
   color: string;
   placed: number;
+  rank: number | null;
 }
 
 export interface RatingView {
@@ -336,6 +344,8 @@ export interface PuzzleInfo {
   nameRo?: string;
   /** Optimized full-size source used by the active jigsaw board. */
   image: string;
+  /** Curated collection of familiar cultural and historical images. */
+  anchor?: boolean;
   /** Lightweight 4:3 derivative used by catalog/selector cards. */
   thumbnail?: string;
   credit: string;

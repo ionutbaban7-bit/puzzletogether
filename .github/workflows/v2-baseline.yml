@@ -1,0 +1,69 @@
+name: V2 baseline checks
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: v2-checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  build-security-and-core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Typecheck and production build
+        run: npm run build
+      - name: Renderer and image geometry
+        run: |
+          npm run test:render-contract
+          npm run test:image-scaling
+      - name: Catalog audit, image delivery and new puzzle geometry
+        run: |
+          npm run catalog:audit
+          npm run test:catalog-serve
+      - name: Configure photo processor
+        run: |
+          if ! command -v convert >/dev/null || ! command -v identify >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y imagemagick
+          fi
+      - name: Credentials, invites, revoked access and private photos
+        run: npm run test:security
+      - name: Photo lifetime and recovery after restart
+        run: npm run test:photos
+      - name: Authenticated multiplayer protocol
+        run: npm run test:protocol
+      - name: Fair podium, team timer and 25 players plus facilitator
+        run: |
+          npm run test:gamification
+          npm run test:load
+      - name: Recovery after process restart
+        run: npm run test:restart
+      - name: Configure Chromium
+        shell: bash
+        run: |
+          browser_path=$(command -v google-chrome || command -v chromium || true)
+          if test -n "$browser_path"; then
+            echo "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=$browser_path" >> "$GITHUB_ENV"
+          else
+            npx playwright install --with-deps chromium
+          fi
+      - name: Desktop, mobile and keyboard game flow
+        run: npm run test:e2e
+      - name: Preserve browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v2-browser-evidence
+          path: test-artifacts/
+          if-no-files-found: ignore
