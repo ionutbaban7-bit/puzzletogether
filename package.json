@@ -15,8 +15,8 @@
     "test:protocol": "node scripts/v2-run-tests.mjs scripts/sim-test.mjs scripts/jigsaw-layout-test.mjs scripts/puzzle-reset-test.mjs scripts/claim-lifecycle-test.mjs",
     "test:load": "node scripts/load-test.mjs",
     "test:render-contract": "node scripts/render-contract-test.mjs",
-    "test:e2e": "node scripts/v2-run-tests.mjs scripts/v2-browser-test.mjs",
-    "test:e2e:mobile": "node scripts/v2-run-tests.mjs scripts/v2-browser-test.mjs",
+    "test:e2e": "node scripts/v2-run-tests.mjs scripts/v2-browser-test.mjs scripts/photo-browser-test.mjs",
+    "test:e2e:mobile": "node scripts/v2-run-tests.mjs scripts/v2-browser-test.mjs scripts/photo-browser-test.mjs",
     "catalog:audit": "node scripts/audit-catalog.mjs",
     "catalog:pipeline": "node scripts/catalog-pipeline.mjs",
     "catalog:report": "node scripts/catalog-report.mjs",
@@ -30,6 +30,7 @@
     "test:catalog-compat": "node scripts/retired-catalog-compat-test.mjs",
     "test:security": "node scripts/v2-run-tests.mjs scripts/security-regression-test.mjs scripts/v2-security-test.mjs scripts/upload-guard-test.mjs",
     "test:restart": "node scripts/p0-restart-test.mjs",
+    "test:photos": "node scripts/photo-lifetime-test.mjs && node scripts/photo-restart-test.mjs",
     "test:image-scaling": "node scripts/image-scaling-test.mjs"
   },
   "dependencies": {

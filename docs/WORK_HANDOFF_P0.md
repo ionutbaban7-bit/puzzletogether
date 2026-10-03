@@ -8,4 +8,4 @@ P0/P1 code and retained tests are implemented. Use `V2_EXECUTION_PLAN.md` for ex
 
 Next: inspect the latest PR/Actions run, configure branch protection, verify real Render redeploy persistence, and run physical-device/user pilots. Follow `V2_RELEASE_NOTES.md` for deployment review and rollback. No production merge/deployment is authorized by this handoff.
 
-Photo uploads remain disabled. Any reintroduction must include isolated async processing, private room-bound access and lifecycle tests. Keep PuzzleTogether as one collaborative jigsaw.
+Photos are enabled with private room-bound image capabilities, async processing and one-hour deletion. Run `npm run test:photos` and the upload/browser checks after changes; never extend retention on replay or restart. Keep PuzzleTogether as one collaborative jigsaw.

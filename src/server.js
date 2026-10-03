@@ -10,7 +10,9 @@ import http from "node:http";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import { execFileSync } from "node:child_process";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+import { PhotoStore } from "./photoStore.js";
 import { fileURLToPath } from "node:url";
 import { WebSocketServer } from "ws";
 
@@ -614,6 +616,14 @@ function reconstructCanvasText(tiles, opts = {}) {
 
 const rooms = new Map();
 const codeIndex = new Map();
+const photoStore = new PhotoStore(uploadsDir, { onExpire: (photo) => {
+  const room = rooms.get(photo.roomId);
+  if (!room || room.customImageFile !== photo.file || room.stage === "closed") return;
+  applyPuzzleToRoom(room, { puzzleId: PUZZLES[0].id, difficulty: room.config.difficulty });
+  room.photoExpiredAt = Date.now();
+  touch(room);
+  broadcast(room, { t: "puzzle", room: roomView(room), puzzle: puzzleView(room), pieces: room.pieces.map(serializePiece), ratings: [] });
+} });
 const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 const PLAYER_COLORS = ["#6366f1", "#0ea5e9", "#10b981", "#f59e0b", "#f43f5e", "#8b5cf6", "#14b8a6", "#f97316", "#84cc16", "#ec4899", "#06b6d4", "#a855f7"];
 
@@ -699,6 +709,8 @@ function roomView(room) {
     inviteToken: room.inviteToken,
     inviteExpiresAt: room.inviteExpiresAt,
     sessionName: room.sessionName,
+    photoExpiresAt: room.config.customImage?.expiresAt || null,
+    photoExpiredAt: room.photoExpiredAt || null,
     hostId: room.hostId,
     puzzleId: room.config.puzzleId,
     difficulty: room.config.difficulty,
@@ -748,6 +760,7 @@ function publicRoomView(room) {
   delete view.actions;
   delete view.emotions;
   delete view.pauseRequested;
+  if (room.customImageFile) view.sessionName = "Personal photo";
   return view;
 }
 
@@ -1019,31 +1032,26 @@ function serializeCanvasTile(t) {
 }
 
 function buildPuzzleSetup(config) {
-  if (config.customImage || !PUZZLES.some(p => p.id === config.puzzleId)) throw new Error("Choose an available jigsaw image.");
+  if ((config.customImage && config.puzzleId !== "custom-upload") || (!config.customImage && !PUZZLES.some(p => p.id === config.puzzleId))) throw new Error("Choose an available jigsaw image.");
   let puzzle = puzzleById.get(config.puzzleId) || null;
   const coachingActivity = !puzzle ? activityById.get(config.puzzleId) : null;
-  // Custom user-uploaded image (room-scoped; the file is deleted when the
-  // room is reaped — see reapRoom cleanup).
-  if (!puzzle && !coachingActivity && config.customImage) {
+  // Validated private photo; fixed deadline is independent of room lifetime.
+  if (config.customImage) {
     const ci = config.customImage;
-    if (typeof ci.url !== "string" || !ci.url.startsWith("/uploads/")) {
-      throw new Error("Invalid custom image.");
-    }
-    if (typeof ci.file !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.webp$/i.test(ci.file)) {
-      throw new Error("Invalid custom image file.");
-    }
+    const stored = photoStore.get(ci.file);
+    if (!stored || ci.url !== photoStore.url(stored) || ci.expiresAt !== stored.expiresAt) throw new Error("Photo unavailable. Upload it again.");
     puzzle = {
       id: "custom-upload",
       category: "custom",
       image: ci.url,
-      name: typeof ci.name === "string" && ci.name.trim() ? ci.name.trim().slice(0, 60) : "Imagine personalizată",
-      nameRo: "Imagine personalizată",
-      credit: `Upload local — ${typeof ci.by === "string" && ci.by.trim() ? ci.by.trim().slice(0, 24) : "echipa"}`,
-      license: "Personal upload (doar pentru această cameră)",
-      source: "Upload local (șters la închiderea camerei)",
-      attribution: "Imagine încărcată local pentru această sesiune — nu este stocată decât pentru camera curentă.",
-      width: Math.min(4096, Math.max(300, Math.round(ci.width) || 1600)),
-      height: Math.min(4096, Math.max(300, Math.round(ci.height) || 1000)),
+      name: "Your photo",
+      nameRo: "Fotografia ta",
+      credit: "",
+      license: "Personal photo",
+      source: "Deleted one hour after upload",
+      attribution: "",
+      width: stored.width,
+      height: stored.height,
     };
   }
   if (!puzzle && !coachingActivity) throw new Error("Unknown puzzle or activity.");
@@ -1198,6 +1206,8 @@ function resetWorkshopState(room, { lobby = true } = {}) {
 
 function applyPuzzleToRoom(room, config) {
   const setup = buildPuzzleSetup(config);
+  const previousPhoto = room.customImageFile;
+  room.photoExpiredAt = null;
   // Any host-selected activity comes from the reviewed active catalog.
   room.retiredCatalog = false;
   room.config = setup.config;
@@ -1222,6 +1232,7 @@ function applyPuzzleToRoom(room, config) {
     setup.puzzleMeta && setup.puzzleMeta.image && setup.puzzleMeta.image.startsWith("/uploads/")
       ? path.basename(config.customImage?.file || "")
       : null;
+  if (previousPhoto && previousPhoto !== room.customImageFile) photoStore.remove(previousPhoto);
   if (room.pieces.length) scatterPieces(room);
   resetWorkshopState(room, { lobby: true });
 }
@@ -1306,7 +1317,7 @@ function scheduleSnapshot() {
 
 function persistableRoom(room) {
   return {
-    id: room.id, code: room.code, inviteToken: room.inviteToken, inviteExpiresAt: room.inviteExpiresAt, sessionName: room.sessionName, hostId: room.hostId,
+    id: room.id, code: room.code, inviteToken: room.inviteToken, inviteExpiresAt: room.inviteExpiresAt, sessionName: room.sessionName, hostId: room.hostId, photoExpiredAt: room.photoExpiredAt || null,
     teamMode: room.teamMode, teams: room.teams,
     config: room.config, pieces: room.pieces.map(serializePiece),
     jigsawGeometry: isJigsawRoom(room) ? Object.fromEntries(["width", "height", "cols", "rows", "pieceW", "pieceH"].map(key => [key, room.puzzle[key]])) : null,
@@ -1411,18 +1422,20 @@ function restoreSnapshots() {
       if (!Array.isArray(raw.knownPlayers) || raw.knownPlayers.some((pair) =>
         !Array.isArray(pair) || !/^[0-9a-f]{64}$/.test(pair[1]?.authHash || ""))) continue;
       try {
-        // A custom-upload room whose image file was deleted can no longer be served.
-        if (raw.config?.customImage && !fs.existsSync(path.join(uploadsDir, path.basename(String(raw.config.customImage.file || ""))))) continue;
+        const storedPhoto = raw.config?.customImage ? photoStore.get(raw.config.customImage.file) : null;
+        const expiredPhoto = !!raw.config?.customImage && (!storedPhoto || storedPhoto.roomId !== raw.id);
         const retiredPuzzle = retiredPuzzleById.get(raw.config?.puzzleId);
         // Bootstrap the generic room machinery with a reviewed item, then
         // restore the retired item metadata/pieces below without publishing it.
         const fallbackPuzzle = PUZZLES.find((puzzle) => !isCanvasPuzzle(puzzle)) || PUZZLES[0];
-        const bootstrapConfig = retiredPuzzle
+        const bootstrapConfig = expiredPhoto
+          ? { puzzleId: fallbackPuzzle.id, difficulty: raw.config.difficulty }
+          : retiredPuzzle
           ? { ...raw.config, puzzleId: fallbackPuzzle.id, difficulty: raw.config?.difficulty || "easy" }
           : raw.config;
         const room = createRoom(bootstrapConfig, { sessionName: raw.sessionName });
         if (retiredPuzzle) applyRetiredSnapshotPuzzle(room, raw, retiredPuzzle);
-        if (isJigsawRoom(room)) {
+        if (isJigsawRoom(room) && !expiredPhoto) {
           const geometry = restoredJigsawGeometry(raw);
           if (geometry) {
             Object.assign(room.puzzle, geometry);
@@ -1440,7 +1453,7 @@ function restoreSnapshots() {
       room.teams = Array.isArray(raw.teams) ? raw.teams : [];
       room.knownPlayers = new Map(raw.knownPlayers || []);
       ensureTeamState(room);
-      room.pieces = (raw.pieces || room.pieces).map((p) => ({ ...p, heldBy: null, heldAt: null, drag: false }));
+      room.pieces = ((!expiredPhoto && raw.pieces) || room.pieces).map((p) => ({ ...p, heldBy: null, heldAt: null, drag: false }));
       if (room.canvas && raw.canvas) {
         room.canvas.tiles = new Map((raw.canvas.tiles || []).map((t) => [t.id, { ...t, heldBy: null, heldAt: null }]));
         // Explicit v1 migration: do not reshuffle a lived-in legacy blank sheet.
@@ -1475,6 +1488,11 @@ function restoreSnapshots() {
         : null;
       rooms.set(room.id, room);
       codeIndex.set(room.code, room.id);
+      room.photoExpiredAt = raw.photoExpiredAt || null;
+      if (expiredPhoto && raw.stage !== "closed") {
+        resetWorkshopState(room, { lobby: true });
+        room.photoExpiredAt = Date.now();
+      }
       } catch (err) {
         // One unrestorable snapshot must never block the rest.
         console.error("Skipping unrestorable room snapshot", raw?.id, err?.message || err);
@@ -1877,6 +1895,7 @@ function applyControl(room, playerId, msg, ws) {
       break;
     }
     case "close":
+      if (room.customImageFile) photoStore.remove(room.customImageFile);
       room.stage = "closed";
       room.boardLocked = true;
       for (const [pid, conn] of [...room.conns]) {
@@ -2505,12 +2524,10 @@ app.use((req, res, next) => {
   res.setHeader("Referrer-Policy", "no-referrer");
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "DENY");
-  if (req.path.startsWith("/api/")) res.setHeader("Cache-Control", "no-store");
+  if (req.path.startsWith("/api/") || req.path.startsWith("/uploads")) res.setHeader("Cache-Control", "no-store");
   if (!["GET", "HEAD", "OPTIONS"].includes(req.method) && !allowedOrigin(req)) return res.status(403).json({ error: "Origin denied." });
   next();
 });
-// Uploads and their files remain disabled until room-scoped async processing is verified.
-app.use(["/api/uploads", "/uploads"], (_req, res) => res.status(403).json({ error: "Photo uploads are temporarily unavailable.", code: "uploads_disabled" }));
 app.use(express.json({ limit: "64kb" }));
 
 // Single-process limits fit the current one-instance architecture. Deploying
@@ -2585,7 +2602,7 @@ app.post("/api/rooms", rateLimit("create", 12, 60 * 60_000), (req, res) => {
   const { puzzleId, difficulty, name, sessionName, role, contentLanguage, mystery, customImage, teamMode, teamCount } = req.body || {};
   if (typeof name !== "string" || !name.trim()) return res.status(400).json({ error: "A display name is required." });
   try {
-    const ci = customImage && typeof customImage === "object" ? customImage : null;
+    const ci = customImage ? validatedCustomPhoto(customImage) : null;
     const room = createRoom(
       {
         puzzleId,
@@ -2594,19 +2611,11 @@ app.post("/api/rooms", rateLimit("create", 12, 60 * 60_000), (req, res) => {
         mystery: !!mystery,
         teamMode: normalizeTeamMode(teamMode),
         teamCount: normalizeTeamCount(teamCount),
-        customImage: ci
-          ? {
-              url: String(ci.url || "").slice(0, 200),
-              file: String(ci.file || "").slice(0, 64),
-              width: Number(ci.width),
-              height: Number(ci.height),
-              name: String(ci.name || "").slice(0, 60),
-              by: name.trim().slice(0, 24),
-            }
-          : undefined,
+        customImage: ci || undefined,
       },
       { sessionName },
     );
+    if (ci) photoStore.bind(ci.file, room.id);
     const playerId = crypto.randomUUID();
     const { credential, authHash } = newPlayerCredential();
     const info = { name: name.trim().slice(0, 24), color: null, role: role === "spectator" ? "spectator" : "host", teamId: null, authHash };
@@ -2662,7 +2671,9 @@ app.post("/api/rooms/:id/join", rateLimit("join", 60, 10 * 60_000), (req, res) =
 app.get("/api/rooms/:id", (req, res) => {
   const room = findRoom(req.params.id);
   if (!room || room.stage === "closed") return res.status(404).json({ error: "Room not found.", code: "room_missing" });
-  res.json({ room: publicRoomView(room), puzzle: { ...puzzleView(room), activity: undefined }, playerCount: room.players.size + room.pending.size });
+  res.json({ room: publicRoomView(room), puzzle: room.customImageFile
+    ? { name: "Personal photo", category: "custom", image: "", activity: undefined }
+    : { ...puzzleView(room), activity: undefined }, playerCount: room.players.size + room.pending.size });
 });
 
 app.post("/api/rooms/:id/takeover", (req, res) => {
@@ -2707,9 +2718,13 @@ function canvasSnapshot(room) {
 app.post("/api/rooms/:id/puzzle", (req, res) => {
   const room = findRoom(req.params.id);
   if (!room) return res.status(404).json({ error: "Room not found.", code: "room_missing" });
-  const { puzzleId, difficulty, pid, contentLanguage, mystery } = req.body || {};
+  const { puzzleId, difficulty, pid, contentLanguage, mystery, customImage } = req.body || {};
   if (!hostAuthorized(room, req)) return res.status(403).json({ error: "Only the facilitator can change the activity.", code: "not_host" });
-  try { applyPuzzleToRoom(room, { puzzleId, difficulty, contentLanguage, mystery: typeof mystery === "boolean" ? mystery : !!room.config.mystery }); } catch { return res.status(400).json({ error: "Unknown puzzle or activity." }); }
+  try {
+    const ci = customImage ? validatedCustomPhoto(customImage) : undefined;
+    applyPuzzleToRoom(room, { puzzleId, difficulty, contentLanguage, customImage: ci, mystery: typeof mystery === "boolean" ? mystery : !!room.config.mystery });
+    if (ci) photoStore.bind(ci.file, room.id);
+  } catch { return res.status(400).json({ error: "Image unavailable. Choose a picture or upload again." }); }
   touch(room);
   broadcast(room, { t: "puzzle", room: roomView(room), puzzle: puzzleView(room), pieces: room.pieces.map(serializePiece), ratings: [], canvas: canvasSnapshot(room) });
   logEvent("puzzle_change", room);
@@ -2744,6 +2759,9 @@ app.post("/api/rooms/:id/puzzle-reset", (req, res) => {
   const timerDurationMs = room.timerDurationMs;
   const pausedAt = room.pausedAt;
   const pausedDurationMs = room.pausedDurationMs;
+  // Completion locks the board. Replaying must reopen it; an intentional
+  // mid-game pause still keeps its existing lock and clock state.
+  if (room.completed) room.boardLocked = false;
   scatterPieces(room);
   // Scores belong to the current board attempt. Do not use resetWorkshopState:
   // it would also reset the stage, clock, people and coaching workshop data.
@@ -2816,75 +2834,87 @@ app.get("/api/retired-images/:id", (req, res) => {
   res.type("jpeg").sendFile(original);
 });
 
-// Custom image uploads (room-scoped). The file is stored under .data/uploads
-// (never in the public bundle) and deleted when its room is reaped.
+// Photos are capabilities, not public assets. Only the uploader can attach a
+// derivative, and admitted participants receive its separate private read URL.
+function validatedCustomPhoto(input) {
+  if (!input || typeof input.file !== "string" || typeof input.token !== "string") throw new Error("Invalid photo upload.");
+  const stored = photoStore.claim(input.file, input.token);
+  return { file: stored.file, url: photoStore.url(stored), width: stored.width, height: stored.height, expiresAt: stored.expiresAt };
+}
 function matchesImageSignature(type, body) {
   if (type === "image/jpeg") return body.length >= 3 && body[0] === 0xff && body[1] === 0xd8 && body[2] === 0xff;
   if (type === "image/png") return body.length >= 8 && body.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
   if (type === "image/webp") return body.length >= 12 && body.toString("ascii", 0, 4) === "RIFF" && body.toString("ascii", 8, 12) === "WEBP";
   return false;
 }
-
-app.post("/api/uploads", rateLimit("upload", 6, 60 * 60_000), express.raw({ type: "*/*", limit: "10mb" }), (req, res) => {
+const runImageCommand = promisify(execFile);
+const imageLimits = ["-limit", "thread", "1", "-limit", "memory", "64MiB", "-limit", "map", "128MiB", "-limit", "disk", "256MiB", "-limit", "time", "15"];
+const imageOptions = { encoding: "utf8", timeout: 15_000, killSignal: "SIGKILL", maxBuffer: 64 * 1024 };
+let uploadsInFlight = 0;
+function uploadSlot(_req, res, next) {
+  // Bound both incoming buffers and child processes, including abandoned requests.
+  if (uploadsInFlight >= 2 || photoStore.photos.size >= 200) return res.status(503).json({ error: "Image processing is busy. Try again shortly." });
+  uploadsInFlight++;
+  let released = false;
+  res.locals.releaseUpload = () => { if (!released) { released = true; uploadsInFlight--; } };
+  const releaseUnlessProcessing = () => { if (!res.locals.processing) res.locals.releaseUpload(); };
+  res.once("finish", releaseUnlessProcessing);
+  res.once("close", releaseUnlessProcessing);
+  next();
+}
+app.post("/api/uploads", rateLimit("upload", 12, 60 * 60_000), uploadSlot, express.raw({ type: "*/*", limit: "9mb" }), async (req, res) => {
   const type = String(req.headers["content-type"] || "").split(";")[0].trim().toLowerCase();
-  if (!["image/jpeg", "image/png", "image/webp"].includes(type)) {
-    return res.status(415).json({ error: "Only JPEG, PNG or WebP images are allowed." });
-  }
+  const coder = { "image/jpeg": "JPEG", "image/png": "PNG", "image/webp": "WEBP" }[type];
+  if (!coder) return res.status(415).json({ error: "Choose a JPG, PNG or WebP photo." });
   const body = req.body;
-  if (!Buffer.isBuffer(body) || body.length < 1024) {
-    return res.status(400).json({ error: "Upload is empty or too small (min 1 KB)." });
-  }
-  if (body.length > 9 * 1024 * 1024) {
-    return res.status(413).json({ error: "Image is too large (max 9 MB)." });
-  }
-  if (!matchesImageSignature(type, body)) {
-    return res.status(415).json({ error: "Image content does not match its declared file type." });
-  }
-  let tmp = null;
-  let dest = null;
-  let converted = false;
+  if (!Buffer.isBuffer(body) || !body.length) return res.status(400).json({ error: "Choose a photo." });
+  if (!matchesImageSignature(type, body)) return res.status(415).json({ error: "The file is not a valid photo of this type." });
+  let tmp, dest, file, processingDir;
+  let registered = false;
+  const createdAt = Date.now();
+  res.locals.processing = true;
   try {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-    const file = `${crypto.randomUUID()}.webp`;
+    file = `${crypto.randomUUID()}.webp`;
     dest = path.join(uploadsDir, file);
-    tmp = path.join(uploadsDir, `${crypto.randomUUID()}.in`);
-    fs.writeFileSync(tmp, body, { flag: "wx", mode: 0o600 });
-    let dims = null;
-    try {
-      const out = execFileSync("identify", ["-limit", "memory", "64MiB", "-limit", "map", "128MiB", "-limit", "disk", "256MiB", "-format", "%w %h", `${tmp}[0]`], { encoding: "utf8", stdio: "pipe", timeout: 8_000, maxBuffer: 64 * 1024 }).trim().split(/\s+/);
-      const w = parseInt(out[0], 10);
-      const h = parseInt(out[1], 10);
-      if (Number.isFinite(w) && Number.isFinite(h) && w >= 200 && h >= 200 && w <= 6000 && h <= 6000 && w * h <= 16_000_000) dims = { w, h };
-    } catch { /* not an image */ }
-    if (!dims) {
-      try { fs.unlinkSync(tmp); } catch {}
-      return res.status(400).json({ error: "Could not read a valid image (200–6000px per side and max 16 megapixels)." });
+    processingDir = path.join(uploadsDir, `processing-${crypto.randomUUID()}`);
+    await fs.promises.mkdir(processingDir, { mode: 0o700 });
+    tmp = path.join(processingDir, "original.in");
+    const jobOptions = { ...imageOptions, cwd: processingDir, env: { ...process.env, MAGICK_TEMPORARY_PATH: processingDir } };
+    await fs.promises.writeFile(tmp, body, { flag: "wx", mode: 0o600 });
+    const input = `${coder}:${tmp}[0]`;
+    const { stdout } = await runImageCommand("identify", [...imageLimits, "-ping", "-format", "%w %h", input], jobOptions);
+    const [width, height] = stdout.trim().split(/\s+/).map(Number);
+    if (!Number.isInteger(width) || !Number.isInteger(height) || width < 200 || height < 200 || width > 6000 || height > 6000 || width * height > 16_000_000) {
+      return res.status(400).json({ error: "Photo dimensions must be 200–6000 px, up to 16 megapixels." });
     }
-    // Re-encode to WebP, capped at 2200px, so the room image is optimized.
-    const maxEdge = Math.max(dims.w, dims.h) > 2200 ? 2200 : null;
-    const args = ["-limit", "memory", "64MiB", "-limit", "map", "128MiB", "-limit", "disk", "256MiB", `${tmp}[0]`];
-    if (maxEdge) args.push("-resize", `${maxEdge}x${maxEdge}>`);
-    args.push("-quality", "82", dest);
-    execFileSync("convert", args, { stdio: "pipe", timeout: 12_000, maxBuffer: 64 * 1024 });
-    try { fs.unlinkSync(tmp); } catch {}
-    let outDims = dims;
-    try {
-      const out2 = execFileSync("identify", ["-format", "%w %h", dest], { encoding: "utf8", stdio: "pipe", timeout: 5_000, maxBuffer: 64 * 1024 }).trim().split(/\s+/);
-      outDims = { w: parseInt(out2[0], 10), h: parseInt(out2[1], 10) };
-    } catch {}
-    converted = true;
-    return res.json({ url: `/uploads/${file}`, file, width: outDims.w, height: outDims.h });
-  } catch (err) {
-    return res.status(500).json({ error: "Could not process the image." });
+    await runImageCommand("convert", [...imageLimits, input, "-auto-orient", "-strip", "-resize", "2200x2200>", "-quality", "82", dest], jobOptions);
+    await fs.promises.chmod(dest, 0o600);
+    const converted = await runImageCommand("identify", [...imageLimits, "-format", "%w %h", `WEBP:${dest}`], jobOptions);
+    const [outWidth, outHeight] = converted.stdout.trim().split(/\s+/).map(Number);
+    if (!Number.isInteger(outWidth) || !Number.isInteger(outHeight) || outWidth < 1 || outHeight < 1 || outWidth > 2200 || outHeight > 2200) throw new Error("Invalid derivative");
+    await fs.promises.rm(processingDir, { recursive: true, force: true });
+    processingDir = null;
+    if (res.destroyed) return;
+    const result = photoStore.add(file, outWidth, outHeight, createdAt);
+    registered = true;
+    return res.json(result);
+  } catch (error) {
+    if (!res.destroyed) return res.status(error.code === "ENOENT" ? 503 : 400).json({ error: error.code === "ENOENT" ? "Photo processing is temporarily unavailable." : "Could not read this photo. Try a different JPG, PNG or WebP." });
   } finally {
-    if (tmp) { try { fs.unlinkSync(tmp); } catch { /* may already be removed */ } }
-    // A failed conversion should never leave a publicly served partial file.
-    if (dest && !converted) { try { fs.unlinkSync(dest); } catch {} }
+    if (processingDir) { try { await fs.promises.rm(processingDir, { recursive: true, force: true }); } catch {} }
+    if (dest && !registered) { try { await fs.promises.unlink(dest); } catch {} }
+    res.locals.releaseUpload();
   }
 });
-
-// Serve room uploads (no long cache — they are room-scoped and short-lived).
-app.use("/uploads", express.static(uploadsDir, { maxAge: 0, immutable: false, fallthrough: false }));
+app.get("/uploads/:file", (req, res) => {
+  const photo = photoStore.canRead(req.params.file, req.query.key);
+  const room = photo && rooms.get(photo.roomId);
+  if (!photo || !room || room.stage === "closed" || room.customImageFile !== photo.file) return res.status(404).json({ error: "Photo unavailable." });
+  res.setHeader("Cache-Control", "private, no-store");
+  res.type("webp").sendFile(path.join(uploadsDir, photo.file));
+});
+// Prevent directory access and SPA fallbacks from exposing upload storage.
+app.use("/uploads", (_req, res) => res.status(404).json({ error: "Photo unavailable." }));
 
 // Catalog images are a closed public bundle. A missing derivative must answer
 // promptly with a real 404 rather than falling into Vite's SPA/proxy handling
@@ -3185,32 +3215,11 @@ wss.on("connection", (ws) => {
 
 /** Remove a room and any user-uploaded image file that belonged to it. */
 function reapRoom(room) {
-  if (room.customImageFile && ![...rooms.values()].some((other) =>
-    other !== room && other.customImageFile === room.customImageFile)) {
-    try {
-      const file = path.join(uploadsDir, path.basename(room.customImageFile));
-      if (file.startsWith(uploadsDir + path.sep) && fs.existsSync(file)) fs.unlinkSync(file);
-    } catch { /* best effort */ }
-  }
+  if (room.customImageFile) photoStore.remove(room.customImageFile);
   rooms.delete(room.id);
   codeIndex.delete(room.code);
   stopCursorRelay(room);
   scheduleSnapshot();
-}
-
-/** Uploads are initially unattached, so clean abandoned uploads on a TTL. */
-function cleanOrphanUploads(now = Date.now()) {
-  try {
-    const referenced = new Set([...rooms.values()].map((room) => room.customImageFile).filter(Boolean));
-    for (const entry of fs.readdirSync(uploadsDir, { withFileTypes: true })) {
-      if (!entry.isFile() || referenced.has(entry.name) || !/^(?:[0-9a-f-]{36})\.(?:webp|in)$/i.test(entry.name)) continue;
-      const file = path.join(uploadsDir, entry.name);
-      const age = now - fs.statSync(file).mtimeMs;
-      if (age > (entry.name.endsWith(".in") ? 15 : 30) * 60_000) fs.unlinkSync(file);
-    }
-  } catch (error) {
-    if (error?.code !== "ENOENT") console.warn("Upload cleanup failed", error.message);
-  }
 }
 
 // Claim expiration must not wait for the liveness heartbeat (30 seconds).
@@ -3240,7 +3249,6 @@ setInterval(() => {
     reapRoom(room); logEvent("room_expired", room);
   }
   for (const [key, bucket] of requestBuckets) if (bucket.expiresAt < now) requestBuckets.delete(key);
-  cleanOrphanUploads(now);
   saveSnapshots();
 }, 5 * 60_000).unref();
 

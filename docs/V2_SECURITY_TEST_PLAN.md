@@ -26,4 +26,4 @@ npm run test:protocol
 npm run build
 ```
 
-**Current evidence and release limits:** see `V2_EXECUTION_PLAN.md` and the latest PR #10 Actions run. Local baseline, V2 security, retained jigsaw protocol, browser flow and real process-restart tests pass. Photos and archived activities are disabled. Render redeploy durability, branch rules, physical devices and user pilots still require evidence before production.
+**Current evidence and release limits:** see `V2_EXECUTION_PLAN.md` and the latest PR #10 Actions run. Local baseline, V2 security, retained jigsaw protocol, browser flow and real process-restart tests pass. Archived activities are disabled. Photos use private capabilities, bounded async processing and a fixed one-hour deadline; upload, timer, restart and browser lifecycle tests cover the restored feature. Render redeploy durability, branch rules, physical devices and user pilots still require evidence before production.

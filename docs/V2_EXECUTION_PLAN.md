@@ -16,7 +16,8 @@ One collaborative jigsaw. Choose → invite → play → complete → replay wit
 - [x] Replaced sockets cannot continue acting; repeated hello is rejected; replaced browser tab receives a terminal message instead of reconnecting indefinitely.
 - [x] Connected guest takeover is denied while host is present; former host loses privileges after legitimate takeover.
 - [x] Request/message limits, bounded buckets and unauthenticated WS timeout.
-- [x] Upload creation, custom-image room creation and uploaded file access disabled. Upload reintroduction requires room-scoped asynchronous processing and privacy tests.
+- [x] Personal photos restored: real JPG/PNG/WebP validation, two bounded async processors, orientation correction, metadata stripping, single-use attachment proof and private read capability. Anonymous room metadata never reveals photo URLs.
+- [x] Fixed one-hour photo deadline; actual image/metadata deletion without traffic, after restart, on another image and room closure. Expiry preserves the group on a library puzzle.
 - [x] Actual process restart restores a placed piece, invitation and authenticated host/guest access on the same disk.
 - [x] CI covers build, renderer, image geometry, security, protocol, restart and desktop/mobile browser flow.
 - [x] CI triggers once for a V2 PR update; concurrency cancels superseded runs.
@@ -37,12 +38,13 @@ One collaborative jigsaw. Choose → invite → play → complete → replay wit
 
 ## Recorded local evidence
 - Build/typecheck passed.
-- Security baseline: 15/15; additional V2 security: 13/13; disabled-upload checks passed.
+- Security baseline: 15/15; additional V2 security: 13/13; real-upload privacy and lifecycle checks passed.
 - Core protocol: 25/25; layout: 10/10; reset: 6/6; claim lifecycle: 8/8.
 - Restart test: placed piece, invite and credentials survive stopping/restarting a real child process.
+- Photo tests: actual JPG/PNG/WebP derivatives; EXIF orientation corrected and stripped; owner-only single-use attachment; private image URL omitted from anonymous metadata; timer deletion without traffic; fixed 1h cutoff using an isolated test clock; restart before/after expiry; earlier removal on image change and closure. Slow processor test confirms HTTP remains responsive and originals/cache files are removed.
 - Image geometry: 4,392 clipped sprites, including 12-piece portrait/landscape grids.
 - Renderer contracts: 7/7. Catalog audit passed structurally; this is not a fresh legal review of sources.
-- Chromium 134 browser test: create, separate guest browser via invite, portrait 12-piece game, keyboard placement, phone tap placement, refresh, full keyboard completion, team finish and replay passed. Widths 320/390 and landscape 844 checked; no browser errors.
+- Chromium 134 browser tests: catalog and personal-photo creation, separate guest via invite, portrait/landscape 12-piece games, keyboard/phone placement, refresh, full completion, another personal photo with the same group and playable replay passed. Replay now clears the completion lock while preserving a deliberate mid-game pause. Photo deadline is unchanged by replay/refresh. Widths 320/390 and landscape 844 checked; no browser errors.
 
 ## Release checks still requiring environment/human evidence
 - [ ] Latest remote GitHub Actions run passes on the pushed commit. Do not substitute an old run for current evidence.
@@ -53,7 +55,7 @@ One collaborative jigsaw. Choose → invite → play → complete → replay wit
 
 ## P2 / deferred
 - Curate the 36-image catalog to 10–15 preferred launch images and optimize assets.
-- Reintroduce user photos only after private room-bound access, async processor limits and cleanup are verified.
+- Physical photo-picker/orientation checks on iPhone and Android remain part of release QA.
 - Remove unreachable legacy server helpers/types after retained protocol gates stabilize; the legacy product is already disabled.
 - Review commercial-use terms and image licensing with the owner; do not silently replace the existing license.
 

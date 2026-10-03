@@ -4,7 +4,7 @@ This branch changes PuzzleTogether from a workshop activity collection into a fo
 
 The client now offers one-link admission, short create/join flows, 12-piece games, team completion and replay. Keyboard/tap controls are an alternative to dragging. The existing jigsaw renderer, geometry and authoritative piece claims are retained.
 
-Security uses separate player credentials and admission capabilities. Kick/session rotation invalidate compromised access; websocket replacement cannot leave a stale connection authorized. API caching and cross-origin requests are constrained. Custom-image uploads and their URLs are blocked until privacy and isolated processing can be verified.
+Security uses separate player credentials and admission capabilities. Kick/session rotation invalidate compromised access; websocket replacement cannot leave a stale connection authorized. API caching and cross-origin requests are constrained. Personal photos use one-use attachment credentials and separate private image capabilities; anonymous room metadata omits their URLs. Photos expire exactly one hour after upload, including after restart, and are removed sooner on another image or room closure. Expiry returns the same group to the lobby with a library image.
 
 ## Before production
 
@@ -20,4 +20,4 @@ Keep the current production commit and deployment available. If the approved dep
 
 ## Known limits
 
-Single-process request limits and JSON snapshots; no multi-instance coordination. Photos disabled. Existing image credits and repository license retained, not re-licensed. Some unreachable legacy server helpers remain internal cleanup work. Current test evidence is in `V2_EXECUTION_PLAN.md`; inspect the latest GitHub Actions run before merging.
+Single-process request limits and JSON snapshots; no multi-instance coordination. Photos require ImageMagick (`identify` and `convert`) on the production host. Originals are discarded after processing, EXIF is stripped and upload storage must be excluded from backups. A recipient can save a received image; the timer deletes server copies and prevents further fetches, not copies on other devices. Existing image credits and repository license retained, not re-licensed. Some unreachable legacy server helpers remain internal cleanup work. Current test evidence is in `V2_EXECUTION_PLAN.md`; inspect the latest GitHub Actions run before merging.

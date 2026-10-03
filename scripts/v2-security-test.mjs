@@ -244,17 +244,8 @@ try {
     ).status,
     400,
   );
-  for (const route of ["/api/uploads", "/uploads/example.webp"])
-    assert.equal(
-      (
-        await fetch(BASE + route, {
-          method: route === "/api/uploads" ? "POST" : "GET",
-          body: route === "/api/uploads" ? "junk" : undefined,
-        })
-      ).status,
-      403,
-    );
-  ok("legacy activities and all upload access disabled");
+  assert.equal((await fetch(BASE + "/uploads/example.webp")).status, 404);
+  ok("legacy activities and forged photo access rejected");
   guest3.send(JSON.stringify({ t: "control", action: "close" }));
   await guest3.wait((m) => m.t === "room" && m.room.stage === "closed");
   assert.equal(

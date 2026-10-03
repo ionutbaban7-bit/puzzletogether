@@ -120,6 +120,8 @@ export interface RoomView {
   id: string;
   code?: string;
   sessionName: string;
+  photoExpiresAt?: number | null;
+  photoExpiredAt?: number | null;
   hostId?: string | null;
   puzzleId: string;
   difficulty: string;

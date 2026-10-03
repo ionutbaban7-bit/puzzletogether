@@ -6,6 +6,7 @@ import { copyToClipboard, inviteUrl } from "../lib/format";
 import { navigate } from "../lib/router";
 import { LangToggle, useLang } from "../lib/i18n";
 import { AccessiblePlay } from "../components/AccessiblePlay";
+import { PhotoPicker } from "../components/PhotoPicker";
 import type { CatalogData } from "../types";
 export default function GamePage() {
   const s = useStore((s) => s);
@@ -18,6 +19,8 @@ export default function GamePage() {
   const [message, setMessage] = useState("");
   const [catalog, setCatalog] = useState<CatalogData | null>(null);
   const [nextPuzzle, setNextPuzzle] = useState("");
+  const [nextPhoto, setNextPhoto] = useState<File | null>(null);
+  const [nextBusy, setNextBusy] = useState(false);
   useEffect(() => {
     if (room?.completed)
       api
@@ -34,6 +37,15 @@ export default function GamePage() {
     } catch (e) {
       setMessage((e as Error).message);
     }
+  }
+  async function changeImage() {
+    if (!room || !you || nextBusy) return;
+    setNextBusy(true);
+    await action(async () => {
+      const photo = nextPuzzle === "custom-upload" && nextPhoto ? await api.uploadImage(nextPhoto) : undefined;
+      await api.changePuzzle(room.id, nextPuzzle, room.difficulty, you, undefined, undefined, photo);
+    });
+    setNextBusy(false);
   }
   if (s.status === "denied" || s.status === "closed")
     return (
@@ -58,7 +70,7 @@ export default function GamePage() {
       </main>
     );
   const puzzleName =
-    typeof puzzle.name === "string" ? puzzle.name : puzzle.name[lang];
+    puzzle.category === "custom" ? (ro ? "Fotografia ta" : "Your photo") : typeof puzzle.name === "string" ? puzzle.name : puzzle.name[lang];
   const host = room.hostId === you;
   const me = players.find((p) => p.id === you);
   const count = Object.values(pieces).filter((p) => p.locked).length;
@@ -110,6 +122,13 @@ export default function GamePage() {
           {ro ? "Ajutor" : "Help"}
         </button>
       </header>
+      {room.photoExpiresAt && (
+        <p className="game-v2-notice text-sm">
+          <span>{ro ? "Fotografia se șterge la " : "Photo deleted at "}
+          <time dateTime={new Date(room.photoExpiresAt).toISOString()}>{new Date(room.photoExpiresAt).toLocaleTimeString(ro ? "ro-RO" : "en-GB", { hour: "2-digit", minute: "2-digit" })}</time>.</span>
+        </p>
+      )}
+      {room.photoExpiredAt && <p role="status" className="game-v2-notice">{ro ? "Fotografia a fost ștearsă după 1h. Puteți continua cu acest puzzle." : "The photo was deleted after 1h. You can continue with this puzzle."}</p>}
       {!connected && (
         <div role="status" className="game-v2-notice">
           {ro
@@ -360,9 +379,12 @@ export default function GamePage() {
                       {ro ? "Alt puzzle" : "Another puzzle"}
                       <select
                         className="input mt-2"
+                        aria-label={ro ? "Alt puzzle" : "Another puzzle"}
                         value={nextPuzzle}
+                        disabled={nextBusy}
                         onChange={(e) => setNextPuzzle(e.target.value)}
                       >
+                        {nextPhoto && <option value="custom-upload">{ro ? "Fotografia ta" : "Your photo"}</option>}
                         {catalog?.puzzles.map((p) => (
                           <option key={p.id} value={p.id}>
                             {p.name}
@@ -370,19 +392,11 @@ export default function GamePage() {
                         ))}
                       </select>
                     </label>
+                    <PhotoPicker file={nextPhoto} selected={nextPuzzle === "custom-upload"} onChange={setNextPhoto} onSelect={() => setNextPuzzle("custom-upload")} onError={setMessage} disabled={nextBusy} />
                     <button
                       className="btn-secondary"
-                      disabled={!nextPuzzle}
-                      onClick={() =>
-                        action(() =>
-                          api.changePuzzle(
-                            room.id,
-                            nextPuzzle,
-                            room.difficulty,
-                            you!,
-                          ),
-                        )
-                      }
+                      disabled={!nextPuzzle || nextBusy}
+                      onClick={changeImage}
                     >
                       {ro ? "Alege imaginea" : "Choose picture"}
                     </button>

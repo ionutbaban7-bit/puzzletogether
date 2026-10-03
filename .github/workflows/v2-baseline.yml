@@ -29,8 +29,16 @@ jobs:
           npm run test:image-scaling
       - name: Catalog structural audit
         run: npm run catalog:audit
-      - name: Credentials, invites, revoked access and disabled uploads
+      - name: Configure photo processor
+        run: |
+          if ! command -v convert >/dev/null || ! command -v identify >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y imagemagick
+          fi
+      - name: Credentials, invites, revoked access and private photos
         run: npm run test:security
+      - name: Photo lifetime and recovery after restart
+        run: npm run test:photos
       - name: Authenticated multiplayer protocol
         run: npm run test:protocol
       - name: Recovery after process restart

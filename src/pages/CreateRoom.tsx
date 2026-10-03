@@ -4,6 +4,7 @@ import { navigate } from "../lib/router";
 import { getSession, saveSession } from "../lib/session";
 import { LangToggle, useLang } from "../lib/i18n";
 import { Logo } from "../components/ui";
+import { PhotoPicker } from "../components/PhotoPicker";
 import type { CatalogData } from "../types";
 export default function CreateRoom() {
   const { lang } = useLang();
@@ -16,12 +17,13 @@ export default function CreateRoom() {
   const [advanced, setAdvanced] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [photo, setPhoto] = useState<File | null>(null);
   useEffect(() => {
     api
       .fetchCatalog()
       .then((c) => {
         setCatalog(c);
-        setPuzzle(c.puzzles[0]?.id || "");
+        setPuzzle((current) => current || c.puzzles[0]?.id || "");
       })
       .catch((e) => setError(e.message));
   }, []);
@@ -30,9 +32,11 @@ export default function CreateRoom() {
     setBusy(true);
     setError("");
     try {
+      const customImage = puzzle === "custom-upload" && photo ? await api.uploadImage(photo) : undefined;
       const result = await api.createRoom(puzzle, difficulty, name.trim(), {
         role: observer ? "spectator" : "host",
         sessionName: catalog?.puzzles.find((p) => p.id === puzzle)?.name,
+        customImage,
       });
       saveSession({
         name: name.trim(),
@@ -64,10 +68,13 @@ export default function CreateRoom() {
             create();
           }}
         >
-          <fieldset className="mt-6">
+          <fieldset className="mt-6" disabled={busy}>
             <legend className="mb-3 font-semibold">
               {ro ? "1. Imaginea" : "1. Picture"}
             </legend>
+            <PhotoPicker file={photo} selected={puzzle === "custom-upload"} onChange={setPhoto} onSelect={() => setPuzzle("custom-upload")} onError={setError} disabled={busy} />
+            <details open={puzzle !== "custom-upload"}>
+              <summary className="mb-3 cursor-pointer text-sm font-semibold">{ro ? "Sau din bibliotecă" : "Or from the library"}</summary>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
               {catalog?.puzzles.map((p) => (
                 <label
@@ -92,8 +99,9 @@ export default function CreateRoom() {
                 </label>
               ))}
             </div>
+            </details>
           </fieldset>
-          <fieldset className="mt-6">
+          <fieldset className="mt-6" disabled={busy}>
             <legend className="mb-3 font-semibold">
               {ro ? "2. Numărul de piese" : "2. Piece count"}
             </legend>

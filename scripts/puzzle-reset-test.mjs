@@ -110,7 +110,7 @@ const completionReset = await post(`/api/rooms/${roomId}/puzzle-reset`, { pid: h
 const afterCompleteReset = await guest.waitFor("puzzleReset");
 ok(
   "puzzle reset clears a completed board but preserves play stage and timer fields",
-  completionReset.status === 200 && !afterCompleteReset.room.completed && afterCompleteReset.room.stage === "play" &&
+  completionReset.status === 200 && !afterCompleteReset.room.completed && !afterCompleteReset.room.boardLocked && afterCompleteReset.room.stage === "play" &&
     afterCompleteReset.room.startedAt === clockBefore.startedAt && afterCompleteReset.room.timerEndsAt === clockBefore.timerEndsAt,
 );
 

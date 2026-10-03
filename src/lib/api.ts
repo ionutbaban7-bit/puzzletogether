@@ -1,5 +1,6 @@
 import type { CatalogData, RoomView } from "../types";
 import { getSession } from "./session";
+export interface PhotoUpload { file: string; token: string; width: number; height: number; expiresAt: number }
 
 function authHeaders(): Record<string, string> {
   const credential = getSession().credential;
@@ -25,10 +26,10 @@ export const api = {
     if (!Array.isArray(data.categories) || !Array.isArray(data.puzzles) || !Array.isArray(data.difficulties)) throw new Error("Invalid puzzle library.");
     return data;
   },
-  createRoom(puzzleId: string, difficulty: string, name: string, options: { sessionName?: string; role?: "host" | "spectator"; contentLanguage?: "ro" | "en"; mystery?: boolean; teamMode?: "shared" | "color-teams"; teamCount?: number; customImage?: { url: string; file: string; width: number; height: number; name: string } } = {}) {
+  createRoom(puzzleId: string, difficulty: string, name: string, options: { sessionName?: string; role?: "host" | "spectator"; contentLanguage?: "ro" | "en"; mystery?: boolean; teamMode?: "shared" | "color-teams"; teamCount?: number; customImage?: PhotoUpload } = {}) {
     return post<{ room: RoomView; playerId: string; credential: string }>("/api/rooms", { puzzleId, difficulty, name, ...options });
   },
-  async uploadImage(file: File): Promise<{ url: string; file: string; width: number; height: number }> {
+  async uploadImage(file: File): Promise<PhotoUpload> {
     const response = await fetch("/api/uploads", { method: "POST", headers: { "Content-Type": file.type || "application/octet-stream" }, body: file });
     const data = await response.json().catch(() => null);
     if (!response.ok || !data) throw new Error(data?.error || "Upload failed.");
@@ -37,8 +38,8 @@ export const api = {
   joinRoom(ref: string, name: string, pid?: string, code?: string, invite?: string) {
     return post<{ room: RoomView; playerId: string; credential?: string; returning?: boolean }>(`/api/rooms/${encodeURIComponent(ref)}/join`, { name, pid, code, invite });
   },
-  changePuzzle(ref: string, puzzleId: string, difficulty: string, pid: string, contentLanguage?: "ro" | "en", mystery?: boolean) {
-    return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/puzzle`, { puzzleId, difficulty, pid, contentLanguage, mystery });
+  changePuzzle(ref: string, puzzleId: string, difficulty: string, pid: string, contentLanguage?: "ro" | "en", mystery?: boolean, customImage?: PhotoUpload) {
+    return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/puzzle`, { puzzleId, difficulty, pid, contentLanguage, mystery, customImage });
   },
   takeover(ref: string, pid: string) { return post<{ ok: boolean; room: RoomView }>(`/api/rooms/${encodeURIComponent(ref)}/takeover`, { pid }); },
   getRoom(ref: string) {
