@@ -1767,7 +1767,7 @@ function applyTeamAction(room, playerId, msg, ws) {
 function applyControl(room, playerId, msg, ws) {
   if (!requireHostSocket(room, playerId, ws)) return;
   const now = Date.now();
-  if (!["start", "lock", "kick", "close"].includes(msg.action)) return send(ws, { t: "error", code: "activity_archived", message: "Control unavailable." });
+  if (!["ackPause", "teams", "teamAssign", "start", "stage", "lock", "reveal", "emotionsRound", "emotionsReveal", "emotionsSafetyWord", "timer", "notes", "celebration", "complete", "kick", "close"].includes(msg.action)) return send(ws, { t: "error", code: "unknown_control", message: "Control unavailable." });
   switch (msg.action) {
     case "ackPause":
       room.pauseRequested = false;
@@ -2761,9 +2761,21 @@ app.post("/api/rooms/:id/puzzle", (req, res) => {
   const { puzzleId, difficulty, pid, contentLanguage, mystery, customImage } = req.body || {};
   if (!hostAuthorized(room, req)) return res.status(403).json({ error: "Only the facilitator can change the activity.", code: "not_host" });
   try {
-    const ci = customImage ? validatedCustomPhoto(customImage) : undefined;
+    let ci;
+    let freshPhoto = false;
+    if (customImage) {
+      ci = validatedCustomPhoto(customImage);
+      freshPhoto = true;
+    } else if (puzzleId === "custom-upload" && room.config?.puzzleId === "custom-upload" && room.config?.customImage && room.customImageFile) {
+      // A difficulty-only change must reuse the already-bound private photo.
+      // It keeps the original read capability and, critically, its original
+      // expiresAt deadline instead of creating a fresh one-hour window.
+      const stored = photoStore.get(room.customImageFile);
+      if (!stored || stored.file !== room.config.customImage.file || stored.roomId !== room.id) throw new Error("Photo unavailable.");
+      ci = { file: stored.file, url: photoStore.url(stored), width: stored.width, height: stored.height, expiresAt: stored.expiresAt };
+    }
     applyPuzzleToRoom(room, { puzzleId, difficulty, contentLanguage, customImage: ci, mystery: typeof mystery === "boolean" ? mystery : !!room.config.mystery });
-    if (ci) photoStore.bind(ci.file, room.id);
+    if (freshPhoto && ci) photoStore.bind(ci.file, room.id);
   } catch { return res.status(400).json({ error: "Image unavailable. Choose a picture or upload again." }); }
   touch(room);
   broadcast(room, { t: "puzzle", room: roomView(room), puzzle: puzzleView(room), pieces: room.pieces.map(serializePiece), ratings: [], canvas: canvasSnapshot(room) });
