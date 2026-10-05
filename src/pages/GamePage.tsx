@@ -96,7 +96,9 @@ export default function GamePage() {
     return <main className="p-8" role="status">{ro ? "Se conectează…" : "Connecting…"}</main>;
   }
 
-  const activeRoom = room;\n\n  const puzzleName = puzzle.category === "custom"
+  const activeRoom = room;
+
+  const puzzleName = puzzle.category === "custom"
     ? (ro ? "Fotografia ta" : "Your photo")
     : typeof puzzle.name === "string"
       ? (ro ? puzzle.nameRo || puzzle.name : puzzle.name)
