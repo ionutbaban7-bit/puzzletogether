@@ -96,29 +96,29 @@ export default function GamePage() {
     return <main className="p-8" role="status">{ro ? "Se conectează…" : "Connecting…"}</main>;
   }
 
-  const puzzleName = puzzle.category === "custom"
+  const activeRoom = room;\n\n  const puzzleName = puzzle.category === "custom"
     ? (ro ? "Fotografia ta" : "Your photo")
     : typeof puzzle.name === "string"
       ? (ro ? puzzle.nameRo || puzzle.name : puzzle.name)
       : puzzle.name[lang];
-  const host = room.hostId === you;
+  const host = activeRoom.hostId === you;
   const me = players.find((player) => player.id === you);
   const count = Object.values(pieces).filter((piece) => piece.locked).length;
-  const enabled = connected && room.stage === "play" && !room.completed && !room.boardLocked && me?.role !== "spectator";
-  const currentDifficulty = catalog?.difficulties.find((difficulty) => difficulty.id === room.difficulty);
+  const enabled = connected && activeRoom.stage === "play" && !activeRoom.completed && !activeRoom.boardLocked && me?.role !== "spectator";
+  const currentDifficulty = catalog?.difficulties.find((difficulty) => difficulty.id === activeRoom.difficulty);
   const nextDifficulty = catalog?.difficulties
-    .filter((difficulty) => difficulty.pieces > (currentDifficulty?.pieces || room.total))
+    .filter((difficulty) => difficulty.pieces > (currentDifficulty?.pieces || activeRoom.total))
     .sort((a, b) => a.pieces - b.pieces)[0];
   const galleryPuzzles = catalog?.puzzles.filter((item) => {
     if (galleryCategory === "all") return true;
     if (galleryCategory === "anchors") return item.anchor === true;
     return item.category === galleryCategory;
   }) || [];
-  const panelVisible = panel !== null || room.stage === "lobby" || room.completed || accessible;
+  const panelVisible = panel !== null || activeRoom.stage === "lobby" || activeRoom.completed || accessible;
 
   async function share() {
     setMessage(
-      (await copyToClipboard(inviteUrl(room)))
+      (await copyToClipboard(inviteUrl(activeRoom)))
         ? (ro ? "Link copiat." : "Link copied.")
         : (ro ? "Selectează și copiază linkul de mai jos." : "Select and copy the link below."),
     );
@@ -126,16 +126,16 @@ export default function GamePage() {
 
   async function changeImage() {
     if (!you || nextBusy || !nextPuzzle) return;
-    if (!room.completed && room.stage === "play" && count > 0) {
+    if (!activeRoom.completed && activeRoom.stage === "play" && count > 0) {
       const confirmed = window.confirm(ro
         ? "Schimbi imaginea? Progresul puzzle-ului curent va fi înlocuit, dar grupul rămâne în cameră."
-        : "Change the picture? Current puzzle progress will be replaced, but the group stays in the room.");
+        : "Change the picture? Current puzzle progress will be replaced, but the group stays in the activeRoom.");
       if (!confirmed) return;
     }
     setNextBusy(true);
     await action(async () => {
       const photo = nextPuzzle === "custom-upload" && nextPhoto ? await api.uploadImage(nextPhoto) : undefined;
-      await api.changePuzzle(room.id, nextPuzzle, room.difficulty, you, undefined, undefined, photo);
+      await api.changePuzzle(activeRoom.id, nextPuzzle, activeRoom.difficulty, you, undefined, undefined, photo);
       setPanel(null);
       setNextPhoto(null);
     });
@@ -143,15 +143,15 @@ export default function GamePage() {
   }
 
   async function changeDifficulty(difficulty: string) {
-    if (!you || nextBusy || difficulty === room.difficulty) return;
+    if (!you || nextBusy || difficulty === activeRoom.difficulty) return;
     const target = catalog?.difficulties.find((item) => item.id === difficulty);
-    const confirmed = room.completed || count === 0 || window.confirm(ro
+    const confirmed = activeRoom.completed || count === 0 || window.confirm(ro
       ? "Schimbi nivelul? Tabla se reconstruiește, dar invitația și grupul rămân aceleași."
       : "Change level? The board will rebuild, but the invitation and group stay the same.");
     if (!confirmed) return;
     setNextBusy(true);
     await action(async () => {
-      await api.changePuzzle(room.id, room.puzzleId, difficulty, you);
+      await api.changePuzzle(activeRoom.id, activeRoom.puzzleId, difficulty, you);
       setMessage(target
         ? (ro ? "Nivel schimbat la " + target.pieces + " piese." : "Level changed to " + target.pieces + " pieces.")
         : (ro ? "Nivel schimbat." : "Level changed."));
@@ -168,7 +168,7 @@ export default function GamePage() {
     if (!confirmed) return;
     setNextBusy(true);
     await action(async () => {
-      await api.resetPuzzle(room.id, you);
+      await api.resetPuzzle(activeRoom.id, you);
       setMessage(ro ? "Puzzle resetat. Timpul a fost păstrat." : "Puzzle reset. The timer was preserved.");
       setPanel(null);
     });
@@ -179,11 +179,11 @@ export default function GamePage() {
     if (!you || nextBusy) return;
     const confirmed = window.confirm(ro
       ? "Resetezi runda și revii în lobby? Oamenii rămân în aceeași cameră."
-      : "Reset the round and return to the lobby? People stay in the same room.");
+      : "Reset the round and return to the lobby? People stay in the same activeRoom.");
     if (!confirmed) return;
     setNextBusy(true);
     await action(async () => {
-      await api.resetRoom(room.id, you);
+      await api.resetRoom(activeRoom.id, you);
       setMessage(ro ? "Runda a fost resetată." : "Round reset.");
       setPanel(null);
     });
@@ -205,20 +205,20 @@ export default function GamePage() {
         </button>
 
         <div className="game-v2-progress min-w-24">
-          <span role="status" aria-live="polite">{count}/{room.total} {ro ? "piese" : "pieces"}</span>
-          <progress aria-label={ro ? "Progres comun" : "Shared progress"} value={count} max={room.total} />
+          <span role="status" aria-live="polite">{count}/{activeRoom.total} {ro ? "piese" : "pieces"}</span>
+          <progress aria-label={ro ? "Progres comun" : "Shared progress"} value={count} max={activeRoom.total} />
         </div>
 
         <div className="game-v2-clock"><RoundTimer room={room} ro={ro} /></div>
 
         <div className="game-v2-toolbar">
-          {host && room.stage === "play" && !room.completed && (
-            <button className="btn-dark btn-sm" disabled={!connected} onClick={() => store.sendControl("lock", { locked: !room.boardLocked })}>
-              {room.boardLocked ? (ro ? "Continuă" : "Resume") : (ro ? "Pauză" : "Pause")}
+          {host && activeRoom.stage === "play" && !activeRoom.completed && (
+            <button className="btn-dark btn-sm" disabled={!connected} onClick={() => store.sendControl("lock", { locked: !activeRoom.boardLocked })}>
+              {activeRoom.boardLocked ? (ro ? "Continuă" : "Resume") : (ro ? "Pauză" : "Pause")}
             </button>
           )}
           <button className="btn-dark btn-sm" onClick={() => togglePanel("invite")} aria-expanded={panel === "invite"}>
-            👥 {players.filter((player) => player.role !== "spectator").length}/{room.maxPlayers} · {ro ? "Invită" : "Invite"}
+            👥 {players.filter((player) => player.role !== "spectator").length}/{activeRoom.maxPlayers} · {ro ? "Invită" : "Invite"}
           </button>
           <button className="btn-dark btn-sm" onClick={() => togglePanel("chat")} aria-expanded={panel === "chat"}>
             💬 {ro ? "Chat" : "Chat"}{s.chat.length ? " · " + s.chat.length : ""}
@@ -239,25 +239,25 @@ export default function GamePage() {
         </div>
       </header>
 
-      {room.stage === "play" && !room.completed && room.boardLocked && (
+      {activeRoom.stage === "play" && !activeRoom.completed && activeRoom.boardLocked && (
         <p role="status" className="game-v2-notice">
           <span>{ro ? "Pauză pentru toți. Timpul este oprit." : "Paused for everyone. The clock is stopped."}</span>
         </p>
       )}
-      {room.podiumEnabled && !room.completed && (
+      {activeRoom.podiumEnabled && !activeRoom.completed && (
         <p className="game-v2-meta">{ro ? "Podium la final · 1 piesă = 1 punct" : "Podium at the end · 1 piece = 1 point"}</p>
       )}
-      {room.photoExpiresAt && (
+      {activeRoom.photoExpiresAt && (
         <p className="game-v2-notice text-sm">
           <span>
             {ro ? "Fotografia se șterge la " : "Photo deleted at "}
-            <time dateTime={new Date(room.photoExpiresAt).toISOString()}>
-              {new Date(room.photoExpiresAt).toLocaleTimeString(ro ? "ro-RO" : "en-GB", { hour: "2-digit", minute: "2-digit" })}
+            <time dateTime={new Date(activeRoom.photoExpiresAt).toISOString()}>
+              {new Date(activeRoom.photoExpiresAt).toLocaleTimeString(ro ? "ro-RO" : "en-GB", { hour: "2-digit", minute: "2-digit" })}
             </time>.
           </span>
         </p>
       )}
-      {room.photoExpiredAt && (
+      {activeRoom.photoExpiredAt && (
         <p role="status" className="game-v2-notice">
           {ro ? "Fotografia a fost ștearsă după 1h. Puteți continua cu un puzzle din bibliotecă." : "The photo was deleted after 1h. You can continue with a library puzzle."}
         </p>
@@ -275,7 +275,7 @@ export default function GamePage() {
         </div>
       )}
 
-      <div className={"game-v2-content " + ((room.stage === "lobby" || room.completed) ? "game-v2-priority-panel" : "")}>
+      <div className={"game-v2-content " + ((activeRoom.stage === "lobby" || activeRoom.completed) ? "game-v2-priority-panel" : "")}>
         <section className="game-v2-board" aria-label={ro ? "Tabla de joc" : "Game board"}>
           <Board
             puzzle={puzzle}
@@ -288,7 +288,7 @@ export default function GamePage() {
             allowReset={false}
             resetSignal={s.epoch}
             inputEnabled={enabled}
-            layoutMode={room.jigsawLayout}
+            layoutMode={activeRoom.jigsawLayout}
             toolsOpen={panel === "help"}
           />
         </section>
@@ -298,7 +298,7 @@ export default function GamePage() {
             <div className="game-v2-panel-top">
               <div>
                 <span className="game-v2-panel-eyebrow">{puzzleName}</span>
-                <strong>{room.total} {ro ? "piese" : "pieces"}</strong>
+                <strong>{activeRoom.total} {ro ? "piese" : "pieces"}</strong>
               </div>
               {panel && (
                 <button className="game-v2-panel-close" aria-label={ro ? "Închide panoul" : "Close panel"} onClick={() => setPanel(null)}>×</button>
@@ -311,9 +311,9 @@ export default function GamePage() {
                 <button className="btn-primary my-3" onClick={share}>{ro ? "Copiază invitația" : "Copy invitation"}</button>
                 <label className="block text-sm">
                   {ro ? "Link privat" : "Private link"}
-                  <input aria-label={ro ? "Link privat" : "Private link"} className="input mt-2" readOnly value={inviteUrl(room)} onFocus={(event) => event.target.select()} />
+                  <input aria-label={ro ? "Link privat" : "Private link"} className="input mt-2" readOnly value={inviteUrl(activeRoom)} onFocus={(event) => event.target.select()} />
                 </label>
-                <p className="my-3">{ro ? "Cod:" : "Code:"} <strong>{room.code}</strong></p>
+                <p className="my-3">{ro ? "Cod:" : "Code:"} <strong>{activeRoom.code}</strong></p>
                 <p className="text-sm">{ro ? "Distribuie doar grupului tău." : "Share only with your group."}</p>
                 <ul className="game-v2-people">
                   {players.map((player) => (
@@ -338,7 +338,7 @@ export default function GamePage() {
                     className="btn-secondary"
                     onClick={() => action(async () => {
                       const session = (await import("../lib/session")).getSession();
-                      const response = await fetch("/api/rooms/" + room.id + "/invite", {
+                      const response = await fetch("/api/rooms/" + activeRoom.id + "/invite", {
                         method: "POST",
                         headers: { Authorization: "Bearer " + session.credential },
                       });
@@ -416,13 +416,13 @@ export default function GamePage() {
                 <div className="game-v2-section-title">
                   <div><h2>{ro ? "Opțiunile gazdei" : "Host options"}</h2><p>{ro ? "Control asupra rundei, nu asupra oamenilor." : "Control the round, not the people."}</p></div>
                 </div>
-                {room.stage === "play" && !room.completed && (
-                  <button className="btn-secondary w-full" disabled={!connected} onClick={() => store.sendControl("lock", { locked: !room.boardLocked })}>
-                    {room.boardLocked ? (ro ? "Continuă pentru toți" : "Resume for everyone") : (ro ? "Pauză pentru toți" : "Pause for everyone")}
+                {activeRoom.stage === "play" && !activeRoom.completed && (
+                  <button className="btn-secondary w-full" disabled={!connected} onClick={() => store.sendControl("lock", { locked: !activeRoom.boardLocked })}>
+                    {activeRoom.boardLocked ? (ro ? "Continuă pentru toți" : "Resume for everyone") : (ro ? "Pauză pentru toți" : "Pause for everyone")}
                   </button>
                 )}
                 <label className="mt-4 block text-sm font-semibold" htmlFor="room-difficulty">{ro ? "Nivel / număr de piese" : "Level / piece count"}</label>
-                <select id="room-difficulty" className="input mt-2" value={room.difficulty} disabled={nextBusy || !catalog} onChange={(event) => changeDifficulty(event.target.value)}>
+                <select id="room-difficulty" className="input mt-2" value={activeRoom.difficulty} disabled={nextBusy || !catalog} onChange={(event) => changeDifficulty(event.target.value)}>
                   {catalog?.difficulties.map((difficulty) => <option key={difficulty.id} value={difficulty.id}>{difficulty.pieces} {ro ? "piese" : "pieces"}</option>)}
                 </select>
                 {nextDifficulty && (
@@ -430,7 +430,7 @@ export default function GamePage() {
                     {ro ? "Nivelul următor · " + nextDifficulty.pieces + " piese" : "Next level · " + nextDifficulty.pieces + " pieces"}
                   </button>
                 )}
-                {room.stage === "play" && !room.completed && (
+                {activeRoom.stage === "play" && !activeRoom.completed && (
                   <button className="btn-secondary mt-3 w-full" disabled={nextBusy} onClick={resetPuzzle}>
                     {ro ? "Rearanjează puzzle-ul" : "Reset puzzle"}
                   </button>
@@ -452,25 +452,25 @@ export default function GamePage() {
                 </button>
                 <p className="mt-4 text-xs">{puzzle.attribution || ((puzzle.credit || "") + (puzzle.license ? " · " + puzzle.license : ""))}</p>
                 <div className="mt-4"><LangToggle /></div>
-                {!players.some((player) => player.id === room.hostId) && !host && (
-                  <button className="btn-secondary mt-3" onClick={() => action(() => api.takeover(room.id, you!))}>
+                {!players.some((player) => player.id === activeRoom.hostId) && !host && (
+                  <button className="btn-secondary mt-3" onClick={() => action(() => api.takeover(activeRoom.id, you!))}>
                     {ro ? "Preia rolul gazdei" : "Become host"}
                   </button>
                 )}
               </section>
             )}
 
-            {accessible && !room.completed && (
+            {accessible && !activeRoom.completed && (
               <section>
                 <AccessiblePlay key={s.epoch} puzzle={puzzle} pieces={pieces} you={you} enabled={enabled} />
               </section>
             )}
 
-            {room.stage === "lobby" && (
+            {activeRoom.stage === "lobby" && (
               <section className="game-v2-lobby">
                 <span className="game-v2-panel-eyebrow">{ro ? "CAMERA ESTE GATA" : "ROOM READY"}</span>
                 <h1>{puzzleName}</h1>
-                <p>{room.total} {ro ? "piese" : "pieces"} · {players.filter((player) => player.role !== "spectator").length} {ro ? "jucători conectați" : "players connected"}</p>
+                <p>{activeRoom.total} {ro ? "piese" : "pieces"} · {players.filter((player) => player.role !== "spectator").length} {ro ? "jucători conectați" : "players connected"}</p>
                 {me?.role === "spectator" && <p className="text-sm">{ro ? "Facilitezi sesiunea fără să muți piese." : "You facilitate the session without moving pieces."}</p>}
                 <div className="mt-5 flex flex-wrap gap-2">
                   <button className="btn-secondary" onClick={() => { setPanel("invite"); share(); }}>
@@ -487,20 +487,20 @@ export default function GamePage() {
               </section>
             )}
 
-            {room.completed && (
+            {activeRoom.completed && (
               <section role="status" className="game-v2-result">
                 <span className="game-v2-panel-eyebrow">{ro ? "PUZZLE FINALIZAT" : "PUZZLE COMPLETE"}</span>
                 <h1 ref={completionHeading} tabIndex={-1}>{ro ? "L-am construit împreună!" : "We built it together!"} 🎉</h1>
                 <img src={puzzle.image} alt={puzzleName} className="game-v2-result-image" />
-                {room.completionPlayers.length > 6 ? (
-                  <details className="mt-3"><summary className="cursor-pointer py-2">{room.completionPlayers.length} {ro ? "jucători · Arată echipa" : "players · Show team"}</summary><p className="break-words">{room.completionPlayers.join(" · ")}</p></details>
-                ) : <p className="break-words">{room.completionPlayers.join(" · ")}</p>}
-                <p className="mt-3 font-semibold">{ro ? "Timpul echipei:" : "Team time:"} {formatDuration(room.completedInMs ?? 0)}</p>
-                {room.podiumEnabled && <Podium scores={s.scores} ro={ro} />}
+                {activeRoom.completionPlayers.length > 6 ? (
+                  <details className="mt-3"><summary className="cursor-pointer py-2">{activeRoom.completionPlayers.length} {ro ? "jucători · Arată echipa" : "players · Show team"}</summary><p className="break-words">{activeRoom.completionPlayers.join(" · ")}</p></details>
+                ) : <p className="break-words">{activeRoom.completionPlayers.join(" · ")}</p>}
+                <p className="mt-3 font-semibold">{ro ? "Timpul echipei:" : "Team time:"} {formatDuration(activeRoom.completedInMs ?? 0)}</p>
+                {activeRoom.podiumEnabled && <Podium scores={s.scores} ro={ro} />}
 
                 {host && (
                   <div className="game-v2-result-actions">
-                    <button className="btn-primary" onClick={() => action(() => api.replay(room.id))}>
+                    <button className="btn-primary" onClick={() => action(() => api.replay(activeRoom.id))}>
                       {ro ? "Joacă din nou" : "Play again"}
                     </button>
                     {nextDifficulty && (
