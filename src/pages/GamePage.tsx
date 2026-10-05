@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Board from "../puzzle/Board";
 import { store, useStore } from "../store";
 import { api } from "../lib/api";
