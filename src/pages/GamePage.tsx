@@ -216,7 +216,7 @@ export default function GamePage() {
         <div className="game-v2-toolbar">
           {host && activeRoom.stage === "play" && !activeRoom.completed && (
             <button className="btn-dark btn-sm" disabled={!connected} onClick={() => store.sendControl("lock", { locked: !activeRoom.boardLocked })}>
-              {activeRoom.boardLocked ? (ro ? "Continuă" : "Resume") : (ro ? "Pauză" : "Pause")}
+              {activeRoom.boardLocked ? (ro ? "Continuă jocul" : "Resume game") : (ro ? "Pauză pentru toți" : "Pause for everyone")}
             </button>
           )}
           <button className="btn-dark btn-sm" onClick={() => togglePanel("invite")} aria-expanded={panel === "invite"}>
